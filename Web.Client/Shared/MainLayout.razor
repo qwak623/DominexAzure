@@ -1,0 +1,18 @@
+﻿@inherits LayoutComponentBase
+
+<HxMessenger Position="ToastContainerPosition.BottomCenter" />
+<HxMessageBoxHost />
+
+<div class="d-md-flex min-vh-100">
+	<Sidebar />
+	<div class="main p-4 flex-grow-1 overflow-hidden">
+        <ErrorBoundary @ref="errorBoundaryComponent">
+            <ErrorContent Context="exception">
+                 <Havit.NewProjectTemplate.Web.Client.Pages.Errors.GenericError Exception="exception" OnRecover="() => errorBoundaryComponent?.Recover()" />
+            </ErrorContent>
+            <ChildContent>
+                @Body
+            </ChildContent>
+        </ErrorBoundary>
+	</div>
+</div>
