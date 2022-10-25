@@ -1,4 +1,4 @@
-﻿namespace Havit.NewProjectTemplate.Web.Client.Shared;
+﻿namespace Dominex.Web.Client.Shared;
 
 public partial class LoginDisplay
 {

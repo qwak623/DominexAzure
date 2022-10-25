@@ -1,7 +1,7 @@
 ﻿using Havit.Data.EntityFrameworkCore.Attributes;
 using System.ComponentModel.DataAnnotations;
 
-namespace Havit.NewProjectTemplate.Model.Security;
+namespace Dominex.Model.Security;
 
 [Cache(Priority = CacheItemPriority.High)]
 public class Role

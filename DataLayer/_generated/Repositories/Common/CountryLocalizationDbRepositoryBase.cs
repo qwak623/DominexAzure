@@ -13,12 +13,12 @@ using Havit.Data.Patterns.DataEntries;
 using Havit.Data.Patterns.DataLoaders;
 using Havit.Data.Patterns.Infrastructure;
 
-namespace Havit.NewProjectTemplate.DataLayer.Repositories.Common;
+namespace Dominex.DataLayer.Repositories.Common;
 
 [System.CodeDom.Compiler.GeneratedCode("Havit.Data.EntityFrameworkCore.CodeGenerator", "1.0")]
-public abstract class CountryLocalizationDbRepositoryBase : DbRepository<Havit.NewProjectTemplate.Model.Common.CountryLocalization>
+public abstract class CountryLocalizationDbRepositoryBase : DbRepository<Dominex.Model.Common.CountryLocalization>
 {
-	protected CountryLocalizationDbRepositoryBase(IDbContext dbContext, Havit.NewProjectTemplate.DataLayer.DataSources.Common.ICountryLocalizationDataSource dataSource, IEntityKeyAccessor<Havit.NewProjectTemplate.Model.Common.CountryLocalization, int> entityKeyAccessor, IDataLoader dataLoader, ISoftDeleteManager softDeleteManager, IEntityCacheManager entityCacheManager)
+	protected CountryLocalizationDbRepositoryBase(IDbContext dbContext, Dominex.DataLayer.DataSources.Common.ICountryLocalizationDataSource dataSource, IEntityKeyAccessor<Dominex.Model.Common.CountryLocalization, int> entityKeyAccessor, IDataLoader dataLoader, ISoftDeleteManager softDeleteManager, IEntityCacheManager entityCacheManager)
 		: base(dbContext, dataSource, entityKeyAccessor, dataLoader, softDeleteManager, entityCacheManager)
 	{
 	}

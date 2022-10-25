@@ -7,9 +7,9 @@
 
 using Havit.Data.Patterns.Repositories;
 
-namespace Havit.NewProjectTemplate.DataLayer.Repositories.Security;
+namespace Dominex.DataLayer.Repositories.Security;
 
 [System.CodeDom.Compiler.GeneratedCode("Havit.Data.EntityFrameworkCore.CodeGenerator", "1.0")]
-public partial interface IRoleRepository : IRepository<Havit.NewProjectTemplate.Model.Security.Role>
+public partial interface IRoleRepository : IRepository<Dominex.Model.Security.Role>
 {
 }

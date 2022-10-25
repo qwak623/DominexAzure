@@ -5,11 +5,11 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Havit.NewProjectTemplate.DataLayer.DataEntries.Security;
+namespace Dominex.DataLayer.DataEntries.Security;
 
 [System.CodeDom.Compiler.GeneratedCode("Havit.Data.EntityFrameworkCore.CodeGenerator", "1.0")]
 public interface IRoleEntries : Havit.Data.Patterns.DataEntries.IDataEntries
 {
-	Havit.NewProjectTemplate.Model.Security.Role SystemAdministrator { get; }
-	Havit.NewProjectTemplate.Model.Security.Role UserSettingsAdministrator { get; }
+	Dominex.Model.Security.Role SystemAdministrator { get; }
+	Dominex.Model.Security.Role UserSettingsAdministrator { get; }
 }

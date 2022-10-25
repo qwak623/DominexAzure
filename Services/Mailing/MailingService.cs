@@ -1,10 +1,10 @@
 ﻿using Havit.Extensions.DependencyInjection.Abstractions;
-using Havit.NewProjectTemplate.Contracts.Infrastructure;
+using Dominex.Contracts.Infrastructure;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
 using MimeKit;
 
-namespace Havit.NewProjectTemplate.Services.Mailing;
+namespace Dominex.Services.Mailing;
 
 [Service]
 public class MailingService : IMailingService

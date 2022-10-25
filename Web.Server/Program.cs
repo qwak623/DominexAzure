@@ -1,11 +1,11 @@
 ﻿using System.Runtime.InteropServices;
-using Havit.NewProjectTemplate.Web.Server.Infrastructure.LoggingExtensions;
+using Dominex.Web.Server.Infrastructure.LoggingExtensions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Havit.NewProjectTemplate.Web.Server;
+namespace Dominex.Web.Server;
 
 public class Program
 {

@@ -9,18 +9,18 @@ using Havit.Data.EntityFrameworkCore.Patterns.DataSources.Fakes;
 using Havit.Data.EntityFrameworkCore.Patterns.SoftDeletes;
 using Havit.Data.Patterns.Attributes;
 
-namespace Havit.NewProjectTemplate.DataLayer.DataSources.Localizations.Fakes;
+namespace Dominex.DataLayer.DataSources.Localizations.Fakes;
 
 [Fake]
 [System.CodeDom.Compiler.GeneratedCode("Havit.Data.EntityFrameworkCore.CodeGenerator", "1.0")]
-public class FakeLanguageDataSource : FakeDataSource<Havit.NewProjectTemplate.Model.Localizations.Language>, Havit.NewProjectTemplate.DataLayer.DataSources.Localizations.ILanguageDataSource
+public class FakeLanguageDataSource : FakeDataSource<Dominex.Model.Localizations.Language>, Dominex.DataLayer.DataSources.Localizations.ILanguageDataSource
 {
-	public FakeLanguageDataSource(params Havit.NewProjectTemplate.Model.Localizations.Language[] data)
-		: this((IEnumerable<Havit.NewProjectTemplate.Model.Localizations.Language>)data)
+	public FakeLanguageDataSource(params Dominex.Model.Localizations.Language[] data)
+		: this((IEnumerable<Dominex.Model.Localizations.Language>)data)
 	{			
 	}
 
-	public FakeLanguageDataSource(IEnumerable<Havit.NewProjectTemplate.Model.Localizations.Language> data, ISoftDeleteManager softDeleteManager = null)
+	public FakeLanguageDataSource(IEnumerable<Dominex.Model.Localizations.Language> data, ISoftDeleteManager softDeleteManager = null)
 		: base(data, softDeleteManager)
 	{
 	}

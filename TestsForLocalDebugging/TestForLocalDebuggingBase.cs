@@ -1,7 +1,7 @@
-﻿using Havit.NewProjectTemplate.TestHelpers;
+﻿using Dominex.TestHelpers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Havit.NewProjectTemplate.TestsForLocalDebugging;
+namespace Dominex.TestsForLocalDebugging;
 
 /// <summary>
 /// Bázový třída pro testy.

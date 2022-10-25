@@ -1,18 +1,18 @@
 ﻿using Havit.Data.EntityFrameworkCore;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
-namespace Havit.NewProjectTemplate.Services.HealthChecks;
+namespace Dominex.Services.HealthChecks;
 
 /// <summary>
 /// Kontroluje dostupnost databáze.
 /// De facto jen pro inpiraci pro další health checks, jinak je kontrola dostupnosti databáze pomocí DbContextu vestavěna - viz
 /// metoda AddDbContextCheck(nuget balíček Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore).
 /// </summary>
-public class NewProjectTemplateDbContextHealthCheck : BaseHealthCheck
+public class DominexDbContextHealthCheck : BaseHealthCheck
 {
 	private readonly IDbContext dbContext;
 
-	public NewProjectTemplateDbContextHealthCheck(IDbContext dbContext)
+	public DominexDbContextHealthCheck(IDbContext dbContext)
 	{
 		this.dbContext = dbContext;
 	}

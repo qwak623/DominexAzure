@@ -1,11 +1,11 @@
 ﻿using Blazored.LocalStorage;
-using Havit.NewProjectTemplate.Contracts.Infrastructure;
-using Havit.NewProjectTemplate.Web.Client.Pages.Admin.Components;
-using Havit.NewProjectTemplate.Web.Client.Resources;
-using Havit.NewProjectTemplate.Web.Client.Resources.Pages.Admin;
+using Dominex.Contracts.Infrastructure;
+using Dominex.Web.Client.Pages.Admin.Components;
+using Dominex.Web.Client.Resources;
+using Dominex.Web.Client.Resources.Pages.Admin;
 using Microsoft.AspNetCore.Components;
 
-namespace Havit.NewProjectTemplate.Web.Client.Pages.Admin;
+namespace Dominex.Web.Client.Pages.Admin;
 
 public partial class AdminIndex : ComponentBase
 {

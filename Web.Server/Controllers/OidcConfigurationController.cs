@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Havit.NewProjectTemplate.Web.Server.Controllers;
+namespace Dominex.Web.Server.Controllers;
 
 public class OidcConfigurationController : Controller
 {

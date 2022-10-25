@@ -2,13 +2,13 @@
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
-		<AssemblyName>Havit.NewProjectTemplate.Services</AssemblyName>
-		<RootNamespace>Havit.NewProjectTemplate.Services</RootNamespace>
+		<AssemblyName>Dominex.Services</AssemblyName>
+		<RootNamespace>Dominex.Services</RootNamespace>
 		<ImplicitUsings>true</ImplicitUsings>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<InternalsVisibleTo Include="Havit.NewProjectTemplate.Services.Tests" />
+		<InternalsVisibleTo Include="Dominex.Services.Tests" />
 	</ItemGroup>
 	
 	<ItemGroup>

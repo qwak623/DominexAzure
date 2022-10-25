@@ -1,16 +1,16 @@
 ﻿using Hangfire;
 using Hangfire.Dashboard;
 using Havit.Blazor.Grpc.Server;
-using Havit.NewProjectTemplate.Contracts;
-using Havit.NewProjectTemplate.Contracts.Infrastructure;
-using Havit.NewProjectTemplate.DependencyInjection;
-using Havit.NewProjectTemplate.Facades.Infrastructure.Security;
-using Havit.NewProjectTemplate.Model.Security;
-using Havit.NewProjectTemplate.Services.HealthChecks;
-using Havit.NewProjectTemplate.Services.Infrastructure.MigrationTool;
-using Havit.NewProjectTemplate.Web.Server.Infrastructure.ApplicationInsights;
-using Havit.NewProjectTemplate.Web.Server.Infrastructure.ConfigurationExtensions;
-using Havit.NewProjectTemplate.Web.Server.Infrastructure.HealthChecks;
+using Dominex.Contracts;
+using Dominex.Contracts.Infrastructure;
+using Dominex.DependencyInjection;
+using Dominex.Facades.Infrastructure.Security;
+using Dominex.Model.Security;
+using Dominex.Services.HealthChecks;
+using Dominex.Services.Infrastructure.MigrationTool;
+using Dominex.Web.Server.Infrastructure.ApplicationInsights;
+using Dominex.Web.Server.Infrastructure.ConfigurationExtensions;
+using Dominex.Web.Server.Infrastructure.HealthChecks;
 using Microsoft.ApplicationInsights.DependencyCollector;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Builder;
@@ -21,7 +21,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ProtoBuf.Grpc.Server;
 
-namespace Havit.NewProjectTemplate.Web.Server;
+namespace Dominex.Web.Server;
 
 public class Startup
 {
@@ -71,7 +71,7 @@ public class Startup
 
 		// Health checks
 		services.AddHealthChecks()
-			.AddCheck<NewProjectTemplateDbContextHealthCheck>("Database");
+			.AddCheck<DominexDbContextHealthCheck>("Database");
 
 		// Hangfire
 		services.AddCustomizedHangfire(configuration);
@@ -131,7 +131,7 @@ public class Startup
 			{
 				Authorization = new List<IDashboardAuthorizationFilter>() { }, // see https://sahansera.dev/securing-hangfire-dashboard-with-endpoint-routing-auth-policy-aspnetcore/
 				DisplayStorageConnectionString = false,
-				DashboardTitle = "NewProjectTemplate - Jobs",
+				DashboardTitle = "Dominex - Jobs",
 				StatsPollingInterval = 60_000, // once a minute
 				DisplayNameFunc = (_, job) => Havit.Hangfire.Extensions.Helpers.JobNameHelper.TryGetSimpleName(job, out string simpleName)
 													? simpleName

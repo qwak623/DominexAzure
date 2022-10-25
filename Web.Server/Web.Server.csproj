@@ -3,8 +3,8 @@
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
 		<DisableImplicitComponentsAnalyzers>true</DisableImplicitComponentsAnalyzers>
-		<AssemblyName>Havit.NewProjectTemplate.Web.Server</AssemblyName>
-		<RootNamespace>Havit.NewProjectTemplate.Web.Server</RootNamespace>
+		<AssemblyName>Dominex.Web.Server</AssemblyName>
+		<RootNamespace>Dominex.Web.Server</RootNamespace>
 		<ImplicitUsings>true</ImplicitUsings>
 	</PropertyGroup>
 
@@ -53,7 +53,7 @@
 	</Target>
 
 	<Target Name="EnsureWebJobInPackage" AfterTargets="CreateReadyToRunImages" BeforeTargets="_PrepareForReadyToRunCompilation">
-		<Error Text="WebJob file Havit.NewProjectTemplate.Utility.exe not found when preparing web deploy package." Condition="!Exists('..\Utility\bin\Release\net6.0\Havit.NewProjectTemplate.Utility.exe')" />
+		<Error Text="WebJob file Dominex.Utility.exe not found when preparing web deploy package." Condition="!Exists('..\Utility\bin\Release\net6.0\Dominex.Utility.exe')" />
 		<ItemGroup>
 			<!-- Vybereme soubory k publikaci. Předpokládá, že Utility je závislostí WebAPI nastavené v SLN. -->
 			<WebJobFiles Include="..\Utility\bin\Release\net6.0\**" />

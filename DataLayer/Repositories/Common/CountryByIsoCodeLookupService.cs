@@ -4,9 +4,9 @@ using Havit.Data.EntityFrameworkCore.Patterns.SoftDeletes;
 using Havit.Data.Patterns.DataSources;
 using Havit.Data.Patterns.Infrastructure;
 using Havit.Data.Patterns.Repositories;
-using Havit.NewProjectTemplate.Model.Common;
+using Dominex.Model.Common;
 
-namespace Havit.NewProjectTemplate.DataLayer.Repositories.Common;
+namespace Dominex.DataLayer.Repositories.Common;
 
 public class CountryByIsoCodeLookupService : LookupServiceBase<string, Country>, ICountryByIsoCodeLookupService
 {

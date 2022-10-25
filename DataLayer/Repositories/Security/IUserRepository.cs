@@ -1,6 +1,6 @@
-﻿using Havit.NewProjectTemplate.Model.Security;
+﻿using Dominex.Model.Security;
 
-namespace Havit.NewProjectTemplate.DataLayer.Repositories.Security;
+namespace Dominex.DataLayer.Repositories.Security;
 
 public partial interface IUserRepository
 {

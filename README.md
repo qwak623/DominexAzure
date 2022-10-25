@@ -5,10 +5,10 @@ If you have a local repository
 `git checkout-index --prefix=git-export-dir/ -a`
 
 Or create a new GitHub repository from template:  
-https://github.com/havit/NewProjectTemplate-Blazor/generate
+https://github.com/havit/Dominex-Blazor/generate
 
 ## Initial Setup
-1. SetupSolution.ps1 (replaces `NewProjectTemplate` with `YourProjectName` etc.)
+1. SetupSolution.ps1 (replaces `Dominex` with `YourProjectName` etc.)
    1. Open SetupSolution.ps1 and set parameters.
    1. Run SetupSolution.ps1.
    1. Delete SetupSolution.ps1

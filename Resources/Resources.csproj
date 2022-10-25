@@ -2,8 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-	  <AssemblyName>Havit.NewProjectTemplate.Resources</AssemblyName>
-	  <RootNamespace>Havit.NewProjectTemplate.Resources</RootNamespace>
+	  <AssemblyName>Dominex.Resources</AssemblyName>
+	  <RootNamespace>Dominex.Resources</RootNamespace>
 	  <ImplicitUsings>true</ImplicitUsings>
   </PropertyGroup>
 

@@ -1,15 +1,15 @@
 ﻿using Havit.Data.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace Havit.NewProjectTemplate.Entity;
+namespace Dominex.Entity;
 
-public class NewProjectTemplateDbContext : Havit.Data.EntityFrameworkCore.DbContext
+public class DominexDbContext : Havit.Data.EntityFrameworkCore.DbContext
 {
 	/// <summary>
 	/// Konstruktor.
 	/// Pro použití v unit testech, jiné použití nemá.
 	/// </summary>
-	internal NewProjectTemplateDbContext()
+	internal DominexDbContext()
 	{
 		// NOOP
 	}
@@ -17,7 +17,7 @@ public class NewProjectTemplateDbContext : Havit.Data.EntityFrameworkCore.DbCont
 	/// <summary>
 	/// Konstruktor.
 	/// </summary>
-	public NewProjectTemplateDbContext(DbContextOptions options) : base(options)
+	public DominexDbContext(DbContextOptions options) : base(options)
 	{
 		// NOOP
 	}
@@ -29,7 +29,7 @@ public class NewProjectTemplateDbContext : Havit.Data.EntityFrameworkCore.DbCont
 
 		// modelBuilder.HasSequence<int>("XySequence");
 
-		modelBuilder.RegisterModelFromAssembly(typeof(Havit.NewProjectTemplate.Model.Localizations.Language).Assembly);
+		modelBuilder.RegisterModelFromAssembly(typeof(Dominex.Model.Localizations.Language).Assembly);
 		modelBuilder.ApplyConfigurationsFromAssembly(this.GetType().Assembly);
 	}
 }

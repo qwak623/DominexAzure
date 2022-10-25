@@ -1,11 +1,11 @@
 ﻿using System.Security.Claims;
 using IdentityServer4.Models;
 using IdentityServer4.Services;
-using Havit.NewProjectTemplate.Model.Security;
+using Dominex.Model.Security;
 using IdentityModel;
 using Microsoft.AspNetCore.Identity;
 
-namespace Havit.NewProjectTemplate.Web.Server.Infrastructure.Security;
+namespace Dominex.Web.Server.Infrastructure.Security;
 
 /// <summary>
 /// Adding roles and other claims to claims returned by IdentityServer.

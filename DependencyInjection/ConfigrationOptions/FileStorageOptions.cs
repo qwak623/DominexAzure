@@ -1,4 +1,4 @@
-﻿namespace Havit.NewProjectTemplate.DependencyInjection.ConfigrationOptions;
+﻿namespace Dominex.DependencyInjection.ConfigrationOptions;
 
 public class FileStorageOptions
 {

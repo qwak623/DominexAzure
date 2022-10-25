@@ -2,7 +2,7 @@
 using Havit.Data.Patterns.Attributes;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Havit.NewProjectTemplate.Facades.Infrastructure.Security.Authorization.Fakes;
+namespace Dominex.Facades.Infrastructure.Security.Authorization.Fakes;
 
 /// <summary>
 /// Implementace IApplicationAuthorizationService pro účely testů. Veškeré testy na oprávnění procházejí.

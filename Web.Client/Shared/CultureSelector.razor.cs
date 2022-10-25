@@ -1,7 +1,7 @@
 ﻿using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components;
 
-namespace Havit.NewProjectTemplate.Web.Client.Shared;
+namespace Dominex.Web.Client.Shared;
 
 public partial class CultureSelector : ComponentBase
 {

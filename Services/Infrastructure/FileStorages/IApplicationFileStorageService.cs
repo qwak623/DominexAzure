@@ -1,6 +1,6 @@
 ﻿using Havit.Services.FileStorage;
 
-namespace Havit.NewProjectTemplate.Services.Infrastructure.FileStorages;
+namespace Dominex.Services.Infrastructure.FileStorages;
 
 public interface IApplicationFileStorageService : IFileStorageService<ApplicationFileStorage>
 {

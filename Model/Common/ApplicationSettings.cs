@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Havit.NewProjectTemplate.Model.Common;
+namespace Dominex.Model.Common;
 
 public class ApplicationSettings
 {

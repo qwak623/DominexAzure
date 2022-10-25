@@ -5,18 +5,18 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Havit.NewProjectTemplate.DataLayer.DataEntries.Security;
+namespace Dominex.DataLayer.DataEntries.Security;
 
 [System.CodeDom.Compiler.GeneratedCode("Havit.Data.EntityFrameworkCore.CodeGenerator", "1.0")]
-public class RoleEntries : Havit.Data.Patterns.DataEntries.DataEntries<Havit.NewProjectTemplate.Model.Security.Role>, IRoleEntries 
+public class RoleEntries : Havit.Data.Patterns.DataEntries.DataEntries<Dominex.Model.Security.Role>, IRoleEntries 
 {
-	private Havit.NewProjectTemplate.Model.Security.Role systemAdministrator;
-	private Havit.NewProjectTemplate.Model.Security.Role userSettingsAdministrator;
+	private Dominex.Model.Security.Role systemAdministrator;
+	private Dominex.Model.Security.Role userSettingsAdministrator;
 
-	public Havit.NewProjectTemplate.Model.Security.Role SystemAdministrator => systemAdministrator ??= GetEntry(Havit.NewProjectTemplate.Model.Security.Role.Entry.SystemAdministrator);
-	public Havit.NewProjectTemplate.Model.Security.Role UserSettingsAdministrator => userSettingsAdministrator ??= GetEntry(Havit.NewProjectTemplate.Model.Security.Role.Entry.UserSettingsAdministrator);
+	public Dominex.Model.Security.Role SystemAdministrator => systemAdministrator ??= GetEntry(Dominex.Model.Security.Role.Entry.SystemAdministrator);
+	public Dominex.Model.Security.Role UserSettingsAdministrator => userSettingsAdministrator ??= GetEntry(Dominex.Model.Security.Role.Entry.UserSettingsAdministrator);
 
-	public RoleEntries(Havit.NewProjectTemplate.DataLayer.Repositories.Security.IRoleRepository repository)
+	public RoleEntries(Dominex.DataLayer.Repositories.Security.IRoleRepository repository)
 		: base(repository)
 	{
 	}

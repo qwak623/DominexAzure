@@ -1,14 +1,15 @@
 ﻿using Havit.Data.Patterns.DataSeeds;
 using Havit.Data.Patterns.DataSeeds.Profiles;
 using Havit.Extensions.DependencyInjection.Abstractions;
-using Havit.NewProjectTemplate.Contracts;
-using Havit.NewProjectTemplate.Contracts.Infrastructure;
-using Havit.NewProjectTemplate.DataLayer.Seeds.Core;
-using Havit.NewProjectTemplate.Model.Security;
+using Dominex.Contracts;
+using Dominex.Contracts.Infrastructure;
+using Dominex.DataLayer.Seeds.Core;
+using Dominex.Model.Security;
 using Havit.Services.Caching;
 using Microsoft.AspNetCore.Authorization;
+using Havit;
 
-namespace Havit.NewProjectTemplate.Facades.Infrastructure;
+namespace Dominex.Facades.Infrastructure;
 
 [Service]
 [Authorize(Roles = nameof(Role.Entry.SystemAdministrator))]

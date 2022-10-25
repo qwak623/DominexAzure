@@ -1,8 +1,8 @@
 ﻿using Havit.Data.Patterns.DataSeeds;
-using Havit.NewProjectTemplate.Model.Common;
-using Havit.NewProjectTemplate.Model.Localizations;
+using Dominex.Model.Common;
+using Dominex.Model.Localizations;
 
-namespace Havit.NewProjectTemplate.DataLayer.Seeds.Core.Common;
+namespace Dominex.DataLayer.Seeds.Core.Common;
 
 public class CountrySeed : DataSeed<CoreProfile>
 {

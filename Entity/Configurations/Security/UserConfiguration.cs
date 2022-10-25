@@ -1,9 +1,9 @@
-﻿//using Havit.NewProjectTemplate.Model.Metadata.Security;
-using Havit.NewProjectTemplate.Model.Security;
+﻿//using Dominex.Model.Metadata.Security;
+using Dominex.Model.Security;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Havit.NewProjectTemplate.Entity.Configurations.Security;
+namespace Dominex.Entity.Configurations.Security;
 
 public class UserConfiguration : IEntityTypeConfiguration<User>
 {

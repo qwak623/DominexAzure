@@ -1,8 +1,8 @@
 ﻿using Havit.Extensions.DependencyInjection.Abstractions;
-using Havit.NewProjectTemplate.Services.Infrastructure;
+using Dominex.Services.Infrastructure;
 using Microsoft.Extensions.Logging;
 
-namespace Havit.NewProjectTemplate.Services.Jobs;
+namespace Dominex.Services.Jobs;
 
 [Service(Profile = ServiceProfiles.Utility)]
 public class EmptyJob : IEmptyJob

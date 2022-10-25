@@ -1,4 +1,4 @@
-﻿namespace Havit.NewProjectTemplate.DataLayer.Repositories.Security;
+﻿namespace Dominex.DataLayer.Repositories.Security;
 
 public partial class RoleDbRepository : IRoleRepository
 {

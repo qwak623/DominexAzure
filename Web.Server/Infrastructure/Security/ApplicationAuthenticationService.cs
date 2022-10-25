@@ -1,10 +1,10 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
-using Havit.NewProjectTemplate.Facades.Infrastructure.Security.Authentication;
-using Havit.NewProjectTemplate.Model.Security;
-using Havit.NewProjectTemplate.DataLayer.Repositories.Security;
+using Dominex.Facades.Infrastructure.Security.Authentication;
+using Dominex.Model.Security;
+using Dominex.DataLayer.Repositories.Security;
 
-namespace Havit.NewProjectTemplate.Web.Server.Infrastructure.Security;
+namespace Dominex.Web.Server.Infrastructure.Security;
 
 /// <summary>
 /// Poskytuje uživatele z HttpContextu.

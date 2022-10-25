@@ -1,4 +1,4 @@
-﻿namespace Havit.NewProjectTemplate.Services.Properties;
+﻿namespace Dominex.Services.Properties;
 
 public class AssemblyInfo
 {

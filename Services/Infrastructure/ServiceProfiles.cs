@@ -1,4 +1,4 @@
-﻿namespace Havit.NewProjectTemplate.Services.Infrastructure;
+﻿namespace Dominex.Services.Infrastructure;
 
 public static class ServiceProfiles
 {

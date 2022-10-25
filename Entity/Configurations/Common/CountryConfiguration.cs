@@ -1,8 +1,8 @@
-﻿using Havit.NewProjectTemplate.Model.Common;
+﻿using Dominex.Model.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Havit.NewProjectTemplate.Entity.Configurations.Common;
+namespace Dominex.Entity.Configurations.Common;
 
 public class CountryConfiguration : IEntityTypeConfiguration<Country>
 {

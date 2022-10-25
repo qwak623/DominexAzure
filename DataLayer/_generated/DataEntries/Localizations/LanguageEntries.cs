@@ -5,18 +5,18 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Havit.NewProjectTemplate.DataLayer.DataEntries.Localizations;
+namespace Dominex.DataLayer.DataEntries.Localizations;
 
 [System.CodeDom.Compiler.GeneratedCode("Havit.Data.EntityFrameworkCore.CodeGenerator", "1.0")]
-public class LanguageEntries : Havit.Data.Patterns.DataEntries.DataEntries<Havit.NewProjectTemplate.Model.Localizations.Language>, ILanguageEntries 
+public class LanguageEntries : Havit.Data.Patterns.DataEntries.DataEntries<Dominex.Model.Localizations.Language>, ILanguageEntries 
 {
-	private Havit.NewProjectTemplate.Model.Localizations.Language czech;
-	private Havit.NewProjectTemplate.Model.Localizations.Language english;
+	private Dominex.Model.Localizations.Language czech;
+	private Dominex.Model.Localizations.Language english;
 
-	public Havit.NewProjectTemplate.Model.Localizations.Language Czech => czech ??= GetEntry(Havit.NewProjectTemplate.Model.Localizations.Language.Entry.Czech);
-	public Havit.NewProjectTemplate.Model.Localizations.Language English => english ??= GetEntry(Havit.NewProjectTemplate.Model.Localizations.Language.Entry.English);
+	public Dominex.Model.Localizations.Language Czech => czech ??= GetEntry(Dominex.Model.Localizations.Language.Entry.Czech);
+	public Dominex.Model.Localizations.Language English => english ??= GetEntry(Dominex.Model.Localizations.Language.Entry.English);
 
-	public LanguageEntries(Havit.NewProjectTemplate.DataLayer.Repositories.Localizations.ILanguageRepository repository)
+	public LanguageEntries(Dominex.DataLayer.Repositories.Localizations.ILanguageRepository repository)
 		: base(repository)
 	{
 	}

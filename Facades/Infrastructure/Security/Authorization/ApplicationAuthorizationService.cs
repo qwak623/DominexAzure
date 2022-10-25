@@ -1,11 +1,11 @@
 ﻿using System.Security;
 using System.Security.Claims;
 using Havit.Extensions.DependencyInjection.Abstractions;
-using Havit.NewProjectTemplate.Facades.Infrastructure.Security.Authentication;
-using Havit.NewProjectTemplate.Services.Infrastructure;
+using Dominex.Facades.Infrastructure.Security.Authentication;
+using Dominex.Services.Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 
-namespace Havit.NewProjectTemplate.Facades.Infrastructure.Security.Authorization;
+namespace Dominex.Facades.Infrastructure.Security.Authorization;
 
 [Service(Profile = ServiceProfiles.WebServer)]
 public class ApplicationAuthorizationService : IApplicationAuthorizationService

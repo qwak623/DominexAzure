@@ -2,13 +2,13 @@
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
-		<AssemblyName>Havit.NewProjectTemplate.Facades</AssemblyName>
-		<RootNamespace>Havit.NewProjectTemplate.Facades</RootNamespace>
+		<AssemblyName>Dominex.Facades</AssemblyName>
+		<RootNamespace>Dominex.Facades</RootNamespace>
 		<ImplicitUsings>true</ImplicitUsings>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<InternalsVisibleTo Include="Havit.NewProjectTemplate.Facades.Tests" />
+		<InternalsVisibleTo Include="Dominex.Facades.Tests" />
 	</ItemGroup>
 
 	<ItemGroup>

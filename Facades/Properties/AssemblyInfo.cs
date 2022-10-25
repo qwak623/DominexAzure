@@ -1,4 +1,4 @@
-﻿namespace Havit.NewProjectTemplate.Facades.Properties;
+﻿namespace Dominex.Facades.Properties;
 
 public class AssemblyInfo
 {

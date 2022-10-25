@@ -1,4 +1,4 @@
-﻿namespace Havit.NewProjectTemplate.DataLayer.Repositories.Common;
+﻿namespace Dominex.DataLayer.Repositories.Common;
 
 public partial interface IApplicationSettingsRepository
 {

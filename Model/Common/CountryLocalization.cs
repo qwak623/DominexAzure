@@ -1,7 +1,7 @@
-﻿using Havit.NewProjectTemplate.Model.Localizations;
+﻿using Dominex.Model.Localizations;
 using System.ComponentModel.DataAnnotations;
 
-namespace Havit.NewProjectTemplate.Model.Common;
+namespace Dominex.Model.Common;
 
 public class CountryLocalization : ILocalization<Country>
 {

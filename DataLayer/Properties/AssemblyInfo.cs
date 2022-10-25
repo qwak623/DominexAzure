@@ -1,4 +1,4 @@
-﻿namespace Havit.NewProjectTemplate.DataLayer.Properties;
+﻿namespace Dominex.DataLayer.Properties;
 
 public class AssemblyInfo
 {

@@ -1,4 +1,4 @@
-﻿namespace Havit.NewProjectTemplate.Services.Jobs;
+﻿namespace Dominex.Services.Jobs;
 
 public interface IEmptyJob : IRunnableJob
 {

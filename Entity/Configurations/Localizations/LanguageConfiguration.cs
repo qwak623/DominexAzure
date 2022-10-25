@@ -1,8 +1,8 @@
-﻿using Havit.NewProjectTemplate.Model.Localizations;
+﻿using Dominex.Model.Localizations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Havit.NewProjectTemplate.Entity.Configurations.Localizations;
+namespace Dominex.Entity.Configurations.Localizations;
 
 public class LanguageConfiguration : IEntityTypeConfiguration<Language>
 {

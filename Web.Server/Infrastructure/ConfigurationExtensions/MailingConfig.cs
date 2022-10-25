@@ -1,8 +1,8 @@
-﻿using Havit.NewProjectTemplate.Contracts.Infrastructure;
+﻿using Dominex.Contracts.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Havit.NewProjectTemplate.Web.Server.Infrastructure.ConfigurationExtensions;
+namespace Dominex.Web.Server.Infrastructure.ConfigurationExtensions;
 
 public static class MailingConfig
 {

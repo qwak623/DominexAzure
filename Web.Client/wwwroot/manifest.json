@@ -1,6 +1,6 @@
 ﻿{
-	"name": "NewProjectTemplate",
-	"short_name": "NewProjectTemplate",
+	"name": "Dominex",
+	"short_name": "Dominex",
 	"start_url": "./",
 	"display": "standalone",
 	"background_color": "#ffffff",

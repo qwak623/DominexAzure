@@ -1,9 +1,9 @@
 ﻿using Havit.Data.Patterns.UnitOfWorks;
-using Havit.NewProjectTemplate.DataLayer.Repositories.Security;
-using Havit.NewProjectTemplate.Model.Security;
+using Dominex.DataLayer.Repositories.Security;
+using Dominex.Model.Security;
 using Microsoft.AspNetCore.Identity;
 
-namespace Havit.NewProjectTemplate.Facades.Infrastructure.Security.Identity;
+namespace Dominex.Facades.Infrastructure.Security.Identity;
 
 public class UserStore :
 	IUserStore<User>,

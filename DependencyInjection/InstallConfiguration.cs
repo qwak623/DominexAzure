@@ -1,4 +1,4 @@
-﻿namespace Havit.NewProjectTemplate.DependencyInjection;
+﻿namespace Dominex.DependencyInjection;
 
 internal class InstallConfiguration
 {

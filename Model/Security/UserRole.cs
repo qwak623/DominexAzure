@@ -1,4 +1,4 @@
-﻿namespace Havit.NewProjectTemplate.Model.Security;
+﻿namespace Dominex.Model.Security;
 
 public class UserRole
 {

@@ -1,4 +1,4 @@
-﻿namespace Havit.NewProjectTemplate.Contracts.Infrastructure;
+﻿namespace Dominex.Contracts.Infrastructure;
 
 public class MailingOptions
 {

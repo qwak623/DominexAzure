@@ -2,8 +2,8 @@
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
-		<AssemblyName>Havit.NewProjectTemplate.DependencyInjection</AssemblyName>
-		<RootNamespace>Havit.NewProjectTemplate.DependencyInjection</RootNamespace>
+		<AssemblyName>Dominex.DependencyInjection</AssemblyName>
+		<RootNamespace>Dominex.DependencyInjection</RootNamespace>
 		<ImplicitUsings>true</ImplicitUsings>
 	</PropertyGroup>
 

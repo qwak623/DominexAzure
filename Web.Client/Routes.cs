@@ -1,4 +1,4 @@
-﻿namespace Havit.NewProjectTemplate.Web.Client;
+﻿namespace Dominex.Web.Client;
 
 public static class Routes
 {

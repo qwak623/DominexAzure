@@ -1,7 +1,7 @@
 ﻿using Havit.Data.Patterns.DataSeeds;
-using Havit.NewProjectTemplate.Model.Localizations;
+using Dominex.Model.Localizations;
 
-namespace Havit.NewProjectTemplate.DataLayer.Seeds.Core.Localizations;
+namespace Dominex.DataLayer.Seeds.Core.Localizations;
 
 public class LanguageSeed : DataSeed<CoreProfile>
 {

@@ -1,4 +1,4 @@
-﻿namespace Havit.NewProjectTemplate.Services.Infrastructure.MigrationTool;
+﻿namespace Dominex.Services.Infrastructure.MigrationTool;
 
 public interface IMigrationService
 {

@@ -1,12 +1,12 @@
-﻿using Havit.NewProjectTemplate.DependencyInjection;
-using Havit.NewProjectTemplate.Services.Infrastructure.MigrationTool;
+﻿using Dominex.DependencyInjection;
+using Dominex.Services.Infrastructure.MigrationTool;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Havit.NewProjectTemplate.MigrationTool;
+namespace Dominex.MigrationTool;
 
 public class Program
 {

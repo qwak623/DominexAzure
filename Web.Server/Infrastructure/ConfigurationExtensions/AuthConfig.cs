@@ -1,9 +1,9 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Net;
-using Havit.NewProjectTemplate.Facades.Infrastructure.Security.Authentication;
-using Havit.NewProjectTemplate.Facades.Infrastructure.Security.Identity;
-using Havit.NewProjectTemplate.Model.Security;
-using Havit.NewProjectTemplate.Web.Server.Infrastructure.Security;
+using Dominex.Facades.Infrastructure.Security.Authentication;
+using Dominex.Facades.Infrastructure.Security.Identity;
+using Dominex.Model.Security;
+using Dominex.Web.Server.Infrastructure.Security;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -13,7 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Net.Http.Headers;
 
-namespace Havit.NewProjectTemplate.Web.Server.Infrastructure.ConfigurationExtensions;
+namespace Dominex.Web.Server.Infrastructure.ConfigurationExtensions;
 
 public static class AuthConfig
 {
@@ -57,7 +57,7 @@ public static class AuthConfig
 
 		services.PostConfigure<ApiAuthorizationOptions>(options =>
 		{
-			options.Clients["Havit.NewProjectTemplate.Web.Client"].AlwaysIncludeUserClaimsInIdToken = true;
+			options.Clients["Dominex.Web.Client"].AlwaysIncludeUserClaimsInIdToken = true;
 			options.IdentityResources["openid"].UserClaims.Add("name");
 			options.ApiResources.Single().UserClaims.Add("name");
 			options.IdentityResources["openid"].UserClaims.Add("role");

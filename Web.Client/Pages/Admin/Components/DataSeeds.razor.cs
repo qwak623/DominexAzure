@@ -1,8 +1,8 @@
-﻿using Havit.NewProjectTemplate.Contracts;
-using Havit.NewProjectTemplate.Contracts.Infrastructure;
+﻿using Dominex.Contracts;
+using Dominex.Contracts.Infrastructure;
 using Microsoft.AspNetCore.Components;
 
-namespace Havit.NewProjectTemplate.Web.Client.Pages.Admin.Components;
+namespace Dominex.Web.Client.Pages.Admin.Components;
 
 public partial class DataSeeds : ComponentBase
 {

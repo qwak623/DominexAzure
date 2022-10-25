@@ -1,19 +1,19 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Havit.NewProjectTemplate.Entity.Tests;
+namespace Dominex.Entity.Tests;
 
 [TestClass]
-public class NewProjectTemplateDbContextTests
+public class DominexDbContextTests
 {
 	[TestMethod]
-	public void NewProjectTemplateDbContext_CheckModelConventions()
+	public void DominexDbContext_CheckModelConventions()
 	{
 		// Arrange
-		DbContextOptions<NewProjectTemplateDbContext> options = new DbContextOptionsBuilder<NewProjectTemplateDbContext>()
-			.UseInMemoryDatabase(nameof(NewProjectTemplateDbContext))
+		DbContextOptions<DominexDbContext> options = new DbContextOptionsBuilder<DominexDbContext>()
+			.UseInMemoryDatabase(nameof(DominexDbContext))
 			.Options;
-		NewProjectTemplateDbContext dbContext = new NewProjectTemplateDbContext(options);
+		DominexDbContext dbContext = new DominexDbContext(options);
 
 		// Act
 		Havit.Data.EntityFrameworkCore.ModelValidation.ModelValidator modelValidator = new Havit.Data.EntityFrameworkCore.ModelValidation.ModelValidator();

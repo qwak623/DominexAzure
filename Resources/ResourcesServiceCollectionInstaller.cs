@@ -1,4 +1,4 @@
-﻿namespace Havit.NewProjectTemplate.Resources;
+﻿namespace Dominex.Resources;
 
 /// <summary>
 /// Marker file for RESX source generator.

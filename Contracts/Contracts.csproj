@@ -2,8 +2,8 @@
 
 	<PropertyGroup>
 		<TargetFramework>net6.0</TargetFramework>
-		<AssemblyName>Havit.NewProjectTemplate.Contracts</AssemblyName>
-		<RootNamespace>Havit.NewProjectTemplate.Contracts</RootNamespace>
+		<AssemblyName>Dominex.Contracts</AssemblyName>
+		<RootNamespace>Dominex.Contracts</RootNamespace>
 		<ImplicitUsings>true</ImplicitUsings>
 	</PropertyGroup>
 
