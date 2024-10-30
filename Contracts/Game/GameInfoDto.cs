@@ -4,10 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameCore
+namespace Dominex.Contracts.Game;
+public class GameInfoDto
 {
-    public interface ILogger
-    {
-        void Log(string str);
-    }
 }

@@ -12,11 +12,12 @@ public class Game
 	public List<Player> Players;
 	public Kingdom Kingdom;
 	public List<Card> Trash;
-	public ILogger Logger;
+	public IGameLogger Logger;
 
 	public bool GameEnd { get; private set; }
 
 	private const int drawCount = 5;
+	private GameResults results;
 
 	/// <summary>
 	/// </summary>
@@ -24,7 +25,7 @@ public class Game
 	/// <param name="kingdom">Kingdom has to be unique instance for each game.</param>
 	/// <param name="logger"></param>
 	/// <param name="tokenSource"></param>
-	public Game(User[] users, Kingdom kingdom, ILogger logger = null, CancellationTokenSource tokenSource = null)
+	public Game(User[] users, Kingdom kingdom, IGameLogger logger = null, CancellationTokenSource tokenSource = null)
 	{
 		foreach (var user in users)
 		{
@@ -44,6 +45,8 @@ public class Game
 	/// <returns>
 	/// Returns Task with results.
 	/// </returns>
+
+	// todo tohle by mělo vracet počáteční info o hráčích, opravit
 	public Task<GameResults> Play(int maxRounds = 50)
 	{
 		return Task.Run(() =>
@@ -140,7 +143,7 @@ public class Game
 						Logger?.Log($"{player.Name} has {player.VictoryPoints}.");
 					}
 
-					return new GameResults
+					results = new GameResults
 					{
 						Players = Players,
 						Score = new List<int> { 0, 0 },

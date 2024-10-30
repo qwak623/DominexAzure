@@ -1,0 +1,5 @@
+﻿.gameLog {
+	background-color: lime;
+	height: 150px;
+	overflow-y: scroll;
+}

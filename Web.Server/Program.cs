@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using Dominex.Contracts.Infrastructure;
 using Dominex.Web.Server.Infrastructure.LoggingExtensions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -16,6 +17,23 @@ public class Program
 
 	public static IHostBuilder CreateHostBuilder(string[] args) =>
 		Host.CreateDefaultBuilder(args)
+			//.ConfigureServices(webBuilder =>
+			//{
+			//	webBuilder.Add .Services.AddGrpcClientsByApiContractAttributes(
+			//	typeof(IDataSeedFacade).Assembly,
+			//	configureGrpcClientWithAuthorization: grpcClient =>
+			//	{
+			//		grpcClient.AddHttpMessageHandler(provider =>
+			//		{
+			//			var navigationManager = provider.GetRequiredService<NavigationManager>();
+			//			var backendUrl = navigationManager.BaseUri;
+
+			//			return provider.GetRequiredService<AuthorizationMessageHandler>()
+			//				.ConfigureHandler(authorizedUrls: new[] { backendUrl }); // TODO? as neede: , scopes: new[] { "havit-Dominex-api" });
+			//		})
+			//		.AddInterceptor<AuthorizationGrpcClientInterceptor>();
+			//	});
+			//})
 			.ConfigureWebHostDefaults(webBuilder =>
 			{
 				webBuilder.UseStartup<Startup>();

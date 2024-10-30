@@ -23,6 +23,7 @@ using ProtoBuf.Grpc.Server;
 
 namespace Dominex.Web.Server;
 
+// todo pročistit startupy od věcí, které nepoužívám a nerozumím jim
 public class Startup
 {
 	private readonly IConfiguration configuration;

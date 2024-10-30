@@ -1,9 +1,24 @@
-﻿@page "/development" 
+﻿@*@page "/development" *@
+@attribute [Route(Routes.Development.Dev)]
 
-<div class="row row-cols-2 row-cols-lg-5 g-3 mt-4">
-	<div class="col">
+<HxButton Color="ThemeColor.Primary" OnClick="Click"> Start </HxButton>
+<div class="row">
+    <div class="col-6">
 		<NavPanel Title="Development" Icon="BootstrapIcon.FileCode">
 			<NavCard Href="#" Title="TODO" />
+            <InfoPanel InfoDto="Info" />
+
+            <span>Cards to buy</span>
+            @foreach (var card in Cards)
+            {
+                <HxButton Color="ThemeColor.Secondary" OnClick="() => SelectCard(card)">@card</HxButton>
+            }
 		</NavPanel>
-	</div>
+    </div>
+
+    <div class="col-6">
+        <NavPanel Title="Game log" Icon="BootstrapIcon.Textarea">
+            <GameLog Log="Log" />
+        </NavPanel>
+    </div>
 </div>

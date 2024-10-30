@@ -18,4 +18,9 @@ public static class Routes
 	{
 		public const string Info = "/diag/info";
 	}
+
+	public static class Development
+	{
+		public const string Dev = "/development";
+	}
 }

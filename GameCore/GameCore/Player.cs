@@ -38,19 +38,14 @@ public class Player
 
 	public Player(Game game, User user, ThreadSafeRandom rnd)
 	{
+		// todo tohle by mohlo být parametrizovatelné
+
 		this.Name = user.GetName();
 		this.Game = game;
 		this.User = user;
 		this.rnd = rnd;
 
-		ps = new PlayerState()
-		{
-			Actions = 1,
-			Buys = 1,
-			Coins = 0,
-			Name = user.GetName(),
-		};
-
+		ps = new PlayerState(user.GetName());
 
 		// gain estate
 		for (int i = 0; i < 2; i++)
@@ -128,7 +123,7 @@ public class Player
 	/// </summary>
 	/// <returns> Purchased card </returns>
 	public Card Buy()
-	{
+	 {
 		if (ps.Buys == 0)
 		{
 			return null;

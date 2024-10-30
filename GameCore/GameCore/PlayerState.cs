@@ -9,9 +9,14 @@ namespace GameCore;
 public class PlayerState
 {
 	public string Name;
-	public int Actions;
-	public int Buys;
-	public int Coins;
+	public int Actions = 1;
+	public int Buys = 1;
+	public int Coins = 1;
+
+	public PlayerState(string name)
+	{
+		Name = name;
+	}
 
 	public List<Card> DrawPile = new();
 	public List<Card> DiscardPile = new();

@@ -1,6 +1,8 @@
 ﻿using Havit.Blazor.Grpc.Client.ServerExceptions;
 using Dominex.Resources;
 using Microsoft.Extensions.Localization;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using System.Runtime.Serialization;
 
 namespace Dominex.Web.Client.Infrastructure.Grpc;
 
@@ -17,7 +19,11 @@ public class HxMessengerOperationFailedExceptionGrpcClientListener : IOperationF
 
 	public Task ProcessAsync(string errorMessage)
 	{
+		// todo
 		messenger.AddError(localizer["OperationFailedExceptionMessengerTitle"], errorMessage);
+
+
+		//messenger.AddError(localizer["OperationFailedExceptionMessengerTitle"], "som čarovny");
 
 		return Task.CompletedTask;
 	}

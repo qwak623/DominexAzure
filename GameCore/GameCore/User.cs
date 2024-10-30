@@ -47,4 +47,4 @@ public abstract class User
 	public override string ToString() => GetName();
 }
 
-public enum Phase { Action, Treasure, Buy, Gain, Reaction, Attack }
+public enum Phase { Action, Treasure, Buy, Gain, Reaction, Attack } // todo move to primitives

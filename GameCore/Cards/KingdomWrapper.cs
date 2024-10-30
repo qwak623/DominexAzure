@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace GameCore.Cards;
+
+// todo jb revision
 public class KingdomWrapper
 {
 	public Kingdom kingdom;
@@ -20,7 +22,10 @@ public class KingdomWrapper
 	{
 		var pile = kingdom.GetPile(type);
 		if (pile != null && isAvailable(pile))
+		{
 			return kingdom.GetPile(type).Card;
+		}
+
 		return null;
 	}
 
