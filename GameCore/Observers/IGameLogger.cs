@@ -1,6 +1,6 @@
 ﻿using GameCore.GameCore;
 
-namespace GameCore;
+namespace GameCore.Observers;
 
 public interface IGameLogger
 {

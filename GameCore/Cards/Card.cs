@@ -24,7 +24,7 @@ public abstract class Card
 	public readonly bool IsAttack;
 
 	public readonly string Message;
-	public readonly string Destciption;
+	public readonly string Description;
 
 	public int VictoryPoints { get; protected set; }
 

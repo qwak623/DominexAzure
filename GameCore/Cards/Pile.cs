@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GameCore.Cards;
+﻿namespace GameCore.Cards;
 public class Pile
 {
 	private readonly Stack<Card> cards;
+	private readonly Action onGain;
 	private Card top;
 
 	public int Count => cards.Count;
@@ -25,10 +20,11 @@ public class Pile
 		}
 
 		top = cards.Pop();
+		onGain?.Invoke();
 		return top;
 	}
 
-	public Pile(Card card, int count = 1)
+	public Pile(Card card, int count = 1, Action onGain = null)
 	{
 		cards = new Stack<Card>();
 		for (int i = 0; i < count; i++)
@@ -37,6 +33,7 @@ public class Pile
 		}
 
 		top = cards.Peek();
+		this.onGain = onGain;
 	}
 
 	public override string ToString() => $"{Name} ${Price} ({Count})";

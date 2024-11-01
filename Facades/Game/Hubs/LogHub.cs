@@ -1,7 +1,7 @@
-﻿using GameCore;
+﻿using GameCore.Observers;
 using Microsoft.AspNetCore.SignalR;
 
-namespace Dominex.Facades.Infrastructure;
+namespace Dominex.Facades.Game.Hubs;
 
 public class LogHub : Hub
 {

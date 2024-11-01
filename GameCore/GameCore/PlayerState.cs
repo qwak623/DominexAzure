@@ -1,5 +1,5 @@
 ﻿using GameCore.Cards;
-using System.Collections.Generic;
+using GameCore.Observers;
 
 namespace GameCore;
 
@@ -8,18 +8,51 @@ namespace GameCore;
 /// </summary>
 public class PlayerState
 {
-	public string Name;
-	public int Actions = 1;
-	public int Buys = 1;
-	public int Coins = 1;
-
-	public PlayerState(string name)
-	{
-		Name = name;
-	}
+	public string Name { get; private set; }
+	private readonly IPlayerStateObserver playerStateObserver;
 
 	public List<Card> DrawPile = new();
 	public List<Card> DiscardPile = new();
 	public List<Card> Hand = new();
 	public List<Card> PlayedCards = new(10);
+
+	private int actions;
+	public int Actions
+	{
+		get { return actions; }
+		set
+		{
+			actions = value;
+			playerStateObserver?.Notify(this);
+		}
+	}
+
+	private int buys;
+	public int Buys
+	{
+		get { return buys; }
+		set
+		{
+			buys = value;
+			playerStateObserver?.Notify(this);
+		}
+	}
+
+	private int coins;
+	public int Coins
+	{
+		get { return coins; }
+		set
+		{
+			coins = value;
+			playerStateObserver?.Notify(this);
+		}
+	}
+
+	public PlayerState(IPlayerStateObserver playerStateObserver, string name)
+	{
+		this.playerStateObserver = playerStateObserver;
+		Name = name;
+	}
+
 }

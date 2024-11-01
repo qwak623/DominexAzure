@@ -1,0 +1,8 @@
+﻿<div class="kingdom">
+    @foreach (var pile in kingdom)
+    {
+        <HxCard>
+            <span>@pile.TopCard.CardName $@pile.TopCard.Price (@pile.CardCount)</span>
+        </HxCard>
+    }
+</div>

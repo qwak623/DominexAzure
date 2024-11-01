@@ -3,6 +3,7 @@ using Dominex.Contracts.Game;
 using Dominex.Contracts.ServerApi;
 using GameCore;
 using GameCore.Cards;
+using GameCore.Observers;
 using Havit.Extensions.DependencyInjection.Abstractions;
 
 namespace Dominex.Facades.Game;
@@ -22,12 +23,14 @@ public class GameFacade : IGameFacade
 	private ClientUser client = new();
 
 	private readonly IGameLogger gameLogger;
+	private readonly IKingdomObserver kingdomObserver;
 
 	//private readonly IHubContext<LogHub> logHubContext;
 
-	public GameFacade(IGameLogger gameLogger)
+	public GameFacade(IGameLogger gameLogger, IKingdomObserver kingdomObserver)
 	{
 		this.gameLogger = gameLogger;
+		this.kingdomObserver = kingdomObserver;
 	}
 
 	public Task Start(CancellationToken cancellationToken = default)
@@ -44,7 +47,7 @@ public class GameFacade : IGameFacade
 		if (Game == null)
 		{
 			List<Card> cards = PresetGames.Get(Games.BigMoney);
-			var kingdom = cards.GetKingdom(2);
+			var kingdom = cards.GetKingdom(2, kingdomObserver);
 
 			var random = new RandomUser();
 			var users = new GameCore.User[] { client, random };

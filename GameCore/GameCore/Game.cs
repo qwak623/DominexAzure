@@ -1,5 +1,6 @@
 ﻿using GameCore.Cards;
 using GameCore.GameCore;
+using GameCore.Observers;
 using Utils;
 
 namespace GameCore;
@@ -151,5 +152,5 @@ public class Game
 		});
 	}
 
-	private bool IsGameEnd() => Kingdom.GetPile(CardType.Province).Empty || Kingdom.EmptyPiles >= 3;
+	private bool IsGameEnd() => Kingdom.GetPile(CardType.Province).Empty || Kingdom.EmptyPilesCount >= 3;
 }

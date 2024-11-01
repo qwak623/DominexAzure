@@ -1,4 +1,5 @@
 ﻿using GameCore.Cards;
+using GameCore.Observers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,10 +28,10 @@ public static class Extensions
 	/// <param name="cards"></param>
 	/// <param name="players"></param>
 	/// <returns></returns>
-	public static Kingdom GetKingdom(this List<Card> cards, int players)
+	public static Kingdom GetKingdom(this List<Card> cards, int players, IKingdomObserver kingdomObserver = null)
 	{
 		// this should be correct, since list of cards wont change at this point
-		return new Kingdom(cards.AddRequiredCards().Select(c => new Pile(c)).ToList(), players);
+		return new Kingdom(cards, players, kingdomObserver);
 	}
 
 	public static List<Card> AddRequiredCards(this IEnumerable<Card> cards)

@@ -43,7 +43,7 @@ public class Player
 		this.User = user;
 		this.rnd = rnd;
 
-		ps = new PlayerState(user.GetName());
+		ps = new PlayerState(null, user.GetName());
 
 		// gain estate
 		for (int i = 0; i < 2; i++)
@@ -270,7 +270,7 @@ public class Player
 		// counts empty piles without enumerating 
 		if (pile.Count == 1)
 		{
-			Game.Kingdom.EmptyPiles++;
+			Game.Kingdom.EmptyPilesCount++;
 		}
 
 		return pile.GainCard();

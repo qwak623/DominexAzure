@@ -1,11 +1,11 @@
-﻿using Dominex.Facades.Infrastructure;
-using GameCore;
+﻿using Dominex.Facades.Game.Hubs;
 using GameCore.GameCore;
+using GameCore.Observers;
 using Havit.Extensions.DependencyInjection.Abstractions;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Dominex.Facades.Game;
+namespace Dominex.Facades.Game.Observers;
 
 // todo vyresit jestli toto ma byt singleton (mel by byt jeden pro kazdou hru
 [Service(Lifetime = ServiceLifetime.Singleton)]

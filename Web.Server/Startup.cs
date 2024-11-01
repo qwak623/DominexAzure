@@ -21,7 +21,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ProtoBuf.Grpc.Server;
 using Dominex.Web.Client.Components;
-using Dominex.Facades.Infrastructure;
+using Dominex.Facades.Game.Hubs;
 
 namespace Dominex.Web.Server;
 
@@ -121,6 +121,8 @@ public class Startup
 
 			//vyčistit
 			endpoints.MapHub<LogHub>("/loghub");
+			endpoints.MapHub<KingdomHub>("/kingdomhub");
+			endpoints.MapHub<PlayerStateHub>("/playerstatehub");
 
 			endpoints.MapGrpcServicesByApiContractAttributes(
 				typeof(IDataSeedFacade).Assembly,

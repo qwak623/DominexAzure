@@ -3,7 +3,12 @@
 
 <HxButton Color="ThemeColor.Primary" OnClick="Click"> Start </HxButton>
 <div class="row">
-    <div class="col-6">
+    <div class="col-2">
+        <NavPanel Title="Kingdom" Icon="BootstrapIcon.EmojiKiss">
+            <Kingdom />
+        </NavPanel>
+    </div>
+    <div class="col-5">
 		<NavPanel Title="Development" Icon="BootstrapIcon.FileCode">
 			<NavCard Href="#" Title="TODO" />
             <InfoPanel InfoDto="Info" />
@@ -16,7 +21,7 @@
 		</NavPanel>
     </div>
 
-    <div class="col-6">
+    <div class="col-5">
         <NavPanel Title="Game log" Icon="BootstrapIcon.Textarea">
             <GameLogger />
         </NavPanel>
