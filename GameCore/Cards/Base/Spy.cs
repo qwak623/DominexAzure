@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿using GameCore.GameCore;
 
 namespace GameCore.Cards.Base;
 public class Spy : Card
@@ -33,7 +33,7 @@ public class Spy : Card
 
 		if (player.User.SpyDiscard(player.ps, player.Game.Kingdom, card, Phase.Action))
 		{
-			player.Game.Logger?.Log($"{player.Name} discards {card.Name}");
+			player.Game.Logger?.Log(new GameLog { PlayerId = player.Name, Message = $"{player.Name} discards {card.Name}" });
 			player.ps.DiscardPile.Add(card);
 		}
 		else
@@ -52,7 +52,7 @@ public class Spy : Card
 
 		if (attacker.User.SpyDiscard(attacker.ps, attacker.Game.Kingdom, card, Phase.Attack))
 		{
-			defender.Game.Logger?.Log($"{defender.Name} discards {card.Name}");
+			defender.Game.Logger?.Log(new GameLog { PlayerId = defender.Name, Message = $"{defender.Name} discards {card.Name}" });
 			defender.ps.DiscardPile.Add(card);
 		}
 		else

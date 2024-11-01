@@ -1,5 +1,5 @@
-﻿using GameCore.Cards.Base;
-using GameCore.Cards.GeneralCards;
+﻿using GameCore.Cards.GeneralCards;
+using GameCore.GameCore;
 
 namespace GameCore.Cards.Base;
 
@@ -28,7 +28,7 @@ public class Moneylender : Card
 	{
 		if (player.ps.Hand.Remove(Copper.Get()))
 		{
-			player.Game.Logger?.Log($"{player.Name} trashes Copper and gains 3$");
+			player.Game.Logger?.Log(new GameLog { PlayerId = player.Name, Message = $"{player.Name} trashes Copper and gains 3$" });
 			player.ps.Coins += 3;
 		}
 	}

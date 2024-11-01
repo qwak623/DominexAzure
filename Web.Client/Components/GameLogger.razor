@@ -1,14 +1,15 @@
 ﻿@using Microsoft.AspNetCore.SignalR.Client;
 @inject NavigationManager Navigation
 
-<div class="gameLog">
+<div class="gameLogger">
     @*<button @onclick="AppendLog">Append Log</button>*@
-    @if (Log is not null)
+    @if (GameLogs is not null)
     {
-        foreach (var record in Log)
+        foreach (var record in GameLogs)
         {
             <div>
-                <span>@record</span>
+                <span>@record.PlayerId</span>
+                <span>@record.Message</span>
             </div>
         }
     }

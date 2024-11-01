@@ -1,7 +1,9 @@
-﻿namespace GameCore;
+﻿using GameCore.GameCore;
+
+namespace GameCore;
 
 public interface IGameLogger
 {
-	List<string> LogHistory { get; }
-	Task Log(string str);
+	List<GameLog> LogHistory { get; }
+	Task Log(GameLog gameLog);
 }

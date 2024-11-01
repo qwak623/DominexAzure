@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿using GameCore.GameCore;
 
 namespace GameCore.Cards.Base;
 public class Thief : Card
@@ -40,7 +40,7 @@ public class Thief : Card
 			var otherCard = cards.SingleOrDefault();
 			if (otherCard != null)
 			{
-				attacker.Game.Logger?.Log($"{defender.Name} discards {otherCard.Name}");
+				attacker.Game.Logger?.Log(new GameLog { PlayerId = defender.Name, Message = $"{defender.Name} discards {otherCard.Name}" });
 				defender.ps.DiscardPile.Add(otherCard);
 			}
 
@@ -49,12 +49,12 @@ public class Thief : Card
 			string trash = $"Trash {card.Name}";
 			if (attacker.User.ThiefSteal(attacker.ps, attacker.Game.Kingdom, card))
 			{
-				attacker.Game.Logger?.Log($"{attacker.Name} steals {card.Name}");
+				attacker.Game.Logger?.Log(new GameLog { PlayerId = attacker.Name, Message = $"{attacker.Name} steals {card.Name}" });
 				attacker.ps.PlayedCards.Add(card);
 			}
 			else
 			{
-				attacker.Game.Logger?.Log($"{defender.Name} trashes {card.Name}");
+				attacker.Game.Logger?.Log(new GameLog { PlayerId = defender.Name, Message = $"{defender.Name} trashes {card.Name}" });
 				attacker.Game.Trash.Add(card);
 			}
 		}
@@ -62,7 +62,7 @@ public class Thief : Card
 		{
 			foreach (var card in cards)
 			{
-				attacker.Game.Logger?.Log($"{defender.Name} discards {card.Name}");
+				attacker.Game.Logger?.Log(new GameLog { PlayerId = defender.Name, Message = $"{defender.Name} discards {card.Name}" });
 				defender.ps.DiscardPile.Add(card);
 			}
 		}

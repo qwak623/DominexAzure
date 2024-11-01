@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿using GameCore;
 
 namespace GameCore.Cards.Base;
 
@@ -34,7 +34,7 @@ public class Adventurer : Card
 			}
 			if (card.IsTreasure)
 			{
-				player.Game.Logger?.Log($"{Name} draws {card.Name}");
+				player.Game.Logger?.Log(new GameLog { PlayerId = Name, Message = $"{Name} draws {card.Name}" });
 				player.ps.Hand.Add(card);
 				i++;
 			}

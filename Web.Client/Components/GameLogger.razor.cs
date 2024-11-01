@@ -1,11 +1,11 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using Dominex.Contracts.Game;
 using Microsoft.AspNetCore.SignalR.Client;
 
 namespace Dominex.Web.Client.Components;
 
-public partial class GameLog
+public partial class GameLogger
 {
-	private List<string> Log { get; set; }// = new List<string>();
+	private List<GameLogDto> GameLogs { get; set; }// = new List<string>();
 
 	private HubConnection? hubConnection;
 
@@ -16,22 +16,22 @@ public partial class GameLog
 			.WithUrl(Navigation.ToAbsoluteUri("https://localhost:44301/loghub"))
 			.Build();
 
-		hubConnection.On<string, int>("AppendLog", async (log, count) =>
+		hubConnection.On<GameLogDto, int>("AppendLog", async (log, count) =>
 		{
-			if (Log.Count + 1 != count)
+			if (GameLogs.Count + 1 != count)
 			{
 				await hubConnection.SendAsync("RequestLogHistory");
 			}
 			else
 			{
-				Log.Add(log);
+				GameLogs.Add(log);
 				StateHasChanged();
 			}
 		});
 
-		hubConnection.On<List<string>>("ReceiveLogHistory", async logHistory =>
+		hubConnection.On<List<GameLogDto>>("ReceiveLogHistory", logHistory =>
 		{
-			Log = logHistory;
+			GameLogs = logHistory;
 			StateHasChanged();
 		});
 

@@ -1,8 +1,5 @@
 ﻿using GameCore.Cards;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+using GameCore.GameCore;
 using Utils;
 
 namespace GameCore;
@@ -55,7 +52,7 @@ public class Game
 			var rnd = new ThreadSafeRandom();
 
 			Players = users.Select(u => new Player(this, u, rnd)).ToList();
-			Logger?.Log("New game has started.");
+			Logger?.Log(new GameLog { Message = "New game has started." });
 
 			// intitial drawing
 			Players.ForEach(player => player.Draw(drawCount));
@@ -66,15 +63,15 @@ public class Game
 			// one turn of one player
 			while (true)
 			{
-				Logger?.Log("\n");
+				Logger?.Log(new GameLog { Message = "\n" });
 				if (i == 0)
 				{
-					Logger?.Log($"Round {turn}:");
+					Logger?.Log(new GameLog { Message = $"Round {turn}:" });
 				}
 
-				Logger?.Log($"{Players[i].Name}'s turn:");
-				Logger?.Log($"Action phase");
-				Logger?.Log("Hand: " + string.Join(", ", Players[i].ps.Hand.Select(c => c.Name)));
+				Logger?.Log(new GameLog { PlayerId = Players[i].Name, Message = $"{Players[i].Name}'s turn:" });
+				Logger?.Log(new GameLog { Message = $"Action phase" });
+				Logger?.Log(new GameLog { PlayerId = Players[i].Name, Message = $"Hand: {string.Join(", ", Players[i].ps.Hand.Select(c => c.Name))}" });
 
 				Players[i].ps.Buys = 1;
 				Players[i].ps.Actions = 1;
@@ -91,9 +88,9 @@ public class Game
 				// treasure phase
 				Players[i].PlayTreasure();
 
-				Logger?.Log($"Buy phase");
-				Logger?.Log("Hand: " + string.Join(", ", Players[i].ps.Hand.Select(c => c.Name)));
-				Logger?.Log($"{Players[i].Name} has ${Players[i].ps.Coins}.");
+				Logger?.Log(new GameLog { Message = $"Buy phase" });
+				Logger?.Log(new GameLog { PlayerId = Players[i].Name, Message = "Hand: " + string.Join(", ", Players[i].ps.Hand.Select(c => c.Name)) });
+				Logger?.Log(new GameLog { PlayerId = Players[i].Name, Message = $"{Players[i].Name} has ${Players[i].ps.Coins}." });
 
 				// buy phase
 				do
@@ -111,10 +108,10 @@ public class Game
 				GameEnd = IsGameEnd();
 				if (GameEnd)
 				{
-					Logger?.Log("\r\n\tResults:");
+					Logger?.Log(new GameLog { Message = "\r\n\tResults:" });
 					foreach (Player player in Players.OrderBy(p => p.VictoryPoints))
 					{
-						Logger?.Log($"{player.Name} has {player.VictoryPoints}.");
+						Logger?.Log(new GameLog { PlayerId = player.Name, Message = $"{player.Name} has {player.VictoryPoints}." });
 					}
 
 					int playerIndex = 0;
@@ -137,10 +134,10 @@ public class Game
 
 				if (turn >= maxRounds)
 				{
-					Logger?.Log("\r\nGame was terminated, number of rounds exceeded 50.");
+					Logger?.Log(new GameLog { Message = "\r\nGame was terminated, number of rounds exceeded 50." });
 					foreach (Player player in Players.OrderBy(p => p.VictoryPoints))
 					{
-						Logger?.Log($"{player.Name} has {player.VictoryPoints}.");
+						Logger?.Log(new GameLog { PlayerId = player.Name, Message = $"{player.Name} has {player.VictoryPoints}." });
 					}
 
 					results = new GameResults

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using GameCore.GameCore;
 
 namespace GameCore.Cards.Base;
 public class Library : Card
@@ -42,7 +41,7 @@ public class Library : Card
 			}
 			else
 			{
-				player.Game.Logger?.Log($"{Name} draws {card.Name}");
+				player.Game.Logger?.Log(new GameLog { PlayerId = Name, Message = $"{Name} draws {card.Name}" });
 				player.ps.Hand.Add(card);
 			}
 		}

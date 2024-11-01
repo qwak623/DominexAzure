@@ -1,7 +1,5 @@
 ﻿using GameCore.Cards;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using GameCore.GameCore;
 using Utils;
 
 namespace GameCore;
@@ -87,7 +85,7 @@ public class Player
 			return null;
 		}
 
-		Game.Logger?.Log($"{Name} plays {card.Name}.");
+		Game.Logger?.Log(new GameLog { PlayerId = Name, Message = $"{Name} plays {card.Name}." });
 
 		ps.Hand.Remove(card);
 		ps.PlayedCards.Add(card);
@@ -123,7 +121,7 @@ public class Player
 	/// </summary>
 	/// <returns> Purchased card </returns>
 	public Card Buy()
-	 {
+	{
 		if (ps.Buys == 0)
 		{
 			return null;
@@ -136,7 +134,7 @@ public class Player
 			return null;
 		}
 
-		Game.Logger?.Log($"{Name} pays ${card.Price}.");
+		Game.Logger?.Log(new GameLog { PlayerId = Name, Message = $"{Name} pays ${card.Price}." });
 
 		Gain(card.Type);
 		ps.Buys--;
@@ -172,11 +170,11 @@ public class Player
 				// there are no cards to draw
 				if (ps.DiscardPile.Count == 0)
 				{
-					Game.Logger?.Log($"{Name} doesn't have any cards left.");
+					Game.Logger?.Log(new GameLog { PlayerId = Name, Message = $"{Name} doesn't have any cards left." });
 					break;
 				}
 
-				Game.Logger?.Log($"{Name} shuffles the pile.");
+				Game.Logger?.Log(new GameLog { PlayerId = Name, Message = $"{Name} shuffles the pile." });
 
 				// swap
 				var pile = ps.DrawPile;
@@ -189,7 +187,7 @@ public class Player
 
 			// draw one card
 			var card = ps.DrawPile[ps.DrawPile.Count - 1];
-			Game.Logger?.Log($"{Name} draws {card.Name}");
+			Game.Logger?.Log(new GameLog { PlayerId = Name, Message = $"{Name} draws {card.Name}" });
 			ps.Hand.Add(card);
 			ps.DrawPile.RemoveAt(ps.DrawPile.Count - 1);
 		}
@@ -201,7 +199,7 @@ public class Player
 	/// <param name="card"></param>
 	public void Trash(Card card)
 	{
-		Game.Logger?.Log($"{Name} trashes {card.Name}.");
+		Game.Logger?.Log(new GameLog { PlayerId = Name, Message = $"{Name} trashes {card.Name}." });
 		ps.Hand.Remove(card);
 		Game.Trash.Add(card);
 	}
@@ -212,7 +210,7 @@ public class Player
 	/// <param name="card"></param>
 	public void Discard(Card card)
 	{
-		Game.Logger?.Log($"{Name} discards {card.Name}.");
+		Game.Logger?.Log(new GameLog { PlayerId = Name, Message = $"{Name} discards {card.Name}." });
 		ps.Hand.Remove(card);
 		ps.DiscardPile.Add(card);
 	}
@@ -229,7 +227,7 @@ public class Player
 			return;
 		}
 
-		Game.Logger?.Log($"{Name} gains {card.Name}.");
+		Game.Logger?.Log(new GameLog { PlayerId = Name, Message = $"{Name} gains {card.Name}." });
 		ps.PlayedCards.Add(card);
 	}
 
@@ -245,7 +243,7 @@ public class Player
 			return;
 		}
 
-		Game.Logger?.Log($"{Name} gains {card.Name} to hand.");
+		Game.Logger?.Log(new GameLog { PlayerId = Name, Message = $"{Name} gains {card.Name} to hand." });
 		ps.Hand.Add(card);
 	}
 
@@ -261,7 +259,7 @@ public class Player
 			return;
 		}
 
-		Game.Logger?.Log($"{Name} gains {card.Name} up to draw pile.");
+		Game.Logger?.Log(new GameLog { PlayerId = Name, Message = $"{Name} gains {card.Name} up to draw pile." });
 		ps.DrawPile.Add(card);
 	}
 
@@ -284,7 +282,7 @@ public class Player
 	/// <param name="card"></param>
 	public void ReturnToDrawPile(Card card)
 	{
-		Game.Logger?.Log($"{Name} returns {card.Name} up to draw pile.");
+		Game.Logger?.Log(new GameLog { PlayerId = Name, Message = $"{Name} returns {card.Name} up to draw pile." });
 		ps.Hand.Remove(card);
 		ps.DrawPile.Add(card);
 	}
@@ -294,7 +292,7 @@ public class Player
 	/// </summary>
 	public void DiscardDrawPile()
 	{
-		Game.Logger?.Log($"{Name} discards draw pile.");
+		Game.Logger?.Log(new GameLog { PlayerId = Name, Message = $"{Name} discards draw pile." });
 		ps.DiscardPile.AddRange(ps.DrawPile);
 		ps.DrawPile.Clear();
 	}
@@ -331,7 +329,7 @@ public class Player
 			// draw one card
 			var card = ps.DrawPile[ps.DrawPile.Count - 1];
 			ps.DrawPile.RemoveAt(ps.DrawPile.Count - 1);
-			Game.Logger?.Log($"{Name} shows {card.Name}");
+			Game.Logger?.Log(new GameLog { PlayerId = Name, Message = $"{Name} shows {card.Name}" });
 			list.Add(card);
 		}
 		return list;
@@ -346,7 +344,7 @@ public class Player
 	/// <param name="attackCard"></param>
 	public void DealAttack(Player attacker, Card attackCard)
 	{
-		Game.Logger?.Log($"{Name} deals attack.");
+		Game.Logger?.Log(new GameLog { PlayerId = Name, Message = $"{Name} deals attack." });
 
 		// before attack is executed defender can select some reaction cards.
 		Card card = null;

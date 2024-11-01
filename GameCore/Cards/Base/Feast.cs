@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using GameCore.GameCore;
 
 namespace GameCore.Cards.Base;
 public class Feast : Card
@@ -26,7 +27,7 @@ public class Feast : Card
 	{
 		player.ps.PlayedCards.Remove(this);
 		player.Game.Trash.Add(this);
-		player.Game.Logger?.Log($"{player.Name} trashes {Name}");
+		player.Game.Logger?.Log(new GameLog { PlayerId = Name, Message = $"{player.Name} trashes {Name}" });
 		var card = player.User.SelectCardToGain(player.Game.Kingdom.GetWrapper(5), player.ps, player.Game.Kingdom, Phase.Gain);
 		if (card != null)
 		{
