@@ -45,6 +45,10 @@
 		<ProjectReference Include="..\Web.Client\Web.Client.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Infrastructure\SignalRHubs\" />
+	</ItemGroup>
+
 	<Target Name="TfsPublish" AfterTargets="AfterPublish" Condition="'$(PublishDirectory)' != ''">
 		<ItemGroup>
 			<PublishToCopy Include="obj\Release\TfsPublish\*.zip" />

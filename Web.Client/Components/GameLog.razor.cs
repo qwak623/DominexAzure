@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.SignalR.Client;
 
 namespace Dominex.Web.Client.Components;
 
@@ -7,11 +7,31 @@ public partial class GameLog
 {
 	[Parameter] public List<string> Log { get; set; } = new List<string>();
 
-	public class LogHub : Hub
+	private HubConnection? hubConnection;
+
+	protected override async Task OnInitializedAsync()
 	{
-		public async Task SendMessage(string user, string message)
+		// TODO get rid of absolute Uri
+		hubConnection = new HubConnectionBuilder()
+			.WithUrl(Navigation.ToAbsoluteUri("https://localhost:44301/loghub"))
+			.Build();
+
+		hubConnection.On<string>("AppendLog", log =>
 		{
-			await Clients.All.SendAsync("ReceiveMessage", user, message);
+			Log.Add(log);
+
+			StateHasChanged();
+		});
+
+		await hubConnection.StartAsync();
+		//await hubConnection.SendAsync("ReceiveLog", Log);
+	}
+
+	public async ValueTask DisposeAsync()
+	{
+		if (hubConnection != null)
+		{
+			await hubConnection.DisposeAsync();
 		}
 	}
 }

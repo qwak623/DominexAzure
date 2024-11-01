@@ -1,11 +1,9 @@
-﻿using Havit.Extensions.DependencyInjection.Abstractions;
+﻿using Dominex.Contracts;
 using Dominex.Contracts.Game;
-using GameCore.Cards;
-using GameCore;
-using Dominex.Contracts;
 using Dominex.Contracts.ServerApi;
-using Dominex.Contracts.Game.ClientApi;
-using Havit;
+using GameCore;
+using GameCore.Cards;
+using Havit.Extensions.DependencyInjection.Abstractions;
 
 namespace Dominex.Facades.Game;
 
@@ -23,10 +21,13 @@ public class GameFacade : IGameFacade
 	private static List<Card> cards = new();
 	private ClientUser client = new();
 
-	public GameFacade() //IGameLogFacade gameLogFacade)
+	private readonly IGameLogger gameLogger;
+
+	//private readonly IHubContext<LogHub> logHubContext;
+
+	public GameFacade(IGameLogger gameLogger)
 	{
-		throw new OperationFailedException("loool");
-		//gameLogFacade.Log("test");
+		this.gameLogger = gameLogger;
 	}
 
 	public Task Start(CancellationToken cancellationToken = default)
@@ -52,7 +53,7 @@ public class GameFacade : IGameFacade
 			// je třeba vytvořit hru
 			// někde ji spustit
 			// a vrátit referenci na tu hru? nebo referenci na klienta...
-			Game = new GameCore.Game(users, kingdom);
+			Game = new GameCore.Game(users, kingdom, gameLogger);
 			Game.Play(); // todo continue with results...
 		}
 

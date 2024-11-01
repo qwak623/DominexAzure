@@ -2,5 +2,5 @@
 
 public interface IGameLogger
 {
-	void Log(string str);
+	Task Log(string str);
 }

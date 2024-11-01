@@ -20,6 +20,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ProtoBuf.Grpc.Server;
+using Dominex.Web.Client.Components;
+using Dominex.Facades.Infrastructure;
 
 namespace Dominex.Web.Server;
 
@@ -65,6 +67,9 @@ public class Startup
 		// server-side UI
 		services.AddControllersWithViews();
 		services.AddRazorPages();
+
+		// signalR
+		services.AddSignalR();
 
 		// gRPC
 		services.AddGrpcServerInfrastructure(assemblyToScanForDataContracts: typeof(Dto).Assembly);
@@ -113,6 +118,9 @@ public class Startup
 			endpoints.MapRazorPages();
 			endpoints.MapControllers();
 			endpoints.MapFallbackToPage("/_Host");
+
+			//vyčistit
+			endpoints.MapHub<LogHub>("/loghub");
 
 			endpoints.MapGrpcServicesByApiContractAttributes(
 				typeof(IDataSeedFacade).Assembly,

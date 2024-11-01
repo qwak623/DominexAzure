@@ -14,7 +14,6 @@ public partial class DevelopmentIndex
 
 	private List<string> Cards { get; set; } = new List<string>();
 	private InfoDto Info { get; set; }
-	private List<string> Log { get; set; }
 
 	protected override async Task OnInitializedAsync()
 	{
@@ -27,7 +26,6 @@ public partial class DevelopmentIndex
 
 	private async Task Click()
 	{
-
 		// todo cards nebudou na této stránce
 
 		//Navigation.NavigateTo(Routes.Development.Dev);
