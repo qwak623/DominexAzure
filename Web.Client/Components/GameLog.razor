@@ -3,10 +3,13 @@
 
 <div class="gameLog">
     @*<button @onclick="AppendLog">Append Log</button>*@
-    @foreach (var record in Log)
+    @if (Log is not null)
     {
-        <div>
-            <span>@record</span>
-        </div>
+        foreach (var record in Log)
+        {
+            <div>
+                <span>@record</span>
+            </div>
+        }
     }
 </div>

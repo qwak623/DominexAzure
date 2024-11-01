@@ -5,7 +5,7 @@ namespace Dominex.Web.Client.Components;
 
 public partial class GameLog
 {
-	[Parameter] public List<string> Log { get; set; } = new List<string>();
+	private List<string> Log { get; set; }// = new List<string>();
 
 	private HubConnection? hubConnection;
 
@@ -16,15 +16,27 @@ public partial class GameLog
 			.WithUrl(Navigation.ToAbsoluteUri("https://localhost:44301/loghub"))
 			.Build();
 
-		hubConnection.On<string>("AppendLog", log =>
+		hubConnection.On<string, int>("AppendLog", async (log, count) =>
 		{
-			Log.Add(log);
+			if (Log.Count + 1 != count)
+			{
+				await hubConnection.SendAsync("RequestLogHistory");
+			}
+			else
+			{
+				Log.Add(log);
+				StateHasChanged();
+			}
+		});
 
+		hubConnection.On<List<string>>("ReceiveLogHistory", async logHistory =>
+		{
+			Log = logHistory;
 			StateHasChanged();
 		});
 
 		await hubConnection.StartAsync();
-		//await hubConnection.SendAsync("ReceiveLog", Log);
+		await hubConnection.SendAsync("RequestLogHistory");
 	}
 
 	public async ValueTask DisposeAsync()

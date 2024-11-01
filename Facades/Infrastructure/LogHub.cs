@@ -1,18 +1,19 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using GameCore;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Dominex.Facades.Infrastructure;
 
 public class LogHub : Hub
 {
-	//private static readonly string _fileName = "Log.txt";
-	//private static readonly StreamWriter _writer = new StreamWriter(_fileName);
-	//private readonly IHubContext<LogHub> logHubContext;
+	private readonly IGameLogger gameLogger;
 
-	//public async Task Log(string log)
-	//{
-	//	//_writer.WriteLine(log);
-	//	//_writer.Flush();
+	public LogHub(IGameLogger gameLogger)
+	{
+		this.gameLogger = gameLogger;
+	}
 
-	//	await Clients.All.SendAsync("AppendLog", log);
-	//}
+	public async Task RequestLogHistory()
+	{
+		await Clients.Caller.SendAsync("ReceiveLogHistory", gameLogger.LogHistory);
+	}
 }
