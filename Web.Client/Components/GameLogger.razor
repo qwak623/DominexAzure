@@ -7,8 +7,11 @@
     {
         foreach (var record in GameLogs)
         {
-            <div>
-                <span>@record.PlayerId</span>
+            <div class="@GetPlayerLogsColor(record.PlayerId)">
+                @if (record.PlayerId is not null)
+                {
+                    <span class="bold">@(record.PlayerId): </span>
+                }
                 <span>@record.Message</span>
             </div>
         }

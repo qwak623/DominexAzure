@@ -39,6 +39,16 @@ public partial class GameLogger
 		await hubConnection.SendAsync("RequestLogHistory");
 	}
 
+	private string GetPlayerLogsColor(string playerId)
+	{
+		return (playerId ?? string.Empty) switch
+		{
+			"Todo Name" => "player1Logs",
+			"TODO NAME 2" => "player2Logs",
+			_ => "player3Logs"
+		};
+	}
+
 	public async ValueTask DisposeAsync()
 	{
 		if (hubConnection != null)

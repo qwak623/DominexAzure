@@ -1,4 +1,4 @@
-﻿using GameCore;
+﻿using GameCore.GameCore;
 
 namespace GameCore.Cards.Base;
 

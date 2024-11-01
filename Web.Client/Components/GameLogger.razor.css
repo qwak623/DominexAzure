@@ -1,5 +1,24 @@
 ﻿.gameLogger {
-	background-color: lime;
 	height: 150px;
 	overflow-y: scroll;
+}
+
+.bold {
+	font-weight: bold;
+}
+
+.player1Logs {
+	background-color: yellow;
+}
+
+.player2Logs {
+	background-color: indianred;
+}
+
+.player3Logs {
+	background-color: cornflowerblue;
+}
+
+.player4Logs {
+	background-color: springgreen;
 }
