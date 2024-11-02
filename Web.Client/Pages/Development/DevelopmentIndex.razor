@@ -3,17 +3,18 @@
 
 <HxButton Color="ThemeColor.Primary" OnClick="Click"> Start </HxButton>
 <div class="row">
+    <NavPanel Title="Player State" Icon="BootstrapIcon.Box2Heart">
+        <PlayerState />
+    </NavPanel>
+</div>
+<div class="row">
     <div class="col-2">
         <NavPanel Title="Kingdom" Icon="BootstrapIcon.EmojiKiss">
             <Kingdom />
         </NavPanel>
     </div>
     <div class="col-5">
-		<NavPanel Title="Development" Icon="BootstrapIcon.FileCode">
-			<NavCard Href="#" Title="TODO" />
-            <InfoPanel InfoDto="Info" />
-
-            <span>Cards to buy</span>
+        <NavPanel Title="Cards to buy" Icon="BootstrapIcon.FileCode">
             @foreach (var card in Cards)
             {
                 <HxButton Color="ThemeColor.Secondary" OnClick="() => SelectCard(card)">@card</HxButton>

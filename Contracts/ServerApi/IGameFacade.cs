@@ -7,6 +7,6 @@ namespace Dominex.Contracts.ServerApi;
 public interface IGameFacade
 {
 	Task Start(CancellationToken cancellationToken = default);
-	Task<Message> JoinGame(/*Dto<Guid> gameId,*/ Dto<int> playerId, CancellationToken cancellationToken = default);
+	Task<Choice> JoinGame(/*Dto<Guid> gameId,*/ Dto<int> playerId, CancellationToken cancellationToken = default);
 	Task<Choice> SelectCard(string card, CancellationToken cancellationToken = default);
 }

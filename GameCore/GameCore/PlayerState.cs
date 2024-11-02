@@ -11,7 +11,7 @@ public class PlayerState
 	public string Name { get; private set; }
 	private readonly IPlayerStateObserver playerStateObserver;
 
-	public List<Card> DrawPile = new();
+	public List<Card> DrawPile = new(); // todo asi by to měly být pily
 	public List<Card> DiscardPile = new();
 	public List<Card> Hand = new();
 	public List<Card> PlayedCards = new(10);

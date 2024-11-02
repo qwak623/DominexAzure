@@ -9,7 +9,7 @@ public partial class GameLogger
 	[Inject] protected NavigationManager Navigation { get; set; }
 	private List<GameLogDto> gameLogs { get; set; }// = new List<string>();
 
-	private HubConnection? hubConnection;
+	private HubConnection hubConnection;
 
 	protected override async Task OnInitializedAsync()
 	{

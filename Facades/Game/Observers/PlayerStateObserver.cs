@@ -1,6 +1,6 @@
-﻿using Dominex.Facades.Game.Hubs;
+﻿using Dominex.Contracts.Game;
+using Dominex.Facades.Game.Hubs;
 using GameCore;
-using GameCore.GameCore;
 using GameCore.Observers;
 using Havit.Extensions.DependencyInjection.Abstractions;
 using Microsoft.AspNetCore.SignalR;
@@ -20,6 +20,20 @@ public class PlayerStateObserver : IPlayerStateObserver
 	}
 	public async Task Notify(PlayerState playerState)
 	{
-		await playerStateHubContext.Clients.All.SendAsync("NotifyPlayerStateChanged", playerState);
+		PlayerStateDto playerStateDto = new()
+		{
+			Actions = playerState.Actions,
+			Buys = playerState.Buys,
+			Coins = playerState.Coins,
+			Hand = playerState.Hand.Select(c => new CardDto
+			{
+				CardName = c.Name,
+				CardType = c.Type.ToString(),
+				Description = c.Description,
+				Price = c.Price
+			}).ToList(),
+			GamePhase = "TODO fáze"
+		};
+		await playerStateHubContext.Clients.All.SendAsync("NotifyPlayerStateChanged", playerStateDto);
 	}
 }

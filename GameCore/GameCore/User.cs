@@ -1,4 +1,5 @@
 ﻿using GameCore.Cards;
+using GameCore.Observers;
 using System.Collections.Generic;
 using System.Threading;
 
@@ -17,6 +18,8 @@ public abstract class User
 	public abstract Card PlayCard(IEnumerable<Card> cards, PlayerState ps, Kingdom k, Phase phase, Card card = null);
 
 	public abstract Card SelectCardToGain(KingdomWrapper wrapper, PlayerState ps, Kingdom k, Phase phase);
+
+	public virtual IPlayerStateObserver GetPlayerStateObserver() => null;
 
 	#region cards base
 	public abstract List<Card> CellarDiscard(PlayerState ps, Kingdom k);

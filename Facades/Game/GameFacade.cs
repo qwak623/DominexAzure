@@ -20,17 +20,21 @@ public class GameFacade : IGameFacade
 	private static Job<Answer> answer = new();
 	private static State State;
 	private static List<Card> cards = new();
-	private ClientUser client = new();
+	private ClientUser client;
 
 	private readonly IGameLogger gameLogger;
 	private readonly IKingdomObserver kingdomObserver;
+	private readonly IPlayerStateObserver playerStateObserver;
 
 	//private readonly IHubContext<LogHub> logHubContext;
 
-	public GameFacade(IGameLogger gameLogger, IKingdomObserver kingdomObserver)
+	public GameFacade(IGameLogger gameLogger, IKingdomObserver kingdomObserver, IPlayerStateObserver playerStateObserver)
 	{
 		this.gameLogger = gameLogger;
 		this.kingdomObserver = kingdomObserver;
+		this.playerStateObserver = playerStateObserver;
+
+		client = new ClientUser(playerStateObserver);
 	}
 
 	public Task Start(CancellationToken cancellationToken = default)
@@ -81,7 +85,7 @@ public class GameFacade : IGameFacade
 		//}
 	}
 
-	public Task<Message> JoinGame(/*Dto<Guid> gameId, */Dto<int> playerId, CancellationToken cancellationToken = default)
+	public Task<Choice> JoinGame(/*Dto<Guid> gameId, */Dto<int> playerId, CancellationToken cancellationToken = default)
 	{
 		//lock (choice)
 		//{
@@ -94,27 +98,7 @@ public class GameFacade : IGameFacade
 		//if (tokenSource != null && tokenSource.Token.IsCancellationRequested)
 		//	throw new OperationCanceledException();
 
-		// chtělo by to nějaký mapper nebo něco, tohle nejde dělat všude
-		var message = new Message
-		{
-			Info = new InfoDto
-			{
-				GameInfo = new GameInfoDto
-				{
-					// kingdom - kolik karet zbývá
-				},
-				PlayerInfo = new PlayerInfoDto
-				{
-					GamePhase = "Action Phase", // todo enum
-					Actions = Game.Players[0].ps.Actions, // todo rozmyslet si lepe
-					Coins = Game.Players[0].ps.Coins,
-					Buys = Game.Players[0].ps.Buys,
-				}
-			},
-			Choice = choice.Object,
-		};
-
-		return Task.FromResult(message); // todo vymyslet jak toto může fungovat s async await
+		return Task.FromResult(choice.Object); // todo vymyslet jak toto může fungovat s async await
 		//}
 	}
 
@@ -147,6 +131,17 @@ public class GameFacade : IGameFacade
 
 	public class ClientUser : GameCore.User
 	{
+		private readonly IPlayerStateObserver playerStateObserver;
+
+		public ClientUser(IPlayerStateObserver playerStateObserver)
+		{
+			this.playerStateObserver = playerStateObserver;
+		}
+		public override IPlayerStateObserver GetPlayerStateObserver()
+		{
+			return playerStateObserver;
+		}
+
 		public override Card BureaucratDiscard(PlayerState ps, Kingdom k)
 		{
 			throw new NotImplementedException();

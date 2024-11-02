@@ -4,11 +4,10 @@ using Microsoft.AspNetCore.SignalR.Client;
 
 namespace Dominex.Web.Client.Components;
 
-public partial class Kingdom
+public partial class PlayerState
 {
 	[Inject] protected NavigationManager Navigation { get; set; }
-
-	private List<PileDto> kingdom = new();
+	private PlayerStateDto PlayerStateDto { get; set; }
 
 	private HubConnection hubConnection;
 
@@ -16,12 +15,12 @@ public partial class Kingdom
 	{
 		// TODO get rid of absolute Uri
 		hubConnection = new HubConnectionBuilder()
-			.WithUrl(Navigation.ToAbsoluteUri("https://localhost:44301/kingdomhub"))
+			.WithUrl(Navigation.ToAbsoluteUri("https://localhost:44301/playerstatehub"))
 			.Build();
 
-		hubConnection.On<List<PileDto>>("NotifyKingdomChanged", kingdom =>
+		hubConnection.On<PlayerStateDto>("NotifyPlayerStateChanged", playerStateDto =>
 		{
-			this.kingdom = kingdom;
+			PlayerStateDto = playerStateDto;
 			StateHasChanged();
 			return Task.CompletedTask;
 		});

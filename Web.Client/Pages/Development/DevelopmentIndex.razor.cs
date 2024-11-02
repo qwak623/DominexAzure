@@ -2,8 +2,6 @@
 using Dominex.Contracts.Game;
 using Dominex.Contracts.ServerApi;
 using Microsoft.AspNetCore.Components;
-using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
-using Org.BouncyCastle.Tls;
 
 namespace Dominex.Web.Client.Pages.Development;
 
@@ -13,15 +11,13 @@ public partial class DevelopmentIndex
 	//[Inject] protected NavigationManager Navigation { get; set; }
 
 	private List<string> Cards { get; set; } = new List<string>();
-	private InfoDto Info { get; set; }
 
 	protected override async Task OnInitializedAsync()
 	{
 		await base.OnInitializedAsync();
 
-		var message = await GameFacade?.JoinGame(/*Dto.FromValue(new Guid()), */Dto.FromValue(1));
-		Cards = message.Choice.Cards;
-		Info = message.Info;
+		var choice = await GameFacade?.JoinGame(/*Dto.FromValue(new Guid()), */Dto.FromValue(1));
+		Cards = choice.Cards;
 	}
 
 	private async Task Click()

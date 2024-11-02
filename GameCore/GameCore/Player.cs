@@ -8,7 +8,7 @@ public class Player
 	public readonly string Name;
 	public User User;
 	public Game Game;
-	private ThreadSafeRandom rnd;
+	private ThreadSafeRandom Rnd;
 
 	public PlayerState ps;
 
@@ -38,12 +38,12 @@ public class Player
 	{
 		// todo tohle by mohlo být parametrizovatelné
 
-		this.Name = user.GetName();
-		this.Game = game;
-		this.User = user;
-		this.rnd = rnd;
+		Name = user.GetName();
+		Game = game;
+		User = user;
+		Rnd = rnd;
 
-		ps = new PlayerState(null, user.GetName());
+		ps = new PlayerState(user.GetPlayerStateObserver(), user.GetName());
 
 		// gain estate
 		for (int i = 0; i < 2; i++)
@@ -182,7 +182,7 @@ public class Player
 				ps.DiscardPile = pile;
 
 				// shuffle
-				ps.DrawPile.Shuffle(rnd);
+				ps.DrawPile.Shuffle(Rnd);
 			}
 
 			// draw one card
@@ -323,7 +323,7 @@ public class Player
 				ps.DiscardPile = pile;
 
 				// shuffle
-				ps.DrawPile.Shuffle(rnd);
+				ps.DrawPile.Shuffle(Rnd);
 			}
 
 			// draw one card
