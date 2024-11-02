@@ -55,4 +55,5 @@ public class PlayerState
 		Name = name;
 	}
 
+	public void Notify() => playerStateObserver?.Notify(this);
 }

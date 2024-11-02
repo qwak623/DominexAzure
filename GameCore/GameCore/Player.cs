@@ -373,5 +373,6 @@ public class Player
 		}
 	}
 
+	public void Notify() => ps.Notify();
 	public override string ToString() => User.GetName();
 }

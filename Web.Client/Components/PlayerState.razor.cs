@@ -1,4 +1,5 @@
 ﻿using Dominex.Contracts.Game;
+using Dominex.Contracts.ServerApi;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.SignalR.Client;
 
@@ -7,9 +8,15 @@ namespace Dominex.Web.Client.Components;
 public partial class PlayerState
 {
 	[Inject] protected NavigationManager Navigation { get; set; }
+	[Inject] protected IGameFacade GameFacade { get; set; }
 	private PlayerStateDto PlayerStateDto { get; set; }
 
 	private HubConnection hubConnection;
+
+	protected async override Task OnParametersSetAsync()
+	{
+		await GameFacade.RequestPlayerStateNotification();
+	}
 
 	protected override async Task OnInitializedAsync()
 	{

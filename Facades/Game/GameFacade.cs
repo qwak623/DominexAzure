@@ -12,7 +12,7 @@ namespace Dominex.Facades.Game;
 //[Authorize(Roles = nameof(Role.Entry.SystemAdministrator))]
 public class GameFacade : IGameFacade
 {
-	// todo zbavit se static věcí
+	// todo zbavit se static věcí (singleton?)
 	private static GameCore.Game Game;
 
 	private static Job<Choice> choice = new();
@@ -21,6 +21,7 @@ public class GameFacade : IGameFacade
 	private static State State;
 	private static List<Card> cards = new();
 	private ClientUser client;
+	private static Kingdom kingdom;
 
 	private readonly IGameLogger gameLogger;
 	private readonly IKingdomObserver kingdomObserver;
@@ -51,7 +52,7 @@ public class GameFacade : IGameFacade
 		if (Game == null)
 		{
 			List<Card> cards = PresetGames.Get(Games.BigMoney);
-			var kingdom = cards.GetKingdom(2, kingdomObserver);
+			kingdom = cards.GetKingdom(2, kingdomObserver);
 
 			var random = new RandomUser();
 			var users = new GameCore.User[] { client, random };
@@ -129,6 +130,19 @@ public class GameFacade : IGameFacade
 		}
 	}
 
+	public async Task RequestKingdomNotification(CancellationToken cancellationToken = default)
+	{
+		if (kingdom is not null)
+		{
+			await Task.Run(() => kingdomObserver.Notify(kingdom), cancellationToken);
+		}
+	}
+
+	public async Task RequestPlayerStateNotification(CancellationToken cancellationToken = default)
+	{
+		await Task.Run(() => Game.RequestPlayerNotifications(), cancellationToken);
+	}
+
 	public class ClientUser : GameCore.User
 	{
 		private readonly IPlayerStateObserver playerStateObserver;
@@ -137,6 +151,7 @@ public class GameFacade : IGameFacade
 		{
 			this.playerStateObserver = playerStateObserver;
 		}
+
 		public override IPlayerStateObserver GetPlayerStateObserver()
 		{
 			return playerStateObserver;

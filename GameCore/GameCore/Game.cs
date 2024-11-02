@@ -152,5 +152,14 @@ public class Game
 		});
 	}
 
+	// todo async? nebo ma to tu vubec byt?
+	public void RequestPlayerNotifications()
+	{
+		foreach (var player in Players)
+		{
+			player.ps.Notify();
+		}
+	}
+
 	private bool IsGameEnd() => Kingdom.GetPile(CardType.Province).Empty || Kingdom.EmptyPilesCount >= 3;
 }
