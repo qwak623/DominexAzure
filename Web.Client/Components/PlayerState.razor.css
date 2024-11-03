@@ -1,4 +1,10 @@
 ﻿.playerState {
-	background-color: lightgray;
-	height: 200px;
+	height: 60px;
+}
+.card-in-hand {
+	display: inline-flex;
+	flex-direction: column;
+	background-clip: border-box;
+	border: 1px solid rgba(0, 0, 0, 0.075);
+	border-radius: 0.5rem;
 }
