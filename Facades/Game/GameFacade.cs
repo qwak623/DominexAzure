@@ -259,34 +259,34 @@ public class GameFacade : IGameFacade
 	{
 		public override Card BureaucratDiscard(PlayerState ps, Kingdom k)
 		{
-			throw new NotImplementedException();
+			return ps.Hand.FirstOrDefault();
 		}
 
 		public override List<Card> CellarDiscard(PlayerState ps, Kingdom k)
 		{
-			throw new NotImplementedException();
+			return new();
 		}
 
 		public override bool ChancellorDiscard(PlayerState ps, Kingdom k)
 		{
-			throw new NotImplementedException();
+			return false;
 		}
 
 		public override List<Card> ChapelTrash(PlayerState ps, Kingdom k)
 		{
-			throw new NotImplementedException();
+			return new();
 		}
 
 		public override string GetName() => "TODO NAME 2";
 
 		public override bool LibrarySkip(PlayerState ps, Kingdom k, Card c)
 		{
-			throw new NotImplementedException();
+			return false;
 		}
 
 		public override List<Card> MilitiaDiscard(PlayerState ps, Kingdom k, int discardCount)
 		{
-			throw new NotImplementedException();
+			return ps.Hand.Take(2).ToList();
 		}
 
 		public override Card MineTrash(PlayerState ps, Kingdom k)
@@ -296,7 +296,7 @@ public class GameFacade : IGameFacade
 
 		public override Card PlayCard(IEnumerable<Card> cards, PlayerState ps, Kingdom k, Phase phase, Card card = null)
 		{
-			throw new NotImplementedException();
+			return null;
 		}
 
 		public override Card RemodelTrash(PlayerState ps, Kingdom k)

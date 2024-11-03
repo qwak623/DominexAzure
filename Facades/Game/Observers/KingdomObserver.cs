@@ -28,7 +28,7 @@ public class KingdomObserver : IKingdomObserver
 				{
 					CardName = pile.Name,
 					CardType = pile.Type.ToString(),
-					Description = pile.Card.Description,
+					Description = pile.Card?.Description,
 					Price = pile.Price
 				}
 			})
