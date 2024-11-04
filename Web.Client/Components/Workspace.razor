@@ -1,7 +1,10 @@
 ﻿<div class="workspace">
-    @foreach (var card in (Cards ?? new List<string>()))
+    @if (Cards is not null)
     {
-        <HxButton Color="ThemeColor.Secondary" OnClick="() => SelectCard(card)">@card</HxButton>
+        foreach (var card in (Cards ?? new List<string>()))
+        {
+            <HxButton Color="ThemeColor.Secondary" OnClick="() => SelectCard(card)">@card</HxButton>
+        }
+        <HxButton Color="ThemeColor.Secondary" OnClick="() => SelectCard(null)">None</HxButton>
     }
-    <HxButton Color="ThemeColor.Secondary" OnClick="() => SelectCard(null)">None</HxButton>
 </div>
