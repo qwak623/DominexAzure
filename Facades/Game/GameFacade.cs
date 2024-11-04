@@ -110,7 +110,7 @@ public class GameFacade : IGameFacade
 		{
 			answer.Object = new Answer
 			{
-				Card = cards.First(c => c.Name == card)
+				Card = cards.FirstOrDefault(c => c.Name == card)
 			};
 			answer.Done = true;
 			Monitor.Pulse(answer);

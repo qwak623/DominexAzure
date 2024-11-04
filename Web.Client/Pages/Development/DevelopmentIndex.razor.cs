@@ -1,5 +1,4 @@
 ﻿using Dominex.Contracts;
-using Dominex.Contracts.Game;
 using Dominex.Contracts.ServerApi;
 using Microsoft.AspNetCore.Components;
 
@@ -19,16 +18,11 @@ public partial class DevelopmentIndex
 		var choice = await GameFacade?.JoinGame(/*Dto.FromValue(new Guid()), */Dto.FromValue(1));
 		Cards = choice.Cards;
 	}
-
+	
 	private async Task Click()
 	{
 		// todo cards nebudou na této stránce
 
 		//Navigation.NavigateTo(Routes.Development.Dev);
-	}
-
-	private async Task SelectCard(string cardName)
-	{
-		Cards = (await GameFacade.SelectCard(cardName)).Cards;
 	}
 }
