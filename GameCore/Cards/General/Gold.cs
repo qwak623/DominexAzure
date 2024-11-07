@@ -8,7 +8,6 @@ public class Gold : Card
 		type: CardType.Gold,
 		price: 6,
 		addBuys: 0,
-		victoryPoints: 0,
 		coins: 3,
 		isVictory: false,
 		isTreasure: true

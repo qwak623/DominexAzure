@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace GameCore.Cards.Base;
+﻿namespace GameCore.Cards.Base;
 public class Chapel : Card
 {
 	private static Chapel chapel = null;
@@ -17,9 +15,13 @@ public class Chapel : Card
 		isTreasure: false,
 		isAction: true,
 		isReaction: false,
-		isAttack: false,
-		message: "Trash up to 4 cards from your hand."
-	) => chapel = this;
+		isAttack: false
+	)
+	{
+		chapel = this;
+		Description = "Trash up to 4 cards from your hand.";
+		Message = "Trash up to 4 cards from your hand.";
+	}
 
 	public static Chapel Get() => chapel ?? new Chapel();
 

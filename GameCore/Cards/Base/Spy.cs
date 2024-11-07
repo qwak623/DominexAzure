@@ -17,9 +17,13 @@ public class Spy : Card
 		isTreasure: false,
 		isAction: true,
 		isReaction: false,
-		isAttack: true,
-		message: "You may discard card at top of the draw pile."
-	) => spy = this;
+		isAttack: true
+	)
+	{
+		spy = this;
+		Description = "Each player (including you) reveals the top card of his deck and either discards it or puts it back, your choice.";
+		Message = "You may discard card at top of the draw pile.";
+	}
 
 	public static Spy Get() => spy ?? new Spy();
 

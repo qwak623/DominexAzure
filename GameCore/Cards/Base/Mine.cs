@@ -1,10 +1,8 @@
-﻿using System.Linq;
-
-namespace GameCore.Cards.Base;
+﻿namespace GameCore.Cards.Base;
 public class Mine : Card
 {
 	private static Mine mine;
-	static int c;
+	private static int c;
 	private Mine() : base
 	(
 		name: "Mine",
@@ -18,9 +16,13 @@ public class Mine : Card
 		isTreasure: false,
 		isAction: true,
 		isReaction: false,
-		isAttack: false,
-		message: "Trash a treasure, gain a treasure to your hand costing up to $3 more."
-	) => mine = this;
+		isAttack: false
+	)
+	{
+		mine = this;
+		Description = "You may trash a Treasure card from your hand. Gain a Treasure card to your hand costing up to $3 more than it.";
+		Message = "Trash a treasure, gain a treasure to your hand costing up to $3 more.";
+	}
 
 	public static Mine Get() => mine ?? new Mine();
 

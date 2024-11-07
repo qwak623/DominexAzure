@@ -23,10 +23,12 @@ public abstract class Card
 	public readonly bool IsReaction;
 	public readonly bool IsAttack;
 
-	public readonly string Message;
-	public readonly string Description;
+	public string Description { get; protected init; }
 
-	public int VictoryPoints { get; protected set; }
+	// TODO je to trochu divné, asi by to chtělo dát jinam a rozdělit podle funkce
+	public string Message { get; protected init; }
+
+	public int VictoryPoints { get; protected init; }
 
 	protected Card(string name, CardType type, int price, int addActions, int addBuys, int addCoins, int drawCards, bool isVictory, bool isTreasure, bool isAction, bool isReaction, bool isAttack, string message = null)
 	{
@@ -45,13 +47,12 @@ public abstract class Card
 		Message = message;
 	}
 
-	protected Card(string name, CardType type, int price, int addBuys, int victoryPoints, int coins, bool isVictory, bool isTreasure)
+	protected Card(string name, CardType type, int price, int addBuys, int coins, bool isVictory, bool isTreasure)
 	{
 		Name = name;
 		Type = type;
 		Price = price;
 		AddBuys = addBuys;
-		VictoryPoints = victoryPoints;
 		Coins = coins;
 		IsVictory = isVictory;
 		IsTreasure = isTreasure;
@@ -67,7 +68,9 @@ public abstract class Card
 		player.ps.Coins += AddCoins;
 		player.ps.Buys += AddBuys;
 		if (DrawCards != 0)
+		{
 			player.Draw(DrawCards);
+		}
 
 		ActionEffect(player);
 	}

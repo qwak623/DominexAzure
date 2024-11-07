@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace GameCore.Cards.Base;
+﻿namespace GameCore.Cards.Base;
 public class Remodel : Card
 {
 	private static Remodel remodel;
@@ -18,7 +16,11 @@ public class Remodel : Card
 		isAction: true,
 		isReaction: false,
 		isAttack: false
-	) => remodel = this;
+	)
+	{
+		remodel = this;
+		Description = "Trash a card from your hand. Gain a card costing up to $2 more than it.";
+	}
 
 	public static Remodel Get() => remodel ?? new Remodel();
 

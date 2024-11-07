@@ -16,7 +16,11 @@ public class Gardens : Card
 		isAction: false,
 		isReaction: false,
 		isAttack: false
-	) => gardens = this;
+	)
+	{
+		gardens = this;
+		Description = "Worth 1 VP per 10 cards you have (round down).";
+	}
 
 	public static Gardens Get() => gardens ?? new Gardens();
 

@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace GameCore.Cards.Base;
+﻿namespace GameCore.Cards.Base;
 public class Cellar : Card
 {
 	private static Cellar cellar;
@@ -17,9 +15,13 @@ public class Cellar : Card
 		isTreasure: false,
 		isAction: true,
 		isReaction: false,
-		isAttack: false,
-		message: "Discard any number of cards, then draw that many."
-	) => cellar = this;
+		isAttack: false
+	)
+	{
+		cellar = this;
+		Description = $"Discard any number of cards.{Environment.NewLine}+1 Card per card discarded.";
+		Message = "Discard any number of cards, then draw that many.";
+	}
 
 	public static Cellar Get() => cellar ?? new Cellar();
 

@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace GameCore.Cards.Base;
+﻿namespace GameCore.Cards.Base;
 public class CouncilRoom : Card
 {
 	private static CouncilRoom councilRoom;
@@ -18,7 +16,11 @@ public class CouncilRoom : Card
 		isAction: true,
 		isReaction: false,
 		isAttack: false
-	) => councilRoom = this;
+	)
+	{
+		councilRoom = this;
+		Description = "Each other player draws a card.";
+	}
 
 	public static CouncilRoom Get() => councilRoom ?? new CouncilRoom();
 

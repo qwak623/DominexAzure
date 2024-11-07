@@ -8,7 +8,6 @@ public class Silver : Card
 		type: CardType.Silver,
 		price: 3,
 		addBuys: 0,
-		victoryPoints: 0,
 		coins: 2,
 		isVictory: false,
 		isTreasure: true

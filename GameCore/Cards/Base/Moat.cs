@@ -17,7 +17,11 @@ public class Moat : Card
 		isAction: true,
 		isReaction: true,
 		isAttack: false
-	) => moat = this;
+	)
+	{
+		moat = this;
+		Description = "When another player plays an Attack card, you may first reveal this from your hand, to be unaffected by it.";
+	}
 
 	public static Moat Get() => moat ?? new Moat();
 

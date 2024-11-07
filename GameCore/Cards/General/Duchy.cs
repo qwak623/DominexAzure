@@ -9,11 +9,14 @@ public class Duchy : Card
 		type: CardType.Duchy,
 		price: 5,
 		addBuys: 0,
-		victoryPoints: 3,
 		coins: 0,
 		isVictory: true,
 		isTreasure: false
-	) => duchy = this;
+	)
+	{
+		duchy = this;
+		VictoryPoints = 3;
+	}
 
 	public static Duchy Get() => duchy ?? new Duchy();
 }

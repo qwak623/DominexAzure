@@ -17,9 +17,13 @@ public class ThroneRoom : Card
 		isTreasure: false,
 		isAction: true,
 		isReaction: false,
-		isAttack: false,
-		message: "You may play an Action card from your hand twice."
-	) => throneRoom = this;
+		isAttack: false
+	)
+	{
+		throneRoom = this;
+		Description = "You may play an Action card from your hand twice.";
+		Message = "You may play an Action card from your hand twice.";
+	}
 
 	public static ThroneRoom Get() => throneRoom ?? new ThroneRoom();
 

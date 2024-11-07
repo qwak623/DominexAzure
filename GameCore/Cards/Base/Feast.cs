@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using GameCore.GameCore;
+﻿using GameCore.GameCore;
 
 namespace GameCore.Cards.Base;
 public class Feast : Card
@@ -19,7 +18,11 @@ public class Feast : Card
 		isAction: true,
 		isReaction: false,
 		isAttack: false
-	) => feast = this;
+	)
+	{
+		feast = this;
+		Description = "Trash this card. Gain a card costing up to $5.";
+	}
 
 	public static Feast Get() => feast ?? new Feast();
 

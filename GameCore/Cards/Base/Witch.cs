@@ -17,7 +17,11 @@ public class Witch : Card
 		isAction: true,
 		isReaction: false,
 		isAttack: true
-	) => witch = this;
+	)
+	{
+		witch = this;
+		Description = "Each other player gains a Curse.";
+	}
 
 	public static Witch Get() => witch ?? new Witch();
 

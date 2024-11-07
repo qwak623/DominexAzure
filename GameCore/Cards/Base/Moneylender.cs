@@ -20,7 +20,11 @@ public class Moneylender : Card
 		isAction: true,
 		isReaction: false,
 		isAttack: false
-	) => moneylender = this;
+	)
+	{
+		moneylender = this;
+		Description = "You may trash a Copper from your hand for +$3.";
+	}
 
 	public static Moneylender Get() => moneylender ?? new Moneylender();
 

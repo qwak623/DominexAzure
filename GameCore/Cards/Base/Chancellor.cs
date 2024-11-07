@@ -15,9 +15,13 @@ public class Chancellor : Card
 		isTreasure: false,
 		isAction: true,
 		isReaction: false,
-		isAttack: false,
-		message: "You may immediately put your deck into your discard pile."
-	) => chancellor = this;
+		isAttack: false
+	)
+	{
+		chancellor = this;
+		Description = "You may immediately put your deck into your discard pile.";
+		Message = "You may immediately put your deck into your discard pile.";
+	}
 
 	public static Chancellor Get() => chancellor ?? new Chancellor();
 

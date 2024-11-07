@@ -17,9 +17,13 @@ public class Thief : Card
 		isTreasure: false,
 		isAction: true,
 		isReaction: false,
-		isAttack: true,
-		message: "Choose treasure to steal or trash."
-	) => thief = this;
+		isAttack: true
+	)
+	{
+		thief = this;
+		Description = $"Each other player reveals the top 2 cards of his deck.{Environment.NewLine}If they revealed any Treasure cards, they trash one of them that you choose. You may gain any or all of these trashed cards. They discard the other revealed cards.";
+		Message = "Choose treasure to steal or trash.";
+	}
 
 	public static Thief Get() => thief ?? new Thief();
 

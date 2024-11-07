@@ -18,9 +18,13 @@ public class Bureaucrat : Card
 		isTreasure: false,
 		isAction: true,
 		isReaction: false,
-		isAttack: true,
-		message: "Return card with victory points up to draw pile, if you have any."
-	) => bureaucrat = this;
+		isAttack: true
+	)
+	{
+		bureaucrat = this;
+		Description = "Gain a Silver onto your deck. Each other player reveals a Victory card from their hand and puts it onto their deck (or reveals a hand with no Victory cards).";
+		Message = "Return card with victory points up to draw pile, if you have any.";
+	}
 
 	public static Bureaucrat Get() => bureaucrat ?? new Bureaucrat();
 

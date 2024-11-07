@@ -8,7 +8,6 @@ public class Copper : Card
 		type: CardType.Copper,
 		price: 0,
 		addBuys: 0,
-		victoryPoints: 0,
 		coins: 1,
 		isVictory: false,
 		isTreasure: true

@@ -18,7 +18,11 @@ public class Workshop : Card
 		isAction: true,
 		isReaction: false,
 		isAttack: false
-	) => workshop = this;
+	)
+	{
+		workshop = this;
+		Description = "Gain a card costing up to $4.";
+	}
 
 	public static Workshop Get() => workshop ?? new Workshop();
 

@@ -17,9 +17,13 @@ public class Library : Card
 		isTreasure: false,
 		isAction: true,
 		isReaction: false,
-		isAttack: false,
-		message: "You may skip any action card you choose to."
-	) => library = this;
+		isAttack: false
+	)
+	{
+		library = this;
+		Description = "Draw until you have 7 cards in hand, skipping any Action cards you choose to; set those aside, discarding them afterwards.";
+		Message = "You may skip any action card you choose to.";
+	}
 
 	public static Library Get() => library ?? new Library();
 

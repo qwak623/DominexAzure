@@ -15,9 +15,13 @@ public class Militia : Card
 		isTreasure: false,
 		isAction: true,
 		isReaction: false,
-		isAttack: true,
-		message: "You have to discard down to 3 cards in your hand."
-	) => militia = this;
+		isAttack: true
+	)
+	{
+		militia = this;
+		Description = "Each other player discards down to 3 cards in hand.";
+		Message = "You have to discard down to 3 cards in your hand.";
+	}
 
 	public static Militia Get() => militia ?? new Militia();
 

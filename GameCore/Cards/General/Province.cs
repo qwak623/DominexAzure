@@ -8,11 +8,14 @@ public class Province : Card
 		type: CardType.Province,
 		price: 8,
 		addBuys: 0,
-		victoryPoints: 6,
 		coins: 0,
 		isVictory: true,
 		isTreasure: false
-	) => province = this;
+	)
+	{
+		province = this;
+		VictoryPoints = 6;
+	}
 
 	public static Province Get() => province ?? new Province();
 }

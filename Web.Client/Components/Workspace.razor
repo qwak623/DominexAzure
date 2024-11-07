@@ -3,7 +3,10 @@
     {
         foreach (var card in (Cards ?? new List<string>()))
         {
-            <HxButton Color="ThemeColor.Secondary" OnClick="() => SelectCard(card)">@card</HxButton>
+            <HxButton
+                Color="ThemeColor.Secondary"
+                OnClick="() => SelectCard(card)"
+                Text="@card"/>
         }
         <HxButton Color="ThemeColor.Secondary" OnClick="() => SelectCard(null)">None</HxButton>
     }

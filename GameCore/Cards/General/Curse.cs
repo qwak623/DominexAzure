@@ -9,11 +9,14 @@ public class Curse : Card
 		type: CardType.Curse,
 		price: 0,
 		addBuys: 0,
-		victoryPoints: -1,
 		coins: 0,
 		isVictory: true,
 		isTreasure: false
-	) => curse = this;
+	)
+	{
+		curse = this;
+		VictoryPoints = -1;
+	}
 
 	public static Curse Get() => curse ?? new Curse();
 }
