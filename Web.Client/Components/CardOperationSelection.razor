@@ -3,7 +3,7 @@
     <InputRadioGroup @bind-Value="CardAnswerModel.OperationType">
         @foreach (var operationType in CardChoiceModel.Operations)
         {
-            string id = CardIndex + "-" + operationType;
+            string id = CardAnswerModel.Index + "-" + operationType;
             <InputRadio id="@id" class="btn-check" Value="@operationType" />
             <label class="btn btn-outline-primary" for="@id">@operationType</label>
         }

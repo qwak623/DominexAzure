@@ -25,7 +25,7 @@ public class KingdomObserver : IKingdomObserver
 	{
 		var kingdomDto = kingdom.Select(pile =>
 		{
-			CardDto topCard = pile.Card is not null ? cardMapper.ToCardDto(pile.Card) : new CardDto();
+			CardDto topCard = pile.Card is not null ? cardMapper.ToCardDto(pile.Card, 0) : new CardDto();
 			topCard.Name = pile.Name;
 			topCard.Type = pile.Type.ToString();
 			topCard.Price = pile.Price;

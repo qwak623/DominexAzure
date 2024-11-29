@@ -1,7 +1,7 @@
 ﻿namespace Dominex.Contracts.Game;
 public class CardDto
 {
-	public int Id { get; set; }
+	public int Index { get; set; }
 	public string Name { get; set; }
 	public string Type { get; set; }
 	public string Description { get; set; }
@@ -13,5 +13,4 @@ public class CardDto
 	public int Coins { get; set; }
 	public int DrawCards { get; set; }
 	public int VictoryPoints { get; set; }
-
 }

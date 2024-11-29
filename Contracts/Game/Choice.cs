@@ -49,6 +49,7 @@ public enum ChoiceType
 	ThiefChoose,
 	ThiefSteal,
 	ThroneRoomPlay,
+	MineTrash,
 }
 
 public enum OperationType

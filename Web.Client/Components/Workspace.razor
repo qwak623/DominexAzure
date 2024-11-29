@@ -7,7 +7,7 @@
         {
             var item = Choice.Values[i];
             int j = i;
-            var model = new CardAnswerModel() { Card = item.Card };
+            var model = new CardAnswerModel() { Index = j };
             Answer.Values.Add(model);
             <div>
                 <CardTooltip CardDto="@item.Card">
@@ -15,12 +15,12 @@
                 </CardTooltip>
                 <EditForm Model="@model">
                     <HxButtonGroup>
-                        <CardOperationSelection CardChoiceModel="item" CardAnswerModel="model" CardIndex="j" />
+                        <CardOperationSelection CardChoiceModel="item" CardAnswerModel="model" />
                     </HxButtonGroup>
                 </EditForm>
             </div>
         }
 
-        <HxButton Color="ThemeColor.Secondary" OnClick="Submit">Submit</HxButton>
+        <HxButton CssClass="mt-1" Color="ThemeColor.Secondary" OnClick="Submit">Submit</HxButton>
     }
 </div>

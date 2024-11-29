@@ -4,5 +4,5 @@ using GameCore.Cards;
 namespace Dominex.Services.Game;
 public interface ICardMapper
 {
-	CardDto ToCardDto(Card card);
+	CardDto ToCardDto(Card card, int index);
 }

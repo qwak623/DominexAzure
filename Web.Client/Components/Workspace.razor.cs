@@ -13,7 +13,6 @@ public partial class Workspace
 
 	private async Task Submit()
 	{
-		// tohle je teoreticky zbytečné
 		Answer.Values = Answer.Values.Where(v => v.OperationType != OperationType.Default).ToList();
 
 		// TODO kontrola podmínek

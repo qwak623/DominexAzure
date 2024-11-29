@@ -6,6 +6,6 @@ public class Answer
 
 public class CardAnswerModel
 {
-	public CardDto Card { get; set; }
+	public int Index { get; set; }
 	public OperationType OperationType { get; set; }
 }

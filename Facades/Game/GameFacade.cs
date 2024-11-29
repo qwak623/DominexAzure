@@ -6,6 +6,7 @@ using GameCore;
 using GameCore.Cards;
 using GameCore.Observers;
 using Havit.Extensions.DependencyInjection.Abstractions;
+using Org.BouncyCastle.Crypto;
 
 namespace Dominex.Facades.Game;
 
@@ -174,24 +175,28 @@ public class GameFacade : IGameFacade
 				}
 			}
 
+			answerJob.Object.Values = answerJob.Object.Values.Where(v => v.OperationType != OperationType.Default).ToList();
+
 			// todo kontroly - extrahovat do metody
+
 			if (answerJob.Object.Values.Count < choice.MinNumberOfSelections)
 			{
 				throw new ArgumentOutOfRangeException($"Minimal count of cards with non-default operation is {choice.MinNumberOfSelections} but actual number is {answerJob.Object.Values.Count}.");
 			}
-			else if (answerJob.Object.Values.Count > choice.MaxNumberOfSelections)
+			if (answerJob.Object.Values.Count > choice.MaxNumberOfSelections)
 			{
-				throw new ArgumentOutOfRangeException($"Maximal  count of cards with non-default operation is {choice.MaxNumberOfSelections} but actual number is {answerJob.Object.Values.Count}.");
+				throw new ArgumentOutOfRangeException($"Maximal count of cards with non-default operation is {choice.MaxNumberOfSelections} but actual number is {answerJob.Object.Values.Count}.");
 			}
-
+			if (answerJob.Object.Values.Any(v => v.Index < 0 || v.Index >= choice.Values.Count))
+			{
+				throw new ArgumentOutOfRangeException($"Invalid index.");
+			}
 			foreach (var value in answerJob.Object.Values)
 			{
-				var correspondingChoice = choice.Values.SingleOrDefault(c => c.Card.Id == value.Card.Id)
-					?? throw new ArgumentException($"Chosen card {value.Card.Name} was not present in the options.");
-
+				var correspondingChoice = choice.Values[value.Index];
 				if (!correspondingChoice.Operations.Contains(value.OperationType))
 				{
-					throw new ArgumentException($"Chosen operation type {value.OperationType} for card {value.Card.Name} was not present in the options for this card.");
+					throw new ArgumentException($"Chosen operation type {value.OperationType} for card {correspondingChoice.Card.Name} was not present in the options for this card.");
 				}
 			}
 
@@ -200,32 +205,34 @@ public class GameFacade : IGameFacade
 
 		public override Card BureaucratPutOnTop(PlayerState ps, Kingdom k)
 		{
+			var cardSelection = ps.Hand.Where(c => c.IsVictory).ToList();
+
 			var answer = CallClient(new Choice
 			(
 				ChoiceType.BureaucratPutOnTop,
 				minNumberOfSelections: 1,
 				maxNumberOfSelections: 1,
-				cards: ps.Hand.Where(c => c.IsVictory).Select(cardMapper.ToCardDto),
+				cards: cardSelection.Select(cardMapper.ToCardDto),
 				operations: new List<OperationType> { OperationType.Default, OperationType.PutOnTop }
 			));
 
-			int cardId = answer.Values.Single(c => c.OperationType == OperationType.PutOnTop).Card.Id;
-			return ps.Hand.Single(ac => ac.Id == cardId);
+			return cardSelection[answer.Values.Single().Index];
 		}
 
 		public override List<Card> CellarDiscard(PlayerState ps, Kingdom k)
 		{
+			var cardSelection = ps.Hand;
+
 			var answer = CallClient(new Choice
 			(
 				ChoiceType.CellarDiscard,
 				minNumberOfSelections: 0,
-				maxNumberOfSelections: ps.Hand.Count,
-				cards: ps.Hand.Select(cardMapper.ToCardDto),
+				maxNumberOfSelections: ps.Hand.Count - 1, // todo lze discardnout cellar?
+				cards: cardSelection.Select(cardMapper.ToCardDto),
 				operations: new List<OperationType> { OperationType.Default, OperationType.Discard }
 			));
 
-			List<int> cardIds = answer.Values.Where(c => c.OperationType == OperationType.Discard).Select(c => c.Card.Id).ToList();
-			return ps.Hand.Where(c => cardIds.Contains(c.Id)).ToList();
+			return answer.Values.Select(c => cardSelection[c.Index]).ToList();
 		}
 
 		public override bool ChancellorDiscard(PlayerState ps, Kingdom k)
@@ -239,22 +246,23 @@ public class GameFacade : IGameFacade
 				operations: new List<OperationType> { OperationType.Default, OperationType.Discard }
 			));
 
-			return answer.Values.SingleOrDefault(v => v.OperationType == OperationType.Discard) is not null;
+			return answer.Values.Any();
 		}
 
 		public override List<Card> ChapelTrash(PlayerState ps, Kingdom k)
 		{
+			var cardSelection = ps.Hand;
+
 			var answer = CallClient(new Choice
 			(
 				ChoiceType.ChapelTrash,
 				minNumberOfSelections: 0,
-				maxNumberOfSelections: Math.Min(ps.Hand.Count, 4),
-				cards: ps.Hand.Select(cardMapper.ToCardDto),
+				maxNumberOfSelections: Math.Min(ps.Hand.Count, 4), // todo můžeme zahodit kapli?
+				cards: cardSelection.Select(cardMapper.ToCardDto),
 				operations: new List<OperationType> { OperationType.Default, OperationType.Trash }
 			));
 
-			List<int> cardIds = answer.Values.Where(c => c.OperationType == OperationType.Trash).Select(c => c.Card.Id).ToList();
-			return ps.Hand.Where(c => cardIds.Contains(c.Id)).ToList();
+			return answer.Values.Select(c => cardSelection[c.Index]).ToList();
 		}
 
 
@@ -265,87 +273,91 @@ public class GameFacade : IGameFacade
 				ChoiceType.LibrarySkip,
 				minNumberOfSelections: 0,
 				maxNumberOfSelections: 1,
-				cards: new List<CardDto>() { cardMapper.ToCardDto(c) },
+				cards: new List<CardDto>() { cardMapper.ToCardDto(c, -1) },
 				operations: new List<OperationType> { OperationType.Default, OperationType.Skip }
 			));
 
-			return answer.Values.SingleOrDefault(v => v.OperationType == OperationType.Skip) is not null;
+			return answer.Values.Any();
 		}
 
 		public override List<Card> MilitiaDiscard(PlayerState ps, Kingdom k, int discardCount)
 		{
+			var cardSelection = ps.Hand;
+
 			var answer = CallClient(new Choice
 			(
 				ChoiceType.MilitiaDiscard,
 				minNumberOfSelections: discardCount,
 				maxNumberOfSelections: discardCount,
-				cards: ps.Hand.Where(c => c.IsTreasure).Select(cardMapper.ToCardDto),
-				operations: new List<OperationType> { OperationType.Default, OperationType.Trash }
+				cards: cardSelection.Select(cardMapper.ToCardDto),
+				operations: new List<OperationType> { OperationType.Default, OperationType.Discard }
 			));
 
-			List<int> cardIds = answer.Values.Where(c => c.OperationType == OperationType.Discard).Select(c => c.Card.Id).ToList();
-			return ps.Hand.Where(c => cardIds.Contains(c.Id)).ToList();
+			return answer.Values.Select(c => cardSelection[c.Index]).ToList();
 		}
 
 		public override Card MineTrash(PlayerState ps, Kingdom k)
 		{
+			var cardSelection = ps.Hand.Where(c => c.IsTreasure).ToList();
 			var answer = CallClient(new Choice
 			(
-				ChoiceType.Play,
+				ChoiceType.MineTrash,
 				minNumberOfSelections: 0,
 				maxNumberOfSelections: 1,
-				cards: ps.Hand.Where(c => c.IsTreasure).Select(cardMapper.ToCardDto),
+				cards: cardSelection.Select(cardMapper.ToCardDto),
 				operations: new List<OperationType> { OperationType.Default, OperationType.Trash }
 			));
 
-			int? cardId = answer.Values.SingleOrDefault(c => c.OperationType == OperationType.Trash)?.Card?.Id;
-			return ps.Hand.SingleOrDefault(ac => ac.Id == cardId);
+			return answer.Values.Any() ? cardSelection[answer.Values.Single().Index] : null;
 		}
 
 		public override Card PlayCard(IEnumerable<Card> cards, PlayerState ps, Kingdom k, Phase phase, Card attackingCard = null)
 		{
+			var cardSelection = ps.Hand.Where(p => p.IsAction).ToList();
+
 			// todo je třeba vyřešit atacking card, asi ideálně přidat do choice
 			var answer = CallClient(new Choice
 			(
 				ChoiceType.Play,
 				minNumberOfSelections: 0,
 				maxNumberOfSelections: 1,
-				cards: ps.Hand.Select(cardMapper.ToCardDto),
+				cards: cardSelection.Select(cardMapper.ToCardDto),
 				operations: new List<OperationType> { OperationType.Default, OperationType.Play }
 			));
 
-			int? cardId = answer.Values.SingleOrDefault(c => c.OperationType == OperationType.Play)?.Card?.Id;
-			return ps.Hand.SingleOrDefault(ac => ac.Id == cardId);
+			return answer.Values.Any() ? cardSelection[answer.Values.Single().Index] : null;
 		}
 
 		public override Card RemodelTrash(PlayerState ps, Kingdom k)
 		{
+			var cardSelection = ps.Hand;
+
 			var answer = CallClient(new Choice
 			(
-				type: ChoiceType.RemodelTrash,
+				type: ChoiceType.RemodelTrash, // todo nemůžeme remodelovat sám sebe
 				minNumberOfSelections: 0, // todo - neodpovida description - opravit
 				maxNumberOfSelections: 1,
-				cards: ps.Hand.Select(cardMapper.ToCardDto),
+				cards: cardSelection.Select(cardMapper.ToCardDto),
 				operations: new List<OperationType> { OperationType.Default, OperationType.Trash }
 			));
 
-			int? cardId = answer.Values.SingleOrDefault(v => v.OperationType == OperationType.Trash)?.Card?.Id;
-			return ps.Hand.SingleOrDefault(ac => ac.Id == cardId);
+			return answer.Values.Any() ? cardSelection[answer.Values.Single().Index] : null;
 		}
 
 		public override Card SelectCardToGain(KingdomWrapper wrapper, PlayerState ps, Kingdom k, Phase phase)
 		{
+			var cardSelection = wrapper.AvailableCards.ToList();
+
 			var answer = CallClient(new Choice
 			(
 				type: ChoiceType.Buy,
 				minNumberOfSelections: 0,
 				maxNumberOfSelections: 1, // todo ps.Buys - více buyu najednou
-				cards: wrapper.AvailableCards.Select(cardMapper.ToCardDto),
+				cards: cardSelection.Select(cardMapper.ToCardDto),
 				operations: new List<OperationType> { OperationType.Default, OperationType.Buy }
 			));
 
-			int? cardId = answer.Values.SingleOrDefault(c => c.OperationType == OperationType.Buy)?.Card?.Id;
-			return wrapper.AvailableCards.SingleOrDefault(ac => ac.Id == cardId);
+			return answer.Values.Any() ? cardSelection[answer.Values.Single().Index] : null;
 		}
 
 		// todo lepší description - potřebujeme vědět, čí kartu zahazujeme
@@ -356,7 +368,7 @@ public class GameFacade : IGameFacade
 				type: ChoiceType.SpyDiscard,
 				minNumberOfSelections: 1,
 				maxNumberOfSelections: 1,
-				cards: new List<CardDto> { cardMapper.ToCardDto(c) },
+				cards: new List<CardDto> { cardMapper.ToCardDto(c, -1) },
 				operations: new List<OperationType> { OperationType.Discard, OperationType.PutOnTop }
 			));
 
@@ -366,17 +378,18 @@ public class GameFacade : IGameFacade
 
 		public override Card ThiefChoose(PlayerState ps, Kingdom k, IEnumerable<Card> cards)
 		{
+			var cardSelection = cards.ToList();
+
 			var answer = CallClient(new Choice
 			(
 				type: ChoiceType.ThiefChoose,
 				minNumberOfSelections: 1,
 				maxNumberOfSelections: 1,
-				cards: cards.Select(cardMapper.ToCardDto),
+				cards: cardSelection.Select(cardMapper.ToCardDto),
 				operations: new List<OperationType> { OperationType.Default, OperationType.Choose }
 			));
 
-			int cardId = answer.Values.Single(c => c.OperationType == OperationType.Choose).Card.Id;
-			return cards.Single(ac => ac.Id == cardId);
+			return cardSelection[answer.Values.Single().Index];
 		}
 
 		public override bool ThiefSteal(PlayerState ps, Kingdom k, Card c)
@@ -386,27 +399,27 @@ public class GameFacade : IGameFacade
 				type: ChoiceType.ThiefSteal,
 				minNumberOfSelections: 1,
 				maxNumberOfSelections: 1,
-				cards: new List<CardDto> { cardMapper.ToCardDto(c) },
+				cards: new List<CardDto> { cardMapper.ToCardDto(c, 0) },
 				operations: new List<OperationType> { OperationType.Trash, OperationType.Steal }
 			));
 
-			OperationType operationType = answer.Values.Single().OperationType;
-			return operationType == OperationType.Steal;
+			return answer.Values.Single().OperationType == OperationType.Steal;
 		}
 
 		public override Card ThroneRoomPlay(PlayerState ps, Kingdom k, IEnumerable<Card> cards)
 		{
+			var cardSelection = cards.ToList();
+
 			var answer = CallClient(new Choice
 			(
 				type: ChoiceType.ThroneRoomPlay,
 				minNumberOfSelections: 0,
 				maxNumberOfSelections: 1,
-				cards: cards.Select(cardMapper.ToCardDto),
+				cards: cardSelection.Select(cardMapper.ToCardDto),
 				operations: new List<OperationType> { OperationType.Default, OperationType.Play }
 			));
 
-			int? cardId = answer.Values.SingleOrDefault(c => c.OperationType == OperationType.Play)?.Card?.Id;
-			return cards.Single(ac => ac.Id == cardId);
+			return answer.Values.Any() ? cardSelection[answer.Values.Single().Index] : null;
 		}
 	}
 
@@ -446,7 +459,7 @@ public class GameFacade : IGameFacade
 
 		public override Card MineTrash(PlayerState ps, Kingdom k)
 		{
-			throw new NotImplementedException();
+			return null;
 		}
 
 		public override Card PlayCard(IEnumerable<Card> cards, PlayerState ps, Kingdom k, Phase phase, Card card = null)
@@ -456,7 +469,7 @@ public class GameFacade : IGameFacade
 
 		public override Card RemodelTrash(PlayerState ps, Kingdom k)
 		{
-			throw new NotImplementedException();
+			return null;
 		}
 
 		public override Card SelectCardToGain(KingdomWrapper wrapper, PlayerState ps, Kingdom k, Phase phase)
@@ -466,22 +479,22 @@ public class GameFacade : IGameFacade
 
 		public override bool SpyDiscard(PlayerState ps, Kingdom k, Card c, Phase p)
 		{
-			throw new NotImplementedException();
+			return false;
 		}
 
 		public override Card ThiefChoose(PlayerState ps, Kingdom k, IEnumerable<Card> cards)
 		{
-			throw new NotImplementedException();
+			return null;
 		}
 
 		public override bool ThiefSteal(PlayerState ps, Kingdom k, Card c)
 		{
-			throw new NotImplementedException();
+			return true;
 		}
 
 		public override Card ThroneRoomPlay(PlayerState ps, Kingdom k, IEnumerable<Card> cards)
 		{
-			throw new NotImplementedException();
+			return null;
 		}
 	}
 }
