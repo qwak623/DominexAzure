@@ -1,13 +1,26 @@
-﻿<div class="workspace">
-    @if (Cards is not null)
+﻿@using Dominex.Contracts.Game;
+
+<div class="workspace">
+    @if (Choice is not null)
     {
-        foreach (var card in (Cards ?? new List<string>()))
+        @for (int i = 0; i < Choice.Values.Count; i++)
         {
-            <HxButton
-                Color="ThemeColor.Secondary"
-                OnClick="() => SelectCard(card)"
-                Text="@card"/>
+            var item = Choice.Values[i];
+            int j = i;
+            var model = new CardAnswerModel() { Card = item.Card };
+            Answer.Values.Add(model);
+            <div>
+                <CardTooltip CardDto="@item.Card">
+                    <div class="card-in-hand mr-1">@item.Card.Name $@item.Card.Price</div>
+                </CardTooltip>
+                <EditForm Model="@model">
+                    <HxButtonGroup>
+                        <CardOperationSelection CardChoiceModel="item" CardAnswerModel="model" CardIndex="j" />
+                    </HxButtonGroup>
+                </EditForm>
+            </div>
         }
-        <HxButton Color="ThemeColor.Secondary" OnClick="() => SelectCard(null)">None</HxButton>
+
+        <HxButton Color="ThemeColor.Secondary" OnClick="Submit">Submit</HxButton>
     }
 </div>

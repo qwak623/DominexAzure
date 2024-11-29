@@ -1,6 +1,8 @@
 ﻿namespace GameCore.Cards;
 public class Pile
+
 {
+	// TODO zrefaktorovat, takhle bereme card místo top
 	private readonly Stack<Card> cards;
 	private readonly Action onGain;
 	private Card top;

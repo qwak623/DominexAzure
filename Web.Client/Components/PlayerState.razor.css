@@ -1,10 +1,15 @@
 ﻿.playerState {
-	height: 60px;
+	height: 65px;
 }
 .card-in-hand {
-	display: inline-flex;
-	flex-direction: column;
 	background-clip: border-box;
-	border: 1px solid rgba(0, 0, 0, 0.075);
-	border-radius: 0.5rem;
+	border: 2px solid rgb(0, 0, 0);
+	border-radius: 0,5rem;
+}
+
+.hand {
+	display: grid;
+	grid-auto-flow: column;
+	grid-column-gap: 10px;
+	grid-auto-columns: max-content;
 }

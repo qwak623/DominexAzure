@@ -8,7 +8,7 @@ public interface IGameFacade
 {
 	Task Start(CancellationToken cancellationToken = default);
 	Task<Choice> JoinGame(/*Dto<Guid> gameId,*/ Dto<int> playerId, CancellationToken cancellationToken = default);
-	Task<Choice> SelectCard(string card, CancellationToken cancellationToken = default);
+	Task<Choice> Submit(Answer answer, CancellationToken cancellationToken = default);
 	Task RequestKingdomNotification(CancellationToken cancellationToken = default);
 	Task RequestPlayerStateNotification(CancellationToken cancellationToken = default);
 }

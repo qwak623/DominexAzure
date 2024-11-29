@@ -1,10 +1,12 @@
 ﻿using Dominex.Contracts;
 using Dominex.Contracts.Game;
 using Dominex.Contracts.ServerApi;
+using Dominex.Services.Game;
 using GameCore;
 using GameCore.Cards;
 using GameCore.Observers;
 using Havit.Extensions.DependencyInjection.Abstractions;
+using Org.BouncyCastle.Crypto;
 
 namespace Dominex.Facades.Game;
 
@@ -15,9 +17,9 @@ public class GameFacade : IGameFacade
 	// todo zbavit se static věcí (singleton?)
 	private static GameCore.Game Game;
 
-	private static Job<Choice> choice = new();
+	private static Job<Choice> choiceJob = new();
 
-	private static Job<Answer> answer = new();
+	private static Job<Answer> answerJob = new();
 	private static State State;
 	private static List<Card> cards = new();
 	private ClientUser client;
@@ -29,12 +31,14 @@ public class GameFacade : IGameFacade
 
 	//private readonly IHubContext<LogHub> logHubContext;
 
-	public GameFacade(IGameLogger gameLogger, IKingdomObserver kingdomObserver, IPlayerStateObserver playerStateObserver)
+	public GameFacade(
+		IGameLogger gameLogger,
+		IKingdomObserver kingdomObserver,
+		IPlayerStateObserver playerStateObserver)
 	{
 		this.gameLogger = gameLogger;
 		this.kingdomObserver = kingdomObserver;
 		this.playerStateObserver = playerStateObserver;
-
 		client = new ClientUser(playerStateObserver);
 	}
 
@@ -99,34 +103,30 @@ public class GameFacade : IGameFacade
 		//if (tokenSource != null && tokenSource.Token.IsCancellationRequested)
 		//	throw new OperationCanceledException();
 
-		return Task.FromResult(choice.Object); // todo vymyslet jak toto může fungovat s async await
-		//}
+		return Task.FromResult(choiceJob.Object); // todo vymyslet jak toto může fungovat s async await
 	}
 
 	// todo možná budu chtít jeden interface možná ne
-	public Task<Choice> SelectCard(string card, CancellationToken cancellationToken = default)
+	public Task<Choice> Submit(Answer answer, CancellationToken cancellationToken = default)
 	{
-		lock (answer)
+		lock (answerJob)
 		{
-			answer.Object = new Answer
-			{
-				Card = cards.FirstOrDefault(c => c.Name == card)
-			};
-			answer.Done = true;
-			Monitor.Pulse(answer);
+			answerJob.Object = answer; // todo tohle je hloupe pojmenování
+			answerJob.Done = true;
+			Monitor.Pulse(answerJob);
 		}
 
-		lock (choice)
+		lock (choiceJob)
 		{
-			choice.Done = false;
+			choiceJob.Done = false;
 
-			while (!choice.Done)
+			while (!choiceJob.Done)
 			{
-				Monitor.Wait(choice);
+				Monitor.Wait(choiceJob);
 			}
 			//if (tokenSource != null && tokenSource.Token.IsCancellationRequested)
 			//	throw new OperationCanceledException();
-			return Task.FromResult(choice.Object);
+			return Task.FromResult(choiceJob.Object);
 		}
 	}
 
@@ -146,6 +146,7 @@ public class GameFacade : IGameFacade
 	public class ClientUser : GameCore.User
 	{
 		private readonly IPlayerStateObserver playerStateObserver;
+		private CardMapper cardMapper = new(); // todo tohle je hnus
 
 		public ClientUser(IPlayerStateObserver playerStateObserver)
 		{
@@ -196,7 +197,33 @@ public class GameFacade : IGameFacade
 
 		public override Card PlayCard(IEnumerable<Card> cards, PlayerState ps, Kingdom k, Phase phase, Card card = null)
 		{
-			throw new NotImplementedException();
+			lock (choiceJob)
+			{
+				choiceJob.Object = new Choice
+				(
+					ChoiceType.Play,
+					minNumberOfSelections: 0,
+					maxNumberOfSelections: 1,
+					cards: cards.Select(cardMapper.ToCardDto),
+					operations: new List<OperationType> { OperationType.Default, OperationType.Play }
+				);
+
+				choiceJob.Done = true;
+				Monitor.Pulse(choiceJob);
+			}
+
+			lock (answerJob)
+			{
+				answerJob.Done = false;
+
+				while (!answerJob.Done)
+				{
+					Monitor.Wait(answerJob);
+				}
+
+				string cardName = answerJob.Object.Values.SingleOrDefault(c => c.OperationType == OperationType.Play)?.Card?.Name;
+				return cards.SingleOrDefault(ac => ac.Name == cardName);
+			}
 		}
 
 		public override Card RemodelTrash(PlayerState ps, Kingdom k)
@@ -206,37 +233,70 @@ public class GameFacade : IGameFacade
 
 		public override Card SelectCardToGain(KingdomWrapper wrapper, PlayerState ps, Kingdom k, Phase phase)
 		{
-			lock (choice)
+			lock (choiceJob)
 			{
-				choice.Object = new Choice
-				{
-					Cards = wrapper.AvailableCards.Select(c => c.Name).ToList()
-				};
+				choiceJob.Object = new Choice
+				(
+					type: ChoiceType.Buy,
+					minNumberOfSelections: 0,
+					maxNumberOfSelections: 1, // todo ps.Buys
+					cards: wrapper.AvailableCards.Select(cardMapper.ToCardDto),
+					operations: new List<OperationType> { OperationType.Default, OperationType.Buy }
+				);
 
-				State = new State { };
-
-				choice.Done = true;
-				Monitor.Pulse(choice);
+				choiceJob.Done = true;
+				Monitor.Pulse(choiceJob);
 			}
 
-			lock (answer)
+			lock (answerJob)
 			{
-				answer.Done = false;
-				cards = wrapper.AvailableCards.ToList();
+				answerJob.Done = false;
+				//cards = wrapper.AvailableCards.ToList();
 
-				while (!answer.Done)
+				while (!answerJob.Done)
 				{
-					Monitor.Wait(answer);
+					Monitor.Wait(answerJob);
 				}
-				//if (tokenSource != null && tokenSource.Token.IsCancellationRequested)
-				//	throw new OperationCanceledException();
-				return answer.Object.Card;
+
+				// todo kontrola správnosti?
+				//assert answerJob.Object.Values.Count <= 1;
+
+				string cardName = answerJob.Object.Values.SingleOrDefault(c => c.OperationType == OperationType.Buy)?.Card?.Name;
+				return wrapper.AvailableCards.SingleOrDefault(ac => ac.Name == cardName);
 			}
 		}
 
+		// todo lepší description - potřebujeme vědět, čí kartu zahazujeme
 		public override bool SpyDiscard(PlayerState ps, Kingdom k, Card c, Phase p)
 		{
-			throw new NotImplementedException();
+			lock (choiceJob)
+			{
+				choiceJob.Object = new Choice
+				(
+					type: ChoiceType.SpyDiscard,
+					minNumberOfSelections: 1,
+					maxNumberOfSelections: 1,
+					cards: new List<CardDto> { cardMapper.ToCardDto(c) },
+					operations: new List<OperationType> { OperationType.Discard, OperationType.PutOnTop }
+				);
+
+				choiceJob.Done = true;
+				Monitor.Pulse(choiceJob);
+			}
+
+			lock (answerJob)
+			{
+				answerJob.Done = false;
+
+				while (!answerJob.Done)
+				{
+					Monitor.Wait(answerJob);
+				}
+
+				// TODO kontrola
+				OperationType operationType = answerJob.Object.Values.Single().OperationType;
+				return operationType == OperationType.Discard;
+			}
 		}
 
 		public override Card ThiefChoose(PlayerState ps, Kingdom k, IEnumerable<Card> cards)

@@ -1,15 +1,23 @@
-﻿using Dominex.Contracts.ServerApi;
+﻿using Dominex.Contracts.Game;
+using Dominex.Contracts.ServerApi;
 using Microsoft.AspNetCore.Components;
 
 namespace Dominex.Web.Client.Components;
 
 public partial class Workspace
 {
-	[Parameter] public List<string> Cards { get; set; }
+	[Parameter] public Choice Choice { get; set; }
 	[Inject] protected IGameFacade GameFacade { get; set; }
 
-	private async Task SelectCard(string cardName)
+	private Answer Answer { get; set; } = new();
+
+	private async Task Submit()
 	{
-		Cards = (await GameFacade.SelectCard(cardName)).Cards;
+		// tohle je teoreticky zbytečné
+		Answer.Values = Answer.Values.Where(v => v.OperationType != OperationType.Default).ToList();
+
+		// TODO kontrola podmínek
+		Choice = await GameFacade.Submit(Answer);
+		Answer = new Answer();
 	}
 }

@@ -7,13 +7,15 @@
         <span>Buys: @PlayerStateDto?.Buys</span>
         <span>Coins: @PlayerStateDto?.Coins</span>
     </div>
-    <div>
+    <div class="hand">
         <span>Hand: </span>
         @if (PlayerStateDto is not null)
         {
             foreach (var card in PlayerStateDto.Hand)
             {
-                <div class="card-in-hand mr-1">@card.CardName $@card.Price</div>
+                <CardTooltip CardDto="@card">
+                    <div class="card-in-hand mr-1">@card.Name $@card.Price</div>
+                </CardTooltip>
             }
         }
     </div>

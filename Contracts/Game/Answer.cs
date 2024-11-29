@@ -1,7 +1,11 @@
-﻿using GameCore.Cards;
-
-namespace Dominex.Contracts.Game;
+﻿namespace Dominex.Contracts.Game;
 public class Answer
 {
-	public Card Card { get; set; }
+	public List<CardAnswerModel> Values { get; set; } = new();
+}
+
+public class CardAnswerModel
+{
+	public CardDto Card { get; set; }
+	public OperationType OperationType { get; set; }
 }

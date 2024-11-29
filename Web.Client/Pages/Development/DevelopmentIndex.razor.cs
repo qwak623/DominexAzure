@@ -1,4 +1,5 @@
 ﻿using Dominex.Contracts;
+using Dominex.Contracts.Game;
 using Dominex.Contracts.ServerApi;
 using Microsoft.AspNetCore.Components;
 
@@ -9,16 +10,15 @@ public partial class DevelopmentIndex
 	[Inject] protected IGameFacade GameFacade { get; set; }
 	//[Inject] protected NavigationManager Navigation { get; set; }
 
-	private List<string> Cards { get; set; } = new List<string>();
+	private Choice Choice { get; set; }
 
 	protected override async Task OnInitializedAsync()
 	{
 		await base.OnInitializedAsync();
 
-		var choice = await GameFacade?.JoinGame(/*Dto.FromValue(new Guid()), */Dto.FromValue(1));
-		Cards = choice.Cards;
+		Choice = await GameFacade?.JoinGame(/*Dto.FromValue(new Guid()), */Dto.FromValue(1));
 	}
-	
+
 	private async Task Click()
 	{
 		// todo cards nebudou na této stránce
