@@ -24,7 +24,7 @@ public abstract class User
 	#region cards base
 	public abstract List<Card> CellarDiscard(PlayerState ps, Kingdom k);
 
-	public abstract Card BureaucratDiscard(PlayerState ps, Kingdom k);
+	public abstract Card BureaucratPutOnTop(PlayerState ps, Kingdom k);
 
 	public abstract bool ChancellorDiscard(PlayerState ps, Kingdom k);
 

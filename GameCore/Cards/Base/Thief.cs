@@ -36,9 +36,10 @@ public class Thief : Card
 		// if there are treasure cards
 		if (treasures.Count() > 0)
 		{
-			// attacker have to pick one
+			// TODO sjednotit thief choose a thief steal
+			// attacker has to pick one
 			var card = attacker.User.ThiefChoose(attacker.ps, attacker.Game.Kingdom, treasures);
-			// the other one is discarded (if there is)
+			// the other one is discarded (if there is one)
 			cards.Remove(card);
 
 			var otherCard = cards.SingleOrDefault();

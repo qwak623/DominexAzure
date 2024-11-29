@@ -11,6 +11,7 @@ public class CardMapper : ICardMapper
 	{
 		return new CardDto
 		{
+			Id = card.Id,
 			Name = card.Name,
 			Type = card.Type.ToString(),
 			Description = card.Description,

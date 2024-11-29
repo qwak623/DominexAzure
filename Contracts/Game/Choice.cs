@@ -39,6 +39,16 @@ public enum ChoiceType
 	Buy,
 	Play,
 	SpyDiscard,
+	MilitiaDiscard,
+	RemodelTrash,
+	ChapelTrash,
+	BureaucratPutOnTop,
+	CellarDiscard,
+	ChancellorDiscard,
+	LibrarySkip,
+	ThiefChoose,
+	ThiefSteal,
+	ThroneRoomPlay,
 }
 
 public enum OperationType
@@ -50,4 +60,6 @@ public enum OperationType
 	Steal,
 	Play,
 	PutOnTop,
+	Skip,
+	Choose,
 }

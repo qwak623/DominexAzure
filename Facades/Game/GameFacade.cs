@@ -19,8 +19,6 @@ public class GameFacade : IGameFacade
 	private static Job<Choice> choiceJob = new();
 
 	private static Job<Answer> answerJob = new();
-	private static State State;
-	private static List<Card> cards = new();
 	private ClientUser client;
 	private static Kingdom kingdom;
 
@@ -139,7 +137,7 @@ public class GameFacade : IGameFacade
 
 	public async Task RequestPlayerStateNotification(CancellationToken cancellationToken = default)
 	{
-		await Task.Run(() => Game.RequestPlayerNotifications(), cancellationToken);
+		await Task.Run(Game.RequestPlayerNotifications, cancellationToken);
 	}
 
 	public class ClientUser : GameCore.User
@@ -156,8 +154,9 @@ public class GameFacade : IGameFacade
 		{
 			return playerStateObserver;
 		}
+		public override string GetName() => "Todo Name";
 
-		public T LockTemplate<T>(Choice choice, Func<Answer, T> answerFunc)
+		private Answer CallClient(Choice choice)
 		{
 			lock (choiceJob)
 			{
@@ -173,186 +172,247 @@ public class GameFacade : IGameFacade
 				{
 					Monitor.Wait(answerJob);
 				}
-
-				// todo chtělo by to tady udělat kontroly range
-				if (answerJob.Object.Values.Count < choice.MinNumberOfSelections)
-				{
-					throw new ArgumentOutOfRangeException($"Minimal count of cards with non-default operation is {choice.MinNumberOfSelections} but actual number is {answerJob.Object.Values.Count}.");
-				}
-				else if (answerJob.Object.Values.Count > choice.MaxNumberOfSelections)
-				{
-					throw new ArgumentOutOfRangeException($"Maximal  count of cards with non-default operation is {choice.MaxNumberOfSelections} but actual number is {answerJob.Object.Values.Count}.");
-				}
-
-				foreach (var value in answerJob.Object.Values)
-				{
-					var correspondingChoice = choice.Values.SingleOrDefault(c => c.Card.Name == value.Card.Name)
-						?? throw new ArgumentException($"Chosen card {value.Card.Name} was not present in the options.");
-
-					if (!correspondingChoice.Operations.Contains(value.OperationType))
-					{
-						throw new ArgumentException($"Chosen operation type {value.OperationType} for card {value.Card.Name} was not present in the options for this card.");
-					}
-				}
-
-				return answerFunc(answerJob.Object);
 			}
+
+			// todo kontroly - extrahovat do metody
+			if (answerJob.Object.Values.Count < choice.MinNumberOfSelections)
+			{
+				throw new ArgumentOutOfRangeException($"Minimal count of cards with non-default operation is {choice.MinNumberOfSelections} but actual number is {answerJob.Object.Values.Count}.");
+			}
+			else if (answerJob.Object.Values.Count > choice.MaxNumberOfSelections)
+			{
+				throw new ArgumentOutOfRangeException($"Maximal  count of cards with non-default operation is {choice.MaxNumberOfSelections} but actual number is {answerJob.Object.Values.Count}.");
+			}
+
+			foreach (var value in answerJob.Object.Values)
+			{
+				var correspondingChoice = choice.Values.SingleOrDefault(c => c.Card.Id == value.Card.Id)
+					?? throw new ArgumentException($"Chosen card {value.Card.Name} was not present in the options.");
+
+				if (!correspondingChoice.Operations.Contains(value.OperationType))
+				{
+					throw new ArgumentException($"Chosen operation type {value.OperationType} for card {value.Card.Name} was not present in the options for this card.");
+				}
+			}
+
+			return answerJob.Object;
 		}
 
-		public override Card BureaucratDiscard(PlayerState ps, Kingdom k)
+		public override Card BureaucratPutOnTop(PlayerState ps, Kingdom k)
 		{
-			throw new NotImplementedException();
+			var answer = CallClient(new Choice
+			(
+				ChoiceType.BureaucratPutOnTop,
+				minNumberOfSelections: 1,
+				maxNumberOfSelections: 1,
+				cards: ps.Hand.Where(c => c.IsVictory).Select(cardMapper.ToCardDto),
+				operations: new List<OperationType> { OperationType.Default, OperationType.PutOnTop }
+			));
+
+			int cardId = answer.Values.Single(c => c.OperationType == OperationType.PutOnTop).Card.Id;
+			return ps.Hand.Single(ac => ac.Id == cardId);
 		}
 
 		public override List<Card> CellarDiscard(PlayerState ps, Kingdom k)
 		{
-			throw new NotImplementedException();
+			var answer = CallClient(new Choice
+			(
+				ChoiceType.CellarDiscard,
+				minNumberOfSelections: 0,
+				maxNumberOfSelections: ps.Hand.Count,
+				cards: ps.Hand.Select(cardMapper.ToCardDto),
+				operations: new List<OperationType> { OperationType.Default, OperationType.Discard }
+			));
+
+			List<int> cardIds = answer.Values.Where(c => c.OperationType == OperationType.Discard).Select(c => c.Card.Id).ToList();
+			return ps.Hand.Where(c => cardIds.Contains(c.Id)).ToList();
 		}
 
 		public override bool ChancellorDiscard(PlayerState ps, Kingdom k)
 		{
-			throw new NotImplementedException();
+			var answer = CallClient(new Choice
+			(
+				ChoiceType.ChancellorDiscard,
+				minNumberOfSelections: 0,
+				maxNumberOfSelections: 1,
+				cards: new List<CardDto>() { null },
+				operations: new List<OperationType> { OperationType.Default, OperationType.Discard }
+			));
+
+			return answer.Values.SingleOrDefault(v => v.OperationType == OperationType.Discard) is not null;
 		}
 
 		public override List<Card> ChapelTrash(PlayerState ps, Kingdom k)
 		{
-			throw new NotImplementedException();
+			var answer = CallClient(new Choice
+			(
+				ChoiceType.ChapelTrash,
+				minNumberOfSelections: 0,
+				maxNumberOfSelections: Math.Min(ps.Hand.Count, 4),
+				cards: ps.Hand.Select(cardMapper.ToCardDto),
+				operations: new List<OperationType> { OperationType.Default, OperationType.Trash }
+			));
+
+			List<int> cardIds = answer.Values.Where(c => c.OperationType == OperationType.Trash).Select(c => c.Card.Id).ToList();
+			return ps.Hand.Where(c => cardIds.Contains(c.Id)).ToList();
 		}
 
-		public override string GetName() => "Todo Name";
 
 		public override bool LibrarySkip(PlayerState ps, Kingdom k, Card c)
 		{
-			throw new NotImplementedException();
+			var answer = CallClient(new Choice
+			(
+				ChoiceType.LibrarySkip,
+				minNumberOfSelections: 0,
+				maxNumberOfSelections: 1,
+				cards: new List<CardDto>() { cardMapper.ToCardDto(c) },
+				operations: new List<OperationType> { OperationType.Default, OperationType.Skip }
+			));
+
+			return answer.Values.SingleOrDefault(v => v.OperationType == OperationType.Skip) is not null;
 		}
 
 		public override List<Card> MilitiaDiscard(PlayerState ps, Kingdom k, int discardCount)
 		{
-			throw new NotImplementedException();
+			var answer = CallClient(new Choice
+			(
+				ChoiceType.MilitiaDiscard,
+				minNumberOfSelections: discardCount,
+				maxNumberOfSelections: discardCount,
+				cards: ps.Hand.Where(c => c.IsTreasure).Select(cardMapper.ToCardDto),
+				operations: new List<OperationType> { OperationType.Default, OperationType.Trash }
+			));
+
+			List<int> cardIds = answer.Values.Where(c => c.OperationType == OperationType.Discard).Select(c => c.Card.Id).ToList();
+			return ps.Hand.Where(c => cardIds.Contains(c.Id)).ToList();
 		}
 
 		public override Card MineTrash(PlayerState ps, Kingdom k)
 		{
-			throw new NotImplementedException();
-		}
-
-		public override Card PlayCard(IEnumerable<Card> cards, PlayerState ps, Kingdom k, Phase phase, Card card = null)
-		{
-			return LockTemplate(new Choice
+			var answer = CallClient(new Choice
 			(
 				ChoiceType.Play,
 				minNumberOfSelections: 0,
 				maxNumberOfSelections: 1,
-				cards: cards.Select(cardMapper.ToCardDto),
+				cards: ps.Hand.Where(c => c.IsTreasure).Select(cardMapper.ToCardDto),
+				operations: new List<OperationType> { OperationType.Default, OperationType.Trash }
+			));
+
+			int? cardId = answer.Values.SingleOrDefault(c => c.OperationType == OperationType.Trash)?.Card?.Id;
+			return ps.Hand.SingleOrDefault(ac => ac.Id == cardId);
+		}
+
+		public override Card PlayCard(IEnumerable<Card> cards, PlayerState ps, Kingdom k, Phase phase, Card attackingCard = null)
+		{
+			// todo je třeba vyřešit atacking card, asi ideálně přidat do choice
+			var answer = CallClient(new Choice
+			(
+				ChoiceType.Play,
+				minNumberOfSelections: 0,
+				maxNumberOfSelections: 1,
+				cards: ps.Hand.Select(cardMapper.ToCardDto),
 				operations: new List<OperationType> { OperationType.Default, OperationType.Play }
-			), answer =>
-			{
-				string cardName = answer.Values.SingleOrDefault(c => c.OperationType == OperationType.Play)?.Card?.Name;
-				return cards.SingleOrDefault(ac => ac.Name == cardName);
-			});
+			));
 
-			//lock (choiceJob)
-			//{
-			//	choiceJob.Object = new Choice
-			//	(
-			//		ChoiceType.Play,
-			//		minNumberOfSelections: 0,
-			//		maxNumberOfSelections: 1,
-			//		cards: cards.Select(cardMapper.ToCardDto),
-			//		operations: new List<OperationType> { OperationType.Default, OperationType.Play }
-			//	);
-
-			//	choiceJob.Done = true;
-			//	Monitor.Pulse(choiceJob);
-			//}
-
-			//lock (answerJob)
-			//{
-			//	answerJob.Done = false;
-
-			//	while (!answerJob.Done)
-			//	{
-			//		Monitor.Wait(answerJob);
-			//	}
-
-			//	string cardName = answerJob.Object.Values.SingleOrDefault(c => c.OperationType == OperationType.Play)?.Card?.Name;
-			//	return cards.SingleOrDefault(ac => ac.Name == cardName);
-			//}
+			int? cardId = answer.Values.SingleOrDefault(c => c.OperationType == OperationType.Play)?.Card?.Id;
+			return ps.Hand.SingleOrDefault(ac => ac.Id == cardId);
 		}
 
 		public override Card RemodelTrash(PlayerState ps, Kingdom k)
 		{
-			throw new NotImplementedException();
+			var answer = CallClient(new Choice
+			(
+				type: ChoiceType.RemodelTrash,
+				minNumberOfSelections: 0, // todo - neodpovida description - opravit
+				maxNumberOfSelections: 1,
+				cards: ps.Hand.Select(cardMapper.ToCardDto),
+				operations: new List<OperationType> { OperationType.Default, OperationType.Trash }
+			));
+
+			int? cardId = answer.Values.SingleOrDefault(v => v.OperationType == OperationType.Trash)?.Card?.Id;
+			return ps.Hand.SingleOrDefault(ac => ac.Id == cardId);
 		}
 
 		public override Card SelectCardToGain(KingdomWrapper wrapper, PlayerState ps, Kingdom k, Phase phase)
 		{
-			return LockTemplate(new Choice
+			var answer = CallClient(new Choice
 			(
 				type: ChoiceType.Buy,
 				minNumberOfSelections: 0,
-				maxNumberOfSelections: 1, // todo ps.Buys
+				maxNumberOfSelections: 1, // todo ps.Buys - více buyu najednou
 				cards: wrapper.AvailableCards.Select(cardMapper.ToCardDto),
 				operations: new List<OperationType> { OperationType.Default, OperationType.Buy }
-			), answer =>
-			{
-				string cardName = answer.Values.SingleOrDefault(c => c.OperationType == OperationType.Buy)?.Card?.Name;
-				return wrapper.AvailableCards.SingleOrDefault(ac => ac.Name == cardName);
-			});
+			));
+
+			int? cardId = answer.Values.SingleOrDefault(c => c.OperationType == OperationType.Buy)?.Card?.Id;
+			return wrapper.AvailableCards.SingleOrDefault(ac => ac.Id == cardId);
 		}
 
 		// todo lepší description - potřebujeme vědět, čí kartu zahazujeme
 		public override bool SpyDiscard(PlayerState ps, Kingdom k, Card c, Phase p)
 		{
-			lock (choiceJob)
-			{
-				choiceJob.Object = new Choice
-				(
-					type: ChoiceType.SpyDiscard,
-					minNumberOfSelections: 1,
-					maxNumberOfSelections: 1,
-					cards: new List<CardDto> { cardMapper.ToCardDto(c) },
-					operations: new List<OperationType> { OperationType.Discard, OperationType.PutOnTop }
-				);
+			var answer = CallClient(new Choice
+			(
+				type: ChoiceType.SpyDiscard,
+				minNumberOfSelections: 1,
+				maxNumberOfSelections: 1,
+				cards: new List<CardDto> { cardMapper.ToCardDto(c) },
+				operations: new List<OperationType> { OperationType.Discard, OperationType.PutOnTop }
+			));
 
-				choiceJob.Done = true;
-				Monitor.Pulse(choiceJob);
-			}
-
-			lock (answerJob)
-			{
-				answerJob.Done = false;
-
-				while (!answerJob.Done)
-				{
-					Monitor.Wait(answerJob);
-				}
-
-				// TODO kontrola
-				OperationType operationType = answerJob.Object.Values.Single().OperationType;
-				return operationType == OperationType.Discard;
-			}
+			OperationType operationType = answer.Values.Single().OperationType;
+			return operationType == OperationType.Discard;
 		}
 
 		public override Card ThiefChoose(PlayerState ps, Kingdom k, IEnumerable<Card> cards)
 		{
-			throw new NotImplementedException();
+			var answer = CallClient(new Choice
+			(
+				type: ChoiceType.ThiefChoose,
+				minNumberOfSelections: 1,
+				maxNumberOfSelections: 1,
+				cards: cards.Select(cardMapper.ToCardDto),
+				operations: new List<OperationType> { OperationType.Default, OperationType.Choose }
+			));
+
+			int cardId = answer.Values.Single(c => c.OperationType == OperationType.Choose).Card.Id;
+			return cards.Single(ac => ac.Id == cardId);
 		}
 
 		public override bool ThiefSteal(PlayerState ps, Kingdom k, Card c)
 		{
-			throw new NotImplementedException();
+			var answer = CallClient(new Choice
+			(
+				type: ChoiceType.ThiefSteal,
+				minNumberOfSelections: 1,
+				maxNumberOfSelections: 1,
+				cards: new List<CardDto> { cardMapper.ToCardDto(c) },
+				operations: new List<OperationType> { OperationType.Trash, OperationType.Steal }
+			));
+
+			OperationType operationType = answer.Values.Single().OperationType;
+			return operationType == OperationType.Steal;
 		}
 
 		public override Card ThroneRoomPlay(PlayerState ps, Kingdom k, IEnumerable<Card> cards)
 		{
-			throw new NotImplementedException();
+			var answer = CallClient(new Choice
+			(
+				type: ChoiceType.ThroneRoomPlay,
+				minNumberOfSelections: 0,
+				maxNumberOfSelections: 1,
+				cards: cards.Select(cardMapper.ToCardDto),
+				operations: new List<OperationType> { OperationType.Default, OperationType.Play }
+			));
+
+			int? cardId = answer.Values.SingleOrDefault(c => c.OperationType == OperationType.Play)?.Card?.Id;
+			return cards.Single(ac => ac.Id == cardId);
 		}
 	}
 
 	public class RandomUser : GameCore.User
 	{
-		public override Card BureaucratDiscard(PlayerState ps, Kingdom k)
+		public override Card BureaucratPutOnTop(PlayerState ps, Kingdom k)
 		{
 			return ps.Hand.FirstOrDefault();
 		}
@@ -424,5 +484,4 @@ public class GameFacade : IGameFacade
 			throw new NotImplementedException();
 		}
 	}
-
 }

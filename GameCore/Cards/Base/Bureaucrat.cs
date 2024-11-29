@@ -32,9 +32,13 @@ public class Bureaucrat : Card
 
 	public override void Attack(Player def, Player att)
 	{
+		// TODO REVEAL hand with no victory cards
 		if (!def.ps.Hand.Any(c => c.IsVictory))
+		{
 			return;
-		var card = def.User.BureaucratDiscard(def.ps, def.Game.Kingdom);
+		}
+
+		var card = def.User.BureaucratPutOnTop(def.ps, def.Game.Kingdom);
 		def.ReturnToDrawPile(card);
 	}
 }

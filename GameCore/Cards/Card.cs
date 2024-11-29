@@ -8,6 +8,7 @@ namespace GameCore.Cards;
 
 public abstract class Card
 {
+	public readonly int Id;
 	public readonly string Name;
 	public readonly CardType Type;
 	public readonly int Price;
@@ -30,8 +31,11 @@ public abstract class Card
 
 	public int VictoryPoints { get; protected init; }
 
+	private static int idBase = 0;
+
 	protected Card(string name, CardType type, int price, int addActions, int addBuys, int addCoins, int drawCards, bool isVictory, bool isTreasure, bool isAction, bool isReaction, bool isAttack, string message = null)
 	{
+		Id = idBase++;
 		Name = name;
 		Type = type;
 		Price = price;
