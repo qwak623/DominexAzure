@@ -13,11 +13,6 @@ using Dominex.Web.Client.Infrastructure.Security;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Dominex.Facades.Game;
-using Dominex.Contracts.Game.ClientApi;
 
 namespace Dominex.Web.Client;
 
@@ -61,7 +56,6 @@ public class Program
 	private static void AddGrpcClient(WebAssemblyHostBuilder builder)
 	{
 		builder.Services.AddTransient<IOperationFailedExceptionGrpcClientListener, HxMessengerOperationFailedExceptionGrpcClientListener>();
-		builder.Services.AddTransient<IGameLogFacade, GameLogListener>(); // todo bude reverse grpc fungovat?
 		builder.Services.AddTransient<AuthorizationGrpcClientInterceptor>();
 		builder.Services.AddGrpcClientInfrastructure(assemblyToScanForDataContracts: typeof(Dto).Assembly);
 		builder.Services.AddGrpcClientsByApiContractAttributes(
