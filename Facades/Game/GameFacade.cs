@@ -6,7 +6,6 @@ using GameCore;
 using GameCore.Cards;
 using GameCore.Observers;
 using Havit.Extensions.DependencyInjection.Abstractions;
-using Org.BouncyCastle.Crypto;
 
 namespace Dominex.Facades.Game;
 
@@ -158,6 +157,48 @@ public class GameFacade : IGameFacade
 			return playerStateObserver;
 		}
 
+		public T LockTemplate<T>(Choice choice, Func<Answer, T> answerFunc)
+		{
+			lock (choiceJob)
+			{
+				choiceJob.Object = choice;
+				choiceJob.Done = true;
+				Monitor.Pulse(choiceJob);
+			}
+
+			lock (answerJob)
+			{
+				answerJob.Done = false;
+				while (!answerJob.Done)
+				{
+					Monitor.Wait(answerJob);
+				}
+
+				// todo chtělo by to tady udělat kontroly range
+				if (answerJob.Object.Values.Count < choice.MinNumberOfSelections)
+				{
+					throw new ArgumentOutOfRangeException($"Minimal count of cards with non-default operation is {choice.MinNumberOfSelections} but actual number is {answerJob.Object.Values.Count}.");
+				}
+				else if (answerJob.Object.Values.Count > choice.MaxNumberOfSelections)
+				{
+					throw new ArgumentOutOfRangeException($"Maximal  count of cards with non-default operation is {choice.MaxNumberOfSelections} but actual number is {answerJob.Object.Values.Count}.");
+				}
+
+				foreach (var value in answerJob.Object.Values)
+				{
+					var correspondingChoice = choice.Values.SingleOrDefault(c => c.Card.Name == value.Card.Name)
+						?? throw new ArgumentException($"Chosen card {value.Card.Name} was not present in the options.");
+
+					if (!correspondingChoice.Operations.Contains(value.OperationType))
+					{
+						throw new ArgumentException($"Chosen operation type {value.OperationType} for card {value.Card.Name} was not present in the options for this card.");
+					}
+				}
+
+				return answerFunc(answerJob.Object);
+			}
+		}
+
 		public override Card BureaucratDiscard(PlayerState ps, Kingdom k)
 		{
 			throw new NotImplementedException();
@@ -197,33 +238,46 @@ public class GameFacade : IGameFacade
 
 		public override Card PlayCard(IEnumerable<Card> cards, PlayerState ps, Kingdom k, Phase phase, Card card = null)
 		{
-			lock (choiceJob)
+			return LockTemplate(new Choice
+			(
+				ChoiceType.Play,
+				minNumberOfSelections: 0,
+				maxNumberOfSelections: 1,
+				cards: cards.Select(cardMapper.ToCardDto),
+				operations: new List<OperationType> { OperationType.Default, OperationType.Play }
+			), answer =>
 			{
-				choiceJob.Object = new Choice
-				(
-					ChoiceType.Play,
-					minNumberOfSelections: 0,
-					maxNumberOfSelections: 1,
-					cards: cards.Select(cardMapper.ToCardDto),
-					operations: new List<OperationType> { OperationType.Default, OperationType.Play }
-				);
-
-				choiceJob.Done = true;
-				Monitor.Pulse(choiceJob);
-			}
-
-			lock (answerJob)
-			{
-				answerJob.Done = false;
-
-				while (!answerJob.Done)
-				{
-					Monitor.Wait(answerJob);
-				}
-
-				string cardName = answerJob.Object.Values.SingleOrDefault(c => c.OperationType == OperationType.Play)?.Card?.Name;
+				string cardName = answer.Values.SingleOrDefault(c => c.OperationType == OperationType.Play)?.Card?.Name;
 				return cards.SingleOrDefault(ac => ac.Name == cardName);
-			}
+			});
+
+			//lock (choiceJob)
+			//{
+			//	choiceJob.Object = new Choice
+			//	(
+			//		ChoiceType.Play,
+			//		minNumberOfSelections: 0,
+			//		maxNumberOfSelections: 1,
+			//		cards: cards.Select(cardMapper.ToCardDto),
+			//		operations: new List<OperationType> { OperationType.Default, OperationType.Play }
+			//	);
+
+			//	choiceJob.Done = true;
+			//	Monitor.Pulse(choiceJob);
+			//}
+
+			//lock (answerJob)
+			//{
+			//	answerJob.Done = false;
+
+			//	while (!answerJob.Done)
+			//	{
+			//		Monitor.Wait(answerJob);
+			//	}
+
+			//	string cardName = answerJob.Object.Values.SingleOrDefault(c => c.OperationType == OperationType.Play)?.Card?.Name;
+			//	return cards.SingleOrDefault(ac => ac.Name == cardName);
+			//}
 		}
 
 		public override Card RemodelTrash(PlayerState ps, Kingdom k)
@@ -233,37 +287,18 @@ public class GameFacade : IGameFacade
 
 		public override Card SelectCardToGain(KingdomWrapper wrapper, PlayerState ps, Kingdom k, Phase phase)
 		{
-			lock (choiceJob)
+			return LockTemplate(new Choice
+			(
+				type: ChoiceType.Buy,
+				minNumberOfSelections: 0,
+				maxNumberOfSelections: 1, // todo ps.Buys
+				cards: wrapper.AvailableCards.Select(cardMapper.ToCardDto),
+				operations: new List<OperationType> { OperationType.Default, OperationType.Buy }
+			), answer =>
 			{
-				choiceJob.Object = new Choice
-				(
-					type: ChoiceType.Buy,
-					minNumberOfSelections: 0,
-					maxNumberOfSelections: 1, // todo ps.Buys
-					cards: wrapper.AvailableCards.Select(cardMapper.ToCardDto),
-					operations: new List<OperationType> { OperationType.Default, OperationType.Buy }
-				);
-
-				choiceJob.Done = true;
-				Monitor.Pulse(choiceJob);
-			}
-
-			lock (answerJob)
-			{
-				answerJob.Done = false;
-				//cards = wrapper.AvailableCards.ToList();
-
-				while (!answerJob.Done)
-				{
-					Monitor.Wait(answerJob);
-				}
-
-				// todo kontrola správnosti?
-				//assert answerJob.Object.Values.Count <= 1;
-
-				string cardName = answerJob.Object.Values.SingleOrDefault(c => c.OperationType == OperationType.Buy)?.Card?.Name;
+				string cardName = answer.Values.SingleOrDefault(c => c.OperationType == OperationType.Buy)?.Card?.Name;
 				return wrapper.AvailableCards.SingleOrDefault(ac => ac.Name == cardName);
-			}
+			});
 		}
 
 		// todo lepší description - potřebujeme vědět, čí kartu zahazujeme
