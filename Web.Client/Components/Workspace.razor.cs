@@ -6,7 +6,7 @@ namespace Dominex.Web.Client.Components;
 
 public partial class Workspace
 {
-	[Parameter] public Choice Choice { get; set; }
+	[Parameter] public ChoiceDto Choice { get; set; }
 	[Inject] protected IGameFacade GameFacade { get; set; }
 
 	private Answer Answer { get; set; } = new();

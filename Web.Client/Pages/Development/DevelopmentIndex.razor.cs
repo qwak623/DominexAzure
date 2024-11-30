@@ -10,7 +10,7 @@ public partial class DevelopmentIndex
 	[Inject] protected IGameFacade GameFacade { get; set; }
 	//[Inject] protected NavigationManager Navigation { get; set; }
 
-	private Choice Choice { get; set; }
+	private ChoiceDto Choice { get; set; }
 
 	protected override async Task OnInitializedAsync()
 	{

@@ -1,0 +1,22 @@
+﻿namespace Dominex.Contracts.Game;
+
+// todo do jiných souboru (nebo do třídy choice) uvidime
+// todo tento enum je možná zbytečný 
+public enum ChoiceType
+{
+	Buy,
+	Play,
+	SpyDiscard,
+	MilitiaDiscard,
+	RemodelTrash,
+	ChapelTrash,
+	BureaucratPutOnTop,
+	CellarDiscard,
+	ChancellorDiscard,
+	LibrarySkip,
+	ThiefChoose,
+	ThiefSteal,
+	ThroneRoomPlay,
+	MineTrash,
+	Gain,
+}
