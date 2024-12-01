@@ -29,7 +29,7 @@ public class Militia : Card
 	{
 		if (defender.ps.Hand.Count <= 3)
 			return;
-		var cards = defender.User.MilitiaDiscard(defender.ps, defender.Game.Kingdom, defender.ps.Hand.Count - 3);
+		var cards = defender.User.MilitiaDiscard(this, defender.ps, defender.Game.Kingdom, defender.ps.Hand.Count - 3);
 		cards.ForEach(card => defender.Discard(card));
 	}
 }

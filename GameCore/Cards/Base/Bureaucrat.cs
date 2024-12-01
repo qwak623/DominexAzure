@@ -38,7 +38,7 @@ public class Bureaucrat : Card
 			return;
 		}
 
-		var card = def.User.BureaucratPutOnTop(def.ps, def.Game.Kingdom);
+		var card = def.User.BureaucratPutOnTop(this, def.ps, def.Game.Kingdom);
 		def.ReturnToDrawPile(card);
 	}
 }

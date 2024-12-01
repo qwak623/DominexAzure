@@ -27,7 +27,9 @@ public class Chancellor : Card
 
 	protected override void ActionEffect(Player player)
 	{
-		if (player.User.ChancellorDiscard(player.ps, player.Game.Kingdom))
+		if (player.User.ChancellorDiscard(this, player.ps, player.Game.Kingdom))
+		{
 			player.DiscardDrawPile();
+		}
 	}
 }

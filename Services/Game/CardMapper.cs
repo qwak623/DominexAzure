@@ -7,14 +7,14 @@ namespace Dominex.Services.Game;
 [Service]
 public class CardMapper : ICardMapper
 {
-	public CardDto ToCardDto(Card card, int index)
+	public CardDto ToCardDto(Card card)
 	{
 		return new CardDto
 		{
-			Index = index,
 			Name = card.Name,
 			Type = card.Type.ToString(),
 			Description = card.Description,
+			Message = card.Message,
 			Price = card.Price,
 			AddActions = card.AddActions,
 			AddBuys = card.AddBuys,
@@ -23,5 +23,10 @@ public class CardMapper : ICardMapper
 			DrawCards = card.DrawCards,
 			VictoryPoints = card.VictoryPoints
 		};
+	}
+
+	public CardDto ToCardDtoWithIndex(Card card, int index)
+	{
+		return ToCardDto(card) with { Index = index };
 	}
 }

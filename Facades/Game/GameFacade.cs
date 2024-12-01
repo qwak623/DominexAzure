@@ -128,11 +128,11 @@ public class GameFacade : IGameFacade
 	{
 		if (answer.Values.Count < choice.Min)
 		{
-			throw new ArgumentOutOfRangeException($"Minimal count of cards with non-default operation is {choice.Min} but actual number is {answer.Values.Count}.");
+			throw new ArgumentOutOfRangeException($"Minimal count of cards with non-default operation is {choice.Min} but the actual number is {answer.Values.Count}.");
 		}
 		if (answer.Values.Count > choice.Max)
 		{
-			throw new ArgumentOutOfRangeException($"Maximal count of cards with non-default operation is {choice.Max} but actual number is {answer.Values.Count}.");
+			throw new ArgumentOutOfRangeException($"Maximal count of cards with non-default operation is {choice.Max} but the actual number is {answer.Values.Count}.");
 		}
 		if (answer.Values.Any(v => v.Index < 0 || v.Index >= choice.Values.Count))
 		{

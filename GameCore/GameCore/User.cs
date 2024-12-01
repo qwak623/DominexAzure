@@ -22,29 +22,29 @@ public abstract class User
 	public virtual IPlayerStateObserver GetPlayerStateObserver() => null;
 
 	#region cards base
-	public abstract List<Card> CellarDiscard(PlayerState ps, Kingdom k);
+	public abstract List<Card> CellarDiscard(Card cardPlayed, PlayerState ps, Kingdom k);
 
-	public abstract Card BureaucratPutOnTop(PlayerState ps, Kingdom k);
+	public abstract Card BureaucratPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k);
 
-	public abstract bool ChancellorDiscard(PlayerState ps, Kingdom k);
+	public abstract bool ChancellorDiscard(Card cardPlayed, PlayerState ps, Kingdom k);
 
-	public abstract List<Card> ChapelTrash(PlayerState ps, Kingdom k);
+	public abstract List<Card> ChapelTrash(Card cardPlayed, PlayerState ps, Kingdom k);
 
-	public abstract bool LibrarySkip(PlayerState ps, Kingdom k, Card c);
+	public abstract bool LibrarySkip(Card cardPlayed, PlayerState ps, Kingdom k, Card c);
 
-	public abstract List<Card> MilitiaDiscard(PlayerState ps, Kingdom k, int discardCount);
+	public abstract List<Card> MilitiaDiscard(Card cardPlayed, PlayerState ps, Kingdom k, int discardCount);
 
-	public abstract Card MineTrash(PlayerState ps, Kingdom k);
+	public abstract Card MineTrash(Card cardPlayed, PlayerState ps, Kingdom k);
 
-	public abstract Card RemodelTrash(PlayerState ps, Kingdom k);
+	public abstract Card RemodelTrash(Card cardPlayed, PlayerState ps, Kingdom k);
 
-	public abstract bool SpyDiscard(PlayerState ps, Kingdom k, Card c, Phase p);
+	public abstract bool SpyDiscard(Card cardPlayed, PlayerState ps, Kingdom k, Card c, Phase p);
 
-	public abstract Card ThiefChoose(PlayerState ps, Kingdom k, IEnumerable<Card> cards);
+	public abstract Card ThiefChoose(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<Card> cards);
 
-	public abstract bool ThiefSteal(PlayerState ps, Kingdom k, Card c);
+	public abstract bool ThiefSteal(Card cardPlayed, PlayerState ps, Kingdom k, Card c);
 
-	public abstract Card ThroneRoomPlay(PlayerState ps, Kingdom k, IEnumerable<Card> cards);
+	public abstract Card ThroneRoomPlay(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<Card> cards);
 	#endregion
 
 	public override string ToString() => GetName();

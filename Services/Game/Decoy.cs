@@ -4,39 +4,39 @@ using GameCore;
 namespace Dominex.Services.Game;
 public class Decoy : User
 {
-	public override Card BureaucratPutOnTop(PlayerState ps, Kingdom k)
+	public override Card BureaucratPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k)
 	{
 		return ps.Hand.FirstOrDefault();
 	}
 
-	public override List<Card> CellarDiscard(PlayerState ps, Kingdom k)
+	public override List<Card> CellarDiscard(Card cardPlayed, PlayerState ps, Kingdom k)
 	{
 		return new();
 	}
 
-	public override bool ChancellorDiscard(PlayerState ps, Kingdom k)
+	public override bool ChancellorDiscard(Card cardPlayed, PlayerState ps, Kingdom k)
 	{
 		return false;
 	}
 
-	public override List<Card> ChapelTrash(PlayerState ps, Kingdom k)
+	public override List<Card> ChapelTrash(Card cardPlayed, PlayerState ps, Kingdom k)
 	{
 		return new();
 	}
 
 	public override string GetName() => "TODO NAME 2";
 
-	public override bool LibrarySkip(PlayerState ps, Kingdom k, Card c)
+	public override bool LibrarySkip(Card cardPlayed, PlayerState ps, Kingdom k, Card c)
 	{
 		return false;
 	}
 
-	public override List<Card> MilitiaDiscard(PlayerState ps, Kingdom k, int discardCount)
+	public override List<Card> MilitiaDiscard(Card cardPlayed, PlayerState ps, Kingdom k, int discardCount)
 	{
 		return ps.Hand.Take(2).ToList();
 	}
 
-	public override Card MineTrash(PlayerState ps, Kingdom k)
+	public override Card MineTrash(Card cardPlayed, PlayerState ps, Kingdom k)
 	{
 		return null;
 	}
@@ -46,7 +46,7 @@ public class Decoy : User
 		return null;
 	}
 
-	public override Card RemodelTrash(PlayerState ps, Kingdom k)
+	public override Card RemodelTrash(Card cardPlayed, PlayerState ps, Kingdom k)
 	{
 		return null;
 	}
@@ -56,22 +56,22 @@ public class Decoy : User
 		return wrapper.AvailableCards.First();
 	}
 
-	public override bool SpyDiscard(PlayerState ps, Kingdom k, Card c, Phase p)
+	public override bool SpyDiscard(Card cardPlayed, PlayerState ps, Kingdom k, Card c, Phase p)
 	{
 		return false;
 	}
 
-	public override Card ThiefChoose(PlayerState ps, Kingdom k, IEnumerable<Card> cards)
+	public override Card ThiefChoose(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<Card> cards)
 	{
 		return null;
 	}
 
-	public override bool ThiefSteal(PlayerState ps, Kingdom k, Card c)
+	public override bool ThiefSteal(Card cardPlayed, PlayerState ps, Kingdom k, Card c)
 	{
 		return true;
 	}
 
-	public override Card ThroneRoomPlay(PlayerState ps, Kingdom k, IEnumerable<Card> cards)
+	public override Card ThroneRoomPlay(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<Card> cards)
 	{
 		return null;
 	}

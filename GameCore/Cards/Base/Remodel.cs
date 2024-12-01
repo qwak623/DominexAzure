@@ -27,7 +27,7 @@ public class Remodel : Card
 	protected override void ActionEffect(Player p)
 	{
 		// if user didnt select card he wont gain any.
-		var oldCard = p.User.RemodelTrash(p.ps, p.Game.Kingdom);
+		var oldCard = p.User.RemodelTrash(this, p.ps, p.Game.Kingdom);
 		if (oldCard == null)
 		{
 			return;

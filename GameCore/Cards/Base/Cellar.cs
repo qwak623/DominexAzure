@@ -28,7 +28,7 @@ public class Cellar : Card
 	protected override void ActionEffect(Player player)
 	{
 		// todo - lze discardnout cellar?
-		var selectedCards = player.User.CellarDiscard(player.ps, player.Game.Kingdom);
+		var selectedCards = player.User.CellarDiscard(this, player.ps, player.Game.Kingdom);
 
 		selectedCards.ForEach(card => player.Discard(card));
 		player.Draw(selectedCards.Count());

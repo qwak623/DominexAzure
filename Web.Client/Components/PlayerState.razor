@@ -13,9 +13,7 @@
         {
             foreach (var card in PlayerStateDto.Hand)
             {
-                <CardTooltip CardDto="@card">
-                    <div class="card-in-hand mr-1">@card.Name $@card.Price</div>
-                </CardTooltip>
+                <CardComponent Card="card" />
             }
         }
     </div>

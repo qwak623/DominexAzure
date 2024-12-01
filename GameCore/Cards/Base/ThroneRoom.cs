@@ -29,7 +29,7 @@ public class ThroneRoom : Card
 
 	protected override void ActionEffect(Player player)
 	{
-		var card = player.User.ThroneRoomPlay(player.ps, player.Game.Kingdom, player.ps.Hand.Where(c => c.IsAction));
+		var card = player.User.ThroneRoomPlay(this, player.ps, player.Game.Kingdom, player.ps.Hand.Where(c => c.IsAction));
 		if (card == null)
 		{
 			return;

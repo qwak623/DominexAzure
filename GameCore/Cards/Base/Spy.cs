@@ -35,7 +35,7 @@ public class Spy : Card
 			return;
 		}
 
-		if (player.User.SpyDiscard(player.ps, player.Game.Kingdom, card, Phase.Action))
+		if (player.User.SpyDiscard(this, player.ps, player.Game.Kingdom, card, Phase.Action))
 		{
 			player.Game.Logger?.Log(new GameLog { PlayerId = player.Name, Message = $"{player.Name} discards {card.Name}" });
 			player.ps.DiscardPile.Add(card);
@@ -54,7 +54,7 @@ public class Spy : Card
 			return;
 		}
 
-		if (attacker.User.SpyDiscard(attacker.ps, attacker.Game.Kingdom, card, Phase.Attack))
+		if (attacker.User.SpyDiscard(this, attacker.ps, attacker.Game.Kingdom, card, Phase.Attack))
 		{
 			defender.Game.Logger?.Log(new GameLog { PlayerId = defender.Name, Message = $"{defender.Name} discards {card.Name}" });
 			defender.ps.DiscardPile.Add(card);

@@ -27,7 +27,7 @@ public class Chapel : Card
 
 	protected override void ActionEffect(Player player)
 	{
-		player.User.ChapelTrash(player.ps, player.Game.Kingdom).ForEach(card => player.Trash(card));
+		player.User.ChapelTrash(this, player.ps, player.Game.Kingdom).ForEach(player.Trash);
 	}
 }
 

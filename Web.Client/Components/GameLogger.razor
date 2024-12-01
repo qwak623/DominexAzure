@@ -4,10 +4,10 @@
         foreach (var record in gameLogs)
         {
             <div class="@GetPlayerLogsColor(record.PlayerId)">
-                @if (record.PlayerId is not null)
+                @*@if (record.PlayerId is not null)
                 {
                     <span class="bold">@(record.PlayerId): </span>
-                }
+                }*@
                 <span>@record.Message</span>
             </div>
         }

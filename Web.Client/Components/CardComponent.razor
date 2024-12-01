@@ -1,0 +1,12 @@
+﻿@using Dominex.Contracts.Game;
+
+@if (Card is not null)
+{
+    <CardTooltip CardDto="@Card">
+        <div class="card-in-hand mr-1">@Card.Name $@Card.Price</div>
+    </CardTooltip>
+}
+
+@code {
+    [Parameter] public CardDto Card { get; set; }
+}

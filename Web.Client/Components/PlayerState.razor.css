@@ -1,11 +1,6 @@
 ﻿.playerState {
 	height: 65px;
 }
-.card-in-hand {
-	background-clip: border-box;
-	border: 2px solid rgb(0, 0, 0);
-	border-radius: 0,5rem;
-}
 
 .hand {
 	display: grid;

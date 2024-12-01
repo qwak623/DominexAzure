@@ -28,7 +28,7 @@ public class PlayerStateObserver : IPlayerStateObserver
 			Actions = playerState.Actions,
 			Buys = playerState.Buys,
 			Coins = playerState.Coins,
-			Hand = playerState.Hand.Select(cardMapper.ToCardDto).ToList(),
+			Hand = playerState.Hand.Select(cardMapper.ToCardDtoWithIndex).ToList(),
 			GamePhase = "TODO fáze"
 		};
 		await playerStateHubContext.Clients.All.SendAsync("NotifyPlayerStateChanged", playerStateDto);

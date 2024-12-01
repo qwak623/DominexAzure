@@ -2,7 +2,6 @@
 public class Mine : Card
 {
 	private static Mine mine;
-	private static int c;
 	private Mine() : base
 	(
 		name: "Mine",
@@ -28,13 +27,17 @@ public class Mine : Card
 
 	protected override void ActionEffect(Player p)
 	{
-		c++;
-		var oldCard = p.User.MineTrash(p.ps, p.Game.Kingdom);
+		var oldCard = p.User.MineTrash(this, p.ps, p.Game.Kingdom);
 		if (oldCard == null)
+		{
 			return;
+		}
+
 		p.Trash(oldCard);
 		var newCard = p.User.SelectCardToGain(p.Game.Kingdom.GetWrapper(oldCard.Price + 3, true), p.ps, p.Game.Kingdom, Phase.Gain);
 		if (newCard != null)
+		{
 			p.GainToHand(newCard.Type);
+		}
 	}
 }

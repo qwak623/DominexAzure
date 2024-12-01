@@ -39,7 +39,7 @@ public class Library : Card
 				break;
 			}
 
-			if (card.IsAction && player.User.LibrarySkip(player.ps, player.Game.Kingdom, card))
+			if (card.IsAction && player.User.LibrarySkip(this, player.ps, player.Game.Kingdom, card))
 			{
 				cardsAside.Add(card);
 			}

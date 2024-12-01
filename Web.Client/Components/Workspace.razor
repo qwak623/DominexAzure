@@ -1,26 +1,44 @@
 ﻿@using Dominex.Contracts.Game;
 
-<div class="workspace">
-    @if (Choice is not null)
-    {
-        @for (int i = 0; i < Choice.Values.Count; i++)
+<div class="card h-100">
+    <div class="card-header d-flex align-items-center">
+        @if (Choice is not null)
         {
-            var item = Choice.Values[i];
-            int j = i;
-            var model = new CardAnswerModel() { Index = j };
-            Answer.Values.Add(model);
-            <div>
-                <CardTooltip CardDto="@item.Card">
-                    <div class="card-in-hand mr-1">@item.Card.Name $@item.Card.Price</div>
-                </CardTooltip>
-                <EditForm Model="@model">
-                    <HxButtonGroup>
-                        <CardOperationSelection CardChoiceModel="item" CardAnswerModel="model" />
-                    </HxButtonGroup>
-                </EditForm>
+            <div class="me-1">
+                <CardComponent Card="Choice.CardPlayed" />
             </div>
         }
+        @GetTitle()
+    </div>
+    <div class="workspace card-body">
+        @if (Choice is not null)
+        {
+            @for (int i = 0; i < Choice.Values.Count; i++)
+            {
+                var item = Choice.Values[i];
+                int j = i;
+                var model = new CardAnswerModel() { Index = j };
+                Answer.Values.Add(model);
+                <div class="row">
+                    <div class="col-6">
+                        @if (item.Card != null)
+                        {
+                            <CardTooltip CardDto="@item.Card">
+                                <div class="card-in-hand mr-1">@item.Card.Name $@item.Card.Price</div>
+                            </CardTooltip>
+                        }
+                    </div>
+                    <div class="col-6">
+                        <EditForm Model="@model">
+                            <HxButtonGroup>
+                                <CardOperationSelection CardChoiceModel="item" CardAnswerModel="model" />
+                            </HxButtonGroup>
+                        </EditForm>
+                    </div>
+                </div>
+            }
 
-        <HxButton CssClass="mt-1" Color="ThemeColor.Secondary" OnClick="Submit">Submit</HxButton>
-    }
+            <HxButton CssClass="mt-1" Color="ThemeColor.Secondary" OnClick="Submit">Submit</HxButton>
+        }
+    </div>
 </div>
