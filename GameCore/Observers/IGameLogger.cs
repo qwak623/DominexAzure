@@ -6,4 +6,5 @@ public interface IGameLogger
 {
 	List<GameLog> LogHistory { get; }
 	Task Log(GameLog gameLog);
+	Task Log(string message);
 }

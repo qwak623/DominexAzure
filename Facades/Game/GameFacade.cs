@@ -1,4 +1,6 @@
-﻿using Dominex.Contracts;
+﻿using AI.Model;
+using AI.Provincial;
+using Dominex.Contracts;
 using Dominex.Contracts.Game;
 using Dominex.Contracts.ServerApi;
 using Dominex.Services.Game;
@@ -47,8 +49,13 @@ public class GameFacade : IGameFacade
 			kingdom = cards.GetKingdom(2, kingdomObserver);
 
 			var humanUser = new Human(playerStateObserver, cardMapper, CallClient);
-			var random = new Decoy();
-			var users = new User[] { humanUser, random };
+			//var random = new Decoy();
+
+			var manager = new SimpleManager(BuyAgenda.DirectoryPath, "Tens_");
+			var agenda = manager.LoadBest(cards);
+			var ai = new ProvincialAI(agenda);
+
+			var users = new User[] { humanUser, ai /*random*/ };
 
 			Game = new GameCore.Game(users, kingdom, gameLogger);
 			Game.Play(); // todo continue with results...

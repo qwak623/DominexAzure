@@ -1,0 +1,45 @@
+22_24_27:7;5;3;Province (6) 10,Gold (3) 8,Silver (2) 4,Moat (22) 1,Silver (2) 5,Province (6) 7,Duchy (5) 3,Silver (2) 11,Estate (4) 3,Copper (1) 6,Gold (3) 101,Silver (2) 10,Gold (3) 11,Remodel (24) 5
+22_24_31:7;6;4;Remodel (24) 1,Province (6) 3,Gold (3) 99,Gold (3) 10,Silver (2) 8,Silver (2) 2,Silver (2) 11,Moat (22) 2,Gold (3) 4,Estate (4) 8,Remodel (24) 9
+22_26_28:10;6;3;Gold (3) 98,Gold (3) 2,Silver (2) 11,Province (6) 10,Silver (2) 2,Moat (22) 4,Spy (26) 5,Duchy (5) 7,Copper (1) 3,ThroneRoom (28) 7
+22_26_30:8;6;6;Witch (30) 2,Province (6) 4,Gold (3) 6,Silver (2) 9,Spy (26) 5,Province (6) 6,Witch (30) 99,Moat (22) 8,Estate (4) 4,Silver (2) 3
+22_24_25:5;5;3;Province (6) 7,Smithy (25) 1,Gold (3) 8,Silver (2) 11,Gold (3) 99,Smithy (25) 8,Silver (2) 6,Moat (22) 3,Remodel (24) 3,Estate (4) 5,Smithy (25) 6
+22_27_29:8;5;3;Province (6) 11,Gold (3) 3,Gold (3) 100,Silver (2) 9,Silver (2) 7,Moat (22) 9,Thief (27) 5,Village (29) 6,Estate (4) 9
+22_27_32:10;6;-6;Gold (3) 7,Moat (22) 1,Gold (3) 9,Gold (3) 3,Gold (3) 9,Silver (2) 100,Duchy (5) 12,Province (6) 4,Estate (4) 4
+22_25_27:8;5;3;Smithy (25) 1,Province (6) 5,Gold (3) 99,Silver (2) 7,Smithy (25) 8,Moat (22) 10,Silver (2) 10,Duchy (5) 7,Silver (2) 5,Estate (4) 3,Thief (27) 6,Smithy (25) 5,Smithy (25) 2,Copper (1) 4
+22_25_31:5;5;3;Province (6) 12,Gold (3) 8,Smithy (25) 1,Silver (2) 11,Smithy (25) 6,Gold (3) 102,Silver (2) 5,Moat (22) 4,Estate (4) 8,Copper (1) 5,Duchy (5) 6
+22_27_30:8;6;4;Province (6) 10,Witch (30) 2,Gold (3) 96,Gold (3) 7,Silver (2) 8,Silver (2) 4,Silver (2) 4,Duchy (5) 2,Silver (2) 10,Gold (3) 6,Moat (22) 6,Province (6) 5,Copper (1) 8
+22_27_28:6;5;4;Moat (22) 1,Province (6) 4,Gold (3) 9,Silver (2) 11,Duchy (5) 9,Gold (3) 98,Duchy (5) 3,Silver (2) 7,Duchy (5) 1,Thief (27) 12,Moat (22) 1,Estate (4) 2,Copper (1) 6
+22_30_31:8;6;5;Witch (30) 2,Province (6) 2,Gold (3) 10,Silver (2) 98,Woodcutter (31) 7,Woodcutter (31) 10,Moat (22) 4,Silver (2) 9,Duchy (5) 10
+22_23_26:6;6;3;Moat (22) 1,Province (6) 4,Gold (3) 101,Gold (3) 5,Silver (2) 6,Silver (2) 8,Moat (22) 10,Spy (26) 9,Estate (4) 4,Duchy (5) 7,Duchy (5) 2,Gold (3) 8,Moat (22) 6,Duchy (5) 2
+22_28_29:10;6;3;Province (6) 8,Gold (3) 98,Silver (2) 11,Moat (22) 8,Province (6) 4,Estate (4) 4,Copper (1) 4,Duchy (5) 6,ThroneRoom (28) 9
+22_26_31:12;5;3;Moat (22) 1,Gold (3) 98,Province (6) 10,Gold (3) 6,Silver (2) 12,Gold (3) 6,Silver (2) 3,Moat (22) 3,Spy (26) 4,Copper (1) 3,Duchy (5) 10,Estate (4) 12,Woodcutter (31) 9,Spy (26) 1,Moat (22) 4
+22_26_27:10;6;3;Silver (2) 2,Gold (3) 3,Gold (3) 8,Gold (3) 7,Silver (2) 9,Duchy (5) 7,Moat (22) 10,Thief (27) 6,Silver (2) 4,Estate (4) 10,Spy (26) 101,Thief (27) 2,Copper (1) 4,Silver (2) 1
+22_28_32:5;5;3;Province (6) 10,Gold (3) 6,Moat (22) 1,Silver (2) 7,Silver (2) 10,Duchy (5) 8,Workshop (32) 1,Duchy (5) 5,Province (6) 9,Gold (3) 2,Moat (22) 4,Estate (4) 1
+22_28_30:8;7;7;Witch (30) 2,Province (6) 3,Gold (3) 8,Silver (2) 9,ThroneRoom (28) 9,Silver (2) 2,Duchy (5) 9,Moat (22) 6,Copper (1) 3,ThroneRoom (28) 4,Estate (4) 6,Curse (7) 4,Gold (3) 101,Silver (2) 5
+22_24_26:7;5;4;Province (6) 6,Gold (3) 9,Gold (3) 4,Remodel (24) 1,Silver (2) 7,Duchy (5) 5,Silver (2) 10,Moat (22) 4,Silver (2) 11,Copper (1) 7,Remodel (24) 2,Copper (1) 10,Gold (3) 99,Moat (22) 5,Province (6) 9
+22_23_29:6;6;2;Gold (3) 2,Silver (2) 4,Province (6) 7,Gold (3) 97,Moat (22) 2,Silver (2) 10,Village (29) 7,Estate (4) 4,Village (29) 9,Moneylender (23) 9,Village (29) 10
+22_27_31:6;5;3;Province (6) 10,Silver (2) 2,Gold (3) 10,Moat (22) 1,Silver (2) 9,Silver (2) 5,Moat (22) 6,Copper (1) 4,Gold (3) 98,Copper (1) 5,Silver (2) 10
+22_23_28:8;6;3;Province (6) 2,Gold (3) 99,Silver (2) 11,Silver (2) 6,Moat (22) 8,ThroneRoom (28) 8,Province (6) 5,Copper (1) 6
+22_25_26:8;6;4;Gold (3) 2,Province (6) 4,Gold (3) 99,Smithy (25) 1,Silver (2) 4,Gold (3) 6,Silver (2) 7,Gold (3) 2,Moat (22) 4,Moat (22) 6,Moat (22) 8
+22_23_30:7;7;6;Witch (30) 2,Province (6) 9,Gold (3) 98,Gold (3) 7,Silver (2) 10,Copper (1) 9,Witch (30) 11,Moneylender (23) 9,Estate (4) 3,Gold (3) 7,Curse (7) 7,Moat (22) 3,Moat (22) 9
+22_24_29:9;6;3;Moat (22) 1,Gold (3) 99,Province (6) 9,Gold (3) 9,Silver (2) 9,Silver (2) 4,Moat (22) 8,Village (29) 5,Estate (4) 6
+22_23_32:9;5;3;Province (6) 3,Gold (3) 101,Silver (2) 7,Moat (22) 3,Gold (3) 4,Silver (2) 10,Moneylender (23) 5,Estate (4) 1,Moneylender (23) 2,Workshop (32) 7,Moat (22) 4,Moneylender (23) 8,Province (6) 4,Copper (1) 8,Workshop (32) 1
+22_29_30:-3;6;6;Province (6) 98,Witch (30) 2,Gold (3) 2,Province (6) 6,Silver (2) 4,Duchy (5) 10,Silver (2) 9,Village (29) 7,Copper (1) 2,Gold (3) 6,Moat (22) 9,Moat (22) 5,Curse (7) 8,Witch (30) 5
+22_28_31:7;6;3;Province (6) 3,Gold (3) 100,Silver (2) 11,Moat (22) 6,Province (6) 7,ThroneRoom (28) 7,Silver (2) 7,Woodcutter (31) 11,Duchy (5) 9,Copper (1) 2,Estate (4) 7,Gold (3) 7,Estate (4) 9
+22_24_28:8;5;4;Province (6) 2,Gold (3) 6,Moat (22) 1,Silver (2) 9,Silver (2) 5,Duchy (5) 5,ThroneRoom (28) 3,Duchy (5) 6,ThroneRoom (28) 97,Moat (22) 4,Estate (4) 13
+22_29_32:9;6;3;Silver (2) 2,Province (6) 8,Gold (3) 98,Silver (2) 10,Village (29) 3,Moat (22) 11,Moat (22) 3,Workshop (32) 7,Silver (2) 6,Duchy (5) 7,Estate (4) 9
+22_25_29:6;5;3;Province (6) 4,Smithy (25) 1,Province (6) 5,Gold (3) 96,Silver (2) 10,Moat (22) 11,Duchy (5) 7,Village (29) 7,Province (6) 8,Copper (1) 7,Copper (1) 1,Estate (4) 4
+22_23_24:7;6;3;Silver (2) 1,Province (6) 2,Gold (3) 6,Gold (3) 8,Silver (2) 7,Silver (2) 12,Silver (2) 1,Duchy (5) 9,Moat (22) 5,Copper (1) 2,Copper (1) 3,Remodel (24) 5,Estate (4) 1,Duchy (5) 9,Moneylender (23) 5,Gold (3) 98
+22_24_30:8;7;6;Witch (30) 2,Province (6) 2,Gold (3) 101,Silver (2) 10,Remodel (24) 6,Silver (2) 2,Estate (4) 6,Silver (2) 5,Moat (22) 1,Duchy (5) 5,Duchy (5) 6,Copper (1) 6,Duchy (5) 2,Copper (1) 5
+22_23_25:6;5;0;Province (6) 6,Gold (3) 99,Gold (3) 2,Moat (22) 1,Silver (2) 8,Moat (22) 3,Estate (4) 10,Copper (1) 6,Moat (22) 7,Smithy (25) 7,Copper (1) 9,Silver (2) 12,Moneylender (23) 6
+22_29_31:6;6;4;Woodcutter (31) 1,Gold (3) 2,Province (6) 10,Gold (3) 101,Silver (2) 8,Moat (22) 5,Province (6) 5,Silver (2) 3,Village (29) 3
+22_23_31:10;6;3;Province (6) 10,Gold (3) 97,Province (6) 9,Province (6) 7,Silver (2) 8,Moat (22) 8,Woodcutter (31) 1,Estate (4) 9,Duchy (5) 7
+22_25_28:8;5;3;Province (6) 3,Gold (3) 1,Smithy (25) 1,Gold (3) 5,Silver (2) 9,Moat (22) 5,Gold (3) 99,Estate (4) 1,Duchy (5) 6,Copper (1) 1,Silver (2) 4
+22_24_32:7;6;3;Province (6) 5,Gold (3) 99,Silver (2) 12,Silver (2) 2,Remodel (24) 2,Moat (22) 10,Duchy (5) 4,Workshop (32) 4,Workshop (32) 2,Gold (3) 9,Workshop (32) 9,Duchy (5) 1
+22_23_27:12;6;3;Province (6) 3,Gold (3) 10,Silver (2) 10,Moat (22) 9,Estate (4) 6,Silver (2) 7,Moneylender (23) 7,Thief (27) 8
+22_26_29:5;5;3;Moat (22) 1,Province (6) 4,Gold (3) 5,Silver (2) 8,Silver (2) 8,Moat (22) 4,Copper (1) 8,Moat (22) 9,Spy (26) 2,Gold (3) 101,Village (29) 3
+22_25_30:7;6;-4;Witch (30) 2,Province (6) 6,Gold (3) 96,Silver (2) 7,Gold (3) 5,Duchy (5) 8,Estate (4) 8,Gold (3) 8,Moat (22) 5,Gold (3) 7
+22_30_32:7;6;6;Witch (30) 2,Province (6) 4,Gold (3) 97,Silver (2) 9,Copper (1) 5,Estate (4) 6
+22_25_32:8;5;3;Province (6) 9,Smithy (25) 1,Gold (3) 6,Silver (2) 11,Workshop (32) 6,Province (6) 7,Moat (22) 8,Duchy (5) 9,Gold (3) 9,Estate (4) 5,Duchy (5) 2,Estate (4) 6
+22_26_32:9;6;3;Moat (22) 1,Province (6) 3,Gold (3) 12,Silver (2) 11,Workshop (32) 3,Spy (26) 9,Moat (22) 4,Estate (4) 9,Duchy (5) 10,Workshop (32) 6,Gold (3) 98,Copper (1) 8,Workshop (32) 8,Silver (2) 6,Workshop (32) 6
+22_31_32:6;5;4;Moat (22) 1,Province (6) 8,Gold (3) 100,Silver (2) 10,Silver (2) 5,Moat (22) 7,Workshop (32) 8,Duchy (5) 6,Copper (1) 2,Woodcutter (31) 9

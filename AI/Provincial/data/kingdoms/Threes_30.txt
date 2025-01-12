@@ -1,0 +1,1 @@
+30_31_32:11;8;7;Province (6) 9,Gold (3) 8,Gold (3) 100,Witch (30) 2,Silver (2) 11,Woodcutter (31) 8,Silver (2) 10,Workshop (32) 8,Copper (1) 4,Curse (7) 5,Estate (4) 8,Duchy (5) 8

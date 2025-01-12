@@ -21,6 +21,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<ProjectReference Include="..\AI\AI.csproj" />
 		<ProjectReference Include="..\Contracts\Contracts.csproj" />
 		<ProjectReference Include="..\DataLayer\DataLayer.csproj" />
 		<ProjectReference Include="..\GameCore\GameCore.csproj" />

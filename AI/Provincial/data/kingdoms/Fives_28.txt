@@ -1,0 +1,1 @@
+28_29_30_31_32:8;8;7;Province (6) 3,Gold (3) 99,Witch (30) 4,Silver (2) 2,Silver (2) 12,Gold (3) 2,ThroneRoom (28) 1,Workshop (32) 2,ThroneRoom (28) 8,Silver (2) 8,Woodcutter (31) 8,Copper (1) 9,Village (29) 2

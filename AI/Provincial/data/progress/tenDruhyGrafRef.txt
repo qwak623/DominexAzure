@@ -1,0 +1,806 @@
+evolution: NamedGames
+kingdom: random
+kingdom 0: firstGame kingdom 10 19 20 21 22 24 25 29 31 32
+0 10000 0 -10000
+Generation 0: elapsed time 24,08s
+1 10000 0 -10000
+Generation 1: elapsed time 16,11s
+2 9999 1 -9998
+Generation 2: elapsed time 12,73s
+3 10000 0 -10000
+Generation 3: elapsed time 11,11s
+4 10000 0 -10000
+Generation 4: elapsed time 11,03s
+5 10000 0 -10000
+Generation 5: elapsed time 13,68s
+6 10000 0 -10000
+Generation 6: elapsed time 12,56s
+7 10000 0 -10000
+Generation 7: elapsed time 12,41s
+8 9982 21 -9961
+Generation 8: elapsed time 16,56s
+9 9995 6 -9989
+Generation 9: elapsed time 13,55s
+10 9978 30 -9948
+Generation 10: elapsed time 11,54s
+11 9978 29 -9949
+Generation 11: elapsed time 16,19s
+12 9784 262 -9522
+Generation 12: elapsed time 10,94s
+13 9663 384 -9279
+Generation 13: elapsed time 10,87s
+14 9586 476 -9110
+Generation 14: elapsed time 15,51s
+15 9676 370 -9306
+Generation 15: elapsed time 9,93s
+16 9257 893 -8364
+Generation 16: elapsed time 8,47s
+17 9052 1139 -7913
+Generation 17: elapsed time 8,88s
+18 9061 1110 -7951
+Generation 18: elapsed time 9,23s
+19 8975 1191 -7784
+Generation 19: elapsed time 10,39s
+20 8992 1198 -7794
+Generation 20: elapsed time 13,60s
+21 8914 1282 -7632
+Generation 21: elapsed time 8,90s
+22 8975 1180 -7795
+Generation 22: elapsed time 9,32s
+23 8801 1415 -7386
+Generation 23: elapsed time 9,38s
+24 8725 1495 -7230
+Generation 24: elapsed time 11,07s
+25 8709 1497 -7212
+Generation 25: elapsed time 8,23s
+26 8509 1728 -6781
+Generation 26: elapsed time 12,60s
+27 8447 1786 -6661
+Generation 27: elapsed time 8,78s
+28 8188 2073 -6115
+Generation 28: elapsed time 9,31s
+29 8340 1954 -6386
+Generation 29: elapsed time 9,19s
+30 8322 1977 -6345
+Generation 30: elapsed time 8,23s
+31 8314 2001 -6313
+Generation 31: elapsed time 8,48s
+32 8048 2239 -5809
+Generation 32: elapsed time 11,00s
+33 8302 2020 -6282
+Generation 33: elapsed time 8,30s
+34 7937 2419 -5518
+Generation 34: elapsed time 8,23s
+35 7934 2352 -5582
+Generation 35: elapsed time 8,60s
+36 7782 2571 -5211
+Generation 36: elapsed time 8,47s
+37 7623 2714 -4909
+Generation 37: elapsed time 9,54s
+38 7648 2711 -4937
+Generation 38: elapsed time 11,11s
+39 7550 2804 -4746
+Generation 39: elapsed time 8,67s
+40 7689 2693 -4996
+Generation 40: elapsed time 8,35s
+41 7583 2807 -4776
+Generation 41: elapsed time 9,84s
+42 7553 2776 -4777
+Generation 42: elapsed time 10,64s
+43 7605 2717 -4888
+Generation 43: elapsed time 17,00s
+44 7624 2729 -4895
+Generation 44: elapsed time 9,18s
+45 7590 2797 -4793
+Generation 45: elapsed time 9,36s
+46 6845 3583 -3262
+Generation 46: elapsed time 8,59s
+47 6833 3589 -3244
+Generation 47: elapsed time 9,25s
+48 6903 3526 -3377
+Generation 48: elapsed time 7,78s
+49 6871 3542 -3329
+Generation 49: elapsed time 12,27s
+50 6773 3716 -3057
+Generation 50: elapsed time 7,71s
+51 6839 3645 -3194
+Generation 51: elapsed time 7,20s
+52 6791 3662 -3129
+Generation 52: elapsed time 8,07s
+53 6806 3658 -3148
+Generation 53: elapsed time 7,46s
+54 6778 3708 -3070
+Generation 54: elapsed time 8,02s
+55 6759 3700 -3059
+Generation 55: elapsed time 8,36s
+56 6801 3701 -3100
+Generation 56: elapsed time 8,16s
+57 6815 3652 -3163
+Generation 57: elapsed time 7,25s
+58 6749 3720 -3029
+Generation 58: elapsed time 8,92s
+59 6904 3581 -3323
+Generation 59: elapsed time 12,41s
+60 6793 3698 -3095
+Generation 60: elapsed time 8,75s
+61 6860 3638 -3222
+Generation 61: elapsed time 13,56s
+62 6856 3610 -3246
+Generation 62: elapsed time 10,38s
+63 6717 3744 -2973
+Generation 63: elapsed time 12,48s
+64 6885 3615 -3270
+Generation 64: elapsed time 14,80s
+65 6774 3713 -3061
+Generation 65: elapsed time 9,27s
+66 6790 3692 -3098
+Generation 66: elapsed time 7,84s
+67 6801 3684 -3117
+Generation 67: elapsed time 9,82s
+68 6861 3617 -3244
+Generation 68: elapsed time 8,87s
+69 6801 3666 -3135
+Generation 69: elapsed time 8,34s
+70 6777 3660 -3117
+Generation 70: elapsed time 11,04s
+71 6821 3614 -3207
+Generation 71: elapsed time 8,41s
+72 6825 3650 -3175
+Generation 72: elapsed time 17,37s
+73 6865 3621 -3244
+Generation 73: elapsed time 9,66s
+74 6767 3692 -3075
+Generation 74: elapsed time 15,65s
+75 6889 3579 -3310
+Generation 75: elapsed time 11,32s
+76 6804 3650 -3154
+Generation 76: elapsed time 7,60s
+77 6921 3545 -3376
+Generation 77: elapsed time 9,94s
+78 6830 3611 -3219
+Generation 78: elapsed time 13,02s
+79 6736 3731 -3005
+Generation 79: elapsed time 13,07s
+80 6742 3712 -3030
+Generation 80: elapsed time 8,35s
+81 6863 3609 -3254
+Generation 81: elapsed time 9,76s
+82 6730 3733 -2997
+Generation 82: elapsed time 11,27s
+83 6850 3608 -3242
+Generation 83: elapsed time 9,43s
+84 6796 3666 -3130
+Generation 84: elapsed time 19,36s
+85 6897 3573 -3324
+Generation 85: elapsed time 9,16s
+86 6815 3666 -3149
+Generation 86: elapsed time 12,76s
+87 6807 3662 -3145
+Generation 87: elapsed time 17,64s
+88 6797 3683 -3114
+Generation 88: elapsed time 7,78s
+89 6809 3698 -3111
+Generation 89: elapsed time 12,27s
+90 6742 3683 -3059
+Generation 90: elapsed time 7,29s
+91 6057 4392 -1665
+Generation 91: elapsed time 12,34s
+92 6029 4439 -1590
+Generation 92: elapsed time 8,19s
+93 6092 4379 -1713
+Generation 93: elapsed time 10,92s
+94 6123 4311 -1812
+Generation 94: elapsed time 8,67s
+95 6117 4298 -1819
+Generation 95: elapsed time 9,41s
+96 6087 4341 -1746
+Generation 96: elapsed time 7,83s
+97 6224 4185 -2039
+Generation 97: elapsed time 8,16s
+98 6536 3905 -2631
+Generation 98: elapsed time 10,10s
+99 6585 3840 -2745
+Generation 99: elapsed time 9,70s
+kingdom 0: sizeDistortion kingdom 10 12 14 16 17 27 29 30 31 32
+0 9931 75 -9856
+Generation 0: elapsed time 23,25s
+1 9937 73 -9864
+Generation 1: elapsed time 16,39s
+2 8007 2219 -5788
+Generation 2: elapsed time 11,82s
+3 7978 2210 -5768
+Generation 3: elapsed time 10,86s
+4 8025 2189 -5836
+Generation 4: elapsed time 11,61s
+5 4209 6177 1968
+Generation 5: elapsed time 10,96s
+6 5053 5169 116
+Generation 6: elapsed time 10,24s
+7 5102 5142 40
+Generation 7: elapsed time 19,08s
+8 1009 9125 8116
+Generation 8: elapsed time 13,71s
+9 954 9202 8248
+Generation 9: elapsed time 11,79s
+10 923 9204 8281
+Generation 10: elapsed time 10,82s
+11 988 9166 8178
+Generation 11: elapsed time 8,26s
+12 711 9399 8688
+Generation 12: elapsed time 7,39s
+13 668 9398 8730
+Generation 13: elapsed time 11,11s
+14 640 9431 8791
+Generation 14: elapsed time 9,02s
+15 616 9462 8846
+Generation 15: elapsed time 11,83s
+16 744 9299 8555
+Generation 16: elapsed time 8,38s
+17 728 9321 8593
+Generation 17: elapsed time 7,88s
+18 610 9460 8850
+Generation 18: elapsed time 9,40s
+19 431 9632 9201
+Generation 19: elapsed time 14,95s
+20 444 9613 9169
+Generation 20: elapsed time 8,45s
+21 455 9607 9152
+Generation 21: elapsed time 10,72s
+22 429 9628 9199
+Generation 22: elapsed time 12,64s
+23 447 9610 9163
+Generation 23: elapsed time 9,83s
+24 464 9610 9146
+Generation 24: elapsed time 17,68s
+25 438 9637 9199
+Generation 25: elapsed time 14,81s
+26 434 9622 9188
+Generation 26: elapsed time 14,23s
+27 459 9604 9145
+Generation 27: elapsed time 16,55s
+28 472 9601 9129
+Generation 28: elapsed time 7,62s
+29 365 9676 9311
+Generation 29: elapsed time 9,83s
+30 362 9690 9328
+Generation 30: elapsed time 8,33s
+31 331 9712 9381
+Generation 31: elapsed time 8,87s
+32 321 9719 9398
+Generation 32: elapsed time 8,38s
+33 379 9660 9281
+Generation 33: elapsed time 15,37s
+34 3673 6510 2837
+Generation 34: elapsed time 9,89s
+35 3643 6552 2909
+Generation 35: elapsed time 8,67s
+36 3690 6496 2806
+Generation 36: elapsed time 13,01s
+37 3628 6582 2954
+Generation 37: elapsed time 17,51s
+38 3608 6592 2984
+Generation 38: elapsed time 13,79s
+39 3728 6473 2745
+Generation 39: elapsed time 14,05s
+40 3644 6576 2932
+Generation 40: elapsed time 14,63s
+41 8159 1850 -6309
+Generation 41: elapsed time 16,87s
+42 8159 1856 -6303
+Generation 42: elapsed time 14,74s
+43 307 9737 9430
+Generation 43: elapsed time 17,07s
+44 334 9717 9383
+Generation 44: elapsed time 12,62s
+45 342 9706 9364
+Generation 45: elapsed time 9,63s
+46 472 9583 9111
+Generation 46: elapsed time 8,23s
+47 363 9693 9330
+Generation 47: elapsed time 8,28s
+48 303 9740 9437
+Generation 48: elapsed time 7,80s
+49 314 9732 9418
+Generation 49: elapsed time 9,92s
+50 336 9712 9376
+Generation 50: elapsed time 10,35s
+51 305 9758 9453
+Generation 51: elapsed time 8,48s
+52 336 9706 9370
+Generation 52: elapsed time 8,36s
+53 338 9709 9371
+Generation 53: elapsed time 7,77s
+54 455 9607 9152
+Generation 54: elapsed time 8,57s
+55 300 9738 9438
+Generation 55: elapsed time 9,07s
+56 368 9675 9307
+Generation 56: elapsed time 8,22s
+57 319 9728 9409
+Generation 57: elapsed time 12,60s
+58 321 9732 9411
+Generation 58: elapsed time 8,66s
+59 349 9692 9343
+Generation 59: elapsed time 11,44s
+60 330 9705 9375
+Generation 60: elapsed time 8,99s
+61 336 9705 9369
+Generation 61: elapsed time 7,94s
+62 339 9703 9364
+Generation 62: elapsed time 9,01s
+63 360 9681 9321
+Generation 63: elapsed time 16,25s
+64 331 9701 9370
+Generation 64: elapsed time 8,49s
+65 348 9690 9342
+Generation 65: elapsed time 8,70s
+66 327 9713 9386
+Generation 66: elapsed time 8,58s
+67 322 9715 9393
+Generation 67: elapsed time 10,56s
+68 301 9733 9432
+Generation 68: elapsed time 12,53s
+69 353 9702 9349
+Generation 69: elapsed time 8,73s
+70 322 9722 9400
+Generation 70: elapsed time 9,87s
+71 304 9744 9440
+Generation 71: elapsed time 8,04s
+72 390 9657 9267
+Generation 72: elapsed time 12,66s
+73 300 9735 9435
+Generation 73: elapsed time 9,32s
+74 409 9636 9227
+Generation 74: elapsed time 11,36s
+75 277 9756 9479
+Generation 75: elapsed time 7,81s
+76 558 9496 8938
+Generation 76: elapsed time 9,33s
+77 329 9701 9372
+Generation 77: elapsed time 8,71s
+78 326 9713 9387
+Generation 78: elapsed time 8,27s
+79 328 9710 9382
+Generation 79: elapsed time 8,79s
+80 550 9498 8948
+Generation 80: elapsed time 8,85s
+81 309 9726 9417
+Generation 81: elapsed time 9,21s
+82 304 9738 9434
+Generation 82: elapsed time 8,95s
+83 884 9175 8291
+Generation 83: elapsed time 8,71s
+84 899 9168 8269
+Generation 84: elapsed time 8,59s
+85 291 9740 9449
+Generation 85: elapsed time 10,91s
+86 313 9735 9422
+Generation 86: elapsed time 12,57s
+87 8120 2058 -6062
+Generation 87: elapsed time 9,42s
+88 322 9721 9399
+Generation 88: elapsed time 12,01s
+89 5429 4752 -677
+Generation 89: elapsed time 12,85s
+90 329 9712 9383
+Generation 90: elapsed time 10,19s
+91 308 9732 9424
+Generation 91: elapsed time 11,56s
+92 352 9671 9319
+Generation 92: elapsed time 9,18s
+93 362 9666 9304
+Generation 93: elapsed time 9,44s
+94 377 9660 9283
+Generation 94: elapsed time 8,28s
+95 344 9687 9343
+Generation 95: elapsed time 10,40s
+96 7299 2892 -4407
+Generation 96: elapsed time 7,44s
+97 371 9656 9285
+Generation 97: elapsed time 12,70s
+98 762 9291 8529
+Generation 98: elapsed time 7,32s
+99 930 9136 8206
+Generation 99: elapsed time 11,97s
+kingdom 0: trasheap kingdom 12 13 16 19 21 23 24 29 31 32
+0 10000 0 -10000
+Generation 0: elapsed time 40,28s
+1 10000 0 -10000
+Generation 1: elapsed time 35,90s
+2 9982 19 -9963
+Generation 2: elapsed time 10,84s
+3 9986 16 -9970
+Generation 3: elapsed time 13,85s
+4 9898 115 -9783
+Generation 4: elapsed time 10,22s
+5 9906 102 -9804
+Generation 5: elapsed time 9,38s
+6 9932 75 -9857
+Generation 6: elapsed time 9,01s
+7 9923 81 -9842
+Generation 7: elapsed time 7,43s
+8 9928 78 -9850
+Generation 8: elapsed time 8,37s
+9 9839 178 -9661
+Generation 9: elapsed time 10,61s
+10 9811 204 -9607
+Generation 10: elapsed time 7,99s
+11 9730 310 -9420
+Generation 11: elapsed time 8,17s
+12 9685 353 -9332
+Generation 12: elapsed time 8,25s
+13 9697 341 -9356
+Generation 13: elapsed time 8,28s
+14 9681 345 -9336
+Generation 14: elapsed time 8,65s
+15 9561 508 -9053
+Generation 15: elapsed time 7,74s
+16 9573 503 -9070
+Generation 16: elapsed time 10,75s
+17 9106 1020 -8086
+Generation 17: elapsed time 7,78s
+18 9063 1080 -7983
+Generation 18: elapsed time 8,92s
+19 8608 1550 -7058
+Generation 19: elapsed time 8,62s
+20 8720 1445 -7275
+Generation 20: elapsed time 8,86s
+21 8539 1665 -6874
+Generation 21: elapsed time 13,21s
+22 8654 1531 -7123
+Generation 22: elapsed time 18,18s
+23 8339 1883 -6456
+Generation 23: elapsed time 10,65s
+24 8339 1874 -6465
+Generation 24: elapsed time 8,40s
+25 8133 2125 -6008
+Generation 25: elapsed time 10,13s
+26 8212 2028 -6184
+Generation 26: elapsed time 6,91s
+27 7930 2347 -5583
+Generation 27: elapsed time 7,73s
+28 7228 3043 -4185
+Generation 28: elapsed time 8,89s
+29 7285 3024 -4261
+Generation 29: elapsed time 7,78s
+30 6834 3509 -3325
+Generation 30: elapsed time 7,80s
+31 6790 3546 -3244
+Generation 31: elapsed time 8,95s
+32 6649 3707 -2942
+Generation 32: elapsed time 7,11s
+33 6187 4231 -1956
+Generation 33: elapsed time 6,96s
+34 5957 4414 -1543
+Generation 34: elapsed time 10,36s
+35 5637 4838 -799
+Generation 35: elapsed time 6,24s
+36 5540 4914 -626
+Generation 36: elapsed time 6,48s
+37 5446 5011 -435
+Generation 37: elapsed time 7,63s
+38 5571 4867 -704
+Generation 38: elapsed time 9,23s
+39 5556 4914 -642
+Generation 39: elapsed time 6,53s
+40 5579 4894 -685
+Generation 40: elapsed time 7,82s
+41 5567 4862 -705
+Generation 41: elapsed time 7,63s
+42 5476 4959 -517
+Generation 42: elapsed time 7,41s
+43 5414 5014 -400
+Generation 43: elapsed time 6,83s
+44 5316 5088 -228
+Generation 44: elapsed time 7,50s
+45 5313 5077 -236
+Generation 45: elapsed time 6,49s
+46 5339 5082 -257
+Generation 46: elapsed time 6,38s
+47 5226 5129 -97
+Generation 47: elapsed time 6,83s
+48 5353 5021 -332
+Generation 48: elapsed time 7,20s
+49 5266 5086 -180
+Generation 49: elapsed time 6,53s
+50 5240 5128 -112
+Generation 50: elapsed time 6,75s
+51 5286 5073 -213
+Generation 51: elapsed time 7,50s
+52 5235 5131 -104
+Generation 52: elapsed time 6,88s
+53 5277 5121 -156
+Generation 53: elapsed time 6,68s
+54 5362 5004 -358
+Generation 54: elapsed time 8,82s
+55 5311 5096 -215
+Generation 55: elapsed time 7,92s
+56 5316 5041 -275
+Generation 56: elapsed time 7,79s
+57 5106 5309 203
+Generation 57: elapsed time 7,70s
+58 5374 5040 -334
+Generation 58: elapsed time 6,31s
+59 5245 5131 -114
+Generation 59: elapsed time 6,40s
+60 5333 5078 -255
+Generation 60: elapsed time 7,17s
+61 5263 5095 -168
+Generation 61: elapsed time 7,60s
+62 5264 5097 -167
+Generation 62: elapsed time 7,80s
+63 5339 5077 -262
+Generation 63: elapsed time 7,22s
+64 5256 5117 -139
+Generation 64: elapsed time 6,66s
+65 5339 5044 -295
+Generation 65: elapsed time 6,46s
+66 5301 5059 -242
+Generation 66: elapsed time 8,62s
+67 5283 5097 -186
+Generation 67: elapsed time 9,07s
+68 5271 5089 -182
+Generation 68: elapsed time 7,53s
+69 5287 5106 -181
+Generation 69: elapsed time 7,00s
+70 5337 5069 -268
+Generation 70: elapsed time 6,58s
+71 5196 5195 -1
+Generation 71: elapsed time 6,67s
+72 5280 5091 -189
+Generation 72: elapsed time 6,80s
+73 5260 5095 -165
+Generation 73: elapsed time 13,14s
+74 5268 5111 -157
+Generation 74: elapsed time 13,58s
+75 5286 5122 -164
+Generation 75: elapsed time 8,16s
+76 5343 5060 -283
+Generation 76: elapsed time 9,01s
+77 5273 5143 -130
+Generation 77: elapsed time 7,79s
+78 5285 5110 -175
+Generation 78: elapsed time 7,99s
+79 5345 5070 -275
+Generation 79: elapsed time 8,17s
+80 5352 5058 -294
+Generation 80: elapsed time 6,57s
+81 5296 5098 -198
+Generation 81: elapsed time 7,02s
+82 5539 4801 -738
+Generation 82: elapsed time 7,26s
+83 5255 5128 -127
+Generation 83: elapsed time 6,68s
+84 5295 5084 -211
+Generation 84: elapsed time 7,38s
+85 5357 5046 -311
+Generation 85: elapsed time 6,21s
+86 5329 5033 -296
+Generation 86: elapsed time 6,40s
+87 5314 5102 -212
+Generation 87: elapsed time 6,21s
+88 5245 5148 -97
+Generation 88: elapsed time 6,91s
+89 5250 5118 -132
+Generation 89: elapsed time 7,19s
+90 5265 5146 -119
+Generation 90: elapsed time 7,64s
+91 5217 5158 -59
+Generation 91: elapsed time 6,31s
+92 5316 5062 -254
+Generation 92: elapsed time 6,37s
+93 5323 5067 -256
+Generation 93: elapsed time 9,72s
+94 5337 5057 -280
+Generation 94: elapsed time 10,56s
+95 5349 5063 -286
+Generation 95: elapsed time 7,34s
+96 5409 4975 -434
+Generation 96: elapsed time 8,53s
+97 5326 5102 -224
+Generation 97: elapsed time 6,45s
+98 5324 5044 -280
+Generation 98: elapsed time 6,24s
+99 5387 4982 -405
+Generation 99: elapsed time 6,82s
+kingdom 0: badCards kingdom 9 12 15 18 22 24 27 28 31 32
+0 10000 0 -10000
+Generation 0: elapsed time 11,54s
+1 9997 3 -9994
+Generation 1: elapsed time 16,16s
+2 9999 2 -9997
+Generation 2: elapsed time 17,19s
+3 9999 1 -9998
+Generation 3: elapsed time 20,98s
+4 9984 20 -9964
+Generation 4: elapsed time 11,67s
+5 9992 11 -9981
+Generation 5: elapsed time 11,07s
+6 9931 96 -9835
+Generation 6: elapsed time 9,77s
+7 9598 512 -9086
+Generation 7: elapsed time 9,67s
+8 9589 535 -9054
+Generation 8: elapsed time 7,60s
+9 9638 471 -9167
+Generation 9: elapsed time 7,22s
+10 8890 1375 -7515
+Generation 10: elapsed time 11,85s
+11 8773 1519 -7254
+Generation 11: elapsed time 7,17s
+12 8541 1729 -6812
+Generation 12: elapsed time 7,44s
+13 8672 1647 -7025
+Generation 13: elapsed time 7,35s
+14 8741 1594 -7147
+Generation 14: elapsed time 7,52s
+15 7389 3061 -4328
+Generation 15: elapsed time 7,32s
+16 6607 3916 -2691
+Generation 16: elapsed time 9,20s
+17 5882 4675 -1207
+Generation 17: elapsed time 13,31s
+18 5945 4623 -1322
+Generation 18: elapsed time 7,29s
+19 5844 4744 -1100
+Generation 19: elapsed time 6,69s
+20 5544 5090 -454
+Generation 20: elapsed time 8,60s
+21 5526 5119 -407
+Generation 21: elapsed time 11,08s
+22 5531 5094 -437
+Generation 22: elapsed time 12,02s
+23 5539 5082 -457
+Generation 23: elapsed time 9,21s
+24 5473 5146 -327
+Generation 24: elapsed time 9,89s
+25 5415 5254 -161
+Generation 25: elapsed time 10,57s
+26 5376 5282 -94
+Generation 26: elapsed time 10,01s
+27 5414 5255 -159
+Generation 27: elapsed time 9,90s
+28 5129 5460 331
+Generation 28: elapsed time 8,90s
+29 5258 5426 168
+Generation 29: elapsed time 9,12s
+30 5133 5581 448
+Generation 30: elapsed time 9,62s
+31 5062 5620 558
+Generation 31: elapsed time 13,93s
+32 5056 5615 559
+Generation 32: elapsed time 8,92s
+33 4975 5741 766
+Generation 33: elapsed time 9,01s
+34 5047 5622 575
+Generation 34: elapsed time 14,14s
+35 5041 5666 625
+Generation 35: elapsed time 13,32s
+36 5007 5646 639
+Generation 36: elapsed time 9,09s
+37 5038 5643 605
+Generation 37: elapsed time 9,20s
+38 5083 5626 543
+Generation 38: elapsed time 9,70s
+39 5076 5581 505
+Generation 39: elapsed time 9,73s
+40 5048 5653 605
+Generation 40: elapsed time 12,45s
+41 5018 5667 649
+Generation 41: elapsed time 23,38s
+42 5019 5659 640
+Generation 42: elapsed time 20,13s
+43 5040 5654 614
+Generation 43: elapsed time 12,80s
+44 5007 5675 668
+Generation 44: elapsed time 10,08s
+45 5012 5673 661
+Generation 45: elapsed time 11,24s
+46 5019 5668 649
+Generation 46: elapsed time 12,26s
+47 5005 5704 699
+Generation 47: elapsed time 11,51s
+48 4923 5761 838
+Generation 48: elapsed time 10,32s
+49 5051 5656 605
+Generation 49: elapsed time 11,66s
+50 5037 5623 586
+Generation 50: elapsed time 15,36s
+51 5084 5580 496
+Generation 51: elapsed time 11,19s
+52 5023 5676 653
+Generation 52: elapsed time 10,20s
+53 5037 5640 603
+Generation 53: elapsed time 11,35s
+54 5020 5669 649
+Generation 54: elapsed time 11,20s
+55 5096 5612 516
+Generation 55: elapsed time 10,46s
+56 4889 5810 921
+Generation 56: elapsed time 10,95s
+57 5063 5641 578
+Generation 57: elapsed time 15,37s
+58 5040 5635 595
+Generation 58: elapsed time 9,81s
+59 5004 5728 724
+Generation 59: elapsed time 10,17s
+60 5079 5616 537
+Generation 60: elapsed time 10,06s
+61 4979 5692 713
+Generation 61: elapsed time 9,37s
+62 5134 5586 452
+Generation 62: elapsed time 12,02s
+63 5152 5530 378
+Generation 63: elapsed time 10,85s
+64 5053 5647 594
+Generation 64: elapsed time 10,21s
+65 5030 5684 654
+Generation 65: elapsed time 10,15s
+66 5034 5670 636
+Generation 66: elapsed time 13,50s
+67 5093 5608 515
+Generation 67: elapsed time 11,05s
+68 5068 5610 542
+Generation 68: elapsed time 11,08s
+69 5098 5570 472
+Generation 69: elapsed time 11,19s
+70 5066 5641 575
+Generation 70: elapsed time 11,84s
+71 5105 5578 473
+Generation 71: elapsed time 10,48s
+72 5109 5590 481
+Generation 72: elapsed time 10,36s
+73 5045 5615 570
+Generation 73: elapsed time 12,22s
+74 5001 5678 677
+Generation 74: elapsed time 12,58s
+75 5073 5606 533
+Generation 75: elapsed time 10,62s
+76 5016 5685 669
+Generation 76: elapsed time 9,49s
+77 4830 5808 978
+Generation 77: elapsed time 9,93s
+78 4829 5824 995
+Generation 78: elapsed time 11,92s
+79 4860 5753 893
+Generation 79: elapsed time 12,78s
+80 4813 5832 1019
+Generation 80: elapsed time 10,33s
+81 4883 5727 844
+Generation 81: elapsed time 10,72s
+82 4798 5819 1021
+Generation 82: elapsed time 11,04s
+83 4946 5723 777
+Generation 83: elapsed time 9,99s
+84 4852 5799 947
+Generation 84: elapsed time 10,83s
+85 4856 5763 907
+Generation 85: elapsed time 10,85s
+86 4930 5734 804
+Generation 86: elapsed time 13,07s
+87 4874 5764 890
+Generation 87: elapsed time 11,36s
+88 4994 5678 684
+Generation 88: elapsed time 10,90s
+89 5005 5645 640
+Generation 89: elapsed time 12,21s
+90 4876 5795 919
+Generation 90: elapsed time 15,69s
+91 5037 5620 583
+Generation 91: elapsed time 11,31s
+92 4792 5857 1065
+Generation 92: elapsed time 9,93s
+93 4863 5762 899
+Generation 93: elapsed time 21,82s
+94 4872 5740 868
+Generation 94: elapsed time 28,36s
+95 4854 5774 920
+Generation 95: elapsed time 43,27s
+96 4916 5738 822
+Generation 96: elapsed time 12,06s
+97 4873 5744 871
+Generation 97: elapsed time 13,24s
+98 4896 5732 836
+Generation 98: elapsed time 11,95s
+99 4823 5829 1006
+Generation 99: elapsed time 10,14s

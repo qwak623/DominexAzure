@@ -1,0 +1,5 @@
+18_19_20_22_23_24_25_27_30_32:0;-3;-2;Province (6) 7,Gold (3) 5,Witch (30) 8,Duchy (5) 6,Province (6) 5,Gold (3) 100,Silver (2) 12,Gold (3) 11,Library (18) 9,Thief (27) 6,Smithy (25) 8
+18_19_20_22_23_24_27_28_29_30:7;6;6;Province (6) 9,Witch (30) 2,Gold (3) 99,Silver (2) 6,Duchy (5) 5,Silver (2) 11,Village (29) 6,Remodel (24) 3,Market (19) 8,Militia (20) 6
+18_19_20_22_23_25_26_30_31_32:2;8;8;Province (6) 7,Gold (3) 100,Witch (30) 3,Silver (2) 11,Witch (30) 11,Smithy (25) 5,Copper (1) 7,Province (6) 6,Militia (20) 2,Duchy (5) 7,Moat (22) 9,Silver (2) 7,Moneylender (23) 6
+18_19_21_23_26_27_28_29_31_32:11;6;3;Gold (3) 101,Mine (21) 1,Market (19) 10,Library (18) 8,Silver (2) 1,Silver (2) 14,Duchy (5) 9,Village (29) 5,Thief (27) 6
+18_20_22_23_25_27_28_29_30_31:9;7;6;Province (6) 2,Province (6) 10,Gold (3) 99,Witch (30) 2,Silver (2) 10,Duchy (5) 4,Militia (20) 2,Moneylender (23) 4,Smithy (25) 3,Moneylender (23) 13

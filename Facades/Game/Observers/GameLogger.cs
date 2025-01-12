@@ -31,4 +31,16 @@ internal class GameLogger : IGameLogger
 		//_writer.WriteLine(str);
 		//_writer.Flush(); // todo - přes destructor?
 	}
+
+	public async Task Log(string message) // todo temporary
+	{
+		var gameLog = new GameLog
+		{
+			PlayerId = "ai",
+			Message = message
+		};
+
+		LogHistory.Add(gameLog);
+		await logHubContext.Clients.All.SendAsync("AppendLog", gameLog, LogHistory.Count);
+	}
 }
