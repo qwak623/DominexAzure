@@ -5,7 +5,7 @@ namespace GameCore;
 public class GameResults
 {
 	public List<int> Score { get; set; }
-	public List<Player> Players;
+	public List<IPlayer> Players;
 	public List<int> Turns;
 
 	/// <summary>

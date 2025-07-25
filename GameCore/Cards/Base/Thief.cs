@@ -27,7 +27,7 @@ public class Thief : Card
 
 	public static Thief Get() => thief ?? new Thief();
 
-	public override void Attack(Player defender, Player attacker)
+	public override void Attack(IPlayer defender, IPlayer attacker)
 	{
 		// show two cards
 		var cards = defender.Show(2);
@@ -38,7 +38,7 @@ public class Thief : Card
 		{
 			// TODO sjednotit thief choose a thief steal
 			// attacker has to pick one
-			var card = attacker.User.ThiefChoose(this, attacker.ps, attacker.Game.Kingdom, treasures);
+			var card = attacker.User.ThiefChoose(this, attacker.PlayerState, attacker.Game.Kingdom, treasures);
 			// the other one is discarded (if there is one)
 			cards.Remove(card);
 
@@ -46,16 +46,16 @@ public class Thief : Card
 			if (otherCard != null)
 			{
 				attacker.Game.Logger?.Log(new GameLog { PlayerId = defender.Name, Message = $"{defender.Name} discards {otherCard.Name}" });
-				defender.ps.DiscardPile.Add(otherCard);
+				defender.PlayerState.DiscardPile.Add(otherCard);
 			}
 
 			// attaker chooses if he will trash or steal
 			string steal = $"Steal {card.Name}";
 			string trash = $"Trash {card.Name}";
-			if (attacker.User.ThiefSteal(this, attacker.ps, attacker.Game.Kingdom, card))
+			if (attacker.User.ThiefSteal(this, attacker.PlayerState, attacker.Game.Kingdom, card))
 			{
 				attacker.Game.Logger?.Log(new GameLog { PlayerId = attacker.Name, Message = $"{attacker.Name} steals {card.Name}" });
-				attacker.ps.PlayedCards.Add(card);
+				attacker.PlayerState.PlayedCards.Add(card);
 			}
 			else
 			{
@@ -68,7 +68,7 @@ public class Thief : Card
 			foreach (var card in cards)
 			{
 				attacker.Game.Logger?.Log(new GameLog { PlayerId = defender.Name, Message = $"{defender.Name} discards {card.Name}" });
-				defender.ps.DiscardPile.Add(card);
+				defender.PlayerState.DiscardPile.Add(card);
 			}
 		}
 	}

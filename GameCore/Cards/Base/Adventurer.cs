@@ -27,7 +27,7 @@ public class Adventurer : Card
 
 	public static Adventurer Get() => adventurer ?? new Adventurer();
 
-	protected override void ActionEffect(Player player)
+	protected override void ActionEffect(IPlayer player)
 	{
 		for (int i = 0; i < 2;)
 		{
@@ -39,12 +39,12 @@ public class Adventurer : Card
 			if (card.IsTreasure)
 			{
 				player.Game.Logger?.Log(new GameLog { PlayerId = Name, Message = $"{Name} draws {card.Name}" });
-				player.ps.Hand.Add(card);
+				player.PlayerState.Hand.Add(card);
 				i++;
 			}
 			else
 			{
-				player.ps.PlayedCards.Add(card);
+				player.PlayerState.PlayedCards.Add(card);
 			}
 		}
 	}

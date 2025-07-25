@@ -25,5 +25,5 @@ public class Moat : Card
 
 	public static Moat Get() => moat ?? new Moat();
 
-	public override bool Reaction(Player player) => true;
+	public override bool Reaction(IPlayer player) => true;
 }

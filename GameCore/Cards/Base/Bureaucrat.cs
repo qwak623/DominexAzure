@@ -28,17 +28,17 @@ public class Bureaucrat : Card
 
 	public static Bureaucrat Get() => bureaucrat ?? new Bureaucrat();
 
-	protected override void ActionEffect(Player player) => player.GainToDrawPile(CardType.Silver);
+	protected override void ActionEffect(IPlayer player) => player.GainToDrawPile(CardType.Silver);
 
-	public override void Attack(Player def, Player att)
+	public override void Attack(IPlayer def, IPlayer att)
 	{
 		// TODO REVEAL hand with no victory cards
-		if (!def.ps.Hand.Any(c => c.IsVictory))
+		if (!def.PlayerState.Hand.Any(c => c.IsVictory))
 		{
 			return;
 		}
 
-		var card = def.User.BureaucratPutOnTop(this, def.ps, def.Game.Kingdom);
+		var card = def.User.BureaucratPutOnTop(this, def.PlayerState, def.Game.Kingdom);
 		def.ReturnToDrawPile(card);
 	}
 }

@@ -4,13 +4,13 @@ using GameCore.Observers;
 using Utils;
 
 namespace GameCore;
-public class Game
+public class Game : IGame
 {
 	private User[] users;
-	public List<Player> Players;
-	public Kingdom Kingdom;
-	public List<Card> Trash;
-	public IGameLogger Logger;
+	public List<IPlayer> Players { get; set; }
+	public Kingdom Kingdom { get; set; }
+	public IList<Card> Trash { get; set; }
+	public IGameLogger Logger { get; set; }
 
 	public bool GameEnd { get; private set; }
 
@@ -50,9 +50,10 @@ public class Game
 		return Task.Run(() =>
 		{
 			// random needs to be instantiated and used in the same thread
-			var rnd = new ThreadSafeRandom();
+			//var rnd = new ThreadSafeRandom();
 
-			Players = users.Select(u => new Player(this, u, rnd)).ToList();
+			//Players =
+			var neco = users.Select(u => new Player(this, u)).ToList();
 			Logger?.Log(new GameLog { Message = "New game has started." });
 
 			// intitial drawing
@@ -72,17 +73,23 @@ public class Game
 
 				Logger?.Log(new GameLog { PlayerId = Players[i].Name, Message = $"{Players[i].Name}'s turn:" });
 				Logger?.Log(new GameLog { Message = $"Action phase" });
-				Logger?.Log(new GameLog { PlayerId = Players[i].Name, Message = $"Hand: {string.Join(", ", Players[i].ps.Hand.Select(c => c.Name))}" });
+				Logger?.Log(new GameLog
+				{
+					PlayerId = Players[i].Name,
+					Message =
+					$"Hand: {string.Join(", ", Players[i].PlayerState.Hand.Select(c => c.Name))}"
+				});
 
-				Players[i].ps.Buys = 1;
-				Players[i].ps.Actions = 1;
-				Players[i].ps.Coins = 0;
+				// todo tohle neni moc hezke
+				Players[i].PlayerState.Buys = 1;
+				Players[i].PlayerState.Actions = 1;
+				Players[i].PlayerState.Coins = 0;
 
 				// action phase
 				Card card;
 				do
 				{
-					card = Players[i].PlayCard();
+					card = Players[i].PlayActionCard();
 				}
 				while (card != null);
 
@@ -90,8 +97,8 @@ public class Game
 				Players[i].PlayTreasure();
 
 				Logger?.Log(new GameLog { Message = $"Buy phase" });
-				Logger?.Log(new GameLog { PlayerId = Players[i].Name, Message = "Hand: " + string.Join(", ", Players[i].ps.Hand.Select(c => c.Name)) });
-				Logger?.Log(new GameLog { PlayerId = Players[i].Name, Message = $"{Players[i].Name} has ${Players[i].ps.Coins}." });
+				Logger?.Log(new GameLog { PlayerId = Players[i].Name, Message = "Hand: " + string.Join(", ", Players[i].PlayerState.Hand.Select(c => c.Name)) });
+				Logger?.Log(new GameLog { PlayerId = Players[i].Name, Message = $"{Players[i].Name} has ${Players[i].PlayerState.Coins}." });
 
 				// buy phase
 				do
@@ -110,7 +117,7 @@ public class Game
 				if (GameEnd)
 				{
 					Logger?.Log(new GameLog { Message = "\r\n\tResults:" });
-					foreach (Player player in Players.OrderBy(p => p.VictoryPoints))
+					foreach (IPlayer player in Players.OrderBy(p => p.VictoryPoints))
 					{
 						Logger?.Log(new GameLog { PlayerId = player.Name, Message = $"{player.Name} has {player.VictoryPoints}." });
 					}
@@ -136,7 +143,7 @@ public class Game
 				if (turn >= maxRounds)
 				{
 					Logger?.Log(new GameLog { Message = "\r\nGame was terminated, number of rounds exceeded 50." });
-					foreach (Player player in Players.OrderBy(p => p.VictoryPoints))
+					foreach (IPlayer player in Players.OrderBy(p => p.VictoryPoints))
 					{
 						Logger?.Log(new GameLog { PlayerId = player.Name, Message = $"{player.Name} has {player.VictoryPoints}." });
 					}
@@ -157,7 +164,7 @@ public class Game
 	{
 		foreach (var player in Players)
 		{
-			player.ps.Notify();
+			player.PlayerState.Notify();
 		}
 	}
 

@@ -1,4 +1,6 @@
-﻿namespace GameCore.Cards;
+﻿using GameCore.GameCore;
+
+namespace GameCore.Cards;
 
 public abstract class Card
 {
@@ -52,16 +54,16 @@ public abstract class Card
 		IsVictory = isVictory;
 		IsTreasure = isTreasure;
 	}
-
+	
 	/// <summary>
 	/// Special action card effect including adding actions etc.
 	/// </summary>
 	/// <param name="player"></param>
-	public void WhenPlayAction(Player player)
+	public void WhenPlayAction(IPlayer player)
 	{
-		player.ps.Actions += AddActions;
-		player.ps.Coins += AddCoins;
-		player.ps.Buys += AddBuys;
+		player.PlayerState.Actions += AddActions;
+		player.PlayerState.Coins += AddCoins;
+		player.PlayerState.Buys += AddBuys;
 		if (DrawCards != 0)
 		{
 			player.Draw(DrawCards);
@@ -76,17 +78,17 @@ public abstract class Card
 	/// drawing cards so theese effect shouldn be implemented here.
 	/// </summary>
 	/// <param name="player"></param>
-	protected virtual void ActionEffect(Player player) { }
+	protected virtual void ActionEffect(IPlayer player) { }
 
-	public void WhenPlayTreasure(Player player)
+	public void WhenPlayTreasure(IPlayer player)
 	{
-		player.ps.Buys += AddBuys;
-		player.ps.Coins += Coins;
+		player.PlayerState.Buys += AddBuys;
+		player.PlayerState.Coins += Coins;
 
 		TreasureEffect(player);
 	}
 
-	protected virtual void TreasureEffect(Player player) { }
+	protected virtual void TreasureEffect(IPlayer player) { }
 
 	/// <summary>
 	/// Returns true if attack was repulsed.
@@ -95,7 +97,7 @@ public abstract class Card
 	/// <param name="player"></param>
 	/// <param name="user"></param>
 	/// <returns></returns>
-	public virtual bool Reaction(Player player) => false;
+	public virtual bool Reaction(IPlayer player) => false;
 
 	/// <summary>
 	/// Returns number of victory points.
@@ -103,14 +105,14 @@ public abstract class Card
 	/// </summary>
 	/// <param name="player"></param>
 	/// <returns></returns>
-	public virtual int CountPoints(Player player) => VictoryPoints;
+	public virtual int CountPoints(IPlayer player) => VictoryPoints;
 
 	/// <summary>
 	/// Attack effect.
 	/// </summary>
 	/// <param name="defender"></param>
 	/// <param name="attacker"></param>
-	public virtual void Attack(Player defender, Player attacker) { }
+	public virtual void Attack(IPlayer defender, IPlayer attacker) { }
 
 	/// <summary>
 	/// Some cards requires other cards, when they are in kingdom. (Witch requires Curse etc.)

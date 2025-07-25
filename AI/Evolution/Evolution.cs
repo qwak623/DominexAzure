@@ -13,7 +13,6 @@ public class Evolution
 	(BuyAgenda Agenda, double Fitness)[] pool;
 	BuyAgenda referenceAgenda;
 	readonly IGameLogger logger;
-	readonly ThreadSafeRandom rnd = new ThreadSafeRandom();
 
 	/// <summary>
 	/// </summary>
@@ -115,12 +114,12 @@ public class Evolution
 		// for each new member in pool
 		for (int i = leaders.Length; i < pool.Length; i++)
 		{
-			var agenda = leaders[rnd.Next(leaders.Length)].Clone();
+			var agenda = leaders[ThreadSafeRandom.Next(leaders.Length)].Clone();
 
 			// at least one mutations always happens
 			do
 				par.MutationSelector.SelectMutation(agenda.BuyMenu.Count).Mutate(agenda, par.Kingdom.AddRequiredCards());
-			while (rnd.NextDouble() < par.Mutate);
+			while (ThreadSafeRandom.NextDouble() < par.Mutate);
 
 			pool[i] = (agenda, 0);
 		}
@@ -140,7 +139,7 @@ public class Evolution
 		int[] result = new int[3];
 		for (int i = 0; i < gameCount; i++)
 		{
-			Game game = new Game(new User[] { getFirst(), getSecond() }, par.Kingdom.GetKingdom(2));
+			IGame game = new Game(new User[] { getFirst(), getSecond() }, par.Kingdom.GetKingdom(2));
 			var task = game.Play();
 			var results = task.Result;
 			if (results.PlayerIsWinner(0))
@@ -152,7 +151,7 @@ public class Evolution
 
 		for (int i = 0; i < gameCount; i++)
 		{
-			Game game = new Game(new User[] { getSecond(), getFirst() }, par.Kingdom.GetKingdom(2));
+			IGame game = new Game(new User[] { getSecond(), getFirst() }, par.Kingdom.GetKingdom(2));
 			var task = game.Play();
 			var results = task.Result;
 			if (results.PlayerIsWinner(0))

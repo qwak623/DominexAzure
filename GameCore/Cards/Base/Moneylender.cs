@@ -28,12 +28,12 @@ public class Moneylender : Card
 
 	public static Moneylender Get() => moneylender ?? new Moneylender();
 
-	protected override void ActionEffect(Player player)
+	protected override void ActionEffect(IPlayer player)
 	{
-		if (player.ps.Hand.Remove(Copper.Get()))
+		if (player.PlayerState.Hand.Remove(Copper.Get()))
 		{
 			player.Game.Logger?.Log(new GameLog { PlayerId = player.Name, Message = $"{player.Name} trashes Copper and gains 3$" });
-			player.ps.Coins += 3;
+			player.PlayerState.Coins += 3;
 		}
 	}
 }

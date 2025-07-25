@@ -27,5 +27,5 @@ public class Witch : Card
 
 	public override Card RequiredCards => GeneralCards.Curse.Get();
 
-	public override void Attack(Player defender, Player attacker) => defender.Gain(CardType.Curse);
+	public override void Attack(IPlayer defender, IPlayer attacker) => defender.Gain(CardType.Curse);
 }

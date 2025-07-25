@@ -23,18 +23,20 @@ public class Mine : Card
 		Message = "Trash a treasure, gain a treasure to your hand costing up to $3 more.";
 	}
 
-	public static Mine Get() => mine ?? new Mine();
+	public static Mine Get() => mine ?? new Mine(); // todo tohle neni thread safe - je potreba aby bylo?
 
-	protected override void ActionEffect(Player p)
+	protected override void ActionEffect(IPlayer p)
 	{
-		var oldCard = p.User.MineTrash(this, p.ps, p.Game.Kingdom);
+		var cardSelection = p.PlayerState.Hand.Where(c => c.IsTreasure).ToList();
+
+		var oldCard = p.User.MineTrash(this, p.PlayerState, p.Game.Kingdom, cardSelection);
 		if (oldCard == null)
 		{
 			return;
 		}
 
 		p.Trash(oldCard);
-		var newCard = p.User.SelectCardToGain(p.Game.Kingdom.GetWrapper(oldCard.Price + 3, true), p.ps, p.Game.Kingdom, Phase.Gain);
+		var newCard = p.User.SelectCardToGain(p.Game.Kingdom.GetWrapper(oldCard.Price + 3, true), p.PlayerState, p.Game.Kingdom, Phase.Gain);
 		if (newCard != null)
 		{
 			p.GainToHand(newCard.Type);

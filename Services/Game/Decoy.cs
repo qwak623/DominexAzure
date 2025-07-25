@@ -36,7 +36,7 @@ public class Decoy : User
 		return ps.Hand.Take(2).ToList();
 	}
 
-	public override Card MineTrash(Card cardPlayed, PlayerState ps, Kingdom k)
+	public override Card MineTrash(Card cardPlayed, PlayerState ps, Kingdom k, IList<Card> cardSelection)
 	{
 		return null;
 	}

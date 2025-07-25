@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using GameCore.Observers;
 
 namespace GameCore.Cards;
@@ -39,7 +38,7 @@ public class Kingdom : IEnumerable<Pile>
 				{
 					count = 30;
 				}
-				return new Pile(card, count, () => kingdomObserver.Notify(this));
+				return new Pile(card, count, () => kingdomObserver?.Notify(this));
 			})
 			.ToList();
 
@@ -47,7 +46,7 @@ public class Kingdom : IEnumerable<Pile>
 		{
 			cardTypeToIndex.Add(piles[i].Card.Type, i);
 		}
-		kingdomObserver.Notify(this);
+		kingdomObserver?.Notify(this);
 	}
 
 	/// <summary>
@@ -60,9 +59,9 @@ public class Kingdom : IEnumerable<Pile>
 	{
 		return new KingdomWrapper
 		{
-			kingdom = this,
-			price = price,
-			onlyTreasures = onlyTreasures
+			Kingdom = this,
+			Price = price,
+			OnlyTreasures = onlyTreasures
 		};
 	}
 

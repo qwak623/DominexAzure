@@ -16,7 +16,7 @@ namespace Dominex.Facades.Game;
 public class GameFacade : IGameFacade
 {
 	// todo zbavit se static věcí (singleton?)
-	private static GameCore.Game Game;
+	private static IGame Game;
 
 	private static readonly Job<ChoiceDto> choiceJob = new();
 	private static readonly Job<Answer> answerJob = new();

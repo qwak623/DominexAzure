@@ -27,16 +27,16 @@ public class ThroneRoom : Card
 
 	public static ThroneRoom Get() => throneRoom ?? new ThroneRoom();
 
-	protected override void ActionEffect(Player player)
+	protected override void ActionEffect(IPlayer player)
 	{
-		var card = player.User.ThroneRoomPlay(this, player.ps, player.Game.Kingdom, player.ps.Hand.Where(c => c.IsAction));
+		var card = player.User.ThroneRoomPlay(this, player.PlayerState, player.Game.Kingdom, player.PlayerState.Hand.Where(c => c.IsAction));
 		if (card == null)
 		{
 			return;
 		}
 
-		player.ps.Hand.Remove(card);
-		player.ps.PlayedCards.Add(card);
+		player.PlayerState.Hand.Remove(card);
+		player.PlayerState.PlayedCards.Add(card);
 		for (int i = 0; i < 2; i++)
 		{
 			card.WhenPlayAction(player);

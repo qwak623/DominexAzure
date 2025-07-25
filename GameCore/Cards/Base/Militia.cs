@@ -25,11 +25,11 @@ public class Militia : Card
 
 	public static Militia Get() => militia ?? new Militia();
 
-	public override void Attack(Player defender, Player attacker)
+	public override void Attack(IPlayer defender, IPlayer attacker)
 	{
-		if (defender.ps.Hand.Count <= 3)
+		if (defender.PlayerState.Hand.Count <= 3)
 			return;
-		var cards = defender.User.MilitiaDiscard(this, defender.ps, defender.Game.Kingdom, defender.ps.Hand.Count - 3);
+		var cards = defender.User.MilitiaDiscard(this, defender.PlayerState, defender.Game.Kingdom, defender.PlayerState.Hand.Count - 3);
 		cards.ForEach(card => defender.Discard(card));
 	}
 }

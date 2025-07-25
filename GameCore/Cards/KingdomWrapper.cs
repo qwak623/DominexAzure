@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GameCore.Cards;
+﻿namespace GameCore.Cards;
 
 // todo jb revision
+// asi bude lepsi sloucit s kingdomem
+// nebo z toho udelat readonly kingdom
 public class KingdomWrapper
 {
-	public Kingdom kingdom;
-	public int price;
-	public bool onlyTreasures;
+	public Kingdom Kingdom;
+	public int Price { get; init; }
+	public bool OnlyTreasures { get; init; }
 
 	/// <summary>
 	/// Returns specified card, if it is available.
@@ -20,10 +16,10 @@ public class KingdomWrapper
 	/// <returns></returns>
 	public Card GetCard(CardType type)
 	{
-		var pile = kingdom.GetPile(type);
-		if (pile != null && isAvailable(pile))
+		var pile = Kingdom.GetPile(type);
+		if (pile != null && IsAvailable(pile))
 		{
-			return kingdom.GetPile(type).Card;
+			return Kingdom.GetPile(type).Card;
 		}
 
 		return null;
@@ -33,8 +29,8 @@ public class KingdomWrapper
 	/// Returns all available cards.
 	/// </summary>
 	public IEnumerable<Card> AvailableCards =>
-		kingdom.Where(p => isAvailable(p))
+		Kingdom.Where(IsAvailable)
 		.Select(p => p.Card);
 
-	bool isAvailable(Pile pile) => pile.Count > 0 && pile.Price <= price && (onlyTreasures && pile.Card.IsTreasure || !onlyTreasures);
+	private bool IsAvailable(Pile pile) => pile.Count > 0 && pile.Price <= Price && (OnlyTreasures && pile.Card.IsTreasure || !OnlyTreasures);
 }

@@ -24,5 +24,5 @@ public class Gardens : Card
 
 	public static Gardens Get() => gardens ?? new Gardens();
 
-	public override int CountPoints(Player player) => player.CardCount / 10;
+	public override int CountPoints(IPlayer player) => player.CardCount / 10;
 }

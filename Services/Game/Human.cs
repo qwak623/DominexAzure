@@ -126,9 +126,8 @@ public class Human : User, IHuman
 		return answer.Values.Select(c => cardSelection[c.Index]).ToList();
 	}
 
-	public override Card MineTrash(Card cardPlayed, PlayerState ps, Kingdom k)
+	public override Card MineTrash(Card cardPlayed, PlayerState ps, Kingdom k, IList<Card> cardSelection)
 	{
-		var cardSelection = ps.Hand.Where(c => c.IsTreasure).ToList();
 		var answer = CallClient(new ChoiceDto
 		(
 			cardPlayed: cardMapper.ToCardDto(cardPlayed),

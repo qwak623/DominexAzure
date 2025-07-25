@@ -24,10 +24,10 @@ public class Remodel : Card
 
 	public static Remodel Get() => remodel ?? new Remodel();
 
-	protected override void ActionEffect(Player p)
+	protected override void ActionEffect(IPlayer p)
 	{
 		// if user didnt select card he wont gain any.
-		var oldCard = p.User.RemodelTrash(this, p.ps, p.Game.Kingdom);
+		var oldCard = p.User.RemodelTrash(this, p.PlayerState, p.Game.Kingdom);
 		if (oldCard == null)
 		{
 			return;
@@ -35,7 +35,7 @@ public class Remodel : Card
 
 		p.Trash(oldCard);
 
-		var newCard = p.User.SelectCardToGain(p.Game.Kingdom.GetWrapper(oldCard.Price + 2), p.ps, p.Game.Kingdom, Phase.Gain);
+		var newCard = p.User.SelectCardToGain(p.Game.Kingdom.GetWrapper(oldCard.Price + 2), p.PlayerState, p.Game.Kingdom, Phase.Gain);
 		if (newCard != null)
 		{
 			p.Gain(newCard.Type);

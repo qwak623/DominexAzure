@@ -25,9 +25,9 @@ public class Chapel : Card
 
 	public static Chapel Get() => chapel ?? new Chapel();
 
-	protected override void ActionEffect(Player player)
+	protected override void ActionEffect(IPlayer player)
 	{
-		player.User.ChapelTrash(this, player.ps, player.Game.Kingdom).ForEach(player.Trash);
+		player.User.ChapelTrash(this, player.PlayerState, player.Game.Kingdom).ForEach(player.Trash);
 	}
 }
 

@@ -25,9 +25,9 @@ public class Chancellor : Card
 
 	public static Chancellor Get() => chancellor ?? new Chancellor();
 
-	protected override void ActionEffect(Player player)
+	protected override void ActionEffect(IPlayer player)
 	{
-		if (player.User.ChancellorDiscard(this, player.ps, player.Game.Kingdom))
+		if (player.User.ChancellorDiscard(this, player.PlayerState, player.Game.Kingdom))
 		{
 			player.DiscardDrawPile();
 		}

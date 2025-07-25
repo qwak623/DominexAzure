@@ -165,7 +165,7 @@ public class ProvincialAI : User
 		return discards;
 	}
 
-	public override Card MineTrash(Card card, PlayerState ps, Kingdom k)
+	public override Card MineTrash(Card card, PlayerState ps, Kingdom k, IList<Card> cardSelection)
 	{
 		var c = ps.Hand.Where(a => a.Type == CardType.Copper).FirstOrDefault();
 		return c ?? ps.Hand.Where(a => a.Type == CardType.Silver).FirstOrDefault();

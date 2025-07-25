@@ -27,11 +27,11 @@ public class Library : Card
 
 	public static Library Get() => library ?? new Library();
 
-	protected override void ActionEffect(Player player)
+	protected override void ActionEffect(IPlayer player)
 	{
 		var cardsAside = new List<Card>();
 
-		while (player.ps.Hand.Count < 7)
+		while (player.PlayerState.Hand.Count < 7)
 		{
 			var card = player.Show(1).SingleOrDefault();
 			if (card == null)
@@ -39,17 +39,17 @@ public class Library : Card
 				break;
 			}
 
-			if (card.IsAction && player.User.LibrarySkip(this, player.ps, player.Game.Kingdom, card))
+			if (card.IsAction && player.User.LibrarySkip(this, player.PlayerState, player.Game.Kingdom, card))
 			{
 				cardsAside.Add(card);
 			}
 			else
 			{
 				player.Game.Logger?.Log(new GameLog { PlayerId = Name, Message = $"{Name} draws {card.Name}" });
-				player.ps.Hand.Add(card);
+				player.PlayerState.Hand.Add(card);
 			}
 		}
 
-		cardsAside.ForEach(c => player.ps.DiscardPile.Add(c));
+		cardsAside.ForEach(c => player.PlayerState.DiscardPile.Add(c));
 	}
 }
