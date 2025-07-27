@@ -29,7 +29,8 @@ public class Adventurer : Card
 
 	protected override void ActionEffect(IPlayer player)
 	{
-		for (int i = 0; i < 2;)
+		int treasuresDrawn = 0;
+		while (treasuresDrawn < 2)
 		{
 			var card = player.Show(1).SingleOrDefault();
 			if (card == null)
@@ -40,10 +41,11 @@ public class Adventurer : Card
 			{
 				player.Game.Logger?.Log(new GameLog { PlayerId = Name, Message = $"{Name} draws {card.Name}" });
 				player.PlayerState.Hand.Add(card);
-				i++;
+				treasuresDrawn++;
 			}
 			else
 			{
+				// todo možná to bude problém s rozšířeními - nemělo by to být spíše v Revealed než v Played? 
 				player.PlayerState.PlayedCards.Add(card);
 			}
 		}
