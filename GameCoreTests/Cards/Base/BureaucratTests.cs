@@ -48,7 +48,7 @@ public class BureaucratTests : CardTestsBase
 	{
 		#region arrange
 		defender.Object.PlayerState.Hand = new List<Card> { province, province };
-		defender.Setup(d => d.User.BureaucratPutOnTop(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>())).Returns(province);
+		defender.Setup(d => d.User.BureaucratPutOnTop(bureaucrat, defender.Object.PlayerState, defender.Object.Game.Kingdom)).Returns(province);
 		#endregion
 
 		#region act
@@ -77,7 +77,7 @@ public class BureaucratTests : CardTestsBase
 
 		#region assert
 		// user is not asked to choose a victory card to put on top
-		defender.Verify(d => d.User.BureaucratPutOnTop(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>()), Times.Never);
+		defender.Verify(d => d.User.BureaucratPutOnTop(bureaucrat, defender.Object.PlayerState, defender.Object.Game.Kingdom), Times.Never);
 
 		// defender does not put any card on top
 		defender.Verify(d => d.ReturnToDrawPile(It.IsAny<Card>()), Times.Never);

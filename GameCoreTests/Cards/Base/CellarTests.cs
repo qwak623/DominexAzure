@@ -23,7 +23,7 @@ public class CellarTests : CardTestsBase
 	public void DrawNoCards()
 	{
 		#region arrange
-		player.Setup(p => p.User.CellarDiscard(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>()))
+		player.Setup(p => p.User.CellarDiscard(cellar, player.Object.PlayerState, player.Object.Game.Kingdom))
 			.Returns(new List<Card> { });
 		#endregion
 
@@ -54,7 +54,7 @@ public class CellarTests : CardTestsBase
 	public void DrawOneCard()
 	{
 		#region arrange
-		player.Setup(p => p.User.CellarDiscard(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>()))
+		player.Setup(p => p.User.CellarDiscard(cellar, player.Object.PlayerState, player.Object.Game.Kingdom))
 			.Returns(new List<Card> { copper });
 		#endregion
 
@@ -85,7 +85,7 @@ public class CellarTests : CardTestsBase
 	public void DrawFourCards()
 	{
 		#region arrange
-		player.Setup(p => p.User.CellarDiscard(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>()))
+		player.Setup(p => p.User.CellarDiscard(cellar, player.Object.PlayerState, player.Object.Game.Kingdom))
 			.Returns(new List<Card> { copper, copper, cellar, copper });
 		#endregion
 
