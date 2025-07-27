@@ -34,6 +34,8 @@ public abstract class User : IUser
 
 	public abstract Card MineTrash(Card cardPlayed, PlayerState ps, Kingdom k, IList<Card> cardSelection);
 
+	public abstract bool MoatDefend(Card cardPlayed, PlayerState ps, Kingdom k);
+
 	public abstract Card RemodelTrash(Card cardPlayed, PlayerState ps, Kingdom k);
 
 	public abstract bool SpyDiscard(Card cardPlayed, PlayerState ps, Kingdom k, Card c, Phase p);

@@ -74,12 +74,10 @@ public class BuyAgenda
 		string id = k.Where(c => c.Type > CardType.Curse).OrderBy(c => c.Type).Select(c => ((int)c.Type).ToString()).Aggregate((a, b) => a + "_" + b);
 		var agenda = new BuyAgenda(id);
 
-		var rnd = new ThreadSafeRandom();
-
 		var randomKingdom = k.Where(c => c.Type != CardType.Curse || c.Type != CardType.Copper)
-			.OrderBy(c => rnd.Next())
+			.OrderBy(c => ThreadSafeRandom.Next())
 			.Take(9)
-			.Select(c => (c.Type, rnd.Next(10) + 1));
+			.Select(c => (c.Type, ThreadSafeRandom.Next(10) + 1));
 
 		int i = 0;
 		foreach (var item in randomKingdom)
@@ -92,9 +90,9 @@ public class BuyAgenda
 			i++;
 		}
 
-		agenda.Provinces = rnd.Next(8);
-		agenda.Duchies = rnd.Next(8);
-		agenda.Estates = rnd.Next(8);
+		agenda.Provinces = ThreadSafeRandom.Next(8);
+		agenda.Duchies = ThreadSafeRandom.Next(8);
+		agenda.Estates = ThreadSafeRandom.Next(8);
 
 		return agenda;
 	}

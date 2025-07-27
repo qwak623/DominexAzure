@@ -171,6 +171,8 @@ public class ProvincialAI : User
 		return c ?? ps.Hand.Where(a => a.Type == CardType.Silver).FirstOrDefault();
 	}
 
+	public override bool MoatDefend(Card c, PlayerState ps, Kingdom k) => true;
+
 	public override Card RemodelTrash(Card c, PlayerState ps, Kingdom k)
 	{
 		var trash = ps.Hand.Where(c => c.Type == CardType.Curse);

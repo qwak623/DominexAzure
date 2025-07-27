@@ -101,7 +101,7 @@ public class SimpleManager : BuyAgendaManager
 				}
 			}
 		}
-		return list[new ThreadSafeRandom().Next(list.Count)];
+		return list[ThreadSafeRandom.Next(list.Count)];
 	}
 
 	public override IEnumerator<BuyAgenda> GetEnumerator()

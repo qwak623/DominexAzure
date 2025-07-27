@@ -19,4 +19,5 @@ public enum ChoiceType
 	ThroneRoomPlay,
 	MineTrash,
 	Gain,
+	MoatDefend,
 }

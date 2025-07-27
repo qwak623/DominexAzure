@@ -41,6 +41,11 @@ public class Decoy : User
 		return null;
 	}
 
+	public override bool MoatDefend(Card cardPlayed, PlayerState ps, Kingdom k)
+	{
+		return true;
+	}
+
 	public override Card PlayCard(IEnumerable<Card> cards, PlayerState ps, Kingdom k, Phase phase, Card card = null)
 	{
 		return null;
