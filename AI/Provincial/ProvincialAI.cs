@@ -173,6 +173,8 @@ public class ProvincialAI : User
 
 	public override bool MoatDefend(Card c, PlayerState ps, Kingdom k) => true;
 
+	public override bool MoneylenderTrash(Card cardPlayed, PlayerState ps, Kingdom k) => true;
+
 	public override Card RemodelTrash(Card c, PlayerState ps, Kingdom k)
 	{
 		var trash = ps.Hand.Where(c => c.Type == CardType.Curse);

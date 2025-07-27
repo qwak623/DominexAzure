@@ -30,9 +30,11 @@ public class Moneylender : Card
 
 	protected override void ActionEffect(IPlayer player)
 	{
-		if (player.PlayerState.Hand.Remove(Copper.Get()))
+		if (player.PlayerState.Hand.Contains(Copper.Get())
+			&& player.User.MoneylenderTrash(this, player.PlayerState, player.Game.Kingdom))
 		{
 			player.Game.Logger?.Log(new GameLog { PlayerId = player.Name, Message = $"{player.Name} trashes Copper and gains 3$" });
+			player.Trash(Copper.Get());
 			player.PlayerState.Coins += 3;
 		}
 	}

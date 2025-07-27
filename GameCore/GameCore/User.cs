@@ -1,4 +1,5 @@
 ﻿using GameCore.Cards;
+using GameCore.Cards.Base;
 using GameCore.Observers;
 
 namespace GameCore;
@@ -35,6 +36,8 @@ public abstract class User : IUser
 	public abstract Card MineTrash(Card cardPlayed, PlayerState ps, Kingdom k, IList<Card> cardSelection);
 
 	public abstract bool MoatDefend(Card cardPlayed, PlayerState ps, Kingdom k);
+
+	public abstract bool MoneylenderTrash(Card cardPlayed, PlayerState ps, Kingdom k);
 
 	public abstract Card RemodelTrash(Card cardPlayed, PlayerState ps, Kingdom k);
 

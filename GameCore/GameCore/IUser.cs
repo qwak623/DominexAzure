@@ -1,4 +1,5 @@
 ﻿using GameCore.Cards;
+using GameCore.Cards.Base;
 using GameCore.Observers;
 
 namespace GameCore;
@@ -14,6 +15,7 @@ public interface IUser
 	List<Card> MilitiaDiscard(Card cardPlayed, PlayerState ps, Kingdom k, int discardCount);
 	Card MineTrash(Card cardPlayed, PlayerState ps, Kingdom k, IList<Card> cardSelection);
 	bool MoatDefend(Card cardPlayed, PlayerState ps, Kingdom k);
+	bool MoneylenderTrash(Card cardPlayed, PlayerState ps, Kingdom k);
 	Card PlayCard(IEnumerable<Card> cards, PlayerState ps, Kingdom k, Phase phase, Card card = null);
 	Card RemodelTrash(Card cardPlayed, PlayerState ps, Kingdom k);
 	Card SelectCardToGain(KingdomWrapper wrapper, PlayerState ps, Kingdom k, Phase phase);

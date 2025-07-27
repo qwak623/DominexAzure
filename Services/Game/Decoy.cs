@@ -1,5 +1,6 @@
 ﻿using GameCore.Cards;
 using GameCore;
+using GameCore.Cards.Base;
 
 namespace Dominex.Services.Game;
 public class Decoy : User
@@ -42,6 +43,11 @@ public class Decoy : User
 	}
 
 	public override bool MoatDefend(Card cardPlayed, PlayerState ps, Kingdom k)
+	{
+		return true;
+	}
+
+	public override bool MoneylenderTrash(Card cardPlayed, PlayerState ps, Kingdom k)
 	{
 		return true;
 	}

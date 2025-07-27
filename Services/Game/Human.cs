@@ -2,6 +2,8 @@
 using GameCore.Cards;
 using GameCore.Observers;
 using GameCore;
+using GameCore.Cards.Base;
+using GameCore.Cards.GeneralCards;
 
 namespace Dominex.Services.Game;
 public class Human : User, IHuman
@@ -156,6 +158,21 @@ public class Human : User, IHuman
 		return answer.Values.Any();
 	}
 
+	public override bool MoneylenderTrash(Card cardPlayed, PlayerState playerState, Kingdom kingdom)
+	{
+		var answer = CallClient(new ChoiceDto
+		(
+			cardPlayed: cardMapper.ToCardDto(cardPlayed),
+			ChoiceType.MoatDefend,
+			min: 0,
+			max: 1,
+			cards: new List<CardDto>() { cardMapper.ToCardDto(Copper.Get()) },
+			operations: new List<OperationType> { OperationType.Default, OperationType.Trash }
+		));
+
+		return answer.Values.Any();
+	}
+
 	public override Card PlayCard(IEnumerable<Card> cards, PlayerState ps, Kingdom k, Phase phase, Card attackingCard = null)
 	{
 		var cardSelection = ps.Hand.Where(p => p.IsAction).ToList();
@@ -275,5 +292,4 @@ public class Human : User, IHuman
 
 		return answer.Values.Any() ? cardSelection[answer.Values.Single().Index] : null;
 	}
-
 }

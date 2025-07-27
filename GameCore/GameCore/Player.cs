@@ -358,6 +358,8 @@ public class Player : IPlayer
 		Card card = null;
 		bool defended = false;
 		var reactions = new LinkedList<Card>(ps.Hand.Where(c => c.IsReaction));
+
+		// TODO tenhle for se mi nelíbí
 		for (int i = 0; i < reactions.Count; i++)
 		{
 			if (reactions.Count == 0)
