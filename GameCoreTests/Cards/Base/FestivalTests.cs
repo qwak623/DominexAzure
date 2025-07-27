@@ -25,7 +25,7 @@ public class FestivalTests : CardTestsBase
 		#endregion
 
 		#region assert
-		// actions, coins and buys shouldn't change 
+		// +2 Actions, +2 Coins, +1 Buy
 		Assert.AreEqual(2, player.Object.PlayerState.Actions);
 		Assert.AreEqual(2, player.Object.PlayerState.Coins);
 		Assert.AreEqual(1, player.Object.PlayerState.Buys);
