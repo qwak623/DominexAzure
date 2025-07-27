@@ -28,6 +28,7 @@ public class Feast : Card
 
 	protected override void ActionEffect(IPlayer player)
 	{
+		// todo melo by tohle byt v played cards? overit pravidla
 		player.PlayerState.PlayedCards.Remove(this);
 		player.Game.Trash.Add(this);
 		player.Game.Logger?.Log(new GameLog { PlayerId = Name, Message = $"{player.Name} trashes {Name}" });

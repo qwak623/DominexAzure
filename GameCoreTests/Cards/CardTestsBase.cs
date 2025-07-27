@@ -1,8 +1,6 @@
-﻿using GameCore;
-using GameCore.Cards;
-using Moq;
+﻿using Moq;
 
-namespace GameCoreTests.Cards;
+namespace GameCore.Cards.Tests;
 public class CardTestsBase
 {
 	public Kingdom MockKingdom(Card card)

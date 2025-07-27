@@ -1,5 +1,5 @@
 ﻿using GameCore.Cards.GeneralCards;
-using GameCoreTests.Cards;
+using GameCore.Cards.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
