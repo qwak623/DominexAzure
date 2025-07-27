@@ -30,8 +30,8 @@ public class Cellar : Card
 		// todo - lze discardnout cellar?
 		var selectedCards = player.User.CellarDiscard(this, player.PlayerState, player.Game.Kingdom);
 
-		selectedCards.ForEach(card => player.Discard(card));
-		player.Draw(selectedCards.Count());
+		selectedCards.ForEach(player.Discard);
+		player.Draw(selectedCards.Count);
 	}
 }
 
