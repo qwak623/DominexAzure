@@ -27,7 +27,8 @@ public class CouncilRoom : Card
 	protected override void ActionEffect(IPlayer player)
 	{
 		foreach (var plr in player.Game.Players.Where(p => p != player))
+		{
 			plr.Draw(1);
+		}
 	}
 }
-
