@@ -1,36 +1,24 @@
 ﻿using GameCore.Cards.GeneralCards;
+using GameCoreTests.Cards;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
 namespace GameCore.Cards.Base.Tests;
 
 [TestClass]
-public class MineTests
+public class MineTests : CardTestsBase
 {
 	private readonly Card mine = Mine.Get();
 	private readonly Card copper = Copper.Get();
 	private readonly Card silver = Silver.Get();
-	private Kingdom kingdom;
-	private PlayerState playerState;
 
 	private Mock<IPlayer> player;
 
 	[TestInitialize]
 	public void Init()
 	{
-		player = new Mock<IPlayer>();
-
-		playerState = new PlayerState(playerStateObserver: null, "Tester")
-		{
-			Actions = 0,
-			Coins = 0,
-			Buys = 0,
-			Hand = new List<Card> { copper },
-		};
-		player.Setup(p => p.PlayerState).Returns(playerState);
-
-		kingdom = new Kingdom(new List<Card> { mine }, 2); // todo should be mockable
-		player.Setup(p => p.Game.Kingdom).Returns(kingdom);
+		player = MockPlayer(MockKingdom(mine));
+		player.Object.PlayerState.Hand = new List<Card> { copper };
 	}
 
 	[TestMethod]
@@ -58,7 +46,7 @@ public class MineTests
 		player.Verify(p => p.Draw(It.IsAny<int>()), Times.Never);
 
 		// user is asked to choose a treasure to trash
-		player.Verify(p => p.User.MineTrash(mine, playerState, It.IsAny<Kingdom>(),
+		player.Verify(p => p.User.MineTrash(mine, player.Object.PlayerState, It.IsAny<Kingdom>(),
 			It.Is<IList<Card>>(c => c.SequenceEqual(new List<Card> { copper }))), Times.Once);
 
 		// player trashes the chosen card
@@ -66,7 +54,7 @@ public class MineTests
 
 		// user is asked to select a treasure with max price 3 to gain (it's silver)
 		player.Verify(p => p.User.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.Price == 3 && kw.OnlyTreasures),
-			playerState, It.IsAny<Kingdom>(), Phase.Gain), Times.Once);
+			player.Object.PlayerState, It.IsAny<Kingdom>(), Phase.Gain), Times.Once);
 
 		// silver is added to the hand
 		player.Verify(p => p.GainToHand(CardType.Silver), Times.Once);
@@ -95,7 +83,7 @@ public class MineTests
 		player.Verify(p => p.Draw(It.IsAny<int>()), Times.Never);
 
 		// user is asked to choose a treasure to trash
-		player.Verify(p => p.User.MineTrash(mine, playerState, It.IsAny<Kingdom>(),
+		player.Verify(p => p.User.MineTrash(mine, player.Object.PlayerState, It.IsAny<Kingdom>(),
 			It.Is<IList<Card>>(c => c.SequenceEqual(new List<Card> { copper }))), Times.Once);
 
 		// player does not trash anything
@@ -134,7 +122,7 @@ public class MineTests
 		player.Verify(p => p.Draw(It.IsAny<int>()), Times.Never);
 
 		// user is asked to choose a treasure to trash
-		player.Verify(p => p.User.MineTrash(mine, playerState, It.IsAny<Kingdom>(),
+		player.Verify(p => p.User.MineTrash(mine, player.Object.PlayerState, It.IsAny<Kingdom>(),
 			It.Is<IList<Card>>(c => c.SequenceEqual(new List<Card> { copper }))), Times.Once);
 
 		// player trashes the chosen card
@@ -142,7 +130,7 @@ public class MineTests
 
 		// user is asked to select a treasure with max price 3 to gain, but there is no such card available
 		player.Verify(p => p.User.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.Price == 3 && kw.OnlyTreasures),
-			playerState, It.IsAny<Kingdom>(), Phase.Gain), Times.Once);
+			player.Object.PlayerState, It.IsAny<Kingdom>(), Phase.Gain), Times.Once);
 
 		// nothing is added to the hand
 		player.Verify(p => p.GainToHand(It.IsAny<CardType>()), Times.Never);

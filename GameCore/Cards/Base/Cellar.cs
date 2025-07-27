@@ -27,11 +27,13 @@ public class Cellar : Card
 
 	protected override void ActionEffect(IPlayer player)
 	{
-		// todo - lze discardnout cellar?
 		var selectedCards = player.User.CellarDiscard(this, player.PlayerState, player.Game.Kingdom);
 
-		selectedCards.ForEach(player.Discard);
-		player.Draw(selectedCards.Count);
+		if (selectedCards.Any())
+		{
+			selectedCards.ForEach(player.Discard);
+			player.Draw(selectedCards.Count);
+		}
 	}
 }
 

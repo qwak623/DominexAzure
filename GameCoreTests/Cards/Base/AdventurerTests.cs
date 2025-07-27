@@ -1,12 +1,13 @@
 ﻿using System.Numerics;
 using GameCore.Cards.GeneralCards;
+using GameCoreTests.Cards;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
 namespace GameCore.Cards.Base.Tests;
 
 [TestClass]
-public class AdventurerTests
+public class AdventurerTests : CardTestsBase
 {
 	private readonly Card copper = Copper.Get();
 	private readonly Card silver = Silver.Get();
@@ -14,27 +15,12 @@ public class AdventurerTests
 	private readonly Card province = Province.Get();
 	private readonly Card adventurer = Adventurer.Get();
 
-	private Kingdom kingdom;
-	private PlayerState playerState;
-
 	private Mock<IPlayer> player;
 
 	[TestInitialize]
 	public void Init()
 	{
-		player = new Mock<IPlayer>();
-
-		playerState = new PlayerState(playerStateObserver: null, "Tester")
-		{
-			Actions = 0,
-			Coins = 0,
-			Buys = 0,
-			Hand = new List<Card> { },
-		};
-		player.Setup(p => p.PlayerState).Returns(playerState);
-
-		kingdom = new Kingdom(new List<Card> { adventurer }, 2); // todo should be mockable
-		player.Setup(p => p.Game.Kingdom).Returns(kingdom);
+		player = MockPlayer(MockKingdom(adventurer));
 	}
 
 	[TestMethod]

@@ -52,7 +52,7 @@ public class Human : User, IHuman
 			cardPlayed: cardMapper.ToCardDto(cardPlayed),
 			ChoiceType.CellarDiscard,
 			min: 0,
-			max: cardSelection.Count, // todo lze discardnout cellar?
+			max: cardSelection.Count,
 			cards: cardSelection.Select(cardMapper.ToCardDtoWithIndex),
 			operations: new List<OperationType> { OperationType.Default, OperationType.Discard },
 			message: "Discard any number of cards."
