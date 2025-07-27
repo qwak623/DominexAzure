@@ -143,21 +143,6 @@ public class Human : User, IHuman
 		return answer.Values.Any() ? cardSelection[answer.Values.Single().Index] : null;
 	}
 
-	public override bool MoatDefend(Card cardPlayed, PlayerState ps, Kingdom k)
-	{
-		var answer = CallClient(new ChoiceDto
-		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed),
-			ChoiceType.MoatDefend,
-			min: 0,
-			max: 1,
-			cards: new List<CardDto>() { null }, // TODO NullReferenceException
-			operations: new List<OperationType> { OperationType.Default, OperationType.React }
-		));
-
-		return answer.Values.Any();
-	}
-
 	public override bool MoneylenderTrash(Card cardPlayed, PlayerState playerState, Kingdom kingdom)
 	{
 		var answer = CallClient(new ChoiceDto

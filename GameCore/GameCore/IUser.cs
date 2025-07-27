@@ -14,7 +14,6 @@ public interface IUser
 	bool LibrarySkip(Card cardPlayed, PlayerState ps, Kingdom k, Card c);
 	List<Card> MilitiaDiscard(Card cardPlayed, PlayerState ps, Kingdom k, int discardCount);
 	Card MineTrash(Card cardPlayed, PlayerState ps, Kingdom k, IList<Card> cardSelection);
-	bool MoatDefend(Card cardPlayed, PlayerState ps, Kingdom k);
 	bool MoneylenderTrash(Card cardPlayed, PlayerState ps, Kingdom k);
 	Card PlayCard(IEnumerable<Card> cards, PlayerState ps, Kingdom k, Phase phase, Card card = null);
 	Card RemodelTrash(Card cardPlayed, PlayerState ps, Kingdom k);

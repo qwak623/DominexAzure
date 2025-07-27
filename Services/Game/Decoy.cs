@@ -42,11 +42,6 @@ public class Decoy : User
 		return null;
 	}
 
-	public override bool MoatDefend(Card cardPlayed, PlayerState ps, Kingdom k)
-	{
-		return true;
-	}
-
 	public override bool MoneylenderTrash(Card cardPlayed, PlayerState ps, Kingdom k)
 	{
 		return true;
