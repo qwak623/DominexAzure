@@ -25,9 +25,9 @@ public class MineTests : CardTestsBase
 	public void UpgradeCopperToSilver()
 	{
 		#region arrange
-		player.Setup(p => p.User.MineTrash(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<IList<Card>>()))
+		player.Setup(p => p.User.MineTrash(mine, player.Object.PlayerState, player.Object.Game.Kingdom, It.IsAny<IList<Card>>()))
 			.Returns(copper);
-		player.Setup(p => p.User.SelectCardToGain(It.IsAny<KingdomWrapper>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), Phase.Gain))
+		player.Setup(p => p.User.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.Object.PlayerState, player.Object.Game.Kingdom, Phase.Gain))
 			.Returns(silver);
 		// todo kingdom wrapper je asi zbytecny
 		#endregion
@@ -46,7 +46,7 @@ public class MineTests : CardTestsBase
 		player.Verify(p => p.Draw(It.IsAny<int>()), Times.Never);
 
 		// user is asked to choose a treasure to trash
-		player.Verify(p => p.User.MineTrash(mine, player.Object.PlayerState, It.IsAny<Kingdom>(),
+		player.Verify(p => p.User.MineTrash(mine, player.Object.PlayerState, player.Object.Game.Kingdom,
 			It.Is<IList<Card>>(c => c.SequenceEqual(new List<Card> { copper }))), Times.Once);
 
 		// player trashes the chosen card
@@ -54,7 +54,7 @@ public class MineTests : CardTestsBase
 
 		// user is asked to select a treasure with max price 3 to gain (it's silver)
 		player.Verify(p => p.User.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.Price == 3 && kw.OnlyTreasures),
-			player.Object.PlayerState, It.IsAny<Kingdom>(), Phase.Gain), Times.Once);
+			player.Object.PlayerState, player.Object.Game.Kingdom, Phase.Gain), Times.Once);
 
 		// silver is added to the hand
 		player.Verify(p => p.GainToHand(CardType.Silver), Times.Once);
@@ -65,7 +65,7 @@ public class MineTests : CardTestsBase
 	public void DontTrashAnything()
 	{
 		#region arrange
-		player.Setup(p => p.User.MineTrash(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<IList<Card>>()))
+		player.Setup(p => p.User.MineTrash(mine, player.Object.PlayerState, player.Object.Game.Kingdom, It.IsAny<IList<Card>>()))
 			.Returns<Card>(null);
 		#endregion
 
@@ -83,15 +83,15 @@ public class MineTests : CardTestsBase
 		player.Verify(p => p.Draw(It.IsAny<int>()), Times.Never);
 
 		// user is asked to choose a treasure to trash
-		player.Verify(p => p.User.MineTrash(mine, player.Object.PlayerState, It.IsAny<Kingdom>(),
+		player.Verify(p => p.User.MineTrash(mine, player.Object.PlayerState, player.Object.Game.Kingdom,
 			It.Is<IList<Card>>(c => c.SequenceEqual(new List<Card> { copper }))), Times.Once);
 
 		// player does not trash anything
-		player.Verify(p => p.Trash(It.IsAny<Card>()), Times.Never);
+		player.Verify(p => p.Trash(mine), Times.Never);
 
 		// user is never asked to choose any card to gain
 		player.Verify(p => p.User.SelectCardToGain(It.IsAny<KingdomWrapper>(),
-			It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<Phase>()), Times.Never);
+			player.Object.PlayerState, player.Object.Game.Kingdom, It.IsAny<Phase>()), Times.Never);
 
 		// nothing is gained
 		player.Verify(p => p.GainToHand(It.IsAny<CardType>()), Times.Never);
@@ -102,9 +102,9 @@ public class MineTests : CardTestsBase
 	public void DontGainAnything()
 	{
 		#region arrange
-		player.Setup(p => p.User.MineTrash(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<IList<Card>>()))
+		player.Setup(p => p.User.MineTrash(mine, player.Object.PlayerState, player.Object.Game.Kingdom, It.IsAny<IList<Card>>()))
 			.Returns(copper);
-		player.Setup(p => p.User.SelectCardToGain(It.IsAny<KingdomWrapper>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), Phase.Gain))
+		player.Setup(p => p.User.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.Object.PlayerState, player.Object.Game.Kingdom, Phase.Gain))
 			.Returns<Card>(null);
 		#endregion
 
