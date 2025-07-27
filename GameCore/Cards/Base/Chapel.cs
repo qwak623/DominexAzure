@@ -27,6 +27,7 @@ public class Chapel : Card
 
 	protected override void ActionEffect(IPlayer player)
 	{
+		// měli bychom kontrolovat, že jsou max čtyři
 		player.User.ChapelTrash(this, player.PlayerState, player.Game.Kingdom).ForEach(player.Trash);
 	}
 }
