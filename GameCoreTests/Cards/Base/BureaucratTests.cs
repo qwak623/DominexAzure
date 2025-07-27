@@ -52,7 +52,7 @@ public class BureaucratTests : CardTestsBase
 		#endregion
 
 		#region act
-		bureaucrat.Attack(defender.Object, attacker: attacker.Object);
+		bureaucrat.Attack(defender.Object, attacker.Object);
 		#endregion
 
 		#region assert

@@ -28,9 +28,12 @@ public class Militia : Card
 	public override void Attack(IPlayer defender, IPlayer attacker)
 	{
 		if (defender.PlayerState.Hand.Count <= 3)
+		{
 			return;
+		}
+
 		var cards = defender.User.MilitiaDiscard(this, defender.PlayerState, defender.Game.Kingdom, defender.PlayerState.Hand.Count - 3);
-		cards.ForEach(card => defender.Discard(card));
+		cards.ForEach(defender.Discard);
 	}
 }
 
