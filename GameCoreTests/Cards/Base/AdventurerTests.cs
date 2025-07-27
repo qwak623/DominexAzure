@@ -40,7 +40,7 @@ public class AdventurerTests
 	[TestMethod]
 	public void DrawTwoTreasures()
 	{
-		#region setup
+		#region arrange
 		player.SetupSequence(p => p.Show(It.IsAny<int>()))
 			.Returns(new List<Card> { copper })
 			.Returns(new List<Card> { silver });
@@ -70,7 +70,7 @@ public class AdventurerTests
 	[TestMethod]
 	public void SkipNonTreasures()
 	{
-		#region setup
+		#region arrange
 		player.SetupSequence(p => p.Show(It.IsAny<int>()))
 			.Returns(new List<Card> { adventurer })
 			.Returns(new List<Card> { province })
@@ -104,7 +104,7 @@ public class AdventurerTests
 	[TestMethod]
 	public void OneTreasureToDraw()
 	{
-		#region setup
+		#region arrange
 		player.SetupSequence(p => p.Show(It.IsAny<int>()))
 			.Returns(new List<Card> { province })
 			.Returns(new List<Card> { gold })
@@ -135,7 +135,7 @@ public class AdventurerTests
 	[TestMethod]
 	public void NoTreasuresToDraw()
 	{
-		#region setup
+		#region arrange
 		player.SetupSequence(p => p.Show(It.IsAny<int>()))
 			.Returns(new List<Card> { null });
 		#endregion

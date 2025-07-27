@@ -36,7 +36,7 @@ public class MineTests
 	[TestMethod]
 	public void UpgradeCopperToSilver()
 	{
-		#region setup
+		#region arrange
 		player.Setup(p => p.User.MineTrash(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<IList<Card>>()))
 			.Returns(copper);
 		player.Setup(p => p.User.SelectCardToGain(It.IsAny<KingdomWrapper>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), Phase.Gain))
@@ -76,7 +76,7 @@ public class MineTests
 	[TestMethod]
 	public void DontTrashAnything()
 	{
-		#region setup
+		#region arrange
 		player.Setup(p => p.User.MineTrash(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<IList<Card>>()))
 			.Returns<Card>(null);
 		#endregion
@@ -113,7 +113,7 @@ public class MineTests
 	[TestMethod]
 	public void DontGainAnything()
 	{
-		#region setup
+		#region arrange
 		player.Setup(p => p.User.MineTrash(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<IList<Card>>()))
 			.Returns(copper);
 		player.Setup(p => p.User.SelectCardToGain(It.IsAny<KingdomWrapper>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), Phase.Gain))

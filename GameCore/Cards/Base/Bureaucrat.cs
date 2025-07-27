@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace GameCore.Cards.Base;
+﻿namespace GameCore.Cards.Base;
 public class Bureaucrat : Card
 {
 	private static Bureaucrat bureaucrat;
