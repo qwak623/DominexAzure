@@ -14,6 +14,7 @@ public class Player : IPlayer
 	private PlayerState ps;
 	public PlayerState PlayerState => ps;
 
+	// todo tohle se mi moc nelibi, na konci hry by bylo nejlepsi udelat jeden balicek a ten prochazet
 	public int CardCount => ps.DrawPile.Count + ps.DiscardPile.Count + ps.Hand.Count + ps.PlayedCards.Count;
 
 	private int? victoryPoints;
