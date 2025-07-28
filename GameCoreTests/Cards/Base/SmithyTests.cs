@@ -25,8 +25,6 @@ public class SmithyTests : CardTestsBase
 		#endregion
 
 		#region assert
-		// +1 Action
-
 		// actions, coins and buys shouldn't change
 		Assert.AreEqual(0, player.Object.PlayerState.Actions);
 		Assert.AreEqual(0, player.Object.PlayerState.Coins);
