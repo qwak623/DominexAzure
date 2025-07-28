@@ -87,11 +87,11 @@ public class MineTests : CardTestsBase
 			It.Is<IList<Card>>(c => c.SequenceEqual(new List<Card> { copper }))), Times.Once);
 
 		// player does not trash anything
-		player.Verify(p => p.Trash(mine), Times.Never);
+		player.Verify(p => p.Trash(It.IsAny<Card>()), Times.Never);
 
 		// user is never asked to choose any card to gain
 		player.Verify(p => p.User.SelectCardToGain(It.IsAny<KingdomWrapper>(),
-			player.Object.PlayerState, player.Object.Game.Kingdom, It.IsAny<Phase>()), Times.Never);
+			It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<Phase>()), Times.Never);
 
 		// nothing is gained
 		player.Verify(p => p.GainToHand(It.IsAny<CardType>()), Times.Never);
@@ -130,7 +130,7 @@ public class MineTests : CardTestsBase
 
 		// user is asked to select a treasure with max price 3 to gain, but there is no such card available
 		player.Verify(p => p.User.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.Price == 3 && kw.OnlyTreasures),
-			player.Object.PlayerState, It.IsAny<Kingdom>(), Phase.Gain), Times.Once);
+			player.Object.PlayerState, player.Object.Game.Kingdom, Phase.Gain), Times.Once);
 
 		// nothing is added to the hand
 		player.Verify(p => p.GainToHand(It.IsAny<CardType>()), Times.Never);
