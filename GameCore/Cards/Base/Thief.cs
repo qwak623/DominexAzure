@@ -34,7 +34,7 @@ public class Thief : Card
 		// selecting treasures
 		var treasures = cards.Where(c => c.IsTreasure);
 		// if there are treasure cards
-		if (treasures.Count() > 0)
+		if (treasures.Any())
 		{
 			// TODO sjednotit thief choose a thief steal
 			// attacker has to pick one
@@ -55,7 +55,7 @@ public class Thief : Card
 			if (attacker.User.ThiefSteal(this, attacker.PlayerState, attacker.Game.Kingdom, card))
 			{
 				attacker.Game.Logger?.Log(new GameLog { PlayerId = attacker.Name, Message = $"{attacker.Name} steals {card.Name}" });
-				attacker.PlayerState.PlayedCards.Add(card);
+				attacker.PlayerState.DiscardPile.Add(card);
 			}
 			else
 			{
