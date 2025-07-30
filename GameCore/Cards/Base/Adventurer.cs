@@ -29,6 +29,7 @@ public class Adventurer : Card
 
 	protected override void ActionEffect(IPlayer player)
 	{
+		var revealedCards = new List<Card> { };
 		int treasuresDrawn = 0;
 		while (treasuresDrawn < 2)
 		{
@@ -45,9 +46,9 @@ public class Adventurer : Card
 			}
 			else
 			{
-				// todo možná to bude problém s rozšířeními - nemělo by to být spíše v Revealed než v Played? 
-				player.PlayerState.PlayedCards.Add(card);
+				revealedCards.Add(card);
 			}
 		}
+		revealedCards.ForEach(player.Discard);
 	}
 }

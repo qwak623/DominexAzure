@@ -47,6 +47,9 @@ public class AdventurerTests : CardTestsBase
 		// player shows two cards
 		player.Verify(p => p.Show(1), Times.Exactly(2));
 
+		// nothing was discarded
+		player.Verify(p => p.Discard(It.IsAny<Card>()), Times.Never);
+
 		// player has the two treasures in his hand
 		CollectionAssert.AreEqual(new List<Card> { copper, silver }, player.Object.PlayerState.Hand);
 		#endregion
@@ -81,6 +84,10 @@ public class AdventurerTests : CardTestsBase
 		// player shows six cards
 		player.Verify(p => p.Show(1), Times.Exactly(6));
 
+		// the non-treasure cards were discarded
+		player.Verify(p => p.Discard(adventurer), Times.Exactly(3));
+		player.Verify(p => p.Discard(province), Times.Once);
+
 		// player has the two treasures in his hand
 		CollectionAssert.AreEqual(new List<Card> { silver, gold }, player.Object.PlayerState.Hand);
 		#endregion
@@ -112,6 +119,9 @@ public class AdventurerTests : CardTestsBase
 		// player shows two cards (in the last call he does not have any)
 		player.Verify(p => p.Show(1), Times.Exactly(3));
 
+		// the non-treasure card was discarded
+		player.Verify(p => p.Discard(province), Times.Once);
+
 		// player has the treasure in his hand
 		CollectionAssert.AreEqual(new List<Card> { gold }, player.Object.PlayerState.Hand);
 		#endregion
@@ -140,6 +150,9 @@ public class AdventurerTests : CardTestsBase
 
 		// player does not have any cards to draw
 		player.Verify(p => p.Show(1), Times.Once);
+
+		// nothing was discarded
+		player.Verify(p => p.Discard(It.IsAny<Card>()), Times.Never);
 
 		// player has the treasure in his hand
 		CollectionAssert.AreEqual(new List<Card> { }, player.Object.PlayerState.Hand);
