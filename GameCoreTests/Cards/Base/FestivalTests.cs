@@ -30,7 +30,7 @@ public class FestivalTests : CardTestsBase
 		Assert.AreEqual(2, player.Object.PlayerState.Coins);
 		Assert.AreEqual(1, player.Object.PlayerState.Buys);
 
-		// player does not draw a card
+		// +0 Cards
 		player.Verify(p => p.Draw(It.IsAny<int>()), Times.Never);
 		#endregion
 	}
