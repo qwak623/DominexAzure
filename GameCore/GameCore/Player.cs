@@ -236,7 +236,7 @@ public class Player : IPlayer
 		}
 
 		Game.Logger?.Log(new GameLog { PlayerId = name, Message = $"{name} gains {card.Name}." });
-		ps.PlayedCards.Add(card);
+		ps.DiscardPile.Add(card);
 	}
 
 	/// <summary>

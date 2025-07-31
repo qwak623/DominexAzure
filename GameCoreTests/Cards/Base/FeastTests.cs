@@ -33,8 +33,8 @@ public class FeastTests : CardTestsBase
 
 		#region act
 		feast.WhenPlayAction(player.Object);
-
 		#endregion
+
 		#region assert
 		// actions, coins and buys shouldn't change 
 		Assert.AreEqual(0, player.Object.PlayerState.Actions);
@@ -69,8 +69,8 @@ public class FeastTests : CardTestsBase
 
 		#region act
 		feast.WhenPlayAction(player.Object);
-
 		#endregion
+
 		#region assert
 		// actions, coins and buys shouldn't change 
 		Assert.AreEqual(0, player.Object.PlayerState.Actions);
