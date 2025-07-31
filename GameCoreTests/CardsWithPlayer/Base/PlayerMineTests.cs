@@ -1,13 +1,14 @@
 ﻿using GameCore.Cards;
 using GameCore.Cards.Base;
 using GameCore.Cards.GeneralCards;
+using GameCore.CardWithPlayer.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
 namespace GameCore.CardsWithPlayer.Base.Tests;
 
 [TestClass]
-public class PlayerMineTests
+public class PlayerMineTests : CardWithPlayerTestsBase
 {
 	private readonly Card mine = Mine.Get();
 	private readonly Card copper = Copper.Get();
@@ -21,19 +22,9 @@ public class PlayerMineTests
 	[TestInitialize]
 	public void Init()
 	{
-		var kingdom = new Kingdom(new() { mine }, 2);
-
-		game = new Mock<IGame>();
-		game.Setup(g => g.Kingdom).Returns(kingdom);
-		game.Setup(g => g.Trash).Returns(new List<Card> { });
-
+		game = MockGame(mine);
 		user = new Mock<IUser>();
-
-		player = new Player(game.Object, user.Object);
-		player.PlayerState.Actions = 1;
-		player.PlayerState.Buys = 0;
-		player.PlayerState.Coins = 0;
-		player.PlayerState.PlayedCards = new List<Card> { };
+		player = CreatePlayer(game.Object, user.Object);
 	}
 
 	[TestMethod]

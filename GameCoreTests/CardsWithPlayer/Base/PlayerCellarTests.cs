@@ -1,13 +1,14 @@
 ﻿using GameCore.Cards;
 using GameCore.Cards.Base;
 using GameCore.Cards.GeneralCards;
+using GameCore.CardWithPlayer.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
 namespace GameCore.CardsWithPlayer.Base.Tests;
 
 [TestClass]
-public class PlayerCellarTests
+public class PlayerCellarTests : CardWithPlayerTestsBase
 {
 	private readonly Card cellar = Cellar.Get();
 	private readonly Card copper = Copper.Get();
@@ -22,19 +23,9 @@ public class PlayerCellarTests
 	[TestInitialize]
 	public void Init()
 	{
-		var kingdom = new Kingdom(new() { cellar }, 2);
-
-		game = new Mock<IGame>();
-		game.Setup(g => g.Kingdom).Returns(kingdom);
-		game.Setup(g => g.Trash).Returns(new List<Card> { });
-
+		game = MockGame(cellar);
 		user = new Mock<IUser>();
-
-		player = new Player(game.Object, user.Object);
-		player.PlayerState.Actions = 1;
-		player.PlayerState.Buys = 0;
-		player.PlayerState.Coins = 0;
-		player.PlayerState.PlayedCards = new List<Card> { };
+		player = CreatePlayer(game.Object, user.Object);
 	}
 
 	[TestMethod]
@@ -157,7 +148,6 @@ public class PlayerCellarTests
 	public void DrawTheSameCardBack()
 	{
 		#region arrange
-		player.PlayerState.DrawPile = new List<Card> { };
 		player.PlayerState.Hand = new List<Card> { silver, copper, cellar, copper, cellar };
 
 		user.Setup(u => u.CellarDiscard(cellar, player.PlayerState, player.Game.Kingdom))

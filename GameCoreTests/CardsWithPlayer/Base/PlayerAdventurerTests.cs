@@ -1,13 +1,14 @@
 ﻿using GameCore.Cards;
 using GameCore.Cards.Base;
 using GameCore.Cards.GeneralCards;
+using GameCore.CardWithPlayer.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
 namespace GameCore.CardsWithPlayer.Base.Tests;
 
 [TestClass]
-public class PlayerAdventurerTests
+public class PlayerAdventurerTests : CardWithPlayerTestsBase
 {
 	private readonly Card adventurer = Adventurer.Get();
 	private readonly Card copper = Copper.Get();
@@ -23,19 +24,9 @@ public class PlayerAdventurerTests
 	[TestInitialize]
 	public void Init()
 	{
-		var kingdom = new Kingdom(new() { adventurer }, 2);
-
-		game = new Mock<IGame>();
-		game.Setup(g => g.Kingdom).Returns(kingdom);
-		game.Setup(g => g.Trash).Returns(new List<Card> { });
-
+		game = MockGame(adventurer);
 		user = new Mock<IUser>();
-
-		player = new Player(game.Object, user.Object);
-		player.PlayerState.Actions = 1;
-		player.PlayerState.Buys = 0;
-		player.PlayerState.Coins = 0;
-		player.PlayerState.PlayedCards = new List<Card> { };
+		player = CreatePlayer(game.Object, user.Object);
 	}
 
 	[TestMethod]
@@ -44,7 +35,6 @@ public class PlayerAdventurerTests
 		#region arrange
 		player.PlayerState.Hand = new List<Card> { adventurer, copper };
 		player.PlayerState.DrawPile = new List<Card> { copper, silver };
-		player.PlayerState.DiscardPile = new List<Card> { };
 		#endregion
 
 		#region act
@@ -79,7 +69,6 @@ public class PlayerAdventurerTests
 		#region arrange
 		player.PlayerState.Hand = new List<Card> { adventurer, copper };
 		player.PlayerState.DrawPile = new List<Card> { province, gold, silver, adventurer, adventurer, province };
-		player.PlayerState.DiscardPile = new List<Card> { };
 		#endregion
 
 		#region act
@@ -114,7 +103,6 @@ public class PlayerAdventurerTests
 		#region arrange
 		player.PlayerState.Hand = new List<Card> { adventurer, copper };
 		player.PlayerState.DrawPile = new List<Card> { gold, province };
-		player.PlayerState.DiscardPile = new List<Card> { };
 		#endregion
 
 		#region act
@@ -148,8 +136,6 @@ public class PlayerAdventurerTests
 	{
 		#region arrange
 		player.PlayerState.Hand = new List<Card> { adventurer, copper };
-		player.PlayerState.DrawPile = new List<Card> { };
-		player.PlayerState.DiscardPile = new List<Card> { };
 		#endregion
 
 		#region act

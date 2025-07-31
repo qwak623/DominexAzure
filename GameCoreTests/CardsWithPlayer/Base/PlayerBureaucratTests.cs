@@ -1,13 +1,14 @@
 ﻿using GameCore.Cards;
 using GameCore.Cards.Base;
 using GameCore.Cards.GeneralCards;
+using GameCore.CardWithPlayer.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
 namespace GameCore.CardsWithPlayer.Base.Tests;
 
 [TestClass]
-public class PlayerBureaucratTests
+public class PlayerBureaucratTests : CardWithPlayerTestsBase
 {
 	private readonly Card bureaucrat = Bureaucrat.Get();
 	private readonly Card duchy = Duchy.Get();
@@ -24,27 +25,13 @@ public class PlayerBureaucratTests
 	[TestInitialize]
 	public void Init()
 	{
-		var kingdom = new Kingdom(new() { bureaucrat }, 2);
-
-		game = new Mock<IGame>();
-		game.Setup(g => g.Kingdom).Returns(kingdom);
-		game.Setup(g => g.Trash).Returns(new List<Card> { });
+		game = MockGame(bureaucrat);
 
 		attackerUser = new Mock<IUser>();
-
-		attacker = new Player(game.Object, attackerUser.Object);
-		attacker.PlayerState.Actions = 1;
-		attacker.PlayerState.Buys = 0;
-		attacker.PlayerState.Coins = 0;
-		attacker.PlayerState.PlayedCards = new List<Card> { };
-
 		defenderUser = new Mock<IUser>();
-
-		defender = new Player(game.Object, defenderUser.Object);
+		attacker = CreatePlayer(game.Object, attackerUser.Object);
+		defender = CreatePlayer(game.Object, defenderUser.Object);
 		defender.PlayerState.Actions = 0;
-		defender.PlayerState.Buys = 0;
-		defender.PlayerState.Coins = 0;
-		defender.PlayerState.PlayedCards = new List<Card> { };
 
 		game.Setup(g => g.Players).Returns(new List<IPlayer> { attacker, defender });
 	}
@@ -56,10 +43,7 @@ public class PlayerBureaucratTests
 		defenderUser.Setup(du => du.BureaucratPutOnTop(bureaucrat, defender.PlayerState, defender.Game.Kingdom)).Returns(province);
 
 		attacker.PlayerState.Hand = new List<Card> { bureaucrat };
-		attacker.PlayerState.DrawPile = new List<Card> { };
-
 		defender.PlayerState.Hand = new List<Card> { province, duchy };
-		defender.PlayerState.DrawPile = new List<Card> { };
 		#endregion
 
 		#region act
@@ -107,10 +91,6 @@ public class PlayerBureaucratTests
 	{
 		#region arrange
 		attacker.PlayerState.Hand = new List<Card> { bureaucrat };
-		attacker.PlayerState.DrawPile = new List<Card> { };
-
-		defender.PlayerState.Hand = new List<Card> { };
-		defender.PlayerState.DrawPile = new List<Card> { };
 		#endregion
 
 		#region act
