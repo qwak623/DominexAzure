@@ -57,7 +57,7 @@ public class MilitiaTests : CardTestsBase
 		// user is asked to choose two cards to discard
 		defender.Verify(d => d.User.MilitiaDiscard(militia, defender.Object.PlayerState, defender.Object.Game.Kingdom, 2), Times.Once);
 
-		// user discards two militias
+		// defender discards two militias
 		defender.Verify(d => d.Discard(militia), Times.Exactly(2));
 		#endregion
 	}
@@ -77,7 +77,7 @@ public class MilitiaTests : CardTestsBase
 		// user is never asked to choose cards to discard
 		defender.Verify(d => d.User.MilitiaDiscard(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<int>()), Times.Never);
 
-		// user discards nothing
+		// defender discards nothing
 		defender.Verify(d => d.Discard(It.IsAny<Card>()), Times.Never);
 		#endregion
 	}
