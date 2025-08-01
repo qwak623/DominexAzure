@@ -1,4 +1,5 @@
-﻿using GameCore.Cards;
+﻿using System.Threading.Channels;
+using GameCore.Cards;
 using GameCore.Cards.Base;
 using GameCore.CardWithPlayer.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -43,6 +44,9 @@ public class PlayerFestivalTests : CardWithPlayerTestsBase
 
 		// +0 Cards
 		Assert.IsFalse(player.PlayerState.Hand.Any());
+
+		// festival was added to played cards
+		CollectionAssert.AreEqual(new List<Card> { festival }, player.PlayerState.PlayedCards);
 		#endregion
 	}
 }
