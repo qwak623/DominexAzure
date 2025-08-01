@@ -1,12 +1,6 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using GameCore.Cards.Base;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using GameCore.Cards.GeneralCards;
 using GameCore.Cards.Tests;
-using GameCore.Cards.GeneralCards;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
 namespace GameCore.Cards.Base.Tests;
