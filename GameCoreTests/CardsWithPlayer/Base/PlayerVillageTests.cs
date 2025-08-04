@@ -50,7 +50,7 @@ public class PlayerVillageTests : CardWithPlayerTestsBase
 		CollectionAssert.AreEquivalent(new List<Card> { copper }, player.PlayerState.Hand);
 		Assert.IsFalse(player.PlayerState.DrawPile.Any());
 
-		// laboratory was added to played cards
+		// village was added to played cards
 		CollectionAssert.AreEqual(new List<Card> { village }, player.PlayerState.PlayedCards);
 		#endregion
 	}
