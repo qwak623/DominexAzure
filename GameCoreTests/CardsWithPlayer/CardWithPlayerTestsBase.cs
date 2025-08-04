@@ -6,7 +6,12 @@ public class CardWithPlayerTestsBase
 {
 	public Mock<IGame> MockGame(Card card)
 	{
-		var kingdom = new Kingdom(new List<Card> { card }, 2); // todo should be mockable
+		return MockGame(new List<Card> { card });
+	}
+
+	public Mock<IGame> MockGame(List<Card> cards)
+	{
+		var kingdom = new Kingdom(cards, 2); // todo should be mockable
 
 		var game = new Mock<IGame>();
 		game.Setup(g => g.Kingdom).Returns(kingdom);

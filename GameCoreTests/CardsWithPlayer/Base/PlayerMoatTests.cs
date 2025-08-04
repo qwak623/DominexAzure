@@ -24,7 +24,7 @@ public class PlayerMoatTests : CardWithPlayerTestsBase
 	[TestInitialize]
 	public void Init()
 	{
-		game = MockGame(militia);
+		game = MockGame(new List<Card> { moat, militia });
 
 		attackerUser = new Mock<IUser>();
 		defenderUser = new Mock<IUser>();

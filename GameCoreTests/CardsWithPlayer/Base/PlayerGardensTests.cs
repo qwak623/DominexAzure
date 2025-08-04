@@ -22,7 +22,7 @@ public class PlayerGardensTests : CardWithPlayerTestsBase
 	[TestInitialize]
 	public void Init()
 	{
-		game = MockGame(gardens);
+		game = MockGame(new List<Card> { gardens, adventurer });
 		user = new Mock<IUser>();
 		player = CreatePlayer(game.Object, user.Object);
 	}

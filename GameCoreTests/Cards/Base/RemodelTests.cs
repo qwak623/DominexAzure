@@ -17,12 +17,12 @@ public class RemodelTests : CardTestsBase
 	[TestInitialize]
 	public void Init()
 	{
-		player = MockPlayer(MockKingdom(remodel));
+		player = MockPlayer(MockKingdom(laboratory));
 		player.Object.PlayerState.Hand = new List<Card> { silver, laboratory };
 	}
 
 	[TestMethod]
-	public void UpgradeCopperToSilver()
+	public void UpgradeSilverToLaboratory()
 	{
 		#region arrange
 		player.Setup(p => p.User.RemodelTrash(remodel, player.Object.PlayerState, player.Object.Game.Kingdom))

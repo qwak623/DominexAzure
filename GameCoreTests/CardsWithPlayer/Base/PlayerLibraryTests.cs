@@ -25,7 +25,7 @@ public class PlayerLibraryTests : CardWithPlayerTestsBase
 	[TestInitialize]
 	public void Init()
 	{
-		game = MockGame(library);
+		game = MockGame(new List<Card> { library, adventurer });
 		user = new Mock<IUser>();
 		player = CreatePlayer(game.Object, user.Object);
 	}
