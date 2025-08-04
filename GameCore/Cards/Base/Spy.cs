@@ -54,6 +54,7 @@ public class Spy : Card
 			return;
 		}
 
+		// TODO není poznat, komu odhazujeme kartu
 		if (attacker.User.SpyDiscard(this, attacker.PlayerState, attacker.Game.Kingdom, card, Phase.Attack))
 		{
 			defender.Game.Logger?.Log(new GameLog { PlayerId = defender.Name, Message = $"{defender.Name} discards {card.Name}" });
