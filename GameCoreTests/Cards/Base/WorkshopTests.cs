@@ -28,8 +28,8 @@ public class WorkshopTests : CardTestsBase
 
 		#region act
 		workshop.WhenPlayAction(player.Object);
-
 		#endregion
+
 		#region assert
 		// actions, coins and buys shouldn't change 
 		Assert.AreEqual(0, player.Object.PlayerState.Actions);
@@ -58,8 +58,8 @@ public class WorkshopTests : CardTestsBase
 
 		#region act
 		workshop.WhenPlayAction(player.Object);
-
 		#endregion
+
 		#region assert
 		// actions, coins and buys shouldn't change 
 		Assert.AreEqual(0, player.Object.PlayerState.Actions);
@@ -69,7 +69,7 @@ public class WorkshopTests : CardTestsBase
 		// player does not draw a card
 		player.Verify(p => p.Draw(It.IsAny<int>()), Times.Never);
 
-		// user has to select a card with price max 5 to gain - there is none
+		// user has to select a card with price max 4 to gain - there is none
 		player.Verify(p => p.User.SelectCardToGain(It.Is<KingdomWrapper>(k => k.Price == 4 && k.OnlyTreasures == false),
 			player.Object.PlayerState, player.Object.Game.Kingdom, Phase.Gain));
 

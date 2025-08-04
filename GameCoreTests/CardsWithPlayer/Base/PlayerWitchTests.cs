@@ -46,8 +46,8 @@ public class PlayerWitchTests : CardWithPlayerTestsBase
 
 		#region act
 		attacker.PlayActionCardInternal(witch);
-
 		#endregion
+
 		#region assert
 		// -1 Action
 		Assert.AreEqual(0, attacker.PlayerState.Actions);
