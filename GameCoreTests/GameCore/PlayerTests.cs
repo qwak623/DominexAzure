@@ -6,7 +6,7 @@ using Moq;
 
 namespace GameCore.Tests;
 
-[TestClass()]
+[TestClass]
 public class PlayerTests
 {
 	private readonly Card copper = Copper.Get();
@@ -40,7 +40,7 @@ public class PlayerTests
 		game.Setup(g => g.Players).Returns(new List<IPlayer> { player, player2 });
 	}
 
-	[TestMethod()]
+	[TestMethod]
 	// TODO
 	public void PlayTurn()
 	{
@@ -57,7 +57,7 @@ public class PlayerTests
 		#endregion
 	}
 
-	[TestMethod()]
+	[TestMethod]
 	public void PlayActionCard()
 	{
 		#region arrange
@@ -89,7 +89,7 @@ public class PlayerTests
 		#endregion
 	}
 
-	[TestMethod()]
+	[TestMethod]
 	public void PlayActionCard_NoActions()
 	{
 		#region arrange
@@ -116,7 +116,7 @@ public class PlayerTests
 		#endregion
 	}
 
-	[TestMethod()]
+	[TestMethod]
 	public void PlayActionCard_NoActionCardsInHand()
 	{
 		#region arrange
@@ -142,7 +142,7 @@ public class PlayerTests
 		#endregion
 	}
 
-	[TestMethod()]
+	[TestMethod]
 	public void PlayActionCard_DontPlayAnything()
 	{
 		#region arrange
@@ -174,7 +174,7 @@ public class PlayerTests
 	}
 
 
-	[TestMethod()]
+	[TestMethod]
 	public void PlayTreasure()
 	{
 		#region arrange
@@ -193,7 +193,7 @@ public class PlayerTests
 		#endregion
 	}
 
-	[TestMethod()]
+	[TestMethod]
 	public void Buy()
 	{
 		#region arrange
@@ -218,7 +218,7 @@ public class PlayerTests
 		#endregion
 	}
 
-	[TestMethod()]
+	[TestMethod]
 	public void Buy_NoBuys()
 	{
 		#region arrange
@@ -240,7 +240,7 @@ public class PlayerTests
 		#endregion
 	}
 
-	[TestMethod()]
+	[TestMethod]
 	public void Buy_DontBuyAnything()
 	{
 		#region arrange
@@ -265,7 +265,7 @@ public class PlayerTests
 		#endregion
 	}
 
-	[TestMethod()]
+	[TestMethod]
 	public void Cleanup()
 	{
 		#region arrange
@@ -287,7 +287,7 @@ public class PlayerTests
 		#endregion
 	}
 
-	[TestMethod()]
+	[TestMethod]
 	public void Draw()
 	{
 		#region arrange
@@ -305,7 +305,7 @@ public class PlayerTests
 		#endregion
 	}
 
-	[TestMethod()]
+	[TestMethod]
 	public void Draw_Shuffle()
 	{
 		#region arrange
@@ -324,7 +324,7 @@ public class PlayerTests
 		#endregion
 	}
 
-	[TestMethod()]
+	[TestMethod]
 	public void Draw_NotEnoughCards()
 	{
 		#region arrange
@@ -343,7 +343,7 @@ public class PlayerTests
 		#endregion
 	}
 
-	[TestMethod()]
+	[TestMethod]
 	public void Trash()
 	{
 		#region arrange
@@ -361,7 +361,7 @@ public class PlayerTests
 		#endregion
 	}
 
-	[TestMethod()]
+	[TestMethod]
 	public void Discard()
 	{
 		#region arrange
@@ -379,7 +379,7 @@ public class PlayerTests
 		#endregion
 	}
 
-	[TestMethod()]
+	[TestMethod]
 	public void Gain()
 	{
 		#region act
@@ -395,7 +395,7 @@ public class PlayerTests
 		#endregion
 	}
 
-	[TestMethod()]
+	[TestMethod]
 	public void GainToHand()
 	{
 		#region act
@@ -411,7 +411,7 @@ public class PlayerTests
 		#endregion
 	}
 
-	[TestMethod()]
+	[TestMethod]
 	public void GainToDrawPile()
 	{
 		#region act
@@ -427,7 +427,7 @@ public class PlayerTests
 		#endregion
 	}
 
-	[TestMethod()]
+	[TestMethod]
 	public void ReturnToDrawPile()
 	{
 		#region arrange
@@ -445,7 +445,7 @@ public class PlayerTests
 		#endregion
 	}
 
-	[TestMethod()]
+	[TestMethod]
 	public void DiscardDrawPile()
 	{
 		#region arrange
@@ -463,7 +463,7 @@ public class PlayerTests
 		#endregion
 	}
 
-	[TestMethod()]
+	[TestMethod]
 	public void Show()
 	{
 		#region arrange
@@ -480,7 +480,7 @@ public class PlayerTests
 		#endregion
 	}
 
-	[TestMethod()]
+	[TestMethod]
 	public void Show_Shuffle()
 	{
 		#region arrange
@@ -499,7 +499,7 @@ public class PlayerTests
 		#endregion
 	}
 
-	[TestMethod()]
+	[TestMethod]
 	public void Show_NotEnoughCards()
 	{
 		#region arrange
