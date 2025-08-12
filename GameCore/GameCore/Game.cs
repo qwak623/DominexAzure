@@ -1,7 +1,6 @@
 ﻿using GameCore.Cards;
 using GameCore.GameCore;
 using GameCore.Observers;
-using Utils;
 
 namespace GameCore;
 public class Game : IGame
@@ -71,47 +70,7 @@ public class Game : IGame
 					Logger?.Log(new GameLog { Message = $"Round {turn}:" });
 				}
 
-				Logger?.Log(new GameLog { PlayerId = Players[i].Name, Message = $"{Players[i].Name}'s turn:" });
-				Logger?.Log(new GameLog { Message = $"Action phase" });
-				Logger?.Log(new GameLog
-				{
-					PlayerId = Players[i].Name,
-					Message =
-					$"Hand: {string.Join(", ", Players[i].PlayerState.Hand.Select(c => c.Name))}"
-				});
-
-				// todo tohle neni moc hezke
-				Players[i].PlayerState.Buys = 1;
-				Players[i].PlayerState.Actions = 1;
-				Players[i].PlayerState.Coins = 0;
-
-				// action phase
-				Card card;
-				do
-				{
-					card = Players[i].PlayActionCard();
-				}
-				while (card != null);
-
-				// treasure phase
-				Players[i].PlayTreasure();
-
-				Logger?.Log(new GameLog { Message = $"Buy phase" });
-				Logger?.Log(new GameLog { PlayerId = Players[i].Name, Message = "Hand: " + string.Join(", ", Players[i].PlayerState.Hand.Select(c => c.Name)) });
-				Logger?.Log(new GameLog { PlayerId = Players[i].Name, Message = $"{Players[i].Name} has ${Players[i].PlayerState.Coins}." });
-
-				// buy phase
-				do
-				{
-					card = Players[i].Buy();
-				}
-				while (card != null);
-
-				// cleanup phase
-				Players[i].Cleanup();
-
-				// draw phase
-				Players[i].Draw(drawCount);
+				Players[i].PlayTurn(drawCount);
 
 				GameEnd = IsGameEnd();
 				if (GameEnd)
@@ -142,7 +101,7 @@ public class Game : IGame
 
 				if (turn >= maxRounds)
 				{
-					Logger?.Log(new GameLog { Message = "\r\nGame was terminated, number of rounds exceeded 50." });
+					Logger?.Log(new GameLog { Message = "\r\nGame was terminated, number of rounds exceeded {maxRounds}." });
 					foreach (IPlayer player in Players.OrderBy(p => p.VictoryPoints))
 					{
 						Logger?.Log(new GameLog { PlayerId = player.Name, Message = $"{player.Name} has {player.VictoryPoints}." });

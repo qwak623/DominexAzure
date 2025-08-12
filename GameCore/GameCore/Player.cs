@@ -40,15 +40,64 @@ public class Player : IPlayer
 	// todo je treba abstrahovat nahodnost
 	public Player(IGame game, IUser user)
 	{
-		// todo tohle by mohlo být parametrizovatelné
-
 		name = user.GetName();
 		Game = game;
 		User = user;
 
 		ps = new PlayerState(user.GetPlayerStateObserver(), name);
 
+		// todo tohle by mohlo být parametrizovatelné
 		InitiatePiles();
+	}
+
+	public void PlayTurn(int drawCount)
+	{
+		#region action phase
+		Game.Logger?.Log(new GameLog { PlayerId = Name, Message = $"{Name}'s turn:" });
+		Game.Logger?.Log(new GameLog { Message = $"Action phase" });
+		Game.Logger?.Log(new GameLog
+		{
+			PlayerId = Name,
+			Message =
+			$"Hand: {string.Join(", ", PlayerState.Hand.Select(c => c.Name))}"
+		});
+
+		// todo tohle neni moc hezke
+		PlayerState.Buys = 1;
+		PlayerState.Actions = 1;
+		PlayerState.Coins = 0;
+
+		Card card;
+		do
+		{
+			card = PlayActionCard();
+		}
+		while (card != null);
+		#endregion
+
+		#region buy phase
+		// treasure phase
+		PlayTreasure();
+
+		// buy phase
+		Game.Logger?.Log(new GameLog { Message = $"Buy phase" });
+		Game.Logger?.Log(new GameLog { PlayerId = Name, Message = "Hand: " + string.Join(", ", PlayerState.Hand.Select(c => c.Name)) });
+		Game.Logger?.Log(new GameLog { PlayerId = Name, Message = $"{Name} has ${PlayerState.Coins}." });
+
+		do
+		{
+			card = Buy();
+		}
+		while (card != null);
+		#endregion
+
+		#region cleanup
+		Cleanup();
+		#endregion
+
+		#region draw phase
+		Draw(drawCount);
+		#endregion
 	}
 
 	/// <summary>

@@ -24,6 +24,7 @@ public interface IPlayer
 	void Notify();
 	Card PlayActionCard();
 	void PlayTreasure();
+	void PlayTurn(int drawCount);
 	void ReturnToDrawPile(Card card);
 	List<Card> Show(int count);
 	string ToString();
