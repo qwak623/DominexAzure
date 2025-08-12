@@ -1,6 +1,6 @@
 ﻿namespace GameCore.Cards;
-public class Pile
 
+public class Pile
 {
 	// TODO zrefaktorovat, takhle bereme card místo top
 	private readonly Stack<Card> cards;
@@ -8,11 +8,11 @@ public class Pile
 	private Card top;
 
 	public int Count => cards.Count;
-	public bool Empty => cards.Count == 0;
-	public CardType Type => top.Type;
-	public string Name => top.Name;
-	public int Price => top.Price;
-	public Card Card => cards.Count > 0 ? top : null;
+	public bool Empty => !cards.Any();
+	public CardType Type { get; init; }
+	public string Name { get; init; }
+	public int Price { get; init; }
+	public Card Card => cards.Any() ? top : null;
 
 	public Card GainCard()
 	{
@@ -21,9 +21,10 @@ public class Pile
 			return null;
 		}
 
-		top = cards.Pop();
+		var card = cards.Pop();
 		onGain?.Invoke();
-		return top;
+		top = Empty ? null : cards.Peek();
+		return card;
 	}
 
 	public Pile(Card card, int count = 1, Action onGain = null)
@@ -35,6 +36,9 @@ public class Pile
 		}
 
 		top = cards.Peek();
+		Type = card.Type;
+		Name = card.Name;
+		Price = card.Price;
 		this.onGain = onGain;
 	}
 

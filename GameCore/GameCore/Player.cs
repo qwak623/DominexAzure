@@ -348,14 +348,15 @@ public class Player : IPlayer
 	private Card GainCard(CardType type)
 	{
 		var pile = Game.Kingdom.GetPile(type);
+		var card = pile.GainCard();
 
 		// counts empty piles without enumerating 
-		if (pile.Count == 1)
+		if (pile.Empty)
 		{
 			Game.Kingdom.EmptyPilesCount++;
 		}
 
-		return pile.GainCard();
+		return card;
 	}
 
 	private void InitiatePiles()
