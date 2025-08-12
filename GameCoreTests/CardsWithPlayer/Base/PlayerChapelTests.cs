@@ -13,6 +13,7 @@ public class PlayerChapelTests : CardWithPlayerTestsBase
 	private readonly Card chapel = Chapel.Get();
 	private readonly Card copper = Copper.Get();
 	private readonly Card silver = Silver.Get();
+	private readonly Card throneRoom = ThroneRoom.Get();
 
 	private Player player;
 
@@ -40,22 +41,20 @@ public class PlayerChapelTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region assert
-		// -1 Action
+		// -1 Action, +0 Coins, +0 Buys
 		Assert.AreEqual(0, player.PlayerState.Actions);
-
-		// coins and buys shouldn't change 
 		Assert.AreEqual(0, player.PlayerState.Coins);
 		Assert.AreEqual(0, player.PlayerState.Buys);
 
 		// user is asked to choose cards to trash
 		user.Verify(u => u.ChapelTrash(chapel, player.PlayerState, player.Game.Kingdom), Times.Once);
 
-		// player does not draw or trash any card
+		// +0 Cards
 		CollectionAssert.AreEquivalent(new List<Card> { copper, silver, silver, copper }, player.PlayerState.Hand);
 		Assert.IsFalse(player.Game.Trash.Any());
 
 		// chapel was added to played cards
-		CollectionAssert.AreEqual(new List<Card> { chapel }, player.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { chapel }, player.PlayerState.PlayedCards);
 		#endregion
 	}
 	[TestMethod]
@@ -70,10 +69,8 @@ public class PlayerChapelTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region assert
-		// -1 Action
+		// -1 Action, +0 Coins, +0 Buys
 		Assert.AreEqual(0, player.PlayerState.Actions);
-
-		// coins and buys shouldn't change 
 		Assert.AreEqual(0, player.PlayerState.Coins);
 		Assert.AreEqual(0, player.PlayerState.Buys);
 
@@ -85,7 +82,7 @@ public class PlayerChapelTests : CardWithPlayerTestsBase
 		CollectionAssert.AreEquivalent(new List<Card> { copper }, player.Game.Trash.ToList());
 
 		// chapel was added to played cards
-		CollectionAssert.AreEqual(new List<Card> { chapel }, player.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { chapel }, player.PlayerState.PlayedCards);
 		#endregion
 	}
 
@@ -102,10 +99,8 @@ public class PlayerChapelTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region assert
-		// -1 Action
+		// -1 Action, +0 Coins, +0 Buys
 		Assert.AreEqual(0, player.PlayerState.Actions);
-
-		// coins and buys shouldn't change 
 		Assert.AreEqual(0, player.PlayerState.Coins);
 		Assert.AreEqual(0, player.PlayerState.Buys);
 
@@ -117,7 +112,50 @@ public class PlayerChapelTests : CardWithPlayerTestsBase
 		CollectionAssert.AreEquivalent(new List<Card> { copper, silver, silver, copper }, player.Game.Trash.ToList());
 
 		// chapel was added to played cards
-		CollectionAssert.AreEqual(new List<Card> { chapel }, player.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { chapel }, player.PlayerState.PlayedCards);
+		#endregion
+	}
+
+
+	[TestMethod]
+	public void ThroneRoomTwoCoppersToSilvers()
+	{
+		#region arrange
+		player.PlayerState.Hand = new List<Card> { chapel, throneRoom, copper, copper, silver, silver, copper, copper };
+		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
+			player.Game.Kingdom, It.Is<IEnumerable<Card>>(c => c.SingleOrDefault() == chapel))).Returns(chapel);
+		user.SetupSequence(u => u.ChapelTrash(chapel, player.PlayerState, player.Game.Kingdom))
+			.Returns(new List<Card> { copper, copper, silver, silver })
+			.Returns(new List<Card> { copper, copper });
+		#endregion
+
+		#region act
+		player.PlayActionCardInternal(throneRoom);
+		#endregion
+
+		#region assert
+		// -1 Action, (+0 Actions, +0 Coins, +0 Buys) * 2
+		Assert.AreEqual(0, player.PlayerState.Actions);
+		Assert.AreEqual(0, player.PlayerState.Coins);
+		Assert.AreEqual(0, player.PlayerState.Buys);
+
+		// +0 Cards
+		Assert.IsFalse(player.PlayerState.DrawPile.Any());
+		Assert.IsFalse(player.PlayerState.DiscardPile.Any());
+		Assert.IsFalse(player.PlayerState.Hand.Any());
+
+		// user is asked which card to play using throne room
+		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
+			player.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
+
+		// user is asked to choose cards to trash twice
+		user.Verify(u => u.ChapelTrash(chapel, player.PlayerState, player.Game.Kingdom), Times.Exactly(2));
+
+		// player trashes the chosen cards
+		CollectionAssert.AreEquivalent(new List<Card> { copper, copper, silver, silver, copper, copper }, player.Game.Trash.ToList());
+
+		// chapel and throne room were added to played cards
+		CollectionAssert.AreEquivalent(new List<Card> { chapel, throneRoom }, player.PlayerState.PlayedCards);
 		#endregion
 	}
 }

@@ -1,5 +1,4 @@
-﻿using System.Threading.Channels;
-using GameCore.Cards;
+﻿using GameCore.Cards;
 using GameCore.Cards.Base;
 using GameCore.Cards.GeneralCards;
 using GameCore.CardWithPlayer.Tests;
@@ -13,6 +12,7 @@ public class PlayerLaboratoryTests : CardWithPlayerTestsBase
 {
 	private readonly Card laboratory = Laboratory.Get();
 	private readonly Card copper = Copper.Get();
+	private readonly Card throneRoom = ThroneRoom.Get();
 
 	private Player player;
 
@@ -40,10 +40,8 @@ public class PlayerLaboratoryTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region assert
-		// (-1 Action, +1 Actions)
+		// (-1 Action, +1 Action), +0 Coins, +0 Buys
 		Assert.AreEqual(1, player.PlayerState.Actions);
-
-		// +0 Coins, +0 Buys
 		Assert.AreEqual(0, player.PlayerState.Coins);
 		Assert.AreEqual(0, player.PlayerState.Buys);
 
@@ -52,7 +50,41 @@ public class PlayerLaboratoryTests : CardWithPlayerTestsBase
 		Assert.IsFalse(player.PlayerState.DrawPile.Any());
 
 		// laboratory was added to played cards
-		CollectionAssert.AreEqual(new List<Card> { laboratory }, player.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { laboratory }, player.PlayerState.PlayedCards);
+		#endregion
+	}
+
+	[TestMethod]
+	public void ThroneRoomPlay()
+	{
+		#region arrange
+		player.PlayerState.Hand = new List<Card> { throneRoom, laboratory };
+		player.PlayerState.DrawPile = new List<Card> { copper, copper, copper, copper };
+		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
+			player.Game.Kingdom, It.Is<IEnumerable<Card>>(c => c.SingleOrDefault() == laboratory))).Returns(laboratory);
+		#endregion
+
+		#region act
+		player.PlayActionCardInternal(throneRoom);
+		#endregion
+
+		#region assert
+		// -1 Action, (+1 Action, +0 Coins, +0 Buys) * 2
+		Assert.AreEqual(2, player.PlayerState.Actions);
+		Assert.AreEqual(0, player.PlayerState.Coins);
+		Assert.AreEqual(0, player.PlayerState.Buys);
+
+		// (+2 Card) * 2
+		CollectionAssert.AreEquivalent(new List<Card> { copper, copper, copper, copper }, player.PlayerState.Hand);
+		Assert.IsFalse(player.PlayerState.DrawPile.Any());
+		Assert.IsFalse(player.PlayerState.DiscardPile.Any());
+
+		// user is asked which card to play using throne room
+		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
+			player.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
+
+		// laboratory and throne room were added to played cards
+		CollectionAssert.AreEquivalent(new List<Card> { laboratory, throneRoom }, player.PlayerState.PlayedCards);
 		#endregion
 	}
 }

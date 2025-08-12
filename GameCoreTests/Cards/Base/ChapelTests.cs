@@ -11,6 +11,7 @@ public class ChapelTests : CardTestsBase
 	private readonly Card chapel = Chapel.Get();
 	private readonly Card copper = Copper.Get();
 	private readonly Card silver = Silver.Get();
+	private readonly Card throneRoom = ThroneRoom.Get();
 
 	private Mock<IPlayer> player;
 
@@ -34,12 +35,12 @@ public class ChapelTests : CardTestsBase
 		#endregion
 
 		#region assert
-		// actions, coins and buys shouldn't change 
+		// +0 Actions, +0 Coins, +0 Buys
 		Assert.AreEqual(0, player.Object.PlayerState.Actions);
 		Assert.AreEqual(0, player.Object.PlayerState.Coins);
 		Assert.AreEqual(0, player.Object.PlayerState.Buys);
 
-		// player does not draw a card
+		// +0 Cards
 		player.Verify(p => p.Draw(It.IsAny<int>()), Times.Never);
 
 		// user is asked to choose cards to trash
@@ -62,12 +63,12 @@ public class ChapelTests : CardTestsBase
 		#endregion
 
 		#region assert
-		// actions, coins and buys shouldn't change 
+		// +0 Actions, +0 Coins, +0 Buys
 		Assert.AreEqual(0, player.Object.PlayerState.Actions);
 		Assert.AreEqual(0, player.Object.PlayerState.Coins);
 		Assert.AreEqual(0, player.Object.PlayerState.Buys);
 
-		// player does not draw a card
+		// +0 Cards
 		player.Verify(p => p.Draw(It.IsAny<int>()), Times.Never);
 
 		// user is asked to choose cards to trash
@@ -91,12 +92,12 @@ public class ChapelTests : CardTestsBase
 		#endregion
 
 		#region assert
-		// actions, coins and buys shouldn't change 
+		// +0 Actions, +0 Coins, +0 Buys
 		Assert.AreEqual(0, player.Object.PlayerState.Actions);
 		Assert.AreEqual(0, player.Object.PlayerState.Coins);
 		Assert.AreEqual(0, player.Object.PlayerState.Buys);
 
-		// player does not draw a card
+		// +0 Cards
 		player.Verify(p => p.Draw(It.IsAny<int>()), Times.Never);
 
 		// user is asked to choose cards to trash
@@ -104,6 +105,45 @@ public class ChapelTests : CardTestsBase
 
 		// player trashes the cards
 		player.Verify(p => p.Trash(copper), Times.Exactly(2));
+		player.Verify(p => p.Trash(silver), Times.Exactly(2));
+		#endregion
+	}
+
+	[TestMethod]
+	public void ThroneRoom4Treasures()
+	{
+		#region arrange
+		player.Object.PlayerState.Hand = new List<Card> { chapel };
+
+		player.Setup(p => p.User.ThroneRoomPlay(throneRoom, player.Object.PlayerState,
+			player.Object.Game.Kingdom, It.Is<IEnumerable<Card>>(c => c.Contains(chapel)))).Returns(chapel);
+		player.SetupSequence(p => p.User.ChapelTrash(chapel, player.Object.PlayerState, player.Object.Game.Kingdom))
+			.Returns(new List<Card> { copper, copper, silver, silver })
+			.Returns(new List<Card> { copper, copper });
+		#endregion
+
+		#region act
+		throneRoom.WhenPlayAction(player.Object);
+		#endregion
+
+		#region assert
+		// +0 Actions, +0 Coins, +0 Buys
+		Assert.AreEqual(0, player.Object.PlayerState.Actions);
+		Assert.AreEqual(0, player.Object.PlayerState.Coins);
+		Assert.AreEqual(0, player.Object.PlayerState.Buys);
+
+		// +0 Cards
+		player.Verify(p => p.Draw(It.IsAny<int>()), Times.Never);
+
+		// user is asked which card to play using throne room
+		player.Verify(p => p.User.ThroneRoomPlay(throneRoom, player.Object.PlayerState,
+			player.Object.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
+
+		// user is asked to choose cards to trash twice
+		player.Verify(p => p.User.ChapelTrash(chapel, player.Object.PlayerState, player.Object.Game.Kingdom), Times.Exactly(2));
+
+		// player trashes the cards
+		player.Verify(p => p.Trash(copper), Times.Exactly(4));
 		player.Verify(p => p.Trash(silver), Times.Exactly(2));
 		#endregion
 	}

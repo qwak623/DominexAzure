@@ -50,6 +50,6 @@ public class Library : Card
 			}
 		}
 
-		cardsAside.ForEach(c => player.PlayerState.DiscardPile.Add(c));
+		cardsAside.ForEach(player.PlayerState.DiscardPile.Add);
 	}
 }

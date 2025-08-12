@@ -15,6 +15,7 @@ public class PlayerThiefTests : CardWithPlayerTestsBase
 	private readonly Card copper = Copper.Get();
 	private readonly Card silver = Silver.Get();
 	private readonly Card gold = Gold.Get();
+	private readonly Card throneRoom = ThroneRoom.Get();
 
 	private Player attacker;
 	private Player defender;
@@ -49,21 +50,19 @@ public class PlayerThiefTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region assert
-		// -1 Action
+		// -1 Action, +0 Coins, +0 Buys
 		Assert.AreEqual(0, attacker.PlayerState.Actions);
-
-		// coins and buys shouldn't change
 		Assert.AreEqual(0, attacker.PlayerState.Coins);
 		Assert.AreEqual(0, attacker.PlayerState.Buys);
 
-		// attacker's hand is now empty
+		// a+0 Cards
 		Assert.IsFalse(attacker.PlayerState.Hand.Any());
 
 		// attacker did not steal anything
 		Assert.IsFalse(attacker.PlayerState.DiscardPile.Any());
 
-		// bureaucrat was added to the attacker's played cards
-		CollectionAssert.AreEqual(new List<Card> { thief }, attacker.PlayerState.PlayedCards);
+		// thief was added to the attacker's played cards
+		CollectionAssert.AreEquivalent(new List<Card> { thief }, attacker.PlayerState.PlayedCards);
 
 		// defender's actions, coins and buys shouldn't change
 		Assert.AreEqual(0, defender.PlayerState.Actions);
@@ -98,18 +97,16 @@ public class PlayerThiefTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region assert
-		// -1 Action
+		// -1 Action, +0 Coins, +0 Buys
 		Assert.AreEqual(0, attacker.PlayerState.Actions);
-
-		// coins and buys shouldn't change
 		Assert.AreEqual(0, attacker.PlayerState.Coins);
 		Assert.AreEqual(0, attacker.PlayerState.Buys);
 
-		// attacker's hand is now empty
+		// a+0 Cards
 		Assert.IsFalse(attacker.PlayerState.Hand.Any());
 
-		// bureaucrat was added to the attacker's played cards
-		CollectionAssert.AreEqual(new List<Card> { thief }, attacker.PlayerState.PlayedCards);
+		// thief was added to the attacker's played cards
+		CollectionAssert.AreEquivalent(new List<Card> { thief }, attacker.PlayerState.PlayedCards);
 
 		// defender's actions, coins and buys shouldn't change
 		Assert.AreEqual(0, defender.PlayerState.Actions);
@@ -117,7 +114,7 @@ public class PlayerThiefTests : CardWithPlayerTestsBase
 		Assert.AreEqual(0, defender.PlayerState.Buys);
 
 		// defender discards the shown cards
-		CollectionAssert.AreEqual(new List<Card> { province, province }, defender.PlayerState.DiscardPile);
+		CollectionAssert.AreEquivalent(new List<Card> { province, province }, defender.PlayerState.DiscardPile);
 
 		// defender's hand did not change
 		Assert.IsFalse(defender.PlayerState.Hand.Any());
@@ -158,18 +155,16 @@ public class PlayerThiefTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region assert
-		// -1 Action
+		// -1 Action, +0 Coins, +0 Buys
 		Assert.AreEqual(0, attacker.PlayerState.Actions);
-
-		// coins and buys shouldn't change
 		Assert.AreEqual(0, attacker.PlayerState.Coins);
 		Assert.AreEqual(0, attacker.PlayerState.Buys);
 
-		// attacker's hand is now empty
+		// a+0 Cards
 		Assert.IsFalse(attacker.PlayerState.Hand.Any());
 
-		// bureaucrat was added to the attacker's played cards
-		CollectionAssert.AreEqual(new List<Card> { thief }, attacker.PlayerState.PlayedCards);
+		// thief was added to the attacker's played cards
+		CollectionAssert.AreEquivalent(new List<Card> { thief }, attacker.PlayerState.PlayedCards);
 
 		// defender's actions, coins and buys shouldn't change
 		Assert.AreEqual(0, defender.PlayerState.Actions);
@@ -185,13 +180,13 @@ public class PlayerThiefTests : CardWithPlayerTestsBase
 			copper), Times.Once);
 
 		// the copper is trashed
-		CollectionAssert.AreEqual(new List<Card> { copper }, defender.Game.Trash.ToList());
+		CollectionAssert.AreEquivalent(new List<Card> { copper }, defender.Game.Trash.ToList());
 
 		// defender's hand did not change
 		Assert.IsFalse(defender.PlayerState.Hand.Any());
 
 		// defender discards the other card
-		CollectionAssert.AreEqual(new List<Card> { province }, defender.PlayerState.DiscardPile);
+		CollectionAssert.AreEquivalent(new List<Card> { province }, defender.PlayerState.DiscardPile);
 
 		// attacker did not gain anything
 		Assert.IsFalse(attacker.PlayerState.DiscardPile.Any());
@@ -220,18 +215,16 @@ public class PlayerThiefTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region assert
-		// -1 Action
+		// -1 Action, +0 Coins, +0 Buys
 		Assert.AreEqual(0, attacker.PlayerState.Actions);
-
-		// coins and buys shouldn't change
 		Assert.AreEqual(0, attacker.PlayerState.Coins);
 		Assert.AreEqual(0, attacker.PlayerState.Buys);
 
-		// attacker's hand is now empty
+		// a+0 Cards
 		Assert.IsFalse(attacker.PlayerState.Hand.Any());
 
-		// bureaucrat was added to the attacker's played cards
-		CollectionAssert.AreEqual(new List<Card> { thief }, attacker.PlayerState.PlayedCards);
+		// thief was added to the attacker's played cards
+		CollectionAssert.AreEquivalent(new List<Card> { thief }, attacker.PlayerState.PlayedCards);
 
 		// defender's actions, coins and buys shouldn't change
 		Assert.AreEqual(0, defender.PlayerState.Actions);
@@ -253,10 +246,10 @@ public class PlayerThiefTests : CardWithPlayerTestsBase
 		Assert.IsFalse(defender.PlayerState.Hand.Any());
 
 		// defender discards the other card
-		CollectionAssert.AreEqual(new List<Card> { province }, defender.PlayerState.DiscardPile);
+		CollectionAssert.AreEquivalent(new List<Card> { province }, defender.PlayerState.DiscardPile);
 
 		// attacker gained the gold
-		CollectionAssert.AreEqual(new List<Card> { gold }, attacker.PlayerState.DiscardPile);
+		CollectionAssert.AreEquivalent(new List<Card> { gold }, attacker.PlayerState.DiscardPile);
 
 		// nothing was added to the defender's played cards
 		Assert.IsFalse(defender.PlayerState.PlayedCards.Any());
@@ -282,18 +275,16 @@ public class PlayerThiefTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region assert
-		// -1 Action
+		// -1 Action, +0 Coins, +0 Buys
 		Assert.AreEqual(0, attacker.PlayerState.Actions);
-
-		// coins and buys shouldn't change
 		Assert.AreEqual(0, attacker.PlayerState.Coins);
 		Assert.AreEqual(0, attacker.PlayerState.Buys);
 
-		// attacker's hand is now empty
+		// a+0 Cards
 		Assert.IsFalse(attacker.PlayerState.Hand.Any());
 
-		// bureaucrat was added to the attacker's played cards
-		CollectionAssert.AreEqual(new List<Card> { thief }, attacker.PlayerState.PlayedCards);
+		// thief was added to the attacker's played cards
+		CollectionAssert.AreEquivalent(new List<Card> { thief }, attacker.PlayerState.PlayedCards);
 
 		// defender's actions, coins and buys shouldn't change
 		Assert.AreEqual(0, defender.PlayerState.Actions);
@@ -309,10 +300,10 @@ public class PlayerThiefTests : CardWithPlayerTestsBase
 			silver), Times.Once);
 
 		// the silver is trashed
-		CollectionAssert.AreEqual(new List<Card> { silver }, defender.Game.Trash.ToList());
+		CollectionAssert.AreEquivalent(new List<Card> { silver }, defender.Game.Trash.ToList());
 
 		// defender discards the other card
-		CollectionAssert.AreEqual(new List<Card> { copper }, defender.PlayerState.DiscardPile);
+		CollectionAssert.AreEquivalent(new List<Card> { copper }, defender.PlayerState.DiscardPile);
 
 		// defender's hand did not change
 		Assert.IsFalse(defender.PlayerState.Hand.Any());
@@ -344,18 +335,16 @@ public class PlayerThiefTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region assert
-		// -1 Action
+		// -1 Action, +0 Coins, +0 Buys
 		Assert.AreEqual(0, attacker.PlayerState.Actions);
-
-		// coins and buys shouldn't change
 		Assert.AreEqual(0, attacker.PlayerState.Coins);
 		Assert.AreEqual(0, attacker.PlayerState.Buys);
 
-		// attacker's hand is now empty
+		// a+0 Cards
 		Assert.IsFalse(attacker.PlayerState.Hand.Any());
 
-		// bureaucrat was added to the attacker's played cards
-		CollectionAssert.AreEqual(new List<Card> { thief }, attacker.PlayerState.PlayedCards);
+		// thief was added to the attacker's played cards
+		CollectionAssert.AreEquivalent(new List<Card> { thief }, attacker.PlayerState.PlayedCards);
 
 		// defender's actions, coins and buys shouldn't change
 		Assert.AreEqual(0, defender.PlayerState.Actions);
@@ -377,10 +366,80 @@ public class PlayerThiefTests : CardWithPlayerTestsBase
 		Assert.IsFalse(defender.PlayerState.Hand.Any());
 
 		// defender discards the other card
-		CollectionAssert.AreEqual(new List<Card> { copper }, defender.PlayerState.DiscardPile);
+		CollectionAssert.AreEquivalent(new List<Card> { copper }, defender.PlayerState.DiscardPile);
 
 		// attacker gained the gold
-		CollectionAssert.AreEqual(new List<Card> { gold }, attacker.PlayerState.DiscardPile);
+		CollectionAssert.AreEquivalent(new List<Card> { gold }, attacker.PlayerState.DiscardPile);
+
+		// nothing was added to the defender's played cards
+		Assert.IsFalse(defender.PlayerState.PlayedCards.Any());
+		#endregion
+	}
+
+	[TestMethod]
+	public void ThroneRoomPlay()
+	{
+		#region arrange
+		attacker.PlayerState.Hand = new List<Card> { throneRoom, thief };
+		attackerUser.Setup(u => u.ThroneRoomPlay(throneRoom, attacker.PlayerState,
+			attacker.Game.Kingdom, It.Is<IEnumerable<Card>>(c => c.SingleOrDefault() == thief))).Returns(thief);
+
+		attackerUser.SetupSequence(au => au.ThiefChoose(thief, attacker.PlayerState, attacker.Game.Kingdom,
+			It.IsAny<IEnumerable<Card>>())).Returns(gold).Returns(silver);
+		attackerUser.Setup(au => au.ThiefSteal(thief, attacker.PlayerState, attacker.Game.Kingdom,
+			gold)).Returns(true);
+		attackerUser.Setup(au => au.ThiefSteal(thief, attacker.PlayerState, attacker.Game.Kingdom,
+			silver)).Returns(false);
+
+		defender.PlayerState.DrawPile = new List<Card> { silver, copper, copper, gold };
+		#endregion
+
+		#region act
+		attacker.PlayActionCardInternal(throneRoom);
+		#endregion
+
+		#region assert
+		// -1 Actions, +0 Coins, +0 Buys
+		Assert.AreEqual(0, attacker.PlayerState.Actions);
+		Assert.AreEqual(0, attacker.PlayerState.Coins);
+		Assert.AreEqual(0, attacker.PlayerState.Buys);
+
+		// +0 Cards
+		Assert.IsFalse(attacker.PlayerState.DrawPile.Any());
+		Assert.IsFalse(attacker.PlayerState.Hand.Any());
+
+		// attacker was asked which card to play using throne room
+		attackerUser.Verify(u => u.ThroneRoomPlay(throneRoom, attacker.PlayerState,
+			attacker.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
+
+		// the attacker is asked to choose a treasure to trash two times
+		attackerUser.Verify(au => au.ThiefChoose(thief, attacker.PlayerState, attacker.Game.Kingdom,
+			It.IsAny<IEnumerable<Card>>()), Times.Exactly(2));
+
+		// the attacker is asked whether to steal the trashed card two times
+		attackerUser.Verify(au => au.ThiefSteal(thief, attacker.PlayerState, attacker.Game.Kingdom,
+			gold), Times.Once);
+		attackerUser.Verify(au => au.ThiefSteal(thief, attacker.PlayerState, attacker.Game.Kingdom,
+			silver), Times.Once);
+
+		// thief and throne room were added to played cards
+		CollectionAssert.AreEquivalent(new List<Card> { thief, throneRoom }, attacker.PlayerState.PlayedCards);
+
+		// defender's actions, coins and buys shouldn't change
+		Assert.AreEqual(0, defender.PlayerState.Actions);
+		Assert.AreEqual(0, defender.PlayerState.Coins);
+		Assert.AreEqual(0, defender.PlayerState.Buys);
+		Assert.IsFalse(defender.PlayerState.Hand.Any());
+		Assert.IsFalse(defender.PlayerState.DrawPile.Any());
+
+		// silver and gold were trashed, but the thief stole the gold
+		CollectionAssert.AreEquivalent(new List<Card> { silver }, defender.Game.Trash.ToList());
+
+		// defender discards the other cards
+		CollectionAssert.AreEquivalent(new List<Card> { copper, copper }, defender.PlayerState.DiscardPile);
+
+		// attacker gained the gold
+		CollectionAssert.AreEquivalent(new List<Card> { gold }, attacker.PlayerState.DiscardPile);
 
 		// nothing was added to the defender's played cards
 		Assert.IsFalse(defender.PlayerState.PlayedCards.Any());

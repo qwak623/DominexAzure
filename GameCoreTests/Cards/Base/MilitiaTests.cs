@@ -8,6 +8,7 @@ namespace GameCore.Cards.Base.Tests;
 public class MilitiaTests : CardTestsBase
 {
 	private readonly Card militia = Militia.Get();
+	private readonly Card throneRoom = ThroneRoom.Get();
 
 	private Mock<IPlayer> attacker;
 	private Mock<IPlayer> defender;
@@ -18,6 +19,10 @@ public class MilitiaTests : CardTestsBase
 		var kingdom = MockKingdom(militia);
 		attacker = MockPlayer(kingdom);
 		defender = MockPlayer(kingdom);
+
+		var players = new List<IPlayer> { attacker.Object, defender.Object };
+		attacker.Setup(a => a.Game.Players).Returns(players);
+		defender.Setup(a => a.Game.Players).Returns(players);
 	}
 
 	[TestMethod]
@@ -28,15 +33,44 @@ public class MilitiaTests : CardTestsBase
 		#endregion
 
 		#region assert
-		// +2 Coins
-		Assert.AreEqual(2, attacker.Object.PlayerState.Coins);
-
-		// actions and buys shouldn't change
+		// +0 Actions, +2 Coins, +0 Buys
 		Assert.AreEqual(0, attacker.Object.PlayerState.Actions);
+		Assert.AreEqual(2, attacker.Object.PlayerState.Coins);
 		Assert.AreEqual(0, attacker.Object.PlayerState.Buys);
 
-		// player does not draw any cards
+		// +0 Cards
 		attacker.Verify(p => p.Draw(It.IsAny<int>()), Times.Never);
+		#endregion
+	}
+
+	[TestMethod]
+	public void ThroneRoomPlay()
+	{
+		#region arrange
+		attacker.Object.PlayerState.Hand = new List<Card> { militia };
+		attacker.Setup(p => p.User.ThroneRoomPlay(throneRoom, attacker.Object.PlayerState,
+			attacker.Object.Game.Kingdom, It.Is<IEnumerable<Card>>(c => c.SingleOrDefault() == militia))).Returns(militia);
+		#endregion
+
+		#region act
+		throneRoom.WhenPlayAction(attacker.Object);
+		#endregion
+
+		#region assert
+		// (+0 Actions, +2 Coins, +0 Buys) * 2
+		Assert.AreEqual(0, attacker.Object.PlayerState.Actions);
+		Assert.AreEqual(4, attacker.Object.PlayerState.Coins);
+		Assert.AreEqual(0, attacker.Object.PlayerState.Buys);
+
+		// +0 Cards
+		attacker.Verify(p => p.Draw(It.IsAny<int>()), Times.Never);
+
+		// attacker was asked which card to play using throne room
+		attacker.Verify(p => p.User.ThroneRoomPlay(throneRoom, attacker.Object.PlayerState,
+			attacker.Object.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
+
+		// attacker deals an attack to the defender two times
+		defender.Verify(d => d.DealAttack(attacker.Object, militia), Times.Exactly(2));
 		#endregion
 	}
 

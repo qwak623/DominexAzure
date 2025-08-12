@@ -14,6 +14,7 @@ public class PlayerCellarTests : CardWithPlayerTestsBase
 	private readonly Card copper = Copper.Get();
 	private readonly Card silver = Silver.Get();
 	private readonly Card gold = Gold.Get();
+	private readonly Card throneRoom = ThroneRoom.Get();
 
 	private Player player;
 
@@ -43,10 +44,8 @@ public class PlayerCellarTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region assert
-		// -1 action, +1 action
+		// -1 Action, (+1 Action, +0 Coins, +0 Buys)
 		Assert.AreEqual(1, player.PlayerState.Actions);
-
-		// coins and buys shouldn't change 
 		Assert.AreEqual(0, player.PlayerState.Coins);
 		Assert.AreEqual(0, player.PlayerState.Buys);
 
@@ -60,7 +59,7 @@ public class PlayerCellarTests : CardWithPlayerTestsBase
 		CollectionAssert.AreEquivalent(new List<Card> { silver, silver, copper, silver }, player.PlayerState.Hand);
 
 		// cellar was added to played cards
-		CollectionAssert.AreEqual(new List<Card> { cellar }, player.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { cellar }, player.PlayerState.PlayedCards);
 		#endregion
 	}
 
@@ -80,10 +79,8 @@ public class PlayerCellarTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region assert
-		// -1 action, +1 action
+		// -1 Action, (+1 Action, +0 Coins, +0 Buys)
 		Assert.AreEqual(1, player.PlayerState.Actions);
-
-		// coins and buys shouldn't change 
 		Assert.AreEqual(0, player.PlayerState.Coins);
 		Assert.AreEqual(0, player.PlayerState.Buys);
 
@@ -100,7 +97,7 @@ public class PlayerCellarTests : CardWithPlayerTestsBase
 		Assert.IsFalse(player.PlayerState.DrawPile.Any());
 
 		// cellar was added to played cards
-		CollectionAssert.AreEqual(new List<Card> { cellar }, player.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { cellar }, player.PlayerState.PlayedCards);
 		#endregion
 	}
 
@@ -120,10 +117,8 @@ public class PlayerCellarTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region assert
-		// -1 action, +1 action
+		// -1 Action, (+1 Action, +0 Coins, +0 Buys)
 		Assert.AreEqual(1, player.PlayerState.Actions);
-
-		// coins and buys shouldn't change 
 		Assert.AreEqual(0, player.PlayerState.Coins);
 		Assert.AreEqual(0, player.PlayerState.Buys);
 
@@ -140,7 +135,7 @@ public class PlayerCellarTests : CardWithPlayerTestsBase
 		Assert.IsFalse(player.PlayerState.DrawPile.Any());
 
 		// cellar was added to played cards
-		CollectionAssert.AreEqual(new List<Card> { cellar }, player.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { cellar }, player.PlayerState.PlayedCards);
 		#endregion
 	}
 
@@ -159,10 +154,8 @@ public class PlayerCellarTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region assert
-		// -1 action, +1 action
+		// -1 Action, (+1 Action, +0 Coins, +0 Buys)
 		Assert.AreEqual(1, player.PlayerState.Actions);
-
-		// coins and buys shouldn't change 
 		Assert.AreEqual(0, player.PlayerState.Coins);
 		Assert.AreEqual(0, player.PlayerState.Buys);
 
@@ -179,7 +172,50 @@ public class PlayerCellarTests : CardWithPlayerTestsBase
 		Assert.IsFalse(player.PlayerState.DrawPile.Any());
 
 		// cellar was added to played cards
-		CollectionAssert.AreEqual(new List<Card> { cellar }, player.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { cellar }, player.PlayerState.PlayedCards);
+		#endregion
+	}
+
+	[TestMethod]
+	public void ThroneRoomPlay()
+	{
+		#region arrange
+		player.PlayerState.Hand = new List<Card> { copper, copper, silver, cellar, throneRoom };
+		player.PlayerState.DrawPile = new List<Card> { gold, gold, copper };
+		user.SetupSequence(u => u.CellarDiscard(cellar, player.PlayerState, player.Game.Kingdom))
+			.Returns(new List<Card> { copper, copper }).Returns(new List<Card> { copper });
+		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
+			player.Game.Kingdom, It.Is<IEnumerable<Card>>(c => c.Contains(cellar)))).Returns(cellar);
+		#endregion
+
+		#region act
+		player.PlayActionCardInternal(throneRoom);
+		#endregion
+
+		#region assert
+		// -1 Action, (+1 Action, +0 Coins, +0 Buys) * 2
+		Assert.AreEqual(2, player.PlayerState.Actions);
+		Assert.AreEqual(0, player.PlayerState.Coins);
+		Assert.AreEqual(0, player.PlayerState.Buys);
+
+		// +0 Cards
+		Assert.IsFalse(player.PlayerState.DrawPile.Any());
+
+		// user is asked which card to play using throne room
+		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
+			player.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
+
+		// user is asked to choose cards to discard twice
+		user.Verify(u => u.CellarDiscard(cellar, player.PlayerState, player.Game.Kingdom), Times.Exactly(2));
+
+		// three cards were discarded
+		CollectionAssert.AreEquivalent(new List<Card> { copper, copper, copper }, player.PlayerState.DiscardPile);
+
+		// three cards were gained in place of the discarded ones
+		CollectionAssert.AreEquivalent(new List<Card> { gold, gold, silver }, player.PlayerState.Hand);
+
+		// throne room and cellar were added to played cards
+		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, cellar }, player.PlayerState.PlayedCards);
 		#endregion
 	}
 }

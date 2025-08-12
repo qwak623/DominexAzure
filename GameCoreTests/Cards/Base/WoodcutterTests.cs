@@ -8,6 +8,7 @@ namespace GameCore.Cards.Base.Tests;
 public class WoodcutterTests : CardTestsBase
 {
 	private readonly Card woodcutter = Woodcutter.Get();
+	private readonly Card throneRoom = ThroneRoom.Get();
 
 	private Mock<IPlayer> player;
 
@@ -25,17 +26,41 @@ public class WoodcutterTests : CardTestsBase
 		#endregion
 
 		#region assert
-		// +2 Coins
+		// +0 Actions, +2 Coins, +1 Buy
+		Assert.AreEqual(0, player.Object.PlayerState.Actions);
 		Assert.AreEqual(2, player.Object.PlayerState.Coins);
-
-		// +1 Buy
 		Assert.AreEqual(1, player.Object.PlayerState.Buys);
 
-		// Actions shouldn't change
-		Assert.AreEqual(0, player.Object.PlayerState.Actions);
-
-		// player draws no cards
+		// +0 Cards
 		player.Verify(p => p.Draw(It.IsAny<int>()), Times.Never);
+		#endregion
+	}
+
+	[TestMethod]
+	public void ThroneRoomPlay()
+	{
+		#region arrange
+		player.Object.PlayerState.Hand = new List<Card> { woodcutter };
+		player.Setup(p => p.User.ThroneRoomPlay(throneRoom, player.Object.PlayerState,
+			player.Object.Game.Kingdom, It.Is<IEnumerable<Card>>(c => c.SingleOrDefault() == woodcutter))).Returns(woodcutter);
+		#endregion
+
+		#region act
+		throneRoom.WhenPlayAction(player.Object);
+		#endregion
+
+		#region assert
+		// (+0 Actions, +2 Coins, +1 Buy) * 2
+		Assert.AreEqual(0, player.Object.PlayerState.Actions);
+		Assert.AreEqual(4, player.Object.PlayerState.Coins);
+		Assert.AreEqual(2, player.Object.PlayerState.Buys);
+
+		// +0 Cards
+		player.Verify(p => p.Draw(It.IsAny<int>()), Times.Never);
+
+		// user is asked which card to play using throne room
+		player.Verify(p => p.User.ThroneRoomPlay(throneRoom, player.Object.PlayerState,
+			player.Object.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
 		#endregion
 	}
 }

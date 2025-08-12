@@ -1,4 +1,5 @@
-﻿using GameCore.Cards;
+﻿using System.ComponentModel;
+using GameCore.Cards;
 using GameCore.Cards.Base;
 using GameCore.Cards.GeneralCards;
 using GameCore.CardWithPlayer.Tests;
@@ -13,6 +14,7 @@ public class PlayerChancellorTests : CardWithPlayerTestsBase
 	private readonly Card chancellor = Chancellor.Get();
 	private readonly Card copper = Copper.Get();
 	private readonly Card silver = Silver.Get();
+	private readonly Card throneRoom = ThroneRoom.Get();
 
 	private Player player;
 
@@ -43,17 +45,13 @@ public class PlayerChancellorTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region assert
-		// -1 Action
+		// -1 Action, +2 Coins, +0 Buys
 		Assert.AreEqual(0, player.PlayerState.Actions);
-
-		// +2 Coins
 		Assert.AreEqual(2, player.PlayerState.Coins);
-
-		// Buys shouldn't change 
 		Assert.AreEqual(0, player.PlayerState.Buys);
 
 		// +0 Cards
-		CollectionAssert.AreEqual(new List<Card> { copper }, player.PlayerState.Hand);
+		CollectionAssert.AreEquivalent(new List<Card> { copper }, player.PlayerState.Hand);
 
 		// user is asked to choose whether to discard his draw pile
 		user.Verify(u => u.ChancellorDiscard(chancellor, player.PlayerState, player.Game.Kingdom), Times.Once);
@@ -63,7 +61,7 @@ public class PlayerChancellorTests : CardWithPlayerTestsBase
 		CollectionAssert.AreEquivalent(new List<Card> { copper, silver, silver }, player.PlayerState.DiscardPile);
 
 		// chancellor was added to played cards
-		CollectionAssert.AreEqual(new List<Card> { chancellor }, player.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { chancellor }, player.PlayerState.PlayedCards);
 		#endregion
 	}
 
@@ -83,17 +81,13 @@ public class PlayerChancellorTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region assert
-		// -1 Action
+		// -1 Action, +2 Coins, +0 Buys
 		Assert.AreEqual(0, player.PlayerState.Actions);
-
-		// +2 Coins
 		Assert.AreEqual(2, player.PlayerState.Coins);
-
-		// Buys shouldn't change 
 		Assert.AreEqual(0, player.PlayerState.Buys);
 
 		// +0 Cards
-		CollectionAssert.AreEqual(new List<Card> { copper }, player.PlayerState.Hand);
+		CollectionAssert.AreEquivalent(new List<Card> { copper }, player.PlayerState.Hand);
 
 		// user is asked to choose whether to discard his draw pile
 		user.Verify(u => u.ChancellorDiscard(chancellor, player.PlayerState, player.Game.Kingdom), Times.Once);
@@ -103,7 +97,96 @@ public class PlayerChancellorTests : CardWithPlayerTestsBase
 		CollectionAssert.AreEquivalent(new List<Card> { copper }, player.PlayerState.DiscardPile);
 
 		// chancellor was added to played cards
-		CollectionAssert.AreEqual(new List<Card> { chancellor }, player.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { chancellor }, player.PlayerState.PlayedCards);
+		#endregion
+	}
+
+	[TestMethod]
+	[DataRow(true, true, DisplayName = "DiscardsBothTimes")]
+	[DataRow(true, false, DisplayName = "OnlyDiscardsForTheFirstTime")]
+	[DataRow(false, true, DisplayName = "OnlyDiscardsForTheSecondTime")]
+	public void ThroneRoomDiscardDrawPile(bool discardFirstTime, bool discardSecondTime)
+	{
+		#region arrange
+		player.PlayerState.Hand = new List<Card> { throneRoom, chancellor, copper };
+		player.PlayerState.DiscardPile = new List<Card> { copper };
+		player.PlayerState.DrawPile = new List<Card> { silver, silver };
+
+		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
+			player.Game.Kingdom, It.Is<IEnumerable<Card>>(c => c.SingleOrDefault() == chancellor))).Returns(chancellor);
+		user.SetupSequence(u => u.ChancellorDiscard(chancellor, player.PlayerState, player.Game.Kingdom))
+			.Returns(discardFirstTime).Returns(discardSecondTime);
+		#endregion
+
+		#region act
+		player.PlayActionCardInternal(throneRoom);
+		#endregion
+
+		#region assert
+		// -1 Action, (+0 Actions, +2 Coins, +0 Buys) * 2
+		Assert.AreEqual(0, player.PlayerState.Actions);
+		Assert.AreEqual(4, player.PlayerState.Coins);
+		Assert.AreEqual(0, player.PlayerState.Buys);
+
+		// +0 Cards
+		CollectionAssert.AreEquivalent(new List<Card> { copper }, player.PlayerState.Hand);
+
+		// user was asked which card to play using throne room
+		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
+			player.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
+
+		// user is asked to choose whether to discard his draw pile
+		user.Verify(u => u.ChancellorDiscard(chancellor, player.PlayerState, player.Game.Kingdom), Times.Exactly(2));
+
+		// player discards his draw pile
+		Assert.IsFalse(player.PlayerState.DrawPile.Any());
+		CollectionAssert.AreEquivalent(new List<Card> { copper, silver, silver }, player.PlayerState.DiscardPile);
+
+		// chancellor and throne room were added to played cards
+		CollectionAssert.AreEquivalent(new List<Card> { chancellor, throneRoom }, player.PlayerState.PlayedCards);
+		#endregion
+	}
+
+	[TestMethod]
+	public void ThroneRoomDontDiscardDrawPile()
+	{
+		#region arrange
+		player.PlayerState.Hand = new List<Card> { throneRoom, chancellor, copper };
+		player.PlayerState.DiscardPile = new List<Card> { copper };
+		player.PlayerState.DrawPile = new List<Card> { silver, silver };
+
+		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
+			player.Game.Kingdom, It.Is<IEnumerable<Card>>(c => c.SingleOrDefault() == chancellor))).Returns(chancellor);
+		user.Setup(u => u.ChancellorDiscard(chancellor, player.PlayerState, player.Game.Kingdom))
+			.Returns(false);
+		#endregion
+
+		#region act
+		player.PlayActionCardInternal(throneRoom);
+		#endregion
+
+		#region assert
+		// -1 Action, (+0 Actions, +2 Coins, +0 Buys) * 2
+		Assert.AreEqual(0, player.PlayerState.Actions);
+		Assert.AreEqual(4, player.PlayerState.Coins);
+		Assert.AreEqual(0, player.PlayerState.Buys);
+
+		// +0 Cards
+		CollectionAssert.AreEquivalent(new List<Card> { copper }, player.PlayerState.Hand);
+
+		// user is asked which card to play using throne room
+		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
+			player.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
+
+		// user is asked to choose whether to discard his draw pile
+		user.Verify(u => u.ChancellorDiscard(chancellor, player.PlayerState, player.Game.Kingdom), Times.Exactly(2));
+
+		// player doesn't discard his draw pile
+		CollectionAssert.AreEquivalent(new List<Card> { silver, silver }, player.PlayerState.DrawPile);
+		CollectionAssert.AreEquivalent(new List<Card> { copper }, player.PlayerState.DiscardPile);
+
+		// chancellor and throne room were added to played cards
+		CollectionAssert.AreEquivalent(new List<Card> { chancellor, throneRoom }, player.PlayerState.PlayedCards);
 		#endregion
 	}
 }

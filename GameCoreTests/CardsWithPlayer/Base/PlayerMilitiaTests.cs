@@ -13,6 +13,7 @@ public class PlayerMilitiaTests : CardWithPlayerTestsBase
 	private readonly Card militia = Militia.Get();
 	private readonly Card copper = Copper.Get();
 	private readonly Card silver = Silver.Get();
+	private readonly Card throneRoom = ThroneRoom.Get();
 
 	private Player attacker;
 	private Player defender;
@@ -51,18 +52,18 @@ public class PlayerMilitiaTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region assert
-		// +2 Coins
+		// +0 Actions, +2 Coins, +0 Buys
 		Assert.AreEqual(2, attacker.PlayerState.Coins);
-
-		// actions and buys shouldn't change
 		Assert.AreEqual(0, attacker.PlayerState.Actions);
 		Assert.AreEqual(0, attacker.PlayerState.Buys);
 
-		// attacker does not draw any cards
+		// +0 Cards
 		Assert.IsFalse(attacker.PlayerState.Hand.Any());
+		Assert.IsFalse(attacker.PlayerState.DrawPile.Any());
+		Assert.IsFalse(attacker.PlayerState.DiscardPile.Any());
 
 		// militia was added to the attacker's played cards
-		CollectionAssert.AreEqual(new List<Card> { militia }, attacker.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { militia }, attacker.PlayerState.PlayedCards);
 
 		// defender's actions, coins and buys shouldn't change
 		Assert.AreEqual(0, defender.PlayerState.Actions);
@@ -95,18 +96,18 @@ public class PlayerMilitiaTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region assert
-		// +2 Coins
+		// +0 Actions, +2 Coins, +0 Buys
 		Assert.AreEqual(2, attacker.PlayerState.Coins);
-
-		// actions and buys shouldn't change
 		Assert.AreEqual(0, attacker.PlayerState.Actions);
 		Assert.AreEqual(0, attacker.PlayerState.Buys);
 
-		// attacker does not draw any cards
+		// +0 Cards
 		Assert.IsFalse(attacker.PlayerState.Hand.Any());
+		Assert.IsFalse(attacker.PlayerState.DrawPile.Any());
+		Assert.IsFalse(attacker.PlayerState.DiscardPile.Any());
 
 		// militia was added to the attacker's played cards
-		CollectionAssert.AreEqual(new List<Card> { militia }, attacker.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { militia }, attacker.PlayerState.PlayedCards);
 
 		// defender's actions, coins and buys shouldn't change
 		Assert.AreEqual(0, defender.PlayerState.Actions);
@@ -119,6 +120,58 @@ public class PlayerMilitiaTests : CardWithPlayerTestsBase
 		// defender doesn't discard anything
 		CollectionAssert.AreEquivalent(new List<Card> { silver, copper, copper }, defender.PlayerState.Hand);
 		Assert.IsFalse(defender.PlayerState.DiscardPile.Any());
+
+		// nothing was added to the defender's played cards
+		Assert.IsFalse(defender.PlayerState.PlayedCards.Any());
+		#endregion
+	}
+
+	[TestMethod]
+	public void ThroneRoomDiscardTwoCards()
+	{
+		#region arrange
+		attacker.PlayerState.Hand = new List<Card> { throneRoom, militia };
+		attackerUser.Setup(u => u.ThroneRoomPlay(throneRoom, attacker.PlayerState,
+			attacker.Game.Kingdom, It.Is<IEnumerable<Card>>(c => c.SingleOrDefault() == militia))).Returns(militia);
+
+		defender.PlayerState.Hand = new List<Card> { silver, silver, silver, silver, copper };
+		defenderUser.Setup(du => du.MilitiaDiscard(militia, defender.PlayerState, defender.Game.Kingdom, 2))
+			.Returns(new List<Card> { silver, copper });
+
+		#endregion
+		#region act
+		attacker.PlayActionCardInternal(throneRoom);
+
+		#endregion
+		#region assert
+		// (+0 Actions, +2 Coins, +0 Buys) * 2
+		Assert.AreEqual(4, attacker.PlayerState.Coins);
+		Assert.AreEqual(0, attacker.PlayerState.Actions);
+		Assert.AreEqual(0, attacker.PlayerState.Buys);
+
+		// +0 Cards
+		Assert.IsFalse(attacker.PlayerState.Hand.Any());
+		Assert.IsFalse(attacker.PlayerState.DrawPile.Any());
+		Assert.IsFalse(attacker.PlayerState.DiscardPile.Any());
+
+		// attacker was asked which card to play using throne room
+		attackerUser.Verify(u => u.ThroneRoomPlay(throneRoom, attacker.PlayerState,
+			attacker.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
+
+		// militia and throne room were added to played cards
+		CollectionAssert.AreEquivalent(new List<Card> { militia, throneRoom }, attacker.PlayerState.PlayedCards);
+
+		// defender's actions, coins and buys shouldn't change
+		Assert.AreEqual(0, defender.PlayerState.Actions);
+		Assert.AreEqual(0, defender.PlayerState.Coins);
+		Assert.AreEqual(0, defender.PlayerState.Buys);
+
+		// defender's user is asked to choose two cards to discard only once
+		defenderUser.Verify(du => du.MilitiaDiscard(militia, defender.PlayerState, defender.Game.Kingdom, 2), Times.Once);
+
+		// defender discards two cards
+		CollectionAssert.AreEquivalent(new List<Card> { silver, silver, silver }, defender.PlayerState.Hand);
+		CollectionAssert.AreEquivalent(new List<Card> { silver, copper }, defender.PlayerState.DiscardPile);
 
 		// nothing was added to the defender's played cards
 		Assert.IsFalse(defender.PlayerState.PlayedCards.Any());

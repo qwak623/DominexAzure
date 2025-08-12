@@ -13,6 +13,7 @@ public class PlayerMoatTests : CardWithPlayerTestsBase
 	private readonly Card moat = Moat.Get();
 	private readonly Card copper = Copper.Get();
 	private readonly Card militia = Militia.Get();
+	private readonly Card throneRoom = ThroneRoom.Get();
 
 	private Player attacker;
 	private Player defender;
@@ -59,7 +60,41 @@ public class PlayerMoatTests : CardWithPlayerTestsBase
 		Assert.IsFalse(defender.PlayerState.DrawPile.Any());
 
 		// moat was added to played cards
-		CollectionAssert.AreEqual(new List<Card> { moat }, defender.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { moat }, defender.PlayerState.PlayedCards);
+		#endregion
+	}
+
+	[TestMethod]
+	public void ThroneRoomPlay()
+	{
+		#region arrange
+		defender.PlayerState.Hand = new List<Card> { throneRoom, moat };
+		defender.PlayerState.DrawPile = new List<Card> { copper, copper, copper, copper };
+		defenderUser.Setup(u => u.ThroneRoomPlay(throneRoom, defender.PlayerState,
+			defender.Game.Kingdom, It.Is<IEnumerable<Card>>(c => c.SingleOrDefault() == moat))).Returns(moat);
+
+		#endregion
+		#region act
+		defender.PlayActionCardInternal(throneRoom);
+
+		#endregion
+		#region assert
+		// -1 Action, (+0 Action, +0 Coins, +0 Buys) * 2
+		Assert.AreEqual(0, defender.PlayerState.Actions);
+		Assert.AreEqual(0, defender.PlayerState.Coins);
+		Assert.AreEqual(0, defender.PlayerState.Buys);
+
+		// (+2 Card) * 2
+		CollectionAssert.AreEquivalent(new List<Card> { copper, copper, copper, copper }, defender.PlayerState.Hand);
+		Assert.IsFalse(defender.PlayerState.DrawPile.Any());
+		Assert.IsFalse(defender.PlayerState.DiscardPile.Any());
+
+		// defender was asked which card to play using throne room
+		defenderUser.Verify(u => u.ThroneRoomPlay(throneRoom, defender.PlayerState,
+			defender.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
+
+		// moat and throne room were added to played cards
+		CollectionAssert.AreEquivalent(new List<Card> { moat, throneRoom }, defender.PlayerState.PlayedCards);
 		#endregion
 	}
 

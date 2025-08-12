@@ -1,6 +1,5 @@
 ﻿using GameCore.Cards;
 using GameCore.Cards.Base;
-using GameCore.Cards.GeneralCards;
 using GameCore.CardWithPlayer.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -11,6 +10,7 @@ namespace GameCore.CardsWithPlayer.Base.Tests;
 public class PlayerWoodcutterTests : CardWithPlayerTestsBase
 {
 	private readonly Card woodcutter = Woodcutter.Get();
+	private readonly Card throneRoom = ThroneRoom.Get();
 
 	private Player player;
 
@@ -37,13 +37,9 @@ public class PlayerWoodcutterTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region assert
-		// -1 Action
+		// -1 Action, +2 Coins, +1 Buy
 		Assert.AreEqual(0, player.PlayerState.Actions);
-
-		// +2 Coins
 		Assert.AreEqual(2, player.PlayerState.Coins);
-
-		// +1 Buy
 		Assert.AreEqual(1, player.PlayerState.Buys);
 
 		// +0 Cards
@@ -52,7 +48,40 @@ public class PlayerWoodcutterTests : CardWithPlayerTestsBase
 		Assert.IsFalse(player.PlayerState.DiscardPile.Any());
 
 		// woodcutter was added to played cards
-		CollectionAssert.AreEqual(new List<Card> { woodcutter }, player.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { woodcutter }, player.PlayerState.PlayedCards);
+		#endregion
+	}
+
+	[TestMethod]
+	public void ThroneRoomPlay()
+	{
+		#region arrange
+		player.PlayerState.Hand = new List<Card> { throneRoom, woodcutter };
+		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
+			player.Game.Kingdom, It.Is<IEnumerable<Card>>(c => c.SingleOrDefault() == woodcutter))).Returns(woodcutter);
+		#endregion
+
+		#region act
+		player.PlayActionCardInternal(throneRoom);
+		#endregion
+
+		#region assert
+		// -1 Action, (+0 Actions, +2 Coins, +1 Buy) * 2
+		Assert.AreEqual(0, player.PlayerState.Actions);
+		Assert.AreEqual(4, player.PlayerState.Coins);
+		Assert.AreEqual(2, player.PlayerState.Buys);
+
+		// +0 Cards
+		Assert.IsFalse(player.PlayerState.Hand.Any());
+		Assert.IsFalse(player.PlayerState.DrawPile.Any());
+		Assert.IsFalse(player.PlayerState.DiscardPile.Any());
+
+		// user is asked which card to play using throne room
+		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
+			player.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
+
+		// woodcutter and throne room were added to played cards
+		CollectionAssert.AreEquivalent(new List<Card> { woodcutter, throneRoom }, player.PlayerState.PlayedCards);
 		#endregion
 	}
 }

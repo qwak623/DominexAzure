@@ -15,6 +15,7 @@ public class PlayerSpyTests : CardWithPlayerTestsBase
 	private readonly Card duchy = Duchy.Get();
 	private readonly Card province = Province.Get();
 	private readonly Card silver = Silver.Get();
+	private readonly Card throneRoom = ThroneRoom.Get();
 
 	private Player player1;
 	private Player player2;
@@ -70,15 +71,13 @@ public class PlayerSpyTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region assert
-		// (-1 Action, +1 Action)
+		// (-1 Action, +1 Action), +0 Coins, +0 Buys
 		Assert.AreEqual(1, player1.PlayerState.Actions);
-
-		// coins and buys shouldn't change
 		Assert.AreEqual(0, player1.PlayerState.Coins);
 		Assert.AreEqual(0, player1.PlayerState.Buys);
 
-		// player draws one card
-		CollectionAssert.AreEqual(new List<Card> { duchy }, player1.PlayerState.Hand);
+		// +1 Card
+		CollectionAssert.AreEquivalent(new List<Card> { duchy }, player1.PlayerState.Hand);
 
 		// user is asked whether to discard his card in the action phase
 		user1.Verify(au => au.SpyDiscard(spy, player1.PlayerState, player1.Game.Kingdom,
@@ -86,7 +85,7 @@ public class PlayerSpyTests : CardWithPlayerTestsBase
 
 		// the player1's card is added to the discard pile, not to the draw pile
 		Assert.IsFalse(player1.PlayerState.DrawPile.Any());
-		CollectionAssert.AreEqual(new List<Card> { province }, player1.PlayerState.DiscardPile);
+		CollectionAssert.AreEquivalent(new List<Card> { province }, player1.PlayerState.DiscardPile);
 
 		// user is asked whether to discard the two other players' cards in the attack phase
 		// (the last player does not have any card to show)
@@ -95,10 +94,10 @@ public class PlayerSpyTests : CardWithPlayerTestsBase
 
 		// the player2's card is added to the discard pile, not to the draw pile
 		Assert.IsFalse(player2.PlayerState.DrawPile.Any());
-		CollectionAssert.AreEqual(new List<Card> { province }, player2.PlayerState.DiscardPile);
+		CollectionAssert.AreEquivalent(new List<Card> { province }, player2.PlayerState.DiscardPile);
 
 		// the player3's card is added to the draw pile, not to the discard pile
-		CollectionAssert.AreEqual(new List<Card> { province }, player3.PlayerState.DrawPile);
+		CollectionAssert.AreEquivalent(new List<Card> { province }, player3.PlayerState.DrawPile);
 		Assert.IsFalse(player3.PlayerState.DiscardPile.Any());
 
 		// player4 did not have any card to show
@@ -106,7 +105,7 @@ public class PlayerSpyTests : CardWithPlayerTestsBase
 		Assert.IsFalse(player4.PlayerState.DiscardPile.Any());
 
 		// spy was added to the player1's played cards
-		CollectionAssert.AreEqual(new List<Card> { spy }, player1.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { spy }, player1.PlayerState.PlayedCards);
 
 		// spy was not added to the other players' played cards
 		Assert.IsFalse(player2.PlayerState.PlayedCards.Any());
@@ -139,14 +138,12 @@ public class PlayerSpyTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region assert
-		// (-1 Action, +1 Action)
+		// (-1 Action, +1 Action), +0 Coins, +0 Buys
 		Assert.AreEqual(1, player1.PlayerState.Actions);
-
-		// coins and buys shouldn't change
 		Assert.AreEqual(0, player1.PlayerState.Coins);
 		Assert.AreEqual(0, player1.PlayerState.Buys);
 
-		// player draws one card
+		// +1 Card
 		CollectionAssert.AreEquivalent(new List<Card> { duchy }, player1.PlayerState.Hand);
 
 		// user is asked whether to discard his card in the action phase
@@ -154,7 +151,7 @@ public class PlayerSpyTests : CardWithPlayerTestsBase
 			silver, Phase.Action), Times.Once);
 
 		// the player1's card is added to the discard pile, not to the draw pile
-		CollectionAssert.AreEqual(new List<Card> { silver }, player1.PlayerState.DrawPile);
+		CollectionAssert.AreEquivalent(new List<Card> { silver }, player1.PlayerState.DrawPile);
 		Assert.IsFalse(player1.PlayerState.DiscardPile.Any());
 
 		// user is asked whether to discard the two other players' cards in the attack phase
@@ -163,7 +160,7 @@ public class PlayerSpyTests : CardWithPlayerTestsBase
 			province, Phase.Attack), Times.Exactly(2));
 
 		// the player2's card is added to the draw pile, not to the discard pile
-		CollectionAssert.AreEqual(new List<Card> { province }, player2.PlayerState.DrawPile);
+		CollectionAssert.AreEquivalent(new List<Card> { province }, player2.PlayerState.DrawPile);
 		Assert.IsFalse(player2.PlayerState.DiscardPile.Any());
 
 		// player3 did not have any card to show
@@ -172,12 +169,121 @@ public class PlayerSpyTests : CardWithPlayerTestsBase
 
 		// the player4's card is added to the discard pile, not to the draw pile
 		Assert.IsFalse(player4.PlayerState.DrawPile.Any());
-		CollectionAssert.AreEqual(new List<Card> { province }, player4.PlayerState.DiscardPile);
+		CollectionAssert.AreEquivalent(new List<Card> { province }, player4.PlayerState.DiscardPile);
 
 		// spy was added to the player1's played cards
-		CollectionAssert.AreEqual(new List<Card> { spy }, player1.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { spy }, player1.PlayerState.PlayedCards);
 
 		// spy was not added to the other players' played cards
+		Assert.IsFalse(player2.PlayerState.PlayedCards.Any());
+		Assert.IsFalse(player3.PlayerState.PlayedCards.Any());
+		Assert.IsFalse(player4.PlayerState.PlayedCards.Any());
+		#endregion
+	}
+
+	[TestMethod]
+	[DataRow(false, false)]
+	[DataRow(false, true)]
+	[DataRow(true, false)]
+	[DataRow(true, true)]
+	public void ThroneRoomPlay(bool discardFirstTime, bool discardSecondTime)
+	{
+		#region arrange
+		player1.PlayerState.Hand = new List<Card> { throneRoom, spy };
+		player1.PlayerState.DrawPile = new List<Card> { province, silver, spy, duchy };
+		player2.PlayerState.DrawPile = new List<Card> { province, silver };
+		player3.PlayerState.DrawPile = new List<Card> { province };
+		player4.PlayerState.DrawPile = new List<Card> { };
+
+		user1.Setup(u => u.ThroneRoomPlay(throneRoom, player1.PlayerState,
+			player1.Game.Kingdom, It.Is<IEnumerable<Card>>(c => c.SingleOrDefault() == spy))).Returns(spy);
+
+		user1.SetupSequence(du => du.SpyDiscard(spy, player1.PlayerState, player1.Game.Kingdom, It.IsAny<Card>(), Phase.Action))
+			.Returns(discardFirstTime).Returns(discardSecondTime);
+		user1.SetupSequence(du => du.SpyDiscard(spy, player1.PlayerState, player1.Game.Kingdom, It.IsAny<Card>(), Phase.Attack))
+			.Returns(discardFirstTime).Returns(discardFirstTime).Returns(discardSecondTime).Returns(discardSecondTime);
+		#endregion
+
+		#region act
+		player1.PlayActionCardInternal(throneRoom);
+		#endregion
+
+		#region assert
+		// -1 Action, (+1 Action, +0 Coins, +0 Buys) * 2
+		Assert.AreEqual(2, player1.PlayerState.Actions);
+		Assert.AreEqual(0, player1.PlayerState.Coins);
+		Assert.AreEqual(0, player1.PlayerState.Buys);
+
+		// user is asked whether to discard his card in the action phase twice
+		user1.Verify(au => au.SpyDiscard(spy, player1.PlayerState, player1.Game.Kingdom,
+			It.IsAny<Card>(), Phase.Action), Times.Exactly(2));
+
+		// user is asked whether to discard the other players' cards in the attack phase
+		user1.Verify(au => au.SpyDiscard(spy, player1.PlayerState, player1.Game.Kingdom,
+			It.IsAny<Card>(), Phase.Attack), Times.Exactly(4));
+
+		// assert all player1, player2 and player3's cards
+		switch ((discardFirstTime, discardSecondTime))
+		{
+			case (true, true):
+				CollectionAssert.AreEquivalent(new List<Card> { }, player1.PlayerState.DrawPile);
+				CollectionAssert.AreEquivalent(new List<Card> { duchy, silver }, player1.PlayerState.Hand);
+				CollectionAssert.AreEquivalent(new List<Card> { spy, province }, player1.PlayerState.DiscardPile);
+
+				CollectionAssert.AreEquivalent(new List<Card> { }, player2.PlayerState.DrawPile);
+				CollectionAssert.AreEquivalent(new List<Card> { silver, province }, player2.PlayerState.DiscardPile);
+
+				CollectionAssert.AreEquivalent(new List<Card> { }, player3.PlayerState.DrawPile);
+				CollectionAssert.AreEquivalent(new List<Card> { province }, player3.PlayerState.DiscardPile);
+				break;
+			case (true, false):
+				CollectionAssert.AreEquivalent(new List<Card> { province }, player1.PlayerState.DrawPile);
+				CollectionAssert.AreEquivalent(new List<Card> { duchy, silver }, player1.PlayerState.Hand);
+				CollectionAssert.AreEquivalent(new List<Card> { spy }, player1.PlayerState.DiscardPile);
+
+				CollectionAssert.AreEquivalent(new List<Card> { province }, player2.PlayerState.DrawPile);
+				CollectionAssert.AreEquivalent(new List<Card> { silver }, player2.PlayerState.DiscardPile);
+
+				CollectionAssert.AreEquivalent(new List<Card> { province }, player3.PlayerState.DrawPile);
+				CollectionAssert.AreEquivalent(new List<Card> { }, player3.PlayerState.DiscardPile);
+				break;
+			case (false, true):
+				CollectionAssert.AreEquivalent(new List<Card> { province }, player1.PlayerState.DrawPile);
+				CollectionAssert.AreEquivalent(new List<Card> { duchy, spy }, player1.PlayerState.Hand);
+				CollectionAssert.AreEquivalent(new List<Card> { silver }, player1.PlayerState.DiscardPile);
+
+				CollectionAssert.AreEquivalent(new List<Card> { province }, player2.PlayerState.DrawPile);
+				CollectionAssert.AreEquivalent(new List<Card> { silver }, player2.PlayerState.DiscardPile);
+
+				CollectionAssert.AreEquivalent(new List<Card> { }, player3.PlayerState.DrawPile);
+				CollectionAssert.AreEquivalent(new List<Card> { province }, player3.PlayerState.DiscardPile);
+				break;
+			case (false, false):
+				CollectionAssert.AreEquivalent(new List<Card> { province, silver }, player1.PlayerState.DrawPile);
+				CollectionAssert.AreEquivalent(new List<Card> { duchy, spy }, player1.PlayerState.Hand);
+				CollectionAssert.AreEquivalent(new List<Card> { }, player1.PlayerState.DiscardPile);
+
+				CollectionAssert.AreEquivalent(new List<Card> { province, silver }, player2.PlayerState.DrawPile);
+				CollectionAssert.AreEquivalent(new List<Card> { }, player2.PlayerState.DiscardPile);
+
+				CollectionAssert.AreEquivalent(new List<Card> { province }, player3.PlayerState.DrawPile);
+				CollectionAssert.AreEquivalent(new List<Card> { }, player3.PlayerState.DiscardPile);
+				break;
+		}
+
+		// all the other players' hands did not change
+		CollectionAssert.AreEquivalent(new List<Card> { }, player2.PlayerState.Hand);
+		CollectionAssert.AreEquivalent(new List<Card> { }, player3.PlayerState.Hand);
+		CollectionAssert.AreEquivalent(new List<Card> { }, player4.PlayerState.Hand);
+
+		// player4 did not have any card to show
+		Assert.IsFalse(player4.PlayerState.DrawPile.Any());
+		Assert.IsFalse(player4.PlayerState.DiscardPile.Any());
+
+		// spy and throne room were added to the player1's played cards
+		CollectionAssert.AreEquivalent(new List<Card> { spy, throneRoom }, player1.PlayerState.PlayedCards);
+
+		// nothing was added to the other players' played cards
 		Assert.IsFalse(player2.PlayerState.PlayedCards.Any());
 		Assert.IsFalse(player3.PlayerState.PlayedCards.Any());
 		Assert.IsFalse(player4.PlayerState.PlayedCards.Any());

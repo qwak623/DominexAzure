@@ -10,7 +10,9 @@ public class RemodelTests : CardTestsBase
 {
 	private readonly Card remodel = Remodel.Get();
 	private readonly Card silver = Silver.Get();
+	private readonly Card gold = Gold.Get();
 	private readonly Card laboratory = Laboratory.Get();
+	private readonly Card throneRoom = ThroneRoom.Get();
 
 	private Mock<IPlayer> player;
 
@@ -38,12 +40,12 @@ public class RemodelTests : CardTestsBase
 		#endregion
 
 		#region assert
-		// actions, coins and buys shouldn't change 
+		// +0 Actions, +0 Coins, +0 Buys
 		Assert.AreEqual(0, player.Object.PlayerState.Actions);
 		Assert.AreEqual(0, player.Object.PlayerState.Coins);
 		Assert.AreEqual(0, player.Object.PlayerState.Buys);
 
-		// player does not draw a card
+		// +0 Cards
 		player.Verify(p => p.Draw(It.IsAny<int>()), Times.Never);
 
 		// user is asked to choose a card to trash
@@ -73,12 +75,12 @@ public class RemodelTests : CardTestsBase
 		#endregion
 
 		#region assert
-		// actions, coins and buys shouldn't change 
+		// +0 Actions, +0 Coins, +0 Buys
 		Assert.AreEqual(0, player.Object.PlayerState.Actions);
 		Assert.AreEqual(0, player.Object.PlayerState.Coins);
 		Assert.AreEqual(0, player.Object.PlayerState.Buys);
 
-		// player does not draw a card
+		// +0 Cards
 		player.Verify(p => p.Draw(It.IsAny<int>()), Times.Never);
 
 		// user is asked to choose a card to trash
@@ -111,12 +113,12 @@ public class RemodelTests : CardTestsBase
 		#endregion
 
 		#region assert
-		// actions, coins and buys shouldn't change 
+		// +0 Actions, +0 Coins, +0 Buys
 		Assert.AreEqual(0, player.Object.PlayerState.Actions);
 		Assert.AreEqual(0, player.Object.PlayerState.Coins);
 		Assert.AreEqual(0, player.Object.PlayerState.Buys);
 
-		// player does not draw a card
+		// +0 Cards
 		player.Verify(p => p.Draw(It.IsAny<int>()), Times.Never);
 
 		// user is asked to choose a card to trash
@@ -131,6 +133,55 @@ public class RemodelTests : CardTestsBase
 
 		// nothing is gained
 		player.Verify(p => p.Gain(It.IsAny<CardType>()), Times.Never);
+		#endregion
+	}
+
+	[TestMethod]
+	public void ThroneRoomPlay()
+	{
+		#region arrange
+		player.Object.PlayerState.Hand = new List<Card> { remodel, silver, throneRoom };
+		player.Setup(p => p.User.ThroneRoomPlay(throneRoom, player.Object.PlayerState,
+			player.Object.Game.Kingdom, It.Is<IEnumerable<Card>>(c => c.Contains(remodel)))).Returns(remodel);
+		player.SetupSequence(p => p.User.RemodelTrash(remodel, player.Object.PlayerState, player.Object.Game.Kingdom))
+			.Returns(silver).Returns(throneRoom);
+		player.SetupSequence(p => p.User.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.Object.PlayerState, player.Object.Game.Kingdom, Phase.Gain))
+			.Returns(laboratory).Returns(gold);
+		#endregion
+
+		#region act
+		throneRoom.WhenPlayAction(player.Object);
+		#endregion
+
+		#region assert
+		// +0 Actions, +0 Coins, +0 Buys
+		Assert.AreEqual(0, player.Object.PlayerState.Actions);
+		Assert.AreEqual(0, player.Object.PlayerState.Coins);
+		Assert.AreEqual(0, player.Object.PlayerState.Buys);
+
+		// +0 Cards
+		player.Verify(p => p.Draw(It.IsAny<int>()), Times.Never);
+
+		// user is asked which card to play using throne room
+		player.Verify(p => p.User.ThroneRoomPlay(throneRoom, player.Object.PlayerState,
+			player.Object.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
+
+		// user is asked to choose a card to trash two times
+		player.Verify(p => p.User.RemodelTrash(remodel, player.Object.PlayerState, player.Object.Game.Kingdom), Times.Exactly(2));
+
+		// player trashes the chosen cards
+		player.Verify(p => p.Trash(silver), Times.Once);
+		player.Verify(p => p.Trash(throneRoom), Times.Once);
+
+		// user is asked to select a card with max price 5 or 6 to gain
+		player.Verify(p => p.User.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.Price == 5 && !kw.OnlyTreasures),
+			player.Object.PlayerState, player.Object.Game.Kingdom, Phase.Gain), Times.Once);
+		player.Verify(p => p.User.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.Price == 6 && !kw.OnlyTreasures),
+			player.Object.PlayerState, player.Object.Game.Kingdom, Phase.Gain), Times.Once);
+
+		// laboratory and gold are gained
+		player.Verify(p => p.Gain(CardType.Laboratory), Times.Once);
+		player.Verify(p => p.Gain(CardType.Gold), Times.Once);
 		#endregion
 	}
 }
