@@ -12,8 +12,6 @@ public class PlayerTests
 	private readonly Card copper = Copper.Get();
 	private readonly Card silver = Silver.Get();
 
-	private readonly Card province = Province.Get();
-
 	private readonly Card village = Village.Get();
 	private readonly Card militia = Militia.Get();
 
