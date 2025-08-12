@@ -54,7 +54,7 @@ public class PlayerFeastTests : CardWithPlayerTestsBase
 		Assert.IsFalse(player.PlayerState.Hand.Any());
 
 		// player has to trash feast
-		CollectionAssert.AreEquivalent(new List<Card> { feast }, player.Game.Trash.ToList());
+		CollectionAssert.AreEquivalent(new List<Card> { feast }, player.Game.Trash);
 
 		// the feast was transferred from played cards to trash 
 		Assert.IsFalse(player.PlayerState.PlayedCards.Any());
@@ -91,7 +91,7 @@ public class PlayerFeastTests : CardWithPlayerTestsBase
 		Assert.IsFalse(player.PlayerState.Hand.Any());
 
 		// player has to trash feast
-		CollectionAssert.AreEquivalent(new List<Card> { feast }, player.Game.Trash.ToList());
+		CollectionAssert.AreEquivalent(new List<Card> { feast }, player.Game.Trash);
 
 		// the feast was transferred from played cards to trash 
 		Assert.IsFalse(player.PlayerState.PlayedCards.Any());
@@ -133,7 +133,7 @@ public class PlayerFeastTests : CardWithPlayerTestsBase
 			player.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
 
 		// player has to trash feast
-		CollectionAssert.AreEquivalent(new List<Card> { feast }, player.Game.Trash.ToList());
+		CollectionAssert.AreEquivalent(new List<Card> { feast }, player.Game.Trash);
 
 		// user has to select a card with price max 5 to gain two times
 		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.Price == 5 && k.OnlyTreasures == false),
@@ -178,7 +178,7 @@ public class PlayerFeastTests : CardWithPlayerTestsBase
 			player.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
 
 		// player has to trash feast
-		CollectionAssert.AreEquivalent(new List<Card> { feast }, player.Game.Trash.ToList());
+		CollectionAssert.AreEquivalent(new List<Card> { feast }, player.Game.Trash);
 
 		// user has to select a card with price max 5 to gain - there is only one duchy
 		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.Price == 5 && k.OnlyTreasures == false),
@@ -223,7 +223,7 @@ public class PlayerFeastTests : CardWithPlayerTestsBase
 			player.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
 
 		// player has to trash feast
-		CollectionAssert.AreEquivalent(new List<Card> { feast }, player.Game.Trash.ToList());
+		CollectionAssert.AreEquivalent(new List<Card> { feast }, player.Game.Trash);
 
 		// user has to select a card with price max 5 to gain - there is none
 		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.Price == 5 && k.OnlyTreasures == false),

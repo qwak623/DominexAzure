@@ -180,7 +180,7 @@ public class PlayerThiefTests : CardWithPlayerTestsBase
 			copper), Times.Once);
 
 		// the copper is trashed
-		CollectionAssert.AreEquivalent(new List<Card> { copper }, defender.Game.Trash.ToList());
+		CollectionAssert.AreEquivalent(new List<Card> { copper }, defender.Game.Trash);
 
 		// defender's hand did not change
 		Assert.IsFalse(defender.PlayerState.Hand.Any());
@@ -300,7 +300,7 @@ public class PlayerThiefTests : CardWithPlayerTestsBase
 			silver), Times.Once);
 
 		// the silver is trashed
-		CollectionAssert.AreEquivalent(new List<Card> { silver }, defender.Game.Trash.ToList());
+		CollectionAssert.AreEquivalent(new List<Card> { silver }, defender.Game.Trash);
 
 		// defender discards the other card
 		CollectionAssert.AreEquivalent(new List<Card> { copper }, defender.PlayerState.DiscardPile);
@@ -433,7 +433,7 @@ public class PlayerThiefTests : CardWithPlayerTestsBase
 		Assert.IsFalse(defender.PlayerState.DrawPile.Any());
 
 		// silver and gold were trashed, but the thief stole the gold
-		CollectionAssert.AreEquivalent(new List<Card> { silver }, defender.Game.Trash.ToList());
+		CollectionAssert.AreEquivalent(new List<Card> { silver }, defender.Game.Trash);
 
 		// defender discards the other cards
 		CollectionAssert.AreEquivalent(new List<Card> { copper, copper }, defender.PlayerState.DiscardPile);

@@ -53,7 +53,7 @@ public class PlayerMoneylenderTests : CardWithPlayerTestsBase
 		user.Verify(u => u.MoneylenderTrash(moneylender, player.PlayerState, player.Game.Kingdom), Times.Once);
 
 		// player trashes the copper
-		CollectionAssert.AreEquivalent(new List<Card> { copper }, player.Game.Trash.ToList());
+		CollectionAssert.AreEquivalent(new List<Card> { copper }, player.Game.Trash);
 
 		// the hand should be empty
 		Assert.IsFalse(player.PlayerState.Hand.Any());
@@ -180,7 +180,7 @@ public class PlayerMoneylenderTests : CardWithPlayerTestsBase
 
 		// player trashes the given amount of coppers
 		CollectionAssert.AreEquivalent(Enumerable.Repeat(copper, coppersInHand - trashCount).ToList(), player.PlayerState.Hand);
-		CollectionAssert.AreEquivalent(Enumerable.Repeat(copper, trashCount).ToList(), player.Game.Trash.ToList());
+		CollectionAssert.AreEquivalent(Enumerable.Repeat(copper, trashCount).ToList(), player.Game.Trash);
 
 		// moneylender and throne room were added to played cards
 		CollectionAssert.AreEquivalent(new List<Card> { moneylender, throneRoom }, player.PlayerState.PlayedCards);

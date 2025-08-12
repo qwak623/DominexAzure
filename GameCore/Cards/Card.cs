@@ -82,6 +82,7 @@ public abstract class Card
 
 	public void WhenPlayTreasure(IPlayer player)
 	{
+		// TODO proč tam jsou ty buye? 
 		player.PlayerState.Buys += AddBuys;
 		player.PlayerState.Coins += Coins;
 

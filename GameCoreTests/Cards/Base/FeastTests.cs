@@ -44,7 +44,7 @@ public class FeastTests : CardTestsBase
 		player.Verify(p => p.Draw(It.IsAny<int>()), Times.Never);
 
 		// player has to trash feast
-		CollectionAssert.AreEquivalent(new List<Card> { feast }, player.Object.Game.Trash.ToList());
+		CollectionAssert.AreEquivalent(new List<Card> { feast }, player.Object.Game.Trash);
 
 		// the card was transferred from played cards to trash 
 		Assert.IsFalse(player.Object.PlayerState.PlayedCards.Any());
@@ -80,7 +80,7 @@ public class FeastTests : CardTestsBase
 		player.Verify(p => p.Draw(It.IsAny<int>()), Times.Never);
 
 		// player has to trash feast
-		CollectionAssert.AreEquivalent(new List<Card> { feast }, player.Object.Game.Trash.ToList());
+		CollectionAssert.AreEquivalent(new List<Card> { feast }, player.Object.Game.Trash);
 
 		// the feast was transferred from played cards to trash 
 		Assert.IsFalse(player.Object.PlayerState.PlayedCards.Any());
@@ -125,7 +125,7 @@ public class FeastTests : CardTestsBase
 		player.Verify(p => p.Draw(It.IsAny<int>()), Times.Never);
 
 		// player has to trash feast
-		CollectionAssert.AreEquivalent(new List<Card> { feast }, player.Object.Game.Trash.ToList());
+		CollectionAssert.AreEquivalent(new List<Card> { feast }, player.Object.Game.Trash);
 
 		// the card was transferred from played cards to trash 
 		Assert.IsFalse(player.Object.PlayerState.PlayedCards.Any());
@@ -168,7 +168,7 @@ public class FeastTests : CardTestsBase
 			player.Object.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
 
 		// player has to trash feast
-		CollectionAssert.AreEquivalent(new List<Card> { feast }, player.Object.Game.Trash.ToList());
+		CollectionAssert.AreEquivalent(new List<Card> { feast }, player.Object.Game.Trash);
 
 		// the card was transferred from played cards to trash 
 		Assert.IsFalse(player.Object.PlayerState.PlayedCards.Any());
@@ -211,7 +211,7 @@ public class FeastTests : CardTestsBase
 			player.Object.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
 
 		// player has to trash feast
-		CollectionAssert.AreEquivalent(new List<Card> { feast }, player.Object.Game.Trash.ToList());
+		CollectionAssert.AreEquivalent(new List<Card> { feast }, player.Object.Game.Trash);
 
 		// the card was transferred from played cards to trash 
 		Assert.IsFalse(player.Object.PlayerState.PlayedCards.Any());

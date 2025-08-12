@@ -8,7 +8,7 @@ public class Game : IGame
 	private User[] users;
 	public List<IPlayer> Players { get; set; }
 	public Kingdom Kingdom { get; set; }
-	public IList<Card> Trash { get; set; }
+	public List<Card> Trash { get; set; }
 	public IGameLogger Logger { get; set; }
 
 	public bool GameEnd { get; private set; }

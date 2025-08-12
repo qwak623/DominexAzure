@@ -56,7 +56,7 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 		Assert.IsFalse(player.PlayerState.DiscardPile.Any());
 
 		// copper was trashed
-		CollectionAssert.AreEquivalent(new List<Card> { copper }, player.Game.Trash.ToList());
+		CollectionAssert.AreEquivalent(new List<Card> { copper }, player.Game.Trash);
 
 		// silver was gained to hand
 		CollectionAssert.AreEquivalent(new List<Card> { silver }, player.PlayerState.Hand);
@@ -128,7 +128,7 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 		Assert.IsFalse(player.PlayerState.DiscardPile.Any());
 
 		// copper was trashed
-		CollectionAssert.AreEquivalent(new List<Card> { copper }, player.Game.Trash.ToList());
+		CollectionAssert.AreEquivalent(new List<Card> { copper }, player.Game.Trash);
 
 		// nothing was gained to hand
 		Assert.IsFalse(player.PlayerState.Hand.Any());
@@ -176,7 +176,7 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 			It.Is<IList<Card>>(c => c.SequenceEqual(new List<Card> { silver }))), Times.Once);
 
 		// player trashes the chosen cards
-		CollectionAssert.AreEquivalent(new List<Card> { copper, silver }, player.Game.Trash.ToList());
+		CollectionAssert.AreEquivalent(new List<Card> { copper, silver }, player.Game.Trash);
 
 		// gold is added to the hand
 		CollectionAssert.AreEquivalent(new List<Card> { gold }, player.PlayerState.Hand);
@@ -230,7 +230,7 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 			It.Is<IList<Card>>(c => c.SequenceEqual(new List<Card> { copper, silver }))), Times.Once);
 
 		// player trashes the chosen cards
-		CollectionAssert.AreEquivalent(new List<Card> { copper, copper }, player.Game.Trash.ToList());
+		CollectionAssert.AreEquivalent(new List<Card> { copper, copper }, player.Game.Trash);
 
 		// silvers are added to the hand
 		CollectionAssert.AreEquivalent(new List<Card> { silver, silver }, player.PlayerState.Hand);

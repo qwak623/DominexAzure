@@ -59,7 +59,7 @@ public class PlayerRemodelTests : CardWithPlayerTestsBase
 		user.Verify(u => u.RemodelTrash(remodel, player.PlayerState, player.Game.Kingdom), Times.Once);
 
 		// player trashes the chosen card
-		CollectionAssert.AreEquivalent(new List<Card> { silver }, player.Game.Trash.ToList());
+		CollectionAssert.AreEquivalent(new List<Card> { silver }, player.Game.Trash);
 
 		// user is asked to select a card with max price 5 to gain
 		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.Price == 5 && !kw.OnlyTreasures),
@@ -146,7 +146,7 @@ public class PlayerRemodelTests : CardWithPlayerTestsBase
 		user.Verify(u => u.RemodelTrash(remodel, player.PlayerState, player.Game.Kingdom), Times.Once);
 
 		// player trashes the chosen card
-		CollectionAssert.AreEquivalent(new List<Card> { laboratory }, player.Game.Trash.ToList());
+		CollectionAssert.AreEquivalent(new List<Card> { laboratory }, player.Game.Trash);
 
 		// user is asked to select a card with max price 7 to gain, but there is no such card available
 		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.Price == 7 && !kw.OnlyTreasures),

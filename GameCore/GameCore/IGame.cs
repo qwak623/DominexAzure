@@ -8,7 +8,7 @@ public interface IGame
 	Kingdom Kingdom { get; set; }
 	IGameLogger Logger { get; set; }
 	List<IPlayer> Players { get; set; }
-	IList<Card> Trash { get; set; }
+	List<Card> Trash { get; set; }
 
 	Task<GameResults> Play(int maxRounds = 50);
 	void RequestPlayerNotifications();

@@ -171,7 +171,7 @@ public class ThiefTests : CardTestsBase
 			copper), Times.Once);
 
 		// the copper is trashed
-		CollectionAssert.AreEquivalent(new List<Card> { copper }, defender.Object.Game.Trash.ToList());
+		CollectionAssert.AreEquivalent(new List<Card> { copper }, defender.Object.Game.Trash);
 
 		// defender discards the other card
 		CollectionAssert.AreEquivalent(new List<Card> { province }, defender.Object.PlayerState.DiscardPile);
@@ -253,7 +253,7 @@ public class ThiefTests : CardTestsBase
 			silver), Times.Once);
 
 		// the silver is trashed
-		CollectionAssert.AreEquivalent(new List<Card> { silver }, defender.Object.Game.Trash.ToList());
+		CollectionAssert.AreEquivalent(new List<Card> { silver }, defender.Object.Game.Trash);
 
 		// defender discards the other card
 		CollectionAssert.AreEquivalent(new List<Card> { copper }, defender.Object.PlayerState.DiscardPile);

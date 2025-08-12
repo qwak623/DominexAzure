@@ -362,14 +362,9 @@ public class Player : IPlayer
 		bool defended = false;
 		var reactions = new LinkedList<Card>(ps.Hand.Where(c => c.IsReaction));
 
-		// TODO tenhle for se mi nelíbí
-		for (int i = 0; i < reactions.Count; i++)
+		// TODO tenhle while se mi nelíbí
+		while (reactions.Count > 0)
 		{
-			if (reactions.Count == 0)
-			{
-				break;
-			}
-
 			card = User.PlayCard(reactions, ps, Game.Kingdom, Phase.Reaction, attackCard);
 			reactions.Remove(card);
 			if (card == null)
