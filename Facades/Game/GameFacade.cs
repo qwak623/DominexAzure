@@ -45,7 +45,7 @@ public class GameFacade : IGameFacade
 
 		if (Game == null)
 		{
-			List<Card> cards = PresetGames.Get(Games.BigMoney);
+			List<Card> cards = PresetGames.Get(GameCore.Cards.PresetGameType.BigMoney);
 			kingdom = cards.GetKingdom(2, kingdomObserver);
 
 			var humanUser = new Human(playerStateObserver, cardMapper, CallClient);
