@@ -51,8 +51,7 @@ public class Game : IGame
 			// random needs to be instantiated and used in the same thread
 			//var rnd = new ThreadSafeRandom();
 
-			//Players =
-			var neco = users.Select(u => new Player(this, u)).ToList();
+			Players = users.Select(u => (IPlayer)new Player(this, u)).ToList();
 			Logger?.Log(new GameLog { Message = "New game has started." });
 
 			// intitial drawing
