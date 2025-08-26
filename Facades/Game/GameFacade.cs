@@ -42,26 +42,30 @@ public class GameFacade : IGameFacade
 	public Task Start(CancellationToken cancellationToken = default)
 	{
 		// todo use cancellation token
+		List<Card> cards = PresetGames.Get(PresetGameType.BigMoney);
 
-		if (Game == null)
-		{
-			List<Card> cards = PresetGames.Get(GameCore.Cards.PresetGameType.BigMoney);
-			kingdom = cards.GetKingdom(2, kingdomObserver);
+		var manager = new SimpleManager(BuyAgenda.DirectoryPath, "Tens_");
+		var agenda = manager.LoadBest(cards);
+		var ai = new ProvincialAI(agenda);
 
-			var humanUser = new Human(playerStateObserver, cardMapper, CallClient);
-			//var random = new Decoy();
+		return Start(cards, ai);
+	}
 
-			var manager = new SimpleManager(BuyAgenda.DirectoryPath, "Tens_");
-			var agenda = manager.LoadBest(cards);
-			var ai = new ProvincialAI(agenda);
+	public Task StartWithCards(IEnumerable<string> cardTypes, CancellationToken cancellationToken = default)
+	{
+		List<Card> cards = cardTypes
+			.Select(c =>
+			{
+				if (!Enum.TryParse<CardType>(c, out var cardType))
+				{
+					throw new ArgumentException($"{c} is not a valid type of card.");
+				}
+				return Card.Get(cardType);
+			}).ToList();
 
-			var users = new User[] { humanUser, ai /*random*/ };
+		var randomAI = new Decoy();
 
-			Game = new GameCore.Game(users, kingdom, gameLogger);
-			Game.Play(); // todo continue with results...
-		}
-
-		return Task.CompletedTask;
+		return Start(cards, randomAI);
 	}
 
 	public Task<ChoiceDto> JoinGame(/*Dto<Guid> gameId, */Dto<int> playerId, CancellationToken cancellationToken = default)
@@ -89,6 +93,12 @@ public class GameFacade : IGameFacade
 
 			return Task.FromResult(choiceJob.Object);
 		}
+	}
+
+	public Task<List<CardDto>> RequestAvailableCards()
+	{
+		// todo async?
+		return Task.FromResult(PresetGames.Get(PresetGameType.AllCards1stEdition).Select(cardMapper.ToCardDto).ToList());
 	}
 
 	// todo vymyslet jak udělat lépe request notification
@@ -129,6 +139,23 @@ public class GameFacade : IGameFacade
 		ValidateAnswer(choice, answerJob.Object);
 
 		return answerJob.Object;
+	}
+
+	private Task Start(List<Card> cards, User ai)
+	{
+		if (Game == null)
+		{
+			kingdom = cards.GetKingdom(2, kingdomObserver);
+
+			var humanUser = new Human(playerStateObserver, cardMapper, CallClient);
+
+			var users = new User[] { humanUser, ai /*random*/ };
+
+			Game = new GameCore.Game(users, kingdom, gameLogger);
+			Game.Play(); // todo continue with results...
+		}
+
+		return Task.CompletedTask;
 	}
 
 	private void ValidateAnswer(ChoiceDto choice, Answer answer)

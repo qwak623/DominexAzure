@@ -23,4 +23,9 @@ public static class Routes
 	{
 		public const string Dev = "/development";
 	}
+
+	public static class KingdomSelection
+	{
+		public const string Selection = "/kingdom-selection";
+	}
 }
