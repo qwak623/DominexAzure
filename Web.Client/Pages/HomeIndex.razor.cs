@@ -18,6 +18,6 @@ public partial class HomeIndex
 
 	private void ClickStartWithChoosingCards()
 	{
-		Navigation.NavigateTo(Routes.KingdomSelection.Selection);
+		Navigation.NavigateTo(Routes.Menu.SinglePlayer);
 	}
 }

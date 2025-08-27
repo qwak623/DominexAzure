@@ -1,11 +1,10 @@
-﻿using Dominex.Contracts;
-using Dominex.Contracts.Game;
+﻿using Dominex.Contracts.Game;
 using Dominex.Contracts.ServerApi;
 using Microsoft.AspNetCore.Components;
 
 namespace Dominex.Web.Client.Pages.Development;
 
-public partial class KingdomSelection
+public partial class SinglePlayerMenu
 {
 	[Inject] protected IGameFacade GameFacade { get; set; }
 	[Inject] protected NavigationManager Navigation { get; set; }

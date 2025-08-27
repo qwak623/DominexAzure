@@ -24,8 +24,8 @@ public static class Routes
 		public const string Dev = "/development";
 	}
 
-	public static class KingdomSelection
+	public static class Menu
 	{
-		public const string Selection = "/kingdom-selection";
+		public const string SinglePlayer = "/kingdom-selection";
 	}
 }
