@@ -26,4 +26,19 @@ public partial class SinglePlayerMenu
 
 		Navigation.NavigateTo(Routes.Development.Dev);
 	}
+
+	private void ClickSaveSettings()
+	{
+
+	}
+
+	private void ClickLoadSettings()
+	{
+
+	}
+
+	private void ClickLoadGame()
+	{
+
+	}
 }
