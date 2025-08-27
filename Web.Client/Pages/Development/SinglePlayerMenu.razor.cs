@@ -26,15 +26,4 @@ public partial class SinglePlayerMenu
 
 		Navigation.NavigateTo(Routes.Development.Dev);
 	}
-
-	private void ClickAddToSelected(int index)
-	{
-		SelectedCards.Add(AvailableCards[index]);
-		AvailableCards.RemoveAt(index);
-	}
-	private void ClickRemoveFromSelected(int index)
-	{
-		AvailableCards.Add(SelectedCards[index]);
-		SelectedCards.RemoveAt(index);
-	}
 }

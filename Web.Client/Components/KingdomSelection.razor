@@ -1,0 +1,35 @@
+﻿@if (AvailableCards is not null)
+{
+    <div class="row">
+        <div class="col">
+            <h1>Selected Cards:</h1>
+            @for (int i = 0; i < SelectedCards?.Count; i++)
+            {
+                int j = i;
+                <div class="row my-2">
+                    <div class="col">
+                        <CardComponent Card="SelectedCards[j]" />
+                    </div>
+                    <div class="col">
+                        <HxButton Color="ThemeColor.Primary" OnClick="() => ClickRemoveFromSelected(j)">Remove @SelectedCards[j].Name from selected cards</HxButton>
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="col">
+            <h1>Available Cards:</h1>
+            @for (int i = 0; i < AvailableCards?.Count; i++)
+            {
+                int j = i;
+                <div class="row my-2">
+                    <div class="col">
+                        <CardComponent Card="AvailableCards[j]" />
+                    </div>
+                    <div class="col">
+                        <HxButton Color="ThemeColor.Primary" OnClick="() => ClickAddToSelected(j)">Add @AvailableCards[j].Name to selected cards</HxButton>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
