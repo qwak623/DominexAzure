@@ -1,6 +1,10 @@
-﻿<div>
-    <HxTooltip Text="@TooltipText()" Html="true">
-        <div>@ChildContent</div>
+﻿<div @onmouseover="OnMouseOver" @onmouseout="OnMouseOut">
+    <HxTooltip
+        @ref="tooltip"
+        Trigger="TooltipTrigger.Manual"
+        Text="@TooltipText()"
+        Html="true">
+            <div>@ChildContent</div>
     </HxTooltip>
 </div>
 

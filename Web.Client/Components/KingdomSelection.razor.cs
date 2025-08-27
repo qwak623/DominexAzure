@@ -5,17 +5,32 @@ namespace Dominex.Web.Client.Components;
 
 public partial class KingdomSelection
 {
-	[Parameter] public List<CardDto> AvailableCards { get; set; }
-	[Parameter] public List<CardDto> SelectedCards { get; set; }
+	[Parameter] public List<CardDto> AvailableCards { get; set; } = new();
+	[Parameter] public List<CardDto> SelectedCards { get; set; } = new();
 
-	private void ClickAddToSelected(int index)
+	private CardDto draggedCard;
+
+	private void OnDragStart(DragEventArgs e, CardDto card)
 	{
-		SelectedCards.Add(AvailableCards[index]);
-		AvailableCards.RemoveAt(index);
+		draggedCard = card;
 	}
-	private void ClickRemoveFromSelected(int index)
+
+	private void OnDrop(DragEventArgs e, List<CardDto> targetColumn)
 	{
-		AvailableCards.Add(SelectedCards[index]);
-		SelectedCards.RemoveAt(index);
+		if (draggedCard is null)
+		{
+			return;
+		}
+
+		AvailableCards.Remove(draggedCard);
+		SelectedCards.Remove(draggedCard);
+
+		targetColumn.Add(draggedCard);
+
+		AvailableCards = AvailableCards.OrderBy(c => c.Name).ToList();
+		SelectedCards = SelectedCards.OrderBy(c => c.Name).ToList();
+
+		draggedCard = null;
+		StateHasChanged();
 	}
 }

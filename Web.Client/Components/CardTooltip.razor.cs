@@ -9,6 +9,23 @@ public partial class CardTooltip
 	[Parameter] public CardDto CardDto { get; set; }
 	[Parameter] public RenderFragment ChildContent { get; set; }
 
+	private HxTooltip tooltip;
+
+	public void HideToolTip()
+	{
+		tooltip.HideAsync();
+	}
+
+	private void OnMouseOver()
+	{
+		tooltip.ShowAsync();
+	}
+
+	private void OnMouseOut()
+	{
+		tooltip.HideAsync();
+	}
+
 	private string TooltipText()
 	{
 		StringBuilder sb = new();
