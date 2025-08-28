@@ -1,5 +1,12 @@
 ﻿@attribute [Route(Routes.Menu.SinglePlayer)]
 
-<MenuTopSection ClickStart="ClickStart" ClickLoadSettings="ClickLoadSettings" ClickSaveSettings="ClickSaveSettings" ClickLoadGame="ClickLoadGame"/>
+<MenuTopSection ClickStart="ClickStart" ClickLoadSettings="ClickLoadSettings" ClickSaveSettings="ClickSaveSettings" ClickLoadGame="ClickLoadGame" />
 
-<KingdomSelection AvailableCards="AvailableCards" SelectedCards="SelectedCards"/>
+<div class="row">
+    <div class="col-8">
+        <KingdomSelection AvailableCards="AvailableCards" SelectedCards="SelectedCards" />
+    </div>
+    <div class="col-4">
+        <ToolsAndSettings />
+    </div>
+</div>

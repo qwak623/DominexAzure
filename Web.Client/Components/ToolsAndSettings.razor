@@ -1,0 +1,36 @@
+<div style="display:flex; flex-direction:column; gap:10px;">
+    <h4>Tools and Settings:</h4>
+
+    <HxButton Color="ThemeColor.Primary" OnClick="ClickGenerators" Text="Generators" />
+    @if (showGenerators)
+    {
+        <HxButton Color="ThemeColor.Secondary" OnClick="ClickRandom" Text="Select Random Cards" />
+        <HxButton Color="ThemeColor.Secondary" OnClick="ClickAddRandom" Text="Add Random Cards to Selection" />
+        <HxDropdownButtonGroup>
+            <HxDropdownToggleButton Color="ThemeColor.Secondary">Preset Games</HxDropdownToggleButton>
+            <HxDropdownMenu>
+                @foreach (var game in PresetGames)
+                {
+                    <HxDropdownItem OnClick="() => ClickPresetGame(game)">@game</HxDropdownItem>
+                }
+                <HxDropdownDivider />
+                @foreach (var game in CustomGames)
+                {
+                    <HxDropdownItem OnClick="() => ClickCustomGame(game)">@game</HxDropdownItem>
+                }
+            </HxDropdownMenu>
+        </HxDropdownButtonGroup>
+    }
+
+    <HxButton Color="ThemeColor.Primary" OnClick="ClickAI" Text="AI Settings" />
+    @if (showAISettings)
+    {
+        <div>TODO AI Settings</div>
+    }
+
+    <HxButton Color="ThemeColor.Primary" OnClick="ClickAdvanced" Text="Advanced Settings" />
+    @if (showAdvancedSettings)
+    {
+        <div>TODO Advanced Settings</div>
+    }
+</div>

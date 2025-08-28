@@ -1,8 +1,8 @@
 ﻿@if (AvailableCards is not null)
 {
-    <div style="display: flex; gap: 20px;">
+    <div class="row">
         <!-- Selected cards -->
-        <div class="column"
+        <div class="col-6"
                 ondragover="event.preventDefault();"
                 @ondrop="e => OnDrop(e, SelectedCards)">
             <h4>Selected Cards:</h4>
@@ -14,7 +14,7 @@
         </div>
 
         <!-- Not selected cards -->
-        <div class="column"
+        <div class="col-6"
                 ondragover="event.preventDefault();"
                 @ondrop="e => OnDrop(e, AvailableCards)">
             <h4>Available Cards:</h4>
