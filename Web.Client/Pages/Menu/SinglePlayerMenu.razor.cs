@@ -44,6 +44,6 @@ public partial class SinglePlayerMenu
 
 	private async Task<List<PresetKingdomDto>> RequestPresetKingdoms()
 	{
-		return await GameSetupFacade.RequestPresetGames();
+		return await GameSetupFacade.RequestPresetKingdoms();
 	}
 }

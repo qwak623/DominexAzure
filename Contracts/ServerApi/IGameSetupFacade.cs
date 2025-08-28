@@ -7,5 +7,5 @@ namespace Dominex.Contracts.ServerApi;
 public interface IGameSetupFacade
 {
 	Task<List<CardDto>> RequestAvailableCards();
-	Task<List<PresetKingdomDto>> RequestPresetGames();
+	Task<List<PresetKingdomDto>> RequestPresetKingdoms();
 }

@@ -23,7 +23,7 @@ public class GameSetupFacade : IGameSetupFacade
 		return Task.FromResult(cardMapper.ToCardDto(PresetGames.Get(PresetGameType.AllCards1stEdition)).ToList());
 	}
 
-	public Task<List<PresetKingdomDto>> RequestPresetGames()
+	public Task<List<PresetKingdomDto>> RequestPresetKingdoms()
 	{
 		// TODO validovat, jestli je to v available cards? 
 		List<PresetKingdomDto> presetGames = Enum.GetValues<PresetGameType>()
