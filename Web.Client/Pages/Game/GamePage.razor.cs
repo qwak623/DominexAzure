@@ -3,9 +3,9 @@ using Dominex.Contracts.Game;
 using Dominex.Contracts.ServerApi;
 using Microsoft.AspNetCore.Components;
 
-namespace Dominex.Web.Client.Pages.Development;
+namespace Dominex.Web.Client.Pages.Game;
 
-public partial class DevelopmentIndex
+public partial class GamePage
 {
 	[Inject] protected IGameFacade GameFacade { get; set; }
 	//[Inject] protected NavigationManager Navigation { get; set; }

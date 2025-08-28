@@ -2,7 +2,7 @@
 using Dominex.Contracts.ServerApi;
 using Microsoft.AspNetCore.Components;
 
-namespace Dominex.Web.Client.Pages.Development;
+namespace Dominex.Web.Client.Pages.Menu;
 
 public partial class SinglePlayerMenu
 {
@@ -24,7 +24,7 @@ public partial class SinglePlayerMenu
 	{
 		await GameFacade.StartWithCards(SelectedCards.Select(c => c.Type));
 
-		Navigation.NavigateTo(Routes.Development.Dev);
+		Navigation.NavigateTo(Routes.Game.GamePage);
 	}
 
 	private void ClickSaveSettings()

@@ -13,7 +13,7 @@ public partial class HomeIndex
 	{
 		await GameFacade.Start();
 
-		Navigation.NavigateTo(Routes.Development.Dev);
+		Navigation.NavigateTo(Routes.Game.GamePage);
 	}
 
 	private void ClickStartWithChoosingCards()

@@ -19,9 +19,9 @@ public static class Routes
 		public const string Info = "/diag/info";
 	}
 
-	public static class Development
+	public static class Game
 	{
-		public const string Dev = "/development";
+		public const string GamePage = "/game";
 	}
 
 	public static class Menu
