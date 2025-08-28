@@ -29,4 +29,9 @@ public class CardMapper : ICardMapper
 	{
 		return ToCardDto(card) with { Index = index };
 	}
+
+	public IEnumerable<CardDto> ToCardDto(IEnumerable<Card> cards)
+	{
+		return cards.Select(ToCardDto);
+	}
 }

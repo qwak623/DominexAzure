@@ -1,4 +1,5 @@
 ﻿using Dominex.Contracts.Game;
+using Dominex.Contracts.Menu;
 using Dominex.Contracts.ServerApi;
 using Microsoft.AspNetCore.Components;
 
@@ -39,5 +40,10 @@ public partial class SinglePlayerMenu
 	private void ClickLoadGame()
 	{
 
+	}
+
+	private async Task<List<PresetKingdomDto>> RequestPresetKingdoms()
+	{
+		return await GameSetupFacade.RequestPresetGames();
 	}
 }

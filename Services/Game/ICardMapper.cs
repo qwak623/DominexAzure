@@ -6,4 +6,5 @@ public interface ICardMapper
 {
 	CardDto ToCardDto(Card card);
 	CardDto ToCardDtoWithIndex(Card card, int index);
+	IEnumerable<CardDto> ToCardDto(IEnumerable<Card> card);
 }

@@ -9,17 +9,18 @@
     {
         <HxButton Color="ThemeColor.Secondary" OnClick="ClickRandom" Text="Select Random Cards" />
         <HxButton Color="ThemeColor.Secondary" OnClick="ClickAddRandom" Text="Add Random Cards to Selection" />
+
         <HxDropdownButtonGroup>
-            <HxDropdownToggleButton Color="ThemeColor.Secondary">Preset Games</HxDropdownToggleButton>
+            <HxDropdownToggleButton Spinner="@showPresetKingdomsSpinner" OnClick="ClickPresetDropdownButton" Color="ThemeColor.Secondary">Preset Games</HxDropdownToggleButton>
             <HxDropdownMenu>
-                @foreach (var game in PresetGames)
+                @foreach (var kingdom in PresetKingdoms)
                 {
-                    <HxDropdownItem OnClick="() => ClickPresetGame(game)">@game</HxDropdownItem>
+                    <HxDropdownItem OnClick="() => ClickPresetKingdom(kingdom)">@kingdom.Name</HxDropdownItem>
                 }
                 <HxDropdownDivider />
-                @foreach (var game in CustomGames)
+                @foreach (var kingdom in CustomKingdoms)
                 {
-                    <HxDropdownItem OnClick="() => ClickCustomGame(game)">@game</HxDropdownItem>
+                    <HxDropdownItem OnClick="() => ClickCustomKingdom(kingdom)">@kingdom.Name</HxDropdownItem>
                 }
             </HxDropdownMenu>
         </HxDropdownButtonGroup>

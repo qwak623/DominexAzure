@@ -1,4 +1,5 @@
 ﻿using Dominex.Contracts.Game;
+using Dominex.Contracts.Menu;
 using Dominex.Contracts.ServerApi;
 using Dominex.Services.Game;
 using GameCore.Cards;
@@ -19,6 +20,19 @@ public class GameSetupFacade : IGameSetupFacade
 	public Task<List<CardDto>> RequestAvailableCards()
 	{
 		// todo async?
-		return Task.FromResult(PresetGames.Get(PresetGameType.AllCards1stEdition).Select(cardMapper.ToCardDto).ToList());
+		return Task.FromResult(cardMapper.ToCardDto(PresetGames.Get(PresetGameType.AllCards1stEdition)).ToList());
+	}
+
+	public Task<List<PresetKingdomDto>> RequestPresetGames()
+	{
+		// TODO validovat, jestli je to v available cards? 
+		List<PresetKingdomDto> presetGames = Enum.GetValues<PresetGameType>()
+			.Select(pgt => new PresetKingdomDto
+			{
+				Name = pgt.ToString(),
+				Cards = cardMapper.ToCardDto(PresetGames.Get(pgt)).ToList()
+			}).ToList();
+
+		return Task.FromResult(presetGames);
 	}
 }
