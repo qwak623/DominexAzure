@@ -1,16 +1,19 @@
-﻿@if (AvailableCards is not null)
+﻿@using Dominex.Web.Client.Pages.Menu;
+@inject SinglePlayerSettingsState State
+
+@if (AvailableCards is not null)
 {
     <div class="row">
         <!-- Selected cards -->
         <div class="col-6"
                 ondragover="event.preventDefault();"
-                @ondrop="e => OnDrop(e, SelectedCards)">
+                @ondrop="e => OnDrop(e, State.SelectedCards)">
             <h4>Selected Cards:</h4>
-            @foreach (var card in SelectedCards)
+            @foreach (var card in State.SelectedCards)
             {
                 <DraggableCard Card="card" OnDragStart="e => OnDragStart(e, card)" />
             }
-            <div>count: (@SelectedCards.Count/10)</div>
+            <div>count: (@State.SelectedCards.Count/10)</div>
         </div>
 
         <!-- Not selected cards -->

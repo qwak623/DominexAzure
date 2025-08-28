@@ -13,6 +13,7 @@ using Dominex.Web.Client.Infrastructure.Security;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Dominex.Web.Client.Pages.Menu;
 
 namespace Dominex.Web.Client;
 
@@ -29,6 +30,8 @@ public class Program
 		builder.Services.AddSingleton(new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 		builder.Services.AddScoped(typeof(AccountClaimsPrincipalFactory<RemoteUserAccount>), typeof(RolesAccountClaimsPrincipalFactory)); // multiple roles workaround
 		builder.Services.AddApiAuthorization();
+
+		builder.Services.AddScoped<SinglePlayerSettingsState>();
 
 		builder.Services.AddBlazoredLocalStorage();
 		builder.Services.AddValidatorsFromAssemblyContaining<Dto<object>>();

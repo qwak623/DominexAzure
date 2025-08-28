@@ -10,19 +10,17 @@ public partial class SinglePlayerMenu
 	[Inject] protected NavigationManager Navigation { get; set; }
 
 	private List<CardDto> AvailableCards { get; set; }
-	private List<CardDto> SelectedCards { get; set; }
 
 	protected override async Task OnInitializedAsync()
 	{
 		await base.OnInitializedAsync();
 
 		AvailableCards = await GameFacade.RequestAvailableCards();
-		SelectedCards = new List<CardDto>();
 	}
 
 	private async Task ClickStart()
 	{
-		await GameFacade.StartWithCards(SelectedCards.Select(c => c.Type));
+		await GameFacade.StartWithCards(State.SelectedCards.Select(c => c.Type));
 
 		Navigation.NavigateTo(Routes.Game.GamePage);
 	}

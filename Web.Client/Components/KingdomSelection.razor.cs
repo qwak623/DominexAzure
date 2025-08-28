@@ -6,9 +6,18 @@ namespace Dominex.Web.Client.Components;
 public partial class KingdomSelection
 {
 	[Parameter] public List<CardDto> AvailableCards { get; set; } = new();
-	[Parameter] public List<CardDto> SelectedCards { get; set; } = new();
 
 	private CardDto draggedCard;
+
+	protected override void OnInitialized()
+	{
+		State.OnChange += StateHasChanged;
+	}
+
+	public void Dispose()
+	{
+		State.OnChange -= StateHasChanged;
+	}
 
 	private void OnDragStart(DragEventArgs e, CardDto card)
 	{
@@ -23,14 +32,14 @@ public partial class KingdomSelection
 		}
 
 		AvailableCards.Remove(draggedCard);
-		SelectedCards.Remove(draggedCard);
+		State.SelectedCards.Remove(draggedCard);
 
 		targetColumn.Add(draggedCard);
 
 		AvailableCards = AvailableCards.OrderBy(c => c.Name).ToList();
-		SelectedCards = SelectedCards.OrderBy(c => c.Name).ToList();
+		State.SelectedCards = State.SelectedCards.OrderBy(c => c.Name).ToList();
 
 		draggedCard = null;
-		StateHasChanged();
+		State.NotifyChanged();
 	}
 }

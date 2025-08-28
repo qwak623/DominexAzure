@@ -1,10 +1,11 @@
 ﻿@attribute [Route(Routes.Menu.SinglePlayer)]
+@inject SinglePlayerSettingsState State
 
 <MenuTopSection ClickStart="ClickStart" ClickLoadSettings="ClickLoadSettings" ClickSaveSettings="ClickSaveSettings" ClickLoadGame="ClickLoadGame" />
 
 <div class="row">
     <div class="col-8">
-        <KingdomSelection AvailableCards="AvailableCards" SelectedCards="SelectedCards" />
+        <KingdomSelection AvailableCards="AvailableCards" />
     </div>
     <div class="col-4">
         <ToolsAndSettings />
