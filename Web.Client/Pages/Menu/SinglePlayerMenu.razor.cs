@@ -7,6 +7,7 @@ namespace Dominex.Web.Client.Pages.Menu;
 public partial class SinglePlayerMenu
 {
 	[Inject] protected IGameFacade GameFacade { get; set; }
+	[Inject] protected IGameSetupFacade GameSetupFacade { get; set; }
 	[Inject] protected NavigationManager Navigation { get; set; }
 
 	private List<CardDto> AvailableCards { get; set; }
@@ -15,7 +16,7 @@ public partial class SinglePlayerMenu
 	{
 		await base.OnInitializedAsync();
 
-		AvailableCards = await GameFacade.RequestAvailableCards();
+		AvailableCards = await GameSetupFacade.RequestAvailableCards();
 	}
 
 	private async Task ClickStart()

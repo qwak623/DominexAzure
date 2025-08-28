@@ -95,12 +95,6 @@ public class GameFacade : IGameFacade
 		}
 	}
 
-	public Task<List<CardDto>> RequestAvailableCards()
-	{
-		// todo async?
-		return Task.FromResult(PresetGames.Get(PresetGameType.AllCards1stEdition).Select(cardMapper.ToCardDto).ToList());
-	}
-
 	// todo vymyslet jak udělat lépe request notification
 	public async Task RequestKingdomNotification(CancellationToken cancellationToken = default)
 	{
