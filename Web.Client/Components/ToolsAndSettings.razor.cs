@@ -9,6 +9,16 @@ public partial class ToolsAndSettings
 	private List<string> PresetGames = new();
 	private List<string> CustomGames = new();
 
+	protected override void OnInitialized()
+	{
+		State.OnChange += StateHasChanged;
+	}
+
+	public void Dispose()
+	{
+		State.OnChange -= StateHasChanged;
+	}
+
 	private void ClickGenerators()
 	{
 		showGenerators = !showGenerators;
