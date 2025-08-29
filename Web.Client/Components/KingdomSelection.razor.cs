@@ -1,12 +1,9 @@
 ﻿using Dominex.Contracts.Game;
-using Microsoft.AspNetCore.Components;
 
 namespace Dominex.Web.Client.Components;
 
 public partial class KingdomSelection
 {
-	[Parameter] public List<CardDto> AvailableCards { get; set; } = new();
-
 	private CardDto draggedCard;
 
 	protected override void OnInitialized()
@@ -24,22 +21,19 @@ public partial class KingdomSelection
 		draggedCard = card;
 	}
 
-	private void OnDrop(DragEventArgs e, List<CardDto> targetColumn)
+	private void OnDropToSelected(DragEventArgs e)
 	{
-		if (draggedCard is null)
+		if (draggedCard is not null)
 		{
-			return;
+			State.AddCardToSelected(draggedCard);
 		}
+	}
 
-		AvailableCards.Remove(draggedCard);
-		State.SelectedCards.Remove(draggedCard);
-
-		targetColumn.Add(draggedCard);
-
-		AvailableCards = AvailableCards.OrderBy(c => c.Name).ToList();
-		State.SelectedCards = State.SelectedCards.OrderBy(c => c.Name).ToList();
-
-		draggedCard = null;
-		State.NotifyChanged();
+	private void OnDropToAvailable(DragEventArgs e)
+	{
+		if (draggedCard is not null)
+		{
+			State.AddCardToAvailable(draggedCard);
+		}
 	}
 }

@@ -35,4 +35,12 @@ public class GameSetupFacade : IGameSetupFacade
 
 		return Task.FromResult(presetGames);
 	}
+
+	public Task<GetRandomCardsResponse> GetRandomCards(GetRandomCardsRequest request)
+	{
+		// TODO ThreadSafeRandom? 
+		Random rnd = new();
+		var randomCards = request.AvailableCards.OrderBy(_ => rnd.Next()).Take(request.Count).ToList();
+		return Task.FromResult(new GetRandomCardsResponse { Cards = randomCards });
+	}
 }

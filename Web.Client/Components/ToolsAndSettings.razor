@@ -20,7 +20,7 @@
                 <HxDropdownDivider />
                 @foreach (var kingdom in CustomKingdoms)
                 {
-                    <HxDropdownItem OnClick="() => ClickCustomKingdom(kingdom)">@kingdom.Name</HxDropdownItem>
+                    <HxDropdownItem OnClick="() => ClickPresetKingdom(kingdom)">@kingdom.Name</HxDropdownItem>
                 }
             </HxDropdownMenu>
         </HxDropdownButtonGroup>

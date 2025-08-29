@@ -8,4 +8,5 @@ public interface IGameSetupFacade
 {
 	Task<List<CardDto>> RequestAvailableCards();
 	Task<List<PresetKingdomDto>> RequestPresetKingdoms();
+	Task<GetRandomCardsResponse> GetRandomCards(GetRandomCardsRequest request);
 }

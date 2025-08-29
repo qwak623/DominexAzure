@@ -11,13 +11,11 @@ public partial class SinglePlayerMenu
 	[Inject] protected IGameSetupFacade GameSetupFacade { get; set; }
 	[Inject] protected NavigationManager Navigation { get; set; }
 
-	private List<CardDto> AvailableCards { get; set; }
-
 	protected override async Task OnInitializedAsync()
 	{
 		await base.OnInitializedAsync();
 
-		AvailableCards = await GameSetupFacade.RequestAvailableCards();
+		State.SetAvailableCards(await GameSetupFacade.RequestAvailableCards());
 	}
 
 	private async Task ClickStart()
@@ -45,5 +43,10 @@ public partial class SinglePlayerMenu
 	private async Task<List<PresetKingdomDto>> RequestPresetKingdoms()
 	{
 		return await GameSetupFacade.RequestPresetKingdoms();
+	}
+
+	private async Task<List<CardDto>> GetRandomCards(List<CardDto> availableCards, int count)
+	{
+		return (await GameSetupFacade.GetRandomCards(new GetRandomCardsRequest { AvailableCards = availableCards, Count = count })).Cards;
 	}
 }
