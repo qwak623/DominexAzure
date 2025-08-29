@@ -6,7 +6,7 @@
     <div class="col-6 d-flex flex-column gap-1"
             ondragover="event.preventDefault();"
             @ondrop="e => OnDropToSelected(e)">
-        <h4>Selected Cards:</h4>
+        <h4 class="text-center">Selected Cards:</h4>
         @foreach (var card in State.SelectedCards)
         {
             <DraggableCard Card="card" OnDragStart="e => OnDragStart(e, card)" />
@@ -18,7 +18,7 @@
     <div class="col-6 d-flex flex-column gap-1"
             ondragover="event.preventDefault();"
             @ondrop="e => OnDropToAvailable(e)">
-        <h4>Available Cards:</h4>
+        <h4 class="text-center">Available Cards:</h4>
         @foreach (var card in State.AvailableCards)
         {
             <DraggableCard Card="card" OnDragStart="e => OnDragStart(e, card)" />

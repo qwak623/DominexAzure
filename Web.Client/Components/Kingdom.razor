@@ -1,10 +1,6 @@
 ﻿<div class="kingdom">
     @foreach (var pile in kingdom)
     {
-        <CardTooltip CardDto="@pile.TopCard">
-            <HxCard>
-                <span>@pile.TopCard.Name $@pile.TopCard.Price (@pile.CardCount)</span>
-            </HxCard>
-        </CardTooltip>
+        <CardComponent Card="@pile.TopCard" CardCount="@pile.CardCount" />
     }
 </div>

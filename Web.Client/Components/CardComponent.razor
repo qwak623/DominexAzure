@@ -1,6 +1,12 @@
 ﻿@if (Card is not null)
 {
     <CardTooltip @ref="cardTooltip" CardDto="@Card">
-        <div class="card-in-hand mr-1">@Card.Name $@Card.Price</div>
+        <div class="border border-2 border-dark rounded-2 p-1" style="@GetStyle(Card)">
+            @Card.Name $@Card.Price
+            @if (CardCount is not null)
+            {
+                @($"({CardCount})")
+            }
+        </div>
     </CardTooltip>
 }

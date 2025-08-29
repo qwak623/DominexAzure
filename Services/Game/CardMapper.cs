@@ -21,7 +21,11 @@ public class CardMapper : ICardMapper
 			AddCoins = card.AddCoins,
 			Coins = card.Coins,
 			DrawCards = card.DrawCards,
-			VictoryPoints = card.VictoryPoints
+			VictoryPoints = card.VictoryPoints,
+			IsAction = card.IsAction,
+			IsReaction = card.IsReaction,
+			IsTreasure = card.IsTreasure,
+			IsVictory = card.IsVictory
 		};
 	}
 

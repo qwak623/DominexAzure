@@ -13,4 +13,9 @@ public record CardDto
 	public int Coins { get; set; }
 	public int DrawCards { get; set; }
 	public int VictoryPoints { get; set; }
+
+	public bool IsAction { get; set; }
+	public bool IsReaction { get; set; }
+	public bool IsTreasure { get; set; }
+	public bool IsVictory { get; set; }
 }

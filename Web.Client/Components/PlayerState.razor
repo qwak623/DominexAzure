@@ -1,4 +1,4 @@
-﻿<div class="playerState">
+﻿<div class="row">
     <div class="col-6">
         <span>@PlayerStateDto?.GamePhase</span>
     </div>
@@ -7,7 +7,7 @@
         <span>Buys: @PlayerStateDto?.Buys</span>
         <span>Coins: @PlayerStateDto?.Coins</span>
     </div>
-    <div class="hand">
+    <div class="d-flex flex-row gap-2">
         <span>Hand: </span>
         @if (PlayerStateDto is not null)
         {
