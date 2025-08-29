@@ -1,9 +1,12 @@
 ﻿@attribute [Route(Routes.Home)]
 
-Hello world! TODO
+<h1 class="text-center">Dominex</h1>
 
-<HxButton Color="ThemeColor.Primary" OnClick="ClickStart"> Start </HxButton>
-<HxButton Color="ThemeColor.Primary" OnClick="ClickStartWithChoosingCards"> Start With Choosing Cards </HxButton>
-<NavCard Href="@Routes.Game.GamePage" Title="TODO" />
+<div class="d-flex flex-column gap-2 w-25 mx-auto">
+    <HxButton Color="ThemeColor.Primary" OnClick="ClickSinglePlayer" Text="Singleplayer" />
+    <HxButton Color="ThemeColor.Primary" OnClick="ClickMultiplayer" Text="Multiplayer" />
+    <HxButton Color="ThemeColor.Secondary" OnClick="ClickInfo" Text="Information" />
+    <HxButton Color="ThemeColor.Secondary" OnClick="ClickProfile" Text="Profile" />
+</div>
 
 

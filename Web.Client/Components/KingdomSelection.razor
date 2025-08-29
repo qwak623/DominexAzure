@@ -3,7 +3,7 @@
 
 <div class="row">
     <!-- Selected cards -->
-    <div class="col-6"
+    <div class="col-6 d-flex flex-column gap-1"
             ondragover="event.preventDefault();"
             @ondrop="e => OnDropToSelected(e)">
         <h4>Selected Cards:</h4>
@@ -15,7 +15,7 @@
     </div>
 
     <!-- Not selected cards -->
-    <div class="col-6"
+    <div class="col-6 d-flex flex-column gap-1"
             ondragover="event.preventDefault();"
             @ondrop="e => OnDropToAvailable(e)">
         <h4>Available Cards:</h4>

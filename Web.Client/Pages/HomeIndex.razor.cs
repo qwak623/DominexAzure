@@ -1,23 +1,28 @@
-﻿using Dominex.Contracts.ServerApi;
-using Microsoft.AspNetCore.Components;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.AspNetCore.Components;
 
 namespace Dominex.Web.Client.Pages;
 
 public partial class HomeIndex
 {
-	[Inject] protected IGameFacade GameFacade { get; set; }
 	[Inject] protected NavigationManager Navigation { get; set; }
 
-	private async Task ClickStart()
-	{
-		await GameFacade.Start();
-
-		Navigation.NavigateTo(Routes.Game.GamePage);
-	}
-
-	private void ClickStartWithChoosingCards()
+	private void ClickSinglePlayer()
 	{
 		Navigation.NavigateTo(Routes.Menu.SinglePlayer);
+	}
+
+	private void ClickMultiplayer()
+	{
+		//TODO
+	}
+
+	private void ClickInfo()
+	{
+		//TODO
+	}
+
+	private void ClickProfile()
+	{
+		//TODO
 	}
 }
