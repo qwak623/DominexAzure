@@ -8,7 +8,7 @@
         <span>Coins: @PlayerStateDto?.Coins</span>
     </div>
     <div class="d-flex flex-row gap-2">
-        <span>Hand: </span>
+        <div class="p-1">Hand:</div>
         @if (PlayerStateDto is not null)
         {
             foreach (var card in PlayerStateDto.Hand)
