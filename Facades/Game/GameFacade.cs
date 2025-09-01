@@ -39,18 +39,6 @@ public class GameFacade : IGameFacade
 		this.cardMapper = cardMapper;
 	}
 
-	public Task Start(CancellationToken cancellationToken = default)
-	{
-		// todo use cancellation token
-		List<Card> cards = PresetGames.Get(PresetGameType.BigMoney);
-
-		var manager = new SimpleManager(BuyAgenda.DirectoryPath, "Tens_");
-		var agenda = manager.LoadBest(cards);
-		var ai = new ProvincialAI(agenda);
-
-		return Start(cards, ai);
-	}
-
 	public Task StartWithCards(IEnumerable<string> cardTypes, CancellationToken cancellationToken = default)
 	{
 		List<Card> cards = cardTypes

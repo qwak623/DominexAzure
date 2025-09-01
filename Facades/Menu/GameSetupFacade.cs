@@ -1,6 +1,7 @@
 ﻿using Dominex.Contracts.Game;
 using Dominex.Contracts.Menu;
 using Dominex.Contracts.ServerApi;
+using Dominex.DataLayer.Repositories.Game;
 using Dominex.Services.Game;
 using GameCore.Cards;
 using Havit.Extensions.DependencyInjection.Abstractions;
@@ -11,29 +12,31 @@ namespace Dominex.Facades.Menu;
 public class GameSetupFacade : IGameSetupFacade
 {
 	private readonly ICardMapper cardMapper;
+	private readonly IPresetKingdomRepository presetKingdomRepository;
 
-	public GameSetupFacade(ICardMapper cardMapper)
+	public GameSetupFacade(ICardMapper cardMapper, IPresetKingdomRepository presetKingdomRepository)
 	{
 		this.cardMapper = cardMapper;
+		this.presetKingdomRepository = presetKingdomRepository;
 	}
 
 	public Task<List<CardDto>> RequestAvailableCards()
 	{
 		// todo async?
-		return Task.FromResult(cardMapper.ToCardDto(PresetGames.Get(PresetGameType.AllCards1stEdition)).ToList());
+		return Task.FromResult(cardMapper.ToCardDto(PresetGames.AvailableCards).ToList());
 	}
 
-	public Task<List<PresetKingdomDto>> RequestPresetKingdoms()
+	public async Task<List<PresetKingdomDto>> RequestPresetKingdoms()
 	{
 		// TODO validovat, jestli je to v available cards? 
-		List<PresetKingdomDto> presetGames = Enum.GetValues<PresetGameType>()
-			.Select(pgt => new PresetKingdomDto
-			{
-				Name = pgt.ToString(),
-				Cards = cardMapper.ToCardDto(PresetGames.Get(pgt)).ToList()
-			}).ToList();
+		var presetKingdoms = await presetKingdomRepository.GetAllAsync();
 
-		return Task.FromResult(presetGames);
+		// todo move mapper somewhere
+		return presetKingdoms.Select(k => new PresetKingdomDto
+		{
+			Name = k.Name,
+			Cards = cardMapper.ToCardDto(k.Cards.Select(c => Card.Get(Enum.Parse<CardType>(c)))).ToList(),
+		}).ToList();
 	}
 
 	public Task<GetRandomCardsResponse> GetRandomCards(GetRandomCardsRequest request)
