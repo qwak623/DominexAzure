@@ -14,7 +14,6 @@ public class Game : IGame
 	public bool GameEnd { get; private set; }
 
 	private const int drawCount = 5;
-	private GameResults results;
 
 	/// <summary>
 	/// </summary>
@@ -100,13 +99,14 @@ public class Game : IGame
 
 				if (turn >= maxRounds)
 				{
+					GameEnd = true;
 					Logger?.Log(new GameLog { Message = "\r\nGame was terminated, number of rounds exceeded {maxRounds}." });
 					foreach (IPlayer player in Players.OrderBy(p => p.VictoryPoints))
 					{
 						Logger?.Log(new GameLog { PlayerId = player.Name, Message = $"{player.Name} has {player.VictoryPoints}." });
 					}
 
-					results = new GameResults
+					return new GameResults
 					{
 						Players = Players,
 						Score = new List<int> { 0, 0 },

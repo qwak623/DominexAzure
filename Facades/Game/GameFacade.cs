@@ -2,6 +2,7 @@
 using AI.Provincial;
 using Dominex.Contracts;
 using Dominex.Contracts.Game;
+using Dominex.Contracts.Results;
 using Dominex.Contracts.ServerApi;
 using Dominex.Services.Game;
 using GameCore;
@@ -26,6 +27,8 @@ public class GameFacade : IGameFacade
 	private readonly IKingdomObserver kingdomObserver;
 	private readonly IPlayerStateObserver playerStateObserver;
 	private readonly ICardMapper cardMapper;
+
+	private static GameResultsDto gameResults; // todo tohle je tady jen temporary - pak presunout jinam asi, vyresit results id apod
 
 	public GameFacade(
 		IGameLogger gameLogger,
@@ -56,13 +59,25 @@ public class GameFacade : IGameFacade
 		return Start(cards, randomAI);
 	}
 
-	public Task<ChoiceDto> JoinGame(/*Dto<Guid> gameId, */Dto<int> playerId, CancellationToken cancellationToken = default)
+	public async Task<ChoiceDto> JoinGame(/*Dto<Guid> gameId, */Dto<int> playerId, CancellationToken cancellationToken = default)
 	{
-		return Task.FromResult(choiceJob.Object); // todo vymyslet jak toto může fungovat s async await
+		await Task.Yield();
+
+		lock (choiceJob)
+		{
+			while (!choiceJob.Done)
+			{
+				Monitor.Wait(choiceJob);
+			}
+
+			return choiceJob.Object;
+		}
 	}
 
-	public Task<ChoiceDto> Submit(Answer answer, CancellationToken cancellationToken = default)
+	public async Task<ChoiceDto> Submit(Answer answer, CancellationToken cancellationToken = default)
 	{
+		await Task.Yield();
+
 		lock (answerJob)
 		{
 			answerJob.Object = answer; // todo tohle je hloupe pojmenování
@@ -79,7 +94,7 @@ public class GameFacade : IGameFacade
 				Monitor.Wait(choiceJob);
 			}
 
-			return Task.FromResult(choiceJob.Object);
+			return choiceJob.Object;
 		}
 	}
 
@@ -95,6 +110,11 @@ public class GameFacade : IGameFacade
 	public async Task RequestPlayerStateNotification(CancellationToken cancellationToken = default)
 	{
 		await Task.Run(Game.RequestPlayerNotifications, cancellationToken);
+	}
+
+	public Task<GameResultsDto> GetGameResults(CancellationToken cancellationToken = default)
+	{
+		return Task.FromResult(gameResults);
 	}
 
 	private Answer CallClient(ChoiceDto choice)
@@ -123,8 +143,39 @@ public class GameFacade : IGameFacade
 		return answerJob.Object;
 	}
 
-	private Task Start(List<Card> cards, User ai)
+	private void CallClientWithResults(GameResults results)
 	{
+		// todo move to mapper
+		gameResults = new GameResultsDto
+		{
+			PlayerResults = results.Players.Select(p => new PlayerResultsDto
+			{
+				Name = p.Name,
+				Points = p.VictoryPoints,
+				Cards = p.PlayerState.DiscardPile.GroupBy(c => c).Select(group => new CardResultsDto
+				{
+					Card = cardMapper.ToCardDto(group.Key),
+					Count = group.Count(),
+					PointsPerCard = group.Key.CountPoints(p),
+				}).ToList(),
+			}).ToList(),
+		};
+
+		lock (choiceJob)
+		{
+			choiceJob.Object = new ChoiceDto
+			{
+				Type = ChoiceType.GameEnd,
+			};
+			choiceJob.Done = true;
+			Monitor.Pulse(choiceJob);
+		}
+	}
+
+	private async Task Start(List<Card> cards, User ai)
+	{
+		await Task.Yield();
+
 		if (Game == null)
 		{
 			kingdom = cards.GetKingdom(2, kingdomObserver);
@@ -134,10 +185,8 @@ public class GameFacade : IGameFacade
 			var users = new User[] { humanUser, ai /*random*/ };
 
 			Game = new GameCore.Game(users, kingdom, gameLogger);
-			Game.Play(); // todo continue with results...
+			Game.Play().ContinueWith(async task => CallClientWithResults(await task));
 		}
-
-		return Task.CompletedTask;
 	}
 
 	private void ValidateAnswer(ChoiceDto choice, Answer answer)

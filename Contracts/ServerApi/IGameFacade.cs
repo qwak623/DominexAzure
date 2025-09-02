@@ -1,4 +1,5 @@
 ﻿using Dominex.Contracts.Game;
+using Dominex.Contracts.Results;
 
 namespace Dominex.Contracts.ServerApi;
 
@@ -10,4 +11,5 @@ public interface IGameFacade
 	Task<ChoiceDto> Submit(Answer answer, CancellationToken cancellationToken = default);
 	Task RequestKingdomNotification(CancellationToken cancellationToken = default);
 	Task RequestPlayerStateNotification(CancellationToken cancellationToken = default);
+	Task<GameResultsDto> GetGameResults(CancellationToken cancellationToken = default);
 }

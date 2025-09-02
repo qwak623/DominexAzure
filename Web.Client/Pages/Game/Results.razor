@@ -1,0 +1,13 @@
+﻿@attribute [Route(Routes.Game.Results)]
+
+<div>
+    @if(GameResults is not null)
+    {
+        foreach (var player in GameResults.PlayerResults.OrderByDescending(p => p.Points))
+        {
+            <div>
+                <span>Name: @player.Name, points: @player.Points</span>
+            </div>
+        }
+    }
+</div>

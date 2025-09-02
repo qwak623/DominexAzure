@@ -22,6 +22,7 @@ public static class Routes
 	public static class Game
 	{
 		public const string GamePage = "/game";
+		public const string Results = "/game/results";
 	}
 
 	public static class Menu

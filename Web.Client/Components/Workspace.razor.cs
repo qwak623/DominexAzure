@@ -9,6 +9,7 @@ public partial class Workspace
 	[Parameter] public ChoiceDto Choice { get; set; }
 	[Inject] protected IGameFacade GameFacade { get; set; }
 	[Inject] protected IHxMessengerService Messenger { get; set; }
+	[Inject] protected NavigationManager Navigation { get; set; }
 
 	private Answer Answer { get; set; } = new();
 
@@ -28,6 +29,12 @@ public partial class Workspace
 		}
 
 		Choice = await GameFacade.Submit(Answer);
+
+		if (Choice.Type == ChoiceType.GameEnd)
+		{
+			Navigation.NavigateTo(Routes.Game.Results);
+		}
+
 		Answer = new Answer();
 	}
 

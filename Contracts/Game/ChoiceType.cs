@@ -20,4 +20,5 @@ public enum ChoiceType
 	MineTrash,
 	Gain,
 	MoatDefend,
+	GameEnd,
 }
