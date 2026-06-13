@@ -5,7 +5,8 @@
 		<AssemblyName>Dominex.Web.Server</AssemblyName>
 		<RootNamespace>Dominex.Web.Server</RootNamespace>
 		<ImplicitUsings>true</ImplicitUsings>
-	</PropertyGroup>
+		<UserSecretsId>34bb7160-f2ff-4e2b-9216-66500b44fb95</UserSecretsId>
+  </PropertyGroup>
 
 	<ItemGroup>
 	  <Compile Remove="Infrastructure\SignalRHubs\**" />
@@ -21,6 +22,7 @@
 		<PackageReference Include="Havit.Blazor.Grpc.Server" />
 		<PackageReference Include="Havit.Hangfire.Extensions" />
 		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.Google" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
 		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" />

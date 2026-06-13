@@ -3,9 +3,6 @@ using Dominex.Contracts;
 using Dominex.Contracts.Infrastructure;
 using Dominex.DependencyInjection;
 using Dominex.Facades.Game.Hubs;
-using Dominex.Facades.Infrastructure.Security;
-using Dominex.Facades.Infrastructure.Security.Authentication;
-using Dominex.Primitives.Security;
 using Dominex.Services.HealthChecks;
 using Dominex.Web.Client;
 using Dominex.Web.Client.Infrastructure.Configuration;
@@ -13,10 +10,10 @@ using Dominex.Web.Server.Infrastructure.Antiforgery;
 using Dominex.Web.Server.Infrastructure.ApplicationInsights;
 using Dominex.Web.Server.Infrastructure.ConfigurationExtensions;
 using Dominex.Web.Server.Infrastructure.ExceptionHandling;
+using Dominex.Web.Server.Infrastructure.Security;
+using Microsoft.AspNetCore.Components.Authorization;
 using Dominex.Web.Server.Infrastructure.HealthChecks;
 using Dominex.Web.Server.Infrastructure.MigrationTool;
-using Hangfire;
-using Hangfire.Dashboard;
 using Havit.Blazor.Components.Web;
 using Havit.Blazor.Components.Web.Bootstrap;
 using Havit.Blazor.Grpc.Server;
@@ -69,13 +66,12 @@ public class Startup
 		services.AddHxMessageBoxHost();
 		// -----------------------------------------------------------------------------------------------
 
-		// Authentication & Authorization removed temporarily.
-		// services.AddCustomAuthentication(_configuration);
-		// services.AddAuthorizationBuilder()... (policies removed)
+		services.AddCustomAuthentication(_configuration);
+		services.AddScoped<AuthenticationStateProvider, PersistingAuthenticationStateProvider>();
 
-		// Blazor components (keep interactive provider, no auth serialization)
 		services.AddRazorComponents()
-			.AddInteractiveWebAssemblyComponents();
+			.AddInteractiveWebAssemblyComponents()
+			.AddAuthenticationStateSerialization(options => options.SerializationCallback = Dominex.Web.Server.Infrastructure.Security.CustomClaimsSerializer.SerializeAuthenticationStateAsync);
 
 		services.AddScoped<AntiforgeryStateProvider, WorkaroundEndpointAntiforgeryStateProvider>();
 
@@ -128,9 +124,8 @@ public class Startup
 
 		app.UseRouting();
 
-		// authentication/authorization middleware removed temporarily
-		// app.UseAuthentication();
-		// app.UseAuthorization();
+		app.UseAuthentication();
+		app.UseAuthorization();
 
 		app.UseAntiforgery();
 
@@ -161,7 +156,7 @@ public class Startup
 				});
 		app.MapCodeFirstGrpcReflectionService();
 
-		//app.MapGroup("/authentication").MapLoginAndLogout();
+		app.MapLoginAndLogout();
 
 		app.MapHealthChecks("/health", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
 		{

@@ -2,7 +2,6 @@
 using Dominex.Web.Server.Infrastructure.LoggingExtensions;
 using Dominex.DependencyInjection.Configuration;
 using Dominex.Services.Infrastructure.Logging;
-using Dominex.Web.Server.Infrastructure.Security;
 
 namespace Dominex.Web.Server;
 
@@ -48,10 +47,6 @@ public static class Program
 	{
 		Startup startup = new Startup(builder.Configuration);
 		startup.ConfigureServices(builder.Services);
-        builder.Services
-           .AddRazorComponents()
-           .AddInteractiveWebAssemblyComponents()
-           .AddAuthenticationStateSerialization(options => options.SerializationCallback = CustomClaimsSerializer.SerializeAuthenticationStateAsync);
 	}
 
 	private static void ConfigureMiddleware(WebApplication app)

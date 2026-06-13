@@ -34,4 +34,9 @@ public static class AppRoutes
 	{
 		public const string AccessDenied = "/access-denied";
 	}
+
+	public static class Account
+	{
+		public const string Login = "/login";
+	}
 }

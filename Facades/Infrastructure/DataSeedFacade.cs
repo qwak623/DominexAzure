@@ -12,8 +12,7 @@ using Dominex.Primitives.Security;
 namespace Dominex.Facades.Infrastructure;
 
 [Service]
-//[Authorize(Roles = nameof(RoleEntry.SystemAdministrator))]
-
+[Authorize(Roles = nameof(RoleEntry.SystemAdministrator))]
 public class DataSeedFacade : IDataSeedFacade
 {
 	private readonly IDataSeedRunner dataSeedRunner;

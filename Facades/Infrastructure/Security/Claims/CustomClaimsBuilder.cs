@@ -31,29 +31,21 @@ public class CustomClaimsBuilder : ICustomClaimsBuilder
 
 	public async Task<List<Claim>> GetCustomClaimsAsync(ClaimsPrincipal principal, CancellationToken cancellationToken = default)
 	{
-		// explicit, framework-independent check instead of Contract.Requires
-		if (principal?.Identity?.IsAuthenticated != true)
+			if (principal?.Identity?.IsAuthenticated != true)
 		{
 			throw new SecurityException("Principal is not authenticated.");
 		}
 
-		// All claims must be created with ClaimConstants.ApplicationIssuer because it is used as a selector by CookieOidcRefresher
-		// when creating a new ("refreshed") principal.
-
 		List<Claim> result = new();
 
-		// TODO: replace with real repo lookup when implemented
-		User user = null; // await _userRepository.GetByIdentityProviderIdAsync(principal.FindFirst("oid")?.Value, cancellationToken);
+		string email = principal.FindFirst(ClaimTypes.Email)?.Value;
+		User user = !string.IsNullOrEmpty(email)
+			? await _userRepository.GetByEmailAsync(email, cancellationToken)
+			: null;
 
 		if (user == null)
 		{
-#if DEBUG
-			user = await OnboardFirstUserAsync(principal, cancellationToken);
-#endif
-			if (user == null)
-			{
-				throw new SecurityException("User not found.");
-			}
+			user = await OnboardUserAsync(principal, cancellationToken);
 		}
 
 		if (user.Disabled)
@@ -77,34 +69,22 @@ public class CustomClaimsBuilder : ICustomClaimsBuilder
 		return result;
 	}
 
-	private async Task<User> OnboardFirstUserAsync(ClaimsPrincipal principal, CancellationToken cancellationToken = default)
+	private async Task<User> OnboardUserAsync(ClaimsPrincipal principal, CancellationToken cancellationToken = default)
 	{
-		// repository API doesn't expose GetAllAsync in interface; use synchronous method available.
-		var all = _userRepository.GetAllIncludingDeleted();
-		if (all != null && all.Any())
-		{
-			return null;
-		}
-
 		var user = new User();
 
-		// be defensive when reading claims
-		var oid = principal.FindFirst("oid")?.Value;
-		if (!string.IsNullOrWhiteSpace(oid))
+		user.IdentityProviderExternalId = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value; // Google sub
+		user.Email = principal.FindFirst(ClaimTypes.Email)?.Value;
+		user.DisplayName = principal.FindFirst(ClaimTypes.Name)?.Value;
+		user.Created = DateTime.UtcNow;
+
+#if DEBUG
+		// First user in debug gets all roles for convenience
+		if (!_userRepository.GetAllIncludingDeleted().Any())
 		{
-			user.IdentityProviderExternalId = oid;
+			user.UserRoles.AddRange(Enum.GetValues<RoleEntry>().Select(entry => new UserRole() { RoleId = (int)entry }));
 		}
-
-		var upn = principal.FindFirst("upn")?.Value ?? principal.FindFirst(ClaimTypes.Upn)?.Value;
-		if (!string.IsNullOrWhiteSpace(upn))
-		{
-			user.Email = upn.Replace("@", "@devmail.");
-		}
-
-		user.DisplayName = principal.FindFirst("name")?.Value ?? principal.Identity?.Name;
-
-		// Add all roles for first user in debug
-		user.UserRoles.AddRange(Enum.GetValues<RoleEntry>().Select(entry => new UserRole() { RoleId = (int)entry }));
+#endif
 
 		_unitOfWork.AddForInsert(user);
 		await _unitOfWork.CommitAsync(cancellationToken);

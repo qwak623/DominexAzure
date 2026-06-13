@@ -9,11 +9,12 @@ using GameCore;
 using GameCore.Cards;
 using GameCore.Observers;
 using Havit.Extensions.DependencyInjection.Abstractions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Dominex.Facades.Game;
 
 [Service]
-//[Authorize(Roles = nameof(Role.Entry.SystemAdministrator))]
+[Authorize]
 public class GameFacade : IGameFacade
 {
 	// todo zbavit se static věcí (singleton?)
