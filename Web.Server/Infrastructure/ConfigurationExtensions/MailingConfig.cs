@@ -1,6 +1,4 @@
-﻿using Dominex.Contracts.Infrastructure;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Dominex.Services.Mailing;
 
 namespace Dominex.Web.Server.Infrastructure.ConfigurationExtensions;
 

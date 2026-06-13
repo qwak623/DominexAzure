@@ -51,7 +51,8 @@ public static class Program
 
 				services.AddExceptionMonitoring(hostContext.Configuration);
 
-				services.ConfigureForUtility(hostContext.Configuration);
+				// TODO
+				// services.ConfigureForUtility(hostContext.Configuration);
 
 				if (useHangfire)
 				{

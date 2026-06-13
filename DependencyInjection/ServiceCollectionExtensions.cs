@@ -1,27 +1,30 @@
-﻿using System.IO;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using Azure.Identity;
-using Havit.Data.EntityFrameworkCore.Patterns.DependencyInjection;
-using Havit.Data.EntityFrameworkCore.Patterns.UnitOfWorks.EntityValidation;
-using Havit.Extensions.DependencyInjection;
-using Havit.Extensions.DependencyInjection.Abstractions;
-using Dominex.DataLayer.DataSources.Common;
 using Dominex.DataLayer.Repositories.Common;
-using Dominex.DependencyInjection.ConfigrationOptions;
-using Dominex.Entity;
+using Dominex.DataLayer.Seeds.Core;
+using Dominex.DependencyInjection.ConfigurationOptions;
+using Dominex.Model.Localizations;
 using Dominex.Services.Infrastructure;
 using Dominex.Services.Infrastructure.FileStorages;
 using Dominex.Services.Infrastructure.MigrationTool;
-using Dominex.Services.Jobs;
 using Dominex.Services.TimeServices;
+using Havit.Data.EntityFrameworkCore;
+using Havit.Data.EntityFrameworkCore.Patterns.DependencyInjection;
+using Havit.Data.EntityFrameworkCore.Patterns.UnitOfWorks.EntityValidation;
+using Havit.Extensions.DependencyInjection.Abstractions;
+using Dominex.DataLayer;
+using Dominex.Services;
 using Havit.Services.Azure.FileStorage;
 using Havit.Services.Caching;
 using Havit.Services.FileStorage;
 using Havit.Services.TimeServices;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Dominex.Entity;
+using Dominex.Facades;
 
 namespace Dominex.DependencyInjection;
 
@@ -30,29 +33,26 @@ public static class ServiceCollectionExtensions
 	[MethodImpl(MethodImplOptions.NoInlining)]
 	public static IServiceCollection ConfigureForWebServer(this IServiceCollection services, IConfiguration configuration)
 	{
-		FileStorageOptions fileStorageOptions = new FileStorageOptions();
-		configuration.GetSection(FileStorageOptions.FileStorageOptionsKey).Bind(fileStorageOptions);
-
 		InstallConfiguration installConfiguration = new InstallConfiguration
 		{
+			Configuration = configuration,
 			DatabaseConnectionString = configuration.GetConnectionString("Database"),
-			AzureStorageConnectionString = configuration.GetConnectionString("AzureStorageConnectionString"),
-			FileStoragePathOrContainerName = fileStorageOptions.PathOrContainerName,
 			ServiceProfiles = new[] { ServiceAttribute.DefaultProfile, ServiceProfiles.WebServer },
+			UseInMemoryDb = false
 		};
 
 		return services.ConfigureForAll(installConfiguration);
 	}
 
 	[MethodImpl(MethodImplOptions.NoInlining)]
-	public static IServiceCollection ConfigureForUtility(this IServiceCollection services, IConfiguration configuration)
+	public static IServiceCollection ConfigureForJobsRunner(this IServiceCollection services, IConfiguration configuration)
 	{
 		InstallConfiguration installConfiguration = new InstallConfiguration
 		{
+			Configuration = configuration,
 			DatabaseConnectionString = configuration.GetConnectionString("Database"),
-			AzureStorageConnectionString = configuration.GetConnectionString("AzureStorageConnectionString"),
-			ServiceProfiles = new[] { ServiceAttribute.DefaultProfile, ServiceProfiles.Utility },
-			ApiCommunicationLogStorage = configuration.GetValue<string>("AppSettings:ApiCommunicationLogStorage:Path")
+			ServiceProfiles = new[] { ServiceAttribute.DefaultProfile, ServiceProfiles.JobsRunner },
+			UseInMemoryDb = false
 		};
 
 		return services.ConfigureForAll(installConfiguration);
@@ -61,21 +61,24 @@ public static class ServiceCollectionExtensions
 	[MethodImpl(MethodImplOptions.NoInlining)]
 	public static IServiceCollection ConfigureForTests(this IServiceCollection services, bool useInMemoryDb = true)
 	{
-		string environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Developement";
+		string environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
 
 		IConfigurationRoot configuration = new ConfigurationBuilder()
 			.SetBasePath(Directory.GetCurrentDirectory())
-			.AddJsonFile("appsettings.json")
-			.AddJsonFile($"appsettings.{environment}.json", true)
+			.AddJsonFile("appSettings.json")
+			.AddJsonFile($"appSettings.{environment}.json", true)
+			.AddJsonFile($"appSettings.{environment}.local.json", true) // .gitignored
 			.Build();
 
 		InstallConfiguration installConfiguration = new InstallConfiguration
 		{
-			DatabaseConnectionString = configuration.GetConnectionString("Database"),
+			Configuration = configuration,
+			DatabaseConnectionString = AddAgentNameToDatabaseName(configuration.GetConnectionString("Database")),
 			ServiceProfiles = new[] { ServiceAttribute.DefaultProfile },
-			UseInMemoryDb = useInMemoryDb,
+			UseInMemoryDb = useInMemoryDb
 		};
 
+		services.AddSingleton<IConfiguration>(configuration);
 		return services.ConfigureForAll(installConfiguration);
 	}
 
@@ -84,14 +87,16 @@ public static class ServiceCollectionExtensions
 	{
 		InstallConfiguration installConfiguration = new InstallConfiguration
 		{
+			Configuration = configuration,
 			DatabaseConnectionString = configuration.GetConnectionString("Database"),
 			ServiceProfiles = new[] { ServiceAttribute.DefaultProfile },
+			UseInMemoryDb = false
 		};
 
 		InstallHavitEntityFramework(services, installConfiguration);
 		InstallHavitServices(services);
 
-		services.AddByServiceAttribute(typeof(DataLayer.Properties.AssemblyInfo).Assembly, installConfiguration.ServiceProfiles);
+		services.AddDataLayerByServiceAttribute(installConfiguration.ServiceProfiles);
 		services.AddSingleton<IMigrationService, MigrationService>();
 
 		return services;
@@ -107,28 +112,26 @@ public static class ServiceCollectionExtensions
 		InstallAuthorizationHandlers(services);
 		InstallFileServices(services, installConfiguration);
 
-		services.AddMemoryCache();
-
 		return services;
 	}
 
 	private static void InstallHavitEntityFramework(IServiceCollection services, InstallConfiguration configuration)
 	{
-		services.WithEntityPatternsInstaller()
-			.AddEntityPatterns()
-			//.AddLocalizationServices<Language>()
-			.AddDbContext<DominexDbContext>(optionsBuilder =>
+		services.AddDbContext<IDbContext, DominexDbContext>(optionsBuilder =>
+		{
+			if (configuration.UseInMemoryDb)
 			{
-				if (configuration.UseInMemoryDb)
-				{
-					optionsBuilder.UseInMemoryDatabase(nameof(DominexDbContext));
-				}
-				else
-				{
-					optionsBuilder.UseSqlServer(configuration.DatabaseConnectionString, c => c.MaxBatchSize(30));
-				}
-			})
-			.AddDataLayer(typeof(IApplicationSettingsDataSource).Assembly)
+				optionsBuilder.UseInMemoryDatabase(nameof(DominexDbContext));
+			}
+			else
+			{
+				optionsBuilder.UseSqlServer(configuration.DatabaseConnectionString, c => c.MaxBatchSize(30));
+			}
+			optionsBuilder.UseDefaultHavitConventions();
+		})
+			.AddDataLayerServices()
+			.AddDataSeeds(typeof(CoreProfile).Assembly)
+			.AddLocalizationServices<Language>()
 			.AddLookupService<ICountryByIsoCodeLookupService, CountryByIsoCodeLookupService>();
 
 		services.AddSingleton<IEntityValidator<object>, ValidatableObjectEntityValidator>();
@@ -138,15 +141,16 @@ public static class ServiceCollectionExtensions
 	{
 		// HAVIT .NET Framework Extensions
 		services.AddSingleton<ITimeService, ApplicationTimeService>();
+		services.AddMemoryCache();
 		services.AddSingleton<ICacheService, MemoryCacheService>();
 		services.AddSingleton(new MemoryCacheServiceOptions { UseCacheDependenciesSupport = false });
 	}
 
 	private static void InstallByServiceAttribute(IServiceCollection services, InstallConfiguration configuration)
 	{
-		services.AddByServiceAttribute(typeof(Dominex.DataLayer.Properties.AssemblyInfo).Assembly, configuration.ServiceProfiles);
-		services.AddByServiceAttribute(typeof(Dominex.Services.Properties.AssemblyInfo).Assembly, configuration.ServiceProfiles);
-		services.AddByServiceAttribute(typeof(Dominex.Facades.Properties.AssemblyInfo).Assembly, configuration.ServiceProfiles);
+		services.AddDataLayerByServiceAttribute(configuration.ServiceProfiles);
+		services.AddServicesByServiceAttribute(configuration.ServiceProfiles);
+		services.AddFacadesByServiceAttribute(configuration.ServiceProfiles);
 	}
 
 	private static void InstallAuthorizationHandlers(IServiceCollection services)
@@ -160,13 +164,16 @@ public static class ServiceCollectionExtensions
 
 	private static void InstallFileServices(IServiceCollection services, InstallConfiguration installConfiguration)
 	{
-		InstallFileStorageService<IApplicationFileStorageService, ApplicationFileStorageService, ApplicationFileStorage>(services, installConfiguration.AzureStorageConnectionString, installConfiguration.FileStoragePathOrContainerName);
+		string azureStorageConnectionString = installConfiguration.Configuration.GetConnectionString("AzureStorage");
+		FileStorageOptions fileStorageOptions = installConfiguration.Configuration.GetSection(FileStorageOptions.ApplicationFileStorageOptionsKey).Get<FileStorageOptions>();
+
+		InstallFileStorageService<IApplicationFileStorageService, ApplicationFileStorageService, ApplicationFileStorage>(services, azureStorageConnectionString, fileStorageOptions?.PathOrContainerName);
 	}
 
 	internal static void InstallFileStorageService<TFileStorageService, TFileStorageImplementation, TFileStorageContext>(IServiceCollection services, string azureStorageConnectionString, string storagePath)
-		where TFileStorageService : class, IFileStorageService<TFileStorageContext> // class zde znamená i interface! // např. IDocumentStorageService
-		where TFileStorageImplementation : FileStorageWrappingService<TFileStorageContext>, TFileStorageService // např. DocumentStorageService
-		where TFileStorageContext : FileStorageContext // např. DocumentStorage
+		where TFileStorageService : class, IFileStorageService<TFileStorageContext> // class covers all reference types here, e.g. IDocumentStorageService
+		where TFileStorageImplementation : FileStorageWrappingService<TFileStorageContext>, TFileStorageService // e.g. DocumentStorageService
+		where TFileStorageContext : FileStorageContext // e.g. DocumentStorage
 	{
 		services.AddFileStorageWrappingService<TFileStorageService, TFileStorageImplementation, TFileStorageContext>();
 
@@ -182,6 +189,22 @@ public static class ServiceCollectionExtensions
 		else
 		{
 			services.AddFileSystemStorageService<TFileStorageContext>(storagePath);
+		}
+	}
+
+	private static string AddAgentNameToDatabaseName(string databaseConnectionString)
+	{
+		string agentName = Environment.GetEnvironmentVariable("AGENT_NAME");
+		if (!String.IsNullOrEmpty(agentName))
+		{
+			// pokud by connection string obsahoval heslo, musí být též Persist Security Info=true
+			var databaseConnectionStringBuilder = new SqlConnectionStringBuilder(databaseConnectionString);
+			databaseConnectionStringBuilder.InitialCatalog = $"{databaseConnectionStringBuilder.InitialCatalog}-{agentName}";
+			return databaseConnectionStringBuilder.ToString();
+		}
+		else
+		{
+			return databaseConnectionString;
 		}
 	}
 }

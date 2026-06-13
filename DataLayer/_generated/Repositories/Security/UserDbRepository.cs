@@ -18,8 +18,8 @@ namespace Dominex.DataLayer.Repositories.Security;
 [System.CodeDom.Compiler.GeneratedCode("Havit.Data.EntityFrameworkCore.CodeGenerator", "1.0")]
 public partial class UserDbRepository : UserDbRepositoryBase, IUserRepository
 {
-	public UserDbRepository(IDbContext dbContext, Dominex.DataLayer.DataSources.Security.IUserDataSource dataSource, IEntityKeyAccessor<Dominex.Model.Security.User, int> entityKeyAccessor, IDataLoader dataLoader, ISoftDeleteManager softDeleteManager, IEntityCacheManager entityCacheManager)
-		: base(dbContext, dataSource, entityKeyAccessor, dataLoader, softDeleteManager, entityCacheManager)
+	public UserDbRepository(IDbContext dbContext, IEntityKeyAccessor<Dominex.Model.Security.User, System.Int32> entityKeyAccessor, IDataLoader dataLoader, ISoftDeleteManager softDeleteManager, IEntityCacheManager entityCacheManager, IRepositoryQueryProvider<Dominex.Model.Security.User, System.Int32> repositoryQueryProvider)
+		: base(dbContext, entityKeyAccessor, dataLoader, softDeleteManager, entityCacheManager, repositoryQueryProvider)
 	{
 	}
 }

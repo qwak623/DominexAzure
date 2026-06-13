@@ -2,6 +2,7 @@
 using Dominex.DataLayer.Repositories.Security;
 using Dominex.Model.Security;
 using Microsoft.AspNetCore.Identity;
+using Dominex.Primitives.Security;
 
 namespace Dominex.Facades.Infrastructure.Security.Identity;
 
@@ -32,7 +33,7 @@ public class UserStore :
 		Contract.Requires<ArgumentNullException>(user != null);
 		Contract.Requires<ArgumentException>(!String.IsNullOrWhiteSpace(normalizedRoleName));
 
-		var roleEntry = Enum.Parse<Role.Entry>(normalizedRoleName, ignoreCase: true);
+		var roleEntry = Enum.Parse<RoleEntry>(normalizedRoleName, ignoreCase: true);
 		user.UserRoles.Add(new UserRole()
 		{
 			RoleId = (int)roleEntry,
@@ -177,7 +178,7 @@ public class UserStore :
 	{
 		Contract.Requires<ArgumentException>(!String.IsNullOrWhiteSpace(roleName));
 
-		var roleEntry = Enum.Parse<Role.Entry>(roleName, ignoreCase: true);
+		var roleEntry = Enum.Parse<RoleEntry>(roleName, ignoreCase: true);
 		return await userRepository.GetUsersInRoleAsync(roleEntry);
 	}
 
@@ -200,7 +201,7 @@ public class UserStore :
 	{
 		Contract.Requires<ArgumentNullException>(user != null);
 
-		var roleEntry = Enum.Parse<Role.Entry>(roleName, ignoreCase: true);
+		var roleEntry = Enum.Parse<RoleEntry>(roleName, ignoreCase: true);
 		return Task.FromResult(user.IsInRole(roleEntry));
 	}
 
@@ -208,7 +209,7 @@ public class UserStore :
 	{
 		Contract.Requires<ArgumentNullException>(user != null);
 
-		var roleEntry = Enum.Parse<Role.Entry>(roleName, ignoreCase: true);
+		var roleEntry = Enum.Parse<RoleEntry>(roleName, ignoreCase: true);
 		user.UserRoles.RemoveAll(ur => ur.RoleId == (int)roleEntry);
 
 		return Task.CompletedTask;

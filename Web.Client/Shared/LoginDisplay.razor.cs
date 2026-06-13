@@ -1,12 +1,10 @@
-﻿namespace Dominex.Web.Client.Shared;
+﻿using Microsoft.AspNetCore.Components;
+
+namespace Dominex.Web.Client.Shared;
 
 public partial class LoginDisplay
 {
-	private async Task BeginSignOut()
-	{
-		await SignOutManager.SetSignOutState();
-		Navigation.NavigateTo("authentication/logout");
-	}
+	[Parameter] public bool ShowOnlyInitials { get; set; }
 
 	/// <summary>
 	/// Takes an email or name of the user and returns the user's initials.
@@ -14,7 +12,7 @@ public partial class LoginDisplay
 	/// <returns>The initials of first and last name</returns>
 	private string NameToInitials(string name)
 	{
-		if (String.IsNullOrWhiteSpace(name))
+		if (string.IsNullOrWhiteSpace(name))
 		{
 			return null;
 		}
@@ -38,5 +36,4 @@ public partial class LoginDisplay
 
 		return (names[0][0].ToString() + names[^1][0].ToString()).ToUpper();
 	}
-
 }

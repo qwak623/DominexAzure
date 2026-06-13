@@ -9,30 +9,37 @@ namespace Dominex.Web.Client.Pages.Admin;
 
 public partial class AdminIndex : ComponentBase
 {
-	[Inject] protected Func<IMaintenanceFacade> MaintenanceFacade { get; set; }
+	[Inject] protected IMaintenanceFacade MaintenanceFacade { get; set; }
 	[Inject] protected IHxMessengerService Messenger { get; set; }
 	[Inject] protected IHxMessageBoxService MessageBox { get; set; }
 	[Inject] protected ILocalStorageService LocalStorageService { get; set; }
-	[Inject] protected INavigationLocalizer NavigationLocalizer { get; set; }
-	[Inject] protected IAdminIndexLocalizer AdmninIndexLocalizer { get; set; }
+	// TODO
+	//[Inject] protected INavigationLocalizer NavigationLocalizer { get; set; }
+	//[Inject] protected IAdminIndexLocalizer AdminIndexLocalizer { get; set; }
+	[Inject] protected NavigationManager NavigationManager { get; set; }
 
-	private DataSeeds dataSeedsComponent;
+	private DataSeeds _dataSeedsComponent;
 
-	private async Task RemoveCultureFromLocalStorage()
+	private async Task HandleRemoveCultureFromLocalStorageClick()
 	{
 		if (await MessageBox.ConfirmAsync("Do you really want to remove culture cache?"))
 		{
 			await LocalStorageService.RemoveItemAsync("culture");
-			Messenger.AddInformation(AdmninIndexLocalizer["CultureRemoved"]); // TODO Just a demo
+			// TODO
+			//Messenger.AddInformation(AdminIndexLocalizer["CultureRemoved"]); // TODO Just a demo
 		}
 	}
 
-	private async Task HandleClearCache()
+	private async Task HandleClearCacheClick()
 	{
 		if (await MessageBox.ConfirmAsync("Do you really want to clear server cache?"))
 		{
-			await MaintenanceFacade().ClearCache();
-			Messenger.AddInformation("Server cache cleared.");
+			await MaintenanceFacade.ClearCacheAsync();
+
+			if (await MessageBox.ConfirmAsync("Server cache cleared. Do you want to reload the Blazor client?"))
+			{
+				NavigationManager.NavigateTo("", forceLoad: true);
+			}
 		}
 	}
 }

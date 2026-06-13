@@ -8,7 +8,7 @@ public partial class HomeIndex
 
 	private void ClickSinglePlayer()
 	{
-		Navigation.NavigateTo(Routes.Menu.SinglePlayer);
+		Navigation.NavigateTo(AppRoutes.Menu.SinglePlayer);
 	}
 
 	private void ClickMultiplayer()

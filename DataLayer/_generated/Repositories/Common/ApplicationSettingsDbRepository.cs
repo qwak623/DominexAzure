@@ -18,8 +18,8 @@ namespace Dominex.DataLayer.Repositories.Common;
 [System.CodeDom.Compiler.GeneratedCode("Havit.Data.EntityFrameworkCore.CodeGenerator", "1.0")]
 public partial class ApplicationSettingsDbRepository : ApplicationSettingsDbRepositoryBase, IApplicationSettingsRepository
 {
-	public ApplicationSettingsDbRepository(IDbContext dbContext, Dominex.DataLayer.DataSources.Common.IApplicationSettingsDataSource dataSource, IEntityKeyAccessor<Dominex.Model.Common.ApplicationSettings, int> entityKeyAccessor, IDataLoader dataLoader, ISoftDeleteManager softDeleteManager, IEntityCacheManager entityCacheManager)
-		: base(dbContext, dataSource, entityKeyAccessor, dataLoader, softDeleteManager, entityCacheManager)
+	public ApplicationSettingsDbRepository(IDbContext dbContext, IEntityKeyAccessor<Dominex.Model.Common.ApplicationSettings, System.Int32> entityKeyAccessor, IDataLoader dataLoader, ISoftDeleteManager softDeleteManager, IEntityCacheManager entityCacheManager, IRepositoryQueryProvider<Dominex.Model.Common.ApplicationSettings, System.Int32> repositoryQueryProvider)
+		: base(dbContext, entityKeyAccessor, dataLoader, softDeleteManager, entityCacheManager, repositoryQueryProvider)
 	{
 	}
 }

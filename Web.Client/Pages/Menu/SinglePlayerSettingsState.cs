@@ -3,6 +3,7 @@ using Dominex.Contracts.Game;
 
 namespace Dominex.Web.Client.Pages.Menu;
 
+// toto why to i need to inject this?
 public class SinglePlayerSettingsState
 {
 	private List<(CardDto Card, bool Selected)> allCards = new();

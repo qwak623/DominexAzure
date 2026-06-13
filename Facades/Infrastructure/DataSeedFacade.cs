@@ -4,15 +4,15 @@ using Havit.Extensions.DependencyInjection.Abstractions;
 using Dominex.Contracts;
 using Dominex.Contracts.Infrastructure;
 using Dominex.DataLayer.Seeds.Core;
-using Dominex.Model.Security;
 using Havit.Services.Caching;
 using Microsoft.AspNetCore.Authorization;
 using Havit;
+using Dominex.Primitives.Security;
 
 namespace Dominex.Facades.Infrastructure;
 
 [Service]
-[Authorize(Roles = nameof(Role.Entry.SystemAdministrator))]
+//[Authorize(Roles = nameof(RoleEntry.SystemAdministrator))]
 
 public class DataSeedFacade : IDataSeedFacade
 {

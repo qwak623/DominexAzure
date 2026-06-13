@@ -1,6 +1,5 @@
 ﻿using Dominex.DependencyInjection;
 using Dominex.Services.Infrastructure.MigrationTool;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -8,11 +7,11 @@ using Microsoft.Extensions.Logging;
 
 namespace Dominex.MigrationTool;
 
-public class Program
+public static class Program
 {
-	public static void Main(string[] args)
+	public static async Task Main(string[] args)
 	{
-		IHostBuilder hostBuidler = Host.CreateDefaultBuilder()
+		IHostBuilder hostBuilder = Host.CreateDefaultBuilder()
 			.ConfigureAppConfiguration((hostContext, config) =>
 			{
 				config
@@ -28,6 +27,6 @@ public class Program
 				services.ConfigureForMigrationTool(hostContext.Configuration);
 			});
 
-		hostBuidler.Build().Services.GetRequiredService<IMigrationService>().UpgradeDatabaseSchemaAndData();
+		await hostBuilder.Build().Services.GetRequiredService<IMigrationService>().UpgradeDatabaseSchemaAndDataAsync();
 	}
 }

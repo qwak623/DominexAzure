@@ -1,4 +1,5 @@
-﻿# New Project Template - HAVIT Blazor Stack
+﻿# TODO : Update this README file to be accurate for this project (not just the template readme; remove this TODO).)
+# New Project Template - HAVIT Blazor Stack
 
 ## Clonning template contents into new folder
 If you have a local repository   

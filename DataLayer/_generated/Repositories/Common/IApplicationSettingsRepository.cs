@@ -10,6 +10,6 @@ using Havit.Data.Patterns.Repositories;
 namespace Dominex.DataLayer.Repositories.Common;
 
 [System.CodeDom.Compiler.GeneratedCode("Havit.Data.EntityFrameworkCore.CodeGenerator", "1.0")]
-public partial interface IApplicationSettingsRepository : IRepository<Dominex.Model.Common.ApplicationSettings>
+public partial interface IApplicationSettingsRepository : IRepository<Dominex.Model.Common.ApplicationSettings, System.Int32>
 {
 }

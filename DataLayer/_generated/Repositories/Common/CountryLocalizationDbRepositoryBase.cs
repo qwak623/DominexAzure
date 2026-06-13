@@ -16,10 +16,10 @@ using Havit.Data.Patterns.Infrastructure;
 namespace Dominex.DataLayer.Repositories.Common;
 
 [System.CodeDom.Compiler.GeneratedCode("Havit.Data.EntityFrameworkCore.CodeGenerator", "1.0")]
-public abstract class CountryLocalizationDbRepositoryBase : DbRepository<Dominex.Model.Common.CountryLocalization>
+public abstract class CountryLocalizationDbRepositoryBase : DbRepository<Dominex.Model.Common.CountryLocalization, System.Int32>
 {
-	protected CountryLocalizationDbRepositoryBase(IDbContext dbContext, Dominex.DataLayer.DataSources.Common.ICountryLocalizationDataSource dataSource, IEntityKeyAccessor<Dominex.Model.Common.CountryLocalization, int> entityKeyAccessor, IDataLoader dataLoader, ISoftDeleteManager softDeleteManager, IEntityCacheManager entityCacheManager)
-		: base(dbContext, dataSource, entityKeyAccessor, dataLoader, softDeleteManager, entityCacheManager)
+	protected CountryLocalizationDbRepositoryBase(IDbContext dbContext, IEntityKeyAccessor<Dominex.Model.Common.CountryLocalization, System.Int32> entityKeyAccessor, IDataLoader dataLoader, ISoftDeleteManager softDeleteManager, IEntityCacheManager entityCacheManager, IRepositoryQueryProvider<Dominex.Model.Common.CountryLocalization, System.Int32> repositoryQueryProvider)
+		: base(dbContext, entityKeyAccessor, dataLoader, softDeleteManager, entityCacheManager, repositoryQueryProvider)
 	{
 	}
 

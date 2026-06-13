@@ -3,15 +3,8 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace Dominex.Facades.Game.Hubs;
 
-public class LogHub : Hub
+public class LogHub(IGameLogger gameLogger) : Hub
 {
-	private readonly IGameLogger gameLogger;
-
-	public LogHub(IGameLogger gameLogger)
-	{
-		this.gameLogger = gameLogger;
-	}
-
 	public async Task RequestLogHistory()
 	{
 		await Clients.Caller.SendAsync("ReceiveLogHistory", gameLogger.LogHistory);

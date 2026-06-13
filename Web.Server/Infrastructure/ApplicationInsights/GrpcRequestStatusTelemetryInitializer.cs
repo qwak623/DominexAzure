@@ -1,8 +1,8 @@
-﻿using Grpc.Core;
+﻿
+using Grpc.Core;
 using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
-using Microsoft.AspNetCore.Http;
 
 namespace Dominex.Web.Server.Infrastructure.ApplicationInsights;
 
@@ -16,32 +16,26 @@ namespace Dominex.Web.Server.Infrastructure.ApplicationInsights;
 /// </remarks>
 public class GrpcRequestStatusTelemetryInitializer : ITelemetryInitializer
 {
-	private readonly IHttpContextAccessor httpContextAccessor;
+	private readonly IHttpContextAccessor _httpContextAccessor;
 
 	public GrpcRequestStatusTelemetryInitializer(IHttpContextAccessor httpContextAccessor)
 	{
-		this.httpContextAccessor = httpContextAccessor;
+		_httpContextAccessor = httpContextAccessor;
 	}
 
 	public void Initialize(ITelemetry telemetry)
 	{
-		if (string.IsNullOrEmpty(telemetry.Context.Cloud.RoleName))
-		{
-			telemetry.Context.Cloud.RoleName = "Web.Server";
-			// telemetry.Context.Cloud.RoleInstance = "...";
-		}
-
-		var requestTelemetry = telemetry as RequestTelemetry;
-		if (requestTelemetry == null)
+		if (telemetry is not RequestTelemetry requestTelemetry)
 		{
 			return;
 		}
 
-		if (httpContextAccessor.HttpContext.Response.Headers.TryGetValue("grpc-status", out var grpcStatusHeader))
+		if (_httpContextAccessor.HttpContext.Response.Headers.TryGetValue("grpc-status", out var grpcStatusHeader))
 		{
 			if (Enum.TryParse<StatusCode>(grpcStatusHeader[0], out var grpcStatusCode))
 			{
 				if ((grpcStatusCode != StatusCode.OK)
+					&& (grpcStatusCode != StatusCode.Cancelled)            // OperationCancelledException, SQL cancellation, ...
 					&& (grpcStatusCode != StatusCode.FailedPrecondition))  // OperationFailedException
 				{
 					requestTelemetry.Success = false;

@@ -9,19 +9,12 @@ namespace Dominex.Facades.Game.Observers;
 
 // todo vyresit jestli toto ma byt singleton (mel by byt jeden pro kazdou hru
 [Service(Lifetime = ServiceLifetime.Singleton)]
-internal class GameLogger : IGameLogger
+internal class GameLogger(IHubContext<LogHub> logHubContext) : IGameLogger
 {
 	//private readonly string _fileName = "Log.txt";
 	//private readonly StreamWriter _writer;
 
-	private readonly IHubContext<LogHub> logHubContext;
 	public List<GameLog> LogHistory { get; private set; } = new();
-
-	public GameLogger(IHubContext<LogHub> logHubContext)
-	{
-		this.logHubContext = logHubContext;
-		//_writer = new StreamWriter(_fileName);
-	}
 
 	public async Task Log(GameLog gameLog)
 	{

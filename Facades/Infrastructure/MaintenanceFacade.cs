@@ -1,5 +1,6 @@
-﻿using Havit.Extensions.DependencyInjection.Abstractions;
-using Dominex.Contracts.Infrastructure;
+﻿using Dominex.Contracts.Infrastructure;
+using Dominex.Primitives.Security;
+using Havit.Extensions.DependencyInjection.Abstractions;
 using Dominex.Model.Security;
 using Havit.Services.Caching;
 using Microsoft.AspNetCore.Authorization;
@@ -7,19 +8,19 @@ using Microsoft.AspNetCore.Authorization;
 namespace Dominex.Facades.Infrastructure;
 
 [Service]
-[Authorize(Roles = nameof(Role.Entry.SystemAdministrator))]
+//[Authorize(Roles = nameof(RoleEntry.SystemAdministrator))]
 public class MaintenanceFacade : IMaintenanceFacade
 {
-	private readonly ICacheService cacheService;
+	private readonly ICacheService _cacheService;
 
 	public MaintenanceFacade(ICacheService cacheService)
 	{
-		this.cacheService = cacheService;
+		_cacheService = cacheService;
 	}
 
-	public Task ClearCache(CancellationToken cancellationToken = default)
+	public Task ClearCacheAsync(CancellationToken cancellationToken = default)
 	{
-		cacheService.Clear();
+		_cacheService.Clear();
 
 		return Task.CompletedTask;
 	}

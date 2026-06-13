@@ -16,10 +16,10 @@ using Havit.Data.Patterns.Infrastructure;
 namespace Dominex.DataLayer.Repositories.Security;
 
 [System.CodeDom.Compiler.GeneratedCode("Havit.Data.EntityFrameworkCore.CodeGenerator", "1.0")]
-public abstract class RoleDbRepositoryBase : DbRepository<Dominex.Model.Security.Role>
+public abstract class RoleDbRepositoryBase : DbRepository<Dominex.Model.Security.Role, System.Int32>
 {
-	protected RoleDbRepositoryBase(IDbContext dbContext, Dominex.DataLayer.DataSources.Security.IRoleDataSource dataSource, IEntityKeyAccessor<Dominex.Model.Security.Role, int> entityKeyAccessor, IDataLoader dataLoader, ISoftDeleteManager softDeleteManager, IEntityCacheManager entityCacheManager)
-		: base(dbContext, dataSource, entityKeyAccessor, dataLoader, softDeleteManager, entityCacheManager)
+	protected RoleDbRepositoryBase(IDbContext dbContext, IEntityKeyAccessor<Dominex.Model.Security.Role, System.Int32> entityKeyAccessor, IDataLoader dataLoader, ISoftDeleteManager softDeleteManager, IEntityCacheManager entityCacheManager, IRepositoryQueryProvider<Dominex.Model.Security.Role, System.Int32> repositoryQueryProvider)
+		: base(dbContext, entityKeyAccessor, dataLoader, softDeleteManager, entityCacheManager, repositoryQueryProvider)
 	{
 	}
 

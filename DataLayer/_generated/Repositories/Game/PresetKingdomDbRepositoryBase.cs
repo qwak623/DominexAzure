@@ -16,10 +16,10 @@ using Havit.Data.Patterns.Infrastructure;
 namespace Dominex.DataLayer.Repositories.Game;
 
 [System.CodeDom.Compiler.GeneratedCode("Havit.Data.EntityFrameworkCore.CodeGenerator", "1.0")]
-public abstract class PresetKingdomDbRepositoryBase : DbRepository<Dominex.Model.Game.PresetKingdom>
+public abstract class PresetKingdomDbRepositoryBase : DbRepository<Dominex.Model.Game.PresetKingdom, System.Int32>
 {
-	protected PresetKingdomDbRepositoryBase(IDbContext dbContext, Dominex.DataLayer.DataSources.Game.IPresetKingdomDataSource dataSource, IEntityKeyAccessor<Dominex.Model.Game.PresetKingdom, int> entityKeyAccessor, IDataLoader dataLoader, ISoftDeleteManager softDeleteManager, IEntityCacheManager entityCacheManager)
-		: base(dbContext, dataSource, entityKeyAccessor, dataLoader, softDeleteManager, entityCacheManager)
+	protected PresetKingdomDbRepositoryBase(IDbContext dbContext, IEntityKeyAccessor<Dominex.Model.Game.PresetKingdom, System.Int32> entityKeyAccessor, IDataLoader dataLoader, ISoftDeleteManager softDeleteManager, IEntityCacheManager entityCacheManager, IRepositoryQueryProvider<Dominex.Model.Game.PresetKingdom, System.Int32> repositoryQueryProvider)
+		: base(dbContext, entityKeyAccessor, dataLoader, softDeleteManager, entityCacheManager, repositoryQueryProvider)
 	{
 	}
 

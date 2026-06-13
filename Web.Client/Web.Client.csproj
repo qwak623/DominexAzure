@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net9.0</TargetFramework>
 		<AssemblyName>Dominex.Web.Client</AssemblyName>
 		<RootNamespace>Dominex.Web.Client</RootNamespace>
 		<BlazorWebAssemblyLoadAllGlobalizationData>true</BlazorWebAssemblyLoadAllGlobalizationData>
@@ -24,19 +24,28 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="BlazorApplicationInsights" Version="1.6.0" />
-		<PackageReference Include="Blazored.FluentValidation" Version="2.0.3" />
-		<PackageReference Include="Blazored.LocalStorage" Version="4.2.0" />
-		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="10.4.0" />
-		<PackageReference Include="Havit.Blazor.Components.Web.Bootstrap" Version="2.6.4" />
-		<PackageReference Include="Havit.Blazor.Grpc.Client.WebAssembly" Version="1.1.1" />
-		<PackageReference Include="Havit.Extensions.Localization" Version="1.0.5" />
-		<PackageReference Include="Havit.SourceGenerators.StrongApiStringLocalizers" Version="1.0.8" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.5" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.5" PrivateAssets="all" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="6.0.5" />
-		<PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="8.0.10" />
-		<PackageReference Include="Microsoft.AspNetCore.SignalR.Core" Version="1.1.0" />
+		<PackageReference Include="BlazorApplicationInsights" />
+		<PackageReference Include="Blazored.FluentValidation" />
+		<PackageReference Include="Blazored.LocalStorage" />
+		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
+		<PackageReference Include="Havit.Blazor.Components.Web.Bootstrap" />
+		<PackageReference Include="Havit.Blazor.Grpc.Client" />
+		<PackageReference Include="Havit.Extensions.DependencyInjection.Abstractions" />
+		<PackageReference Include="Havit.SourceGenerators.StrongApiStringLocalizers">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Havit.Extensions.DependencyInjection.SourceGenerators">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.AspNetCore.Components.Authorization" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" />
+		<PackageReference Include="Microsoft.AspNetCore.Http.Connections" />
+		<PackageReference Include="Microsoft.Extensions.Localization" />
+		<PackageReference Include="Microsoft.AspNetCore.SignalR.Client" />
+		<PackageReference Include="Microsoft.AspNetCore.SignalR" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -44,6 +53,39 @@
 		<ProjectReference Include="..\Facades\Facades.csproj" />
 		<ProjectReference Include="..\Primitives\Primitives.csproj" />
 		<ProjectReference Include="..\Resources\Resources.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="Resources\Navigation.Designer.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>Navigation.resx</DependentUpon>
+	  </Compile>
+	  <Compile Update="Resources\Pages\Admin\AdminIndex.Designer.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>AdminIndex.resx</DependentUpon>
+	  </Compile>
+	  <Compile Update="Resources\Pages\Errors\GenericError.Designer.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>GenericError.resx</DependentUpon>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Update="Resources\Navigation.resx">
+	    <Generator>PublicResXFileCodeGenerator</Generator>
+	    <LastGenOutput>Navigation.Designer.cs</LastGenOutput>
+	  </EmbeddedResource>
+	  <EmbeddedResource Update="Resources\Pages\Admin\AdminIndex.resx">
+	    <Generator>PublicResXFileCodeGenerator</Generator>
+	    <LastGenOutput>AdminIndex.Designer.cs</LastGenOutput>
+	  </EmbeddedResource>
+	  <EmbeddedResource Update="Resources\Pages\Errors\GenericError.resx">
+	    <Generator>PublicResXFileCodeGenerator</Generator>
+	    <LastGenOutput>GenericError.Designer.cs</LastGenOutput>
+	  </EmbeddedResource>
 	</ItemGroup>
 
 </Project>

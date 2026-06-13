@@ -1,83 +1,104 @@
 ﻿using System.Globalization;
-using System.Net.Http;
 using BlazorApplicationInsights;
+using BlazorApplicationInsights.Models;
 using Blazored.LocalStorage;
-using FluentValidation;
-using Havit.Blazor.Grpc.Client;
-using Havit.Blazor.Grpc.Client.ServerExceptions;
-using Havit.Blazor.Grpc.Client.WebAssembly;
 using Dominex.Contracts;
 using Dominex.Contracts.Infrastructure;
 using Dominex.Web.Client.Infrastructure.Grpc;
+using FluentValidation;
+using Havit.Blazor.Grpc.Client;
+using Havit.Blazor.Grpc.Client.ServerExceptions;
+using Dominex.Web.Client.Infrastructure.Configuration;
 using Dominex.Web.Client.Infrastructure.Security;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.Extensions.Localization;
 using Dominex.Web.Client.Pages.Menu;
 
 namespace Dominex.Web.Client;
 
-public class Program
+public static class Program
 {
 	public static async Task Main(string[] args)
 	{
 		var builder = WebAssemblyHostBuilder.CreateDefault(args);
 
-		builder.RootComponents.Add<App>("app");
+		// We don't have the Web.Client/wwwroot/appsettings.(...).json file on disk, so it is not listed in blazor.boot.json.
+		// As a result, Blazor will automatically request the configuration from the server, which we need to handle "manually"
+		// by adding the download of the configuration from the expected endpoint, see:
+		// https://learn.microsoft.com/en-us/aspnet/core/blazor/fundamentals/configuration?view=aspnetcore-8.0#app-settings-configuration
+		builder = await builder.AddJsonStreamAsync(WebClientOptions.WebClientConfigurationRoute);
 
-		AddLoggingAndApplicationInsights(builder);
-
-		builder.Services.AddSingleton(new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-		builder.Services.AddScoped(typeof(AccountClaimsPrincipalFactory<RemoteUserAccount>), typeof(RolesAccountClaimsPrincipalFactory)); // multiple roles workaround
-		builder.Services.AddApiAuthorization();
+		AddLoggingAndBlazorApplicationInsights(builder);
+		AddAuthWithHttpClient(builder);
 
 		builder.Services.AddScoped<SinglePlayerSettingsState>();
-
 		builder.Services.AddBlazoredLocalStorage();
 		builder.Services.AddValidatorsFromAssemblyContaining<Dto<object>>();
 
 		builder.Services.AddHxServices();
 		builder.Services.AddHxMessenger();
 		builder.Services.AddHxMessageBoxHost();
-		Dominex.Web.Client.Resources.ResourcesServiceCollectionInstaller.AddGeneratedResourceWrappers(builder.Services);
-		Dominex.Resources.ResourcesServiceCollectionInstaller.AddGeneratedResourceWrappers(builder.Services);
+		// TODO
+		//Resources.ResourcesServiceCollectionInstaller.AddGeneratedResourceWrappers(builder.Services);
+		//Dominex.Resources.ResourcesServiceCollectionInstaller.AddGeneratedResourceWrappers(builder.Services);
 		SetHxComponents();
 
 		AddGrpcClient(builder);
 
 		WebAssemblyHost webAssemblyHost = builder.Build();
 
-		await SetLanguage(webAssemblyHost);
+		await SetLanguageAsync(webAssemblyHost);
 
 		await webAssemblyHost.RunAsync();
 	}
 	private static void SetHxComponents()
 	{
-		// HxProgressIndicator.DefaultDelay = 0;
+		HxOffcanvas.Defaults.Backdrop = OffcanvasBackdrop.Static;
+		HxModal.Defaults.Backdrop = ModalBackdrop.Static;
+		HxInputDate.Defaults.CalendarIcon = BootstrapIcon.Calendar3;
+		HxInputDateRange.Defaults.CalendarIcon = BootstrapIcon.Calendar3;
+
+		// TODO [OPTIONAL] Setup HxInputDateRange.Defaults.PredefinedRanges here
+		//DateTime today = DateTime.Today;
+		//DateTime thisMonthStart = new DateTime(today.Year, today.Month, 1);
+		//DateTime thisMonthEnd = new DateTime(today.Year, today.Month, DateTime.DaysInMonth(today.Year, today.Month));
+		//DateTime thisYearStart = new DateTime(today.Year, 1, 1);
+		//DateTime thisYearEnd = new DateTime(today.Year, 12, 31);
+
+		//HxInputDateRange.Defaults.PredefinedDateRanges = new InputDateRangePredefinedRangesItem[]
+		//{
+		//	new() { Label = "TTM", DateRange = new DateTimeRange(today.AddMonths(-12).AddDays(1), today) },
+		//	new() { Label = "ThisYear", DateRange = new DateTimeRange(thisYearStart, thisYearEnd), ResourceType = typeof(HxInputDateRangePredefinedRanges) },
+		//	new() { Label = "ThisMonth", DateRange = new DateTimeRange(thisMonthStart, thisMonthEnd), ResourceType = typeof(HxInputDateRangePredefinedRanges) },
+		//};
+	}
+
+	public static void AddAuthWithHttpClient(WebAssemblyHostBuilder builder)
+	{
+		builder.Services.AddHttpClient("Web.Server", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress));
+		builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("Web.Server"));
+
+		builder.Services.AddAuthorizationCore();
+		builder.Services.AddCascadingAuthenticationState();
+		builder.Services.AddSingleton<AuthenticationStateProvider, PersistentAuthenticationStateProvider>();
+
+		//builder.Services.Configure<AuthorizationOptions>(config =>
+		//{
+		//	config.AddPolicy(...);
+		//});
 	}
 
 	private static void AddGrpcClient(WebAssemblyHostBuilder builder)
 	{
 		builder.Services.AddTransient<IOperationFailedExceptionGrpcClientListener, HxMessengerOperationFailedExceptionGrpcClientListener>();
-		builder.Services.AddTransient<AuthorizationGrpcClientInterceptor>();
-		builder.Services.AddGrpcClientInfrastructure(assemblyToScanForDataContracts: typeof(Dto).Assembly);
-		builder.Services.AddGrpcClientsByApiContractAttributes(
-			typeof(IDataSeedFacade).Assembly,
-			configureGrpcClientWithAuthorization: grpcClient =>
-			{
-				grpcClient.AddHttpMessageHandler(provider =>
-				{
-					var navigationManager = provider.GetRequiredService<NavigationManager>();
-					var backendUrl = navigationManager.BaseUri;
 
-					return provider.GetRequiredService<AuthorizationMessageHandler>()
-						.ConfigureHandler(authorizedUrls: new[] { backendUrl }); // TODO? as neede: , scopes: new[] { "havit-Dominex-api" });
-				})
-				.AddInterceptor<AuthorizationGrpcClientInterceptor>();
-			});
+		builder.Services.AddGrpcClientInfrastructure(assemblyToScanForDataContracts: typeof(Dto).Assembly);
+
+		builder.Services.AddGrpcClientsByApiContractAttributes(typeof(IDataSeedFacade).Assembly);
 	}
 
-	private static async ValueTask SetLanguage(WebAssemblyHost webAssemblyHost)
+	private static async ValueTask SetLanguageAsync(WebAssemblyHost webAssemblyHost)
 	{
 		var localStorageService = webAssemblyHost.Services.GetService<ILocalStorageService>();
 
@@ -90,26 +111,24 @@ public class Program
 		}
 	}
 
-	private static void AddLoggingAndApplicationInsights(WebAssemblyHostBuilder builder)
+	private static void AddLoggingAndBlazorApplicationInsights(WebAssemblyHostBuilder builder)
 	{
-		var instrumentationKey = builder.Configuration.GetValue<string>("ApplicationInsights:InstrumentationKey");
+		ApplicationInsightsOptions applicationInsightsOptions = builder.Configuration.GetSection(ApplicationInsightsOptions.Path).Get<ApplicationInsightsOptions>();
 
-		builder.Services.AddBlazorApplicationInsights(async applicationInsights =>
-		{
-			await applicationInsights.SetInstrumentationKey(instrumentationKey);
-			await applicationInsights.LoadAppInsights();
-
-			var telemetryItem = new TelemetryItem()
+		builder.Services.AddBlazorApplicationInsights(
+			c => c.ConnectionString = applicationInsightsOptions.ConnectionString ?? String.Empty,
+			async applicationInsights =>
 			{
-				Tags = new Dictionary<string, object>()
+				var telemetryItem = new TelemetryItem()
 				{
+					Tags = new Dictionary<string, object>()
+					{
 						{ "ai.cloud.role", "Web.Client" },
-					// { "ai.cloud.roleInstance", "..." },
-				}
-			};
+					}
+				};
 
-			await applicationInsights.AddTelemetryInitializer(telemetryItem);
-		}, addILoggerProvider: true);
+				await applicationInsights.AddTelemetryInitializer(telemetryItem);
+			});
 
 		builder.Logging.AddFilter<ApplicationInsightsLoggerProvider>(level => (level == LogLevel.Error) || (level == LogLevel.Critical));
 

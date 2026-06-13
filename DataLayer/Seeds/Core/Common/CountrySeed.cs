@@ -4,9 +4,10 @@ using Dominex.Model.Localizations;
 
 namespace Dominex.DataLayer.Seeds.Core.Common;
 
+// todo do i need country seed for dominion? probably no, its just some havit stuff
 public class CountrySeed : DataSeed<CoreProfile>
 {
-	public override void SeedData()
+	public override async Task SeedDataAsync(CancellationToken cancellationToken)
 	{
 		var countries = new[]
 		{
@@ -2917,6 +2918,6 @@ public class CountrySeed : DataSeed<CoreProfile>
 				}
 			};
 
-		Seed(For(countries).PairBy(country => country.IsoCode3));
+		await SeedAsync(For(countries).PairBy(country => country.IsoCode3), cancellationToken);
 	}
 }

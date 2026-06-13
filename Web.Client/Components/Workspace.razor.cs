@@ -32,7 +32,7 @@ public partial class Workspace
 
 		if (Choice.Type == ChoiceType.GameEnd)
 		{
-			Navigation.NavigateTo(Routes.Game.Results);
+			Navigation.NavigateTo(AppRoutes.Game.Results);
 		}
 
 		Answer = new Answer();

@@ -1,38 +1,35 @@
 ﻿using System.Security.Claims;
-using Microsoft.AspNetCore.Http;
+using Dominex.Contracts.Infrastructure.Security;
+using Dominex.DataLayer.Repositories.Security;
 using Dominex.Facades.Infrastructure.Security.Authentication;
 using Dominex.Model.Security;
-using Dominex.DataLayer.Repositories.Security;
 
 namespace Dominex.Web.Server.Infrastructure.Security;
 
-/// <summary>
-/// Poskytuje uživatele z HttpContextu.
-/// </summary>
 public class ApplicationAuthenticationService : IApplicationAuthenticationService
 {
-	private readonly IHttpContextAccessor httpContextAccessor;
+	private readonly IHttpContextAccessor _httpContextAccessor;
 
-	private readonly Lazy<User> userLazy;
+	private readonly Lazy<User> _userLazy;
 
 	public ApplicationAuthenticationService(IHttpContextAccessor httpContextAccessor, IUserRepository userRepository)
 	{
-		this.httpContextAccessor = httpContextAccessor;
+		_httpContextAccessor = httpContextAccessor;
 
-		userLazy = new Lazy<User>(() => userRepository.GetObject(GetCurrentUserId()));
+		_userLazy = new Lazy<User>(() => userRepository.GetObject(GetCurrentUserId()));
 	}
 
 	public ClaimsPrincipal GetCurrentClaimsPrincipal()
 	{
-		return httpContextAccessor.HttpContext.User;
+		return _httpContextAccessor.HttpContext.User;
 	}
 
-	public User GetCurrentUser() => userLazy.Value;
+	public User GetCurrentUser() => _userLazy.Value;
 
 	public int GetCurrentUserId()
 	{
 		var principal = GetCurrentClaimsPrincipal();
-		Claim userIdClaim = principal.Claims.Single(claim => (claim.Type == "sub"));
+		Claim userIdClaim = principal.Claims.Single(claim => (claim.Type == ClaimConstants.UserIdClaim));
 		return Int32.Parse(userIdClaim.Value);
 	}
 }

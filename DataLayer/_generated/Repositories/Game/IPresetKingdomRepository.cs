@@ -10,6 +10,6 @@ using Havit.Data.Patterns.Repositories;
 namespace Dominex.DataLayer.Repositories.Game;
 
 [System.CodeDom.Compiler.GeneratedCode("Havit.Data.EntityFrameworkCore.CodeGenerator", "1.0")]
-public partial interface IPresetKingdomRepository : IRepository<Dominex.Model.Game.PresetKingdom>
+public partial interface IPresetKingdomRepository : IRepository<Dominex.Model.Game.PresetKingdom, System.Int32>
 {
 }

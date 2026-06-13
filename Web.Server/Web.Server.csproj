@@ -1,37 +1,35 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
-		<DisableImplicitComponentsAnalyzers>true</DisableImplicitComponentsAnalyzers>
+		<TargetFramework>net9.0</TargetFramework>
 		<AssemblyName>Dominex.Web.Server</AssemblyName>
 		<RootNamespace>Dominex.Web.Server</RootNamespace>
 		<ImplicitUsings>true</ImplicitUsings>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Hangfire" Version="1.7.29" />
-		<PackageReference Include="Hangfire.Console" Version="1.4.2" />
-		<PackageReference Include="Havit.AspNetCore" Version="2.0.9" />
-		<PackageReference Include="Havit.Blazor.Components.Web.Bootstrap" Version="2.6.4" />
-		<PackageReference Include="Havit.Blazor.Grpc.Server" Version="1.1.1" />
-		<PackageReference Include="Havit.Hangfire.Extensions" Version="2.0.8" />
-		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.20.0" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.5" />
-		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.5" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.5" />
-		<PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.5" />
-		
-		<!-- Do not upgrade to 6.x as it changes to commercial Duende.IdentityServer -->
-		<PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" Version="5.0.17" />
-		
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.5" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.5">
+	  <Compile Remove="Infrastructure\SignalRHubs\**" />
+	  <Content Remove="Infrastructure\SignalRHubs\**" />
+	  <EmbeddedResource Remove="Infrastructure\SignalRHubs\**" />
+	  <None Remove="Infrastructure\SignalRHubs\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Hangfire" />
+		<PackageReference Include="Hangfire.Console" />
+		<PackageReference Include="Havit.Blazor.Components.Web.Bootstrap" />
+		<PackageReference Include="Havit.Blazor.Grpc.Server" />
+		<PackageReference Include="Havit.Hangfire.Extensions" />
+		<PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" />
+		<PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.1" />
-		<PackageReference Include="Microsoft.Extensions.Logging.AzureAppServices" Version="6.0.5" />
-		<PackageReference Include="protobuf-net.Grpc.AspNetCore.Reflection" Version="1.0.152" />
+		<PackageReference Include="protobuf-net.Grpc.AspNetCore.Reflection" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -45,10 +43,6 @@
 		<ProjectReference Include="..\Web.Client\Web.Client.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Infrastructure\SignalRHubs\" />
-	</ItemGroup>
-
 	<Target Name="TfsPublish" AfterTargets="AfterPublish" Condition="'$(PublishDirectory)' != ''">
 		<ItemGroup>
 			<PublishToCopy Include="obj\Release\TfsPublish\*.zip" />
@@ -57,10 +51,10 @@
 	</Target>
 
 	<Target Name="EnsureWebJobInPackage" AfterTargets="CreateReadyToRunImages" BeforeTargets="_PrepareForReadyToRunCompilation">
-		<Error Text="WebJob file Dominex.Utility.exe not found when preparing web deploy package." Condition="!Exists('..\Utility\bin\Release\net6.0\Dominex.Utility.exe')" />
+		<Error Text="WebJob file Dominex.Utility.exe not found when preparing web deploy package." Condition="!Exists('..\Utility\bin\Release\net9.0\Dominex.Utility.exe')" />
 		<ItemGroup>
 			<!-- Vybereme soubory k publikaci. Předpokládá, že Utility je závislostí WebAPI nastavené v SLN. -->
-			<WebJobFiles Include="..\Utility\bin\Release\net6.0\**" />
+			<WebJobFiles Include="..\Utility\bin\Release\net9.0\**" />
 			<!-- Přidej soubory do ResolvedFileToPublish s nastavením cesty, kam mají být umístěny (složka pro webjoby). -->
 			<ResolvedFileToPublish Include="@(WebJobFiles)">
 				<RelativePath>app_data\jobs\continuous\Utility\%(RecursiveDir)%(Filename)%(Extension)</RelativePath>

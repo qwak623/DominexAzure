@@ -5,6 +5,7 @@ using Havit.Data.Patterns.DataSources;
 using Havit.Data.Patterns.Infrastructure;
 using Havit.Data.Patterns.Repositories;
 using Dominex.Model.Common;
+using Havit.Data.EntityFrameworkCore;
 
 namespace Dominex.DataLayer.Repositories.Common;
 
@@ -12,10 +13,10 @@ public class CountryByIsoCodeLookupService : LookupServiceBase<string, Country>,
 {
 	public CountryByIsoCodeLookupService(
 		IEntityLookupDataStorage lookupStorage,
-		IRepository<Country> repository,
-		IDataSource<Country> dataSource,
+		ICountryRepository repository,
+		IDbContext dbContext,
 		IEntityKeyAccessor entityKeyAccessor,
-		ISoftDeleteManager softDeleteManager) : base(lookupStorage, repository, dataSource, entityKeyAccessor, softDeleteManager)
+		ISoftDeleteManager softDeleteManager) : base(lookupStorage, repository, dbContext, entityKeyAccessor, softDeleteManager)
 	{
 	}
 

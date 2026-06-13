@@ -5,5 +5,5 @@ namespace Dominex.Contracts.Infrastructure;
 [ApiContract]
 public interface IMaintenanceFacade
 {
-	Task ClearCache(CancellationToken cancellationToken = default);
+	Task ClearCacheAsync(CancellationToken cancellationToken = default);
 }

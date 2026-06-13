@@ -10,17 +10,8 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Dominex.Facades.Game.Observers;
 
 [Service(Lifetime = ServiceLifetime.Singleton)]
-public class KingdomObserver : IKingdomObserver
+public class KingdomObserver(IHubContext<KingdomHub> kingdomHubContext, ICardMapper cardMapper) : IKingdomObserver
 {
-	private readonly IHubContext<KingdomHub> kingdomHubContext;
-	private readonly ICardMapper cardMapper;
-
-	public KingdomObserver(IHubContext<KingdomHub> kingdomHubContext, ICardMapper cardMapper)
-	{
-		this.kingdomHubContext = kingdomHubContext;
-		this.cardMapper = cardMapper;
-	}
-
 	public async Task Notify(Kingdom kingdom)
 	{
 		var kingdomDto = kingdom.Select(pile =>

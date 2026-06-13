@@ -10,6 +10,6 @@ using Havit.Data.Patterns.Repositories;
 namespace Dominex.DataLayer.Repositories.Localizations;
 
 [System.CodeDom.Compiler.GeneratedCode("Havit.Data.EntityFrameworkCore.CodeGenerator", "1.0")]
-public partial interface ILanguageRepository : IRepository<Dominex.Model.Localizations.Language>
+public partial interface ILanguageRepository : IRepository<Dominex.Model.Localizations.Language, System.Int32>
 {
 }

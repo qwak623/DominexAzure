@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Dominex.Primitives.Security;
 
 namespace Dominex.Model.Security;
 
@@ -39,6 +40,12 @@ public class User
 		}
 	}
 	private string email;
+
+	/// <summary>
+	/// Identifier of the user with external Identity Provider.
+	/// </summary>
+	[MaxLength(255)]
+	public string IdentityProviderExternalId { get; set; }
 
 	/// <summary>
 	/// Normalized Email = UpperCase
@@ -84,7 +91,7 @@ public class User
 	public DateTime Created { get; set; }
 	public DateTime? Deleted { get; set; }
 
-	public bool IsInRole(Role.Entry roleEntry)
+	public bool IsInRole(RoleEntry roleEntry)
 	{
 		return UserRoles.Any(ur => ur.RoleId == (int)roleEntry);
 	}

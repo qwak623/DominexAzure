@@ -8,13 +8,13 @@
 namespace Dominex.DataLayer.DataEntries.Localizations;
 
 [System.CodeDom.Compiler.GeneratedCode("Havit.Data.EntityFrameworkCore.CodeGenerator", "1.0")]
-public class LanguageEntries : Havit.Data.Patterns.DataEntries.DataEntries<Dominex.Model.Localizations.Language>, ILanguageEntries 
+public class LanguageEntries : Havit.Data.Patterns.DataEntries.DataEntries<Dominex.Model.Localizations.Language, System.Int32>, ILanguageEntries
 {
-	private Dominex.Model.Localizations.Language czech;
-	private Dominex.Model.Localizations.Language english;
+	private Dominex.Model.Localizations.Language _czech;
+	private Dominex.Model.Localizations.Language _english;
 
-	public Dominex.Model.Localizations.Language Czech => czech ??= GetEntry(Dominex.Model.Localizations.Language.Entry.Czech);
-	public Dominex.Model.Localizations.Language English => english ??= GetEntry(Dominex.Model.Localizations.Language.Entry.English);
+	public Dominex.Model.Localizations.Language Czech => _czech ??= GetEntry(Dominex.Model.Localizations.Language.Entry.Czech);
+	public Dominex.Model.Localizations.Language English => _english ??= GetEntry(Dominex.Model.Localizations.Language.Entry.English);
 
 	public LanguageEntries(Dominex.DataLayer.Repositories.Localizations.ILanguageRepository repository)
 		: base(repository)

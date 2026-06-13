@@ -29,7 +29,7 @@ public class GameSetupFacade : IGameSetupFacade
 	public async Task<List<PresetKingdomDto>> RequestPresetKingdoms()
 	{
 		// TODO validovat, jestli je to v available cards? 
-		var presetKingdoms = await presetKingdomRepository.GetAllAsync();
+		var presetKingdoms = new List<Model.Game.PresetKingdom>(); // TODO await presetKingdomRepository.GetAllAsync();
 
 		// todo move mapper somewhere
 		return presetKingdoms.Select(k => new PresetKingdomDto

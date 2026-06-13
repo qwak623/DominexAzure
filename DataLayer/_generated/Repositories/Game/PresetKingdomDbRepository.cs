@@ -18,8 +18,8 @@ namespace Dominex.DataLayer.Repositories.Game;
 [System.CodeDom.Compiler.GeneratedCode("Havit.Data.EntityFrameworkCore.CodeGenerator", "1.0")]
 public partial class PresetKingdomDbRepository : PresetKingdomDbRepositoryBase, IPresetKingdomRepository
 {
-	public PresetKingdomDbRepository(IDbContext dbContext, Dominex.DataLayer.DataSources.Game.IPresetKingdomDataSource dataSource, IEntityKeyAccessor<Dominex.Model.Game.PresetKingdom, int> entityKeyAccessor, IDataLoader dataLoader, ISoftDeleteManager softDeleteManager, IEntityCacheManager entityCacheManager)
-		: base(dbContext, dataSource, entityKeyAccessor, dataLoader, softDeleteManager, entityCacheManager)
+	public PresetKingdomDbRepository(IDbContext dbContext, IEntityKeyAccessor<Dominex.Model.Game.PresetKingdom, System.Int32> entityKeyAccessor, IDataLoader dataLoader, ISoftDeleteManager softDeleteManager, IEntityCacheManager entityCacheManager, IRepositoryQueryProvider<Dominex.Model.Game.PresetKingdom, System.Int32> repositoryQueryProvider)
+		: base(dbContext, entityKeyAccessor, dataLoader, softDeleteManager, entityCacheManager, repositoryQueryProvider)
 	{
 	}
 }

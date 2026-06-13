@@ -10,6 +10,6 @@ using Havit.Data.Patterns.Repositories;
 namespace Dominex.DataLayer.Repositories.Security;
 
 [System.CodeDom.Compiler.GeneratedCode("Havit.Data.EntityFrameworkCore.CodeGenerator", "1.0")]
-public partial interface IRoleRepository : IRepository<Dominex.Model.Security.Role>
+public partial interface IRoleRepository : IRepository<Dominex.Model.Security.Role, System.Int32>
 {
 }

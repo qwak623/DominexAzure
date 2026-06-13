@@ -1,20 +1,30 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
-	  <AssemblyName>Dominex.Resources</AssemblyName>
-	  <RootNamespace>Dominex.Resources</RootNamespace>
-	  <ImplicitUsings>true</ImplicitUsings>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<AssemblyName>Dominex.Resources</AssemblyName>
+		<RootNamespace>Dominex.Resources</RootNamespace>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Havit.Extensions.Localization" Version="1.0.5" />
-    <PackageReference Include="Havit.SourceGenerators.StrongApiStringLocalizers" Version="1.0.8" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Havit.SourceGenerators.StrongApiStringLocalizers">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
+		<PackageReference Include="Microsoft.Extensions.Localization" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Model\" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Update="Microsoft.VisualStudio.Threading.Analyzers">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+
+	<!-- Required for Havit.SourceGenerators.StrongApiStringLocalizers -->
+	<ItemGroup>
+		<AdditionalFiles Include="**\*.resx" />
+	</ItemGroup>
 
 </Project>

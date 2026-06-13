@@ -1,68 +1,83 @@
-﻿using Hangfire;
-using Hangfire.Dashboard;
-using Havit.Blazor.Grpc.Server;
+﻿using BlazorApplicationInsights;
 using Dominex.Contracts;
 using Dominex.Contracts.Infrastructure;
 using Dominex.DependencyInjection;
+using Dominex.Facades.Game.Hubs;
 using Dominex.Facades.Infrastructure.Security;
-using Dominex.Model.Security;
+using Dominex.Facades.Infrastructure.Security.Authentication;
+using Dominex.Primitives.Security;
 using Dominex.Services.HealthChecks;
-using Dominex.Services.Infrastructure.MigrationTool;
+using Dominex.Web.Client;
+using Dominex.Web.Client.Infrastructure.Configuration;
+using Dominex.Web.Server.Infrastructure.Antiforgery;
 using Dominex.Web.Server.Infrastructure.ApplicationInsights;
 using Dominex.Web.Server.Infrastructure.ConfigurationExtensions;
+using Dominex.Web.Server.Infrastructure.ExceptionHandling;
 using Dominex.Web.Server.Infrastructure.HealthChecks;
+using Dominex.Web.Server.Infrastructure.MigrationTool;
+using Hangfire;
+using Hangfire.Dashboard;
+using Havit.Blazor.Components.Web;
+using Havit.Blazor.Components.Web.Bootstrap;
+using Havit.Blazor.Grpc.Server;
 using Microsoft.ApplicationInsights.DependencyCollector;
 using Microsoft.ApplicationInsights.Extensibility;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Components.Forms;
 using ProtoBuf.Grpc.Server;
-using Dominex.Web.Client.Components;
-using Dominex.Facades.Game.Hubs;
 
 namespace Dominex.Web.Server;
 
 // todo pročistit startupy od věcí, které nepoužívám a nerozumím jim
 public class Startup
 {
-	private readonly IConfiguration configuration;
+	private readonly IConfiguration _configuration;
 
 	public Startup(IConfiguration configuration)
 	{
-		this.configuration = configuration;
+		_configuration = configuration;
 	}
 
 	public void ConfigureServices(IServiceCollection services)
 	{
-		services.ConfigureForWebServer(configuration);
+		services.AddOptions();
+		services.Configure<WebClientOptions>(_configuration.GetSection("WebClient"));
+
+		services.ConfigureForWebServer(_configuration);
 
 		services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 		services.AddDatabaseDeveloperPageExceptionFilter();
 
-		services.AddOptions();
-
-		services.AddCustomizedMailing(configuration);
+		// todo consider mailing
+		//services.AddCustomizedMailing(_configuration);
 
 		// SmtpExceptionMonitoring to errors@havit.cz
-		services.AddExceptionMonitoring(configuration);
+		services.AddExceptionMonitoring(_configuration);
 
 		// Application Insights
-		services.AddApplicationInsightsTelemetry(configuration);
+		services.AddApplicationInsightsTelemetry(_configuration);
 		services.AddSingleton<ITelemetryInitializer, GrpcRequestStatusTelemetryInitializer>();
-		services.AddSingleton<ITelemetryInitializer, EnrichmentTelemetryInitializer>();
+		services.AddSingleton<ITelemetryInitializer, CloudRoleNameTelemetryInitializer>();
 		services.ConfigureTelemetryModule<DependencyTrackingTelemetryModule>((module, o) => { module.EnableSqlCommandTextInstrumentation = true; });
 
-		services.AddAuthorization(options =>
-		{
-			options.AddPolicy(PolicyNames.HangfireDashboardAcccessPolicy, policy => policy
-				.RequireAuthenticatedUser()
-				.RequireRole(nameof(Role.Entry.SystemAdministrator)));
-		});
-		services.AddCustomizedAuth(configuration);
+		// The configuration is transferred to the client through prerendering
+		services.AddBlazorApplicationInsights(c => c.ConnectionString = _configuration.GetSection("ApplicationInsights").GetValue<string>("ConnectionString"));
+
+		// --- Register Havit Hx services on the server as well (prerender / interactive components need these) ---
+		services.AddHxServices();
+		services.AddHxMessenger();
+		services.AddHxMessageBoxHost();
+		// -----------------------------------------------------------------------------------------------
+
+		// Authentication & Authorization removed temporarily.
+		// services.AddCustomAuthentication(_configuration);
+		// services.AddAuthorizationBuilder()... (policies removed)
+
+		// Blazor components (keep interactive provider, no auth serialization)
+		services.AddRazorComponents()
+			.AddInteractiveWebAssemblyComponents();
+
+		services.AddScoped<AntiforgeryStateProvider, WorkaroundEndpointAntiforgeryStateProvider>();
 
 		// server-side UI
 		services.AddControllersWithViews();
@@ -76,17 +91,23 @@ public class Startup
 		services.AddCodeFirstGrpcReflection();
 
 		// Health checks
+		TimeSpan defaultHealthCheckTimeout = TimeSpan.FromSeconds(10);
 		services.AddHealthChecks()
-			.AddCheck<DominexDbContextHealthCheck>("Database");
+			.AddCheck<DominexDbContextHealthCheck>("Database", timeout: defaultHealthCheckTimeout);
+		// todo consider mailing server
+		//	.AddCheck<MailServiceHealthCheck>("SMTP", timeout: defaultHealthCheckTimeout); 
 
 		// Hangfire
-		services.AddCustomizedHangfire(configuration);
+		//services.AddCustomizedHangfire(_configuration);
+
+		// Migrations
+		services.Configure<MigrationsOptions>(_configuration.GetSection(MigrationsOptions.Path));
+		services.AddHostedService<MigrationHostedService>();
 	}
 
-	// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-	public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+	public void ConfigureMiddleware(WebApplication app)
 	{
-		if (env.IsDevelopment())
+		if (app.Environment.IsDevelopment())
 		{
 			app.UseDeveloperExceptionPage();
 			app.UseMigrationsEndPoint();
@@ -94,66 +115,73 @@ public class Startup
 		}
 		else
 		{
-			app.UseExceptionHandler("/Error");
+			app.UseExceptionHandler("/error");
 			// The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
 			// TODO app.UseHsts();
 		}
 
-		app.UseHttpsRedirection();
-		app.UseBlazorFrameworkFiles();
-		app.UseStaticFiles();
+		app.UseMiddleware<CustomResponseForKnownExceptionsMiddleware>();
 
-		app.UseExceptionMonitoring();
+		app.UseHttpsRedirection();
+
+		app.UseStaticFiles();
 
 		app.UseRouting();
 
-		app.UseAuthentication();
-		app.UseIdentityServer();
-		app.UseAuthorization();
+		// authentication/authorization middleware removed temporarily
+		// app.UseAuthentication();
+		// app.UseAuthorization();
+
+		app.UseAntiforgery();
 
 		app.UseGrpcWeb(new GrpcWebOptions() { DefaultEnabled = true });
+	}
 
-		app.UseEndpoints(endpoints =>
-		{
-			endpoints.MapRazorPages();
-			endpoints.MapControllers();
-			endpoints.MapFallbackToPage("/_Host");
+	public void ConfigureEndpoints(WebApplication app)
+	{
+		app.MapStaticAssets();
 
-			//vyčistit
-			endpoints.MapHub<LogHub>("/loghub");
-			endpoints.MapHub<KingdomHub>("/kingdomhub");
-			endpoints.MapHub<PlayerStateHub>("/playerstatehub");
+		app.MapRazorPages();
+		app.MapControllers();
+		app.MapRazorComponents<App>()
+			.AddInteractiveWebAssemblyRenderMode();
+		//.AddAdditionalAssemblies(typeof(Dominex.Web.Client.Program).Assembly);
 
-			endpoints.MapGrpcServicesByApiContractAttributes(
+		// TODO vyčistit
+		app.MapHub<LogHub>("/loghub");
+		app.MapHub<KingdomHub>("/kingdomhub");
+		app.MapHub<PlayerStateHub>("/playerstatehub");
+
+
+		app.MapGrpcServicesByApiContractAttributes(
 				typeof(IDataSeedFacade).Assembly,
 				configureEndpointWithAuthorization: endpoint =>
 				{
-					endpoint.RequireAuthorization(); // TODO? AuthorizationPolicyNames.ApiScopePolicy when needed
+					// endpoints requiring authorization removed; secure later when you restore auth
 				});
-			endpoints.MapCodeFirstGrpcReflectionService();
+		app.MapCodeFirstGrpcReflectionService();
 
-			endpoints.MapHealthChecks("/health", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
-			{
-				AllowCachingResponses = false,
-				ResponseWriter = HealthCheckWriter.WriteResponse
-			});
+		//app.MapGroup("/authentication").MapLoginAndLogout();
 
-			endpoints.MapHangfireDashboard("/hangfire", new DashboardOptions
-			{
-				Authorization = new List<IDashboardAuthorizationFilter>() { }, // see https://sahansera.dev/securing-hangfire-dashboard-with-endpoint-routing-auth-policy-aspnetcore/
-				DisplayStorageConnectionString = false,
-				DashboardTitle = "Dominex - Jobs",
-				StatsPollingInterval = 60_000, // once a minute
-				DisplayNameFunc = (_, job) => Havit.Hangfire.Extensions.Helpers.JobNameHelper.TryGetSimpleName(job, out string simpleName)
-													? simpleName
-													: job.ToString()
-			})
-			.RequireAuthorization(PolicyNames.HangfireDashboardAcccessPolicy);
+		app.MapHealthChecks("/health", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
+		{
+			AllowCachingResponses = false,
+			ResponseWriter = HealthCheckWriter.WriteResponseAsync
 		});
 
-		if (configuration.GetValue<bool>("AppSettings:Migrations:RunMigrations"))
-		{
-			app.ApplicationServices.GetRequiredService<IMigrationService>().UpgradeDatabaseSchemaAndData();
-		}
+		// todo hangfire might not be necessary 
+		//app.MapHangfireDashboard("/hangfire", new DashboardOptions
+		//{
+		//	DefaultRecordsPerPage = 50,
+		//	Authorization = new List<IDashboardAuthorizationFilter>(), // see https://sahansera.dev/securing-hangfire-dashboard-with-endpoint-routing-auth-policy-aspnetcore/
+		//	DisplayStorageConnectionString = false,
+		//	DashboardTitle = "Dominex - Jobs",
+		//	StatsPollingInterval = 60_000, // once a minute
+		//	DisplayNameFunc = (_, job) => Havit.Hangfire.Extensions.Helpers.JobNameHelper.TryGetSimpleName(job, out string simpleName)
+		//										? simpleName
+		//										: job.ToString()
+		//});
+
+		app.MapFallbackToFile("index.html");
 	}
 }

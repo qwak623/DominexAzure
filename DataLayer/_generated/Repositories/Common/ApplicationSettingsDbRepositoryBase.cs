@@ -16,10 +16,10 @@ using Havit.Data.Patterns.Infrastructure;
 namespace Dominex.DataLayer.Repositories.Common;
 
 [System.CodeDom.Compiler.GeneratedCode("Havit.Data.EntityFrameworkCore.CodeGenerator", "1.0")]
-public abstract class ApplicationSettingsDbRepositoryBase : DbRepository<Dominex.Model.Common.ApplicationSettings>
+public abstract class ApplicationSettingsDbRepositoryBase : DbRepository<Dominex.Model.Common.ApplicationSettings, System.Int32>
 {
-	protected ApplicationSettingsDbRepositoryBase(IDbContext dbContext, Dominex.DataLayer.DataSources.Common.IApplicationSettingsDataSource dataSource, IEntityKeyAccessor<Dominex.Model.Common.ApplicationSettings, int> entityKeyAccessor, IDataLoader dataLoader, ISoftDeleteManager softDeleteManager, IEntityCacheManager entityCacheManager)
-		: base(dbContext, dataSource, entityKeyAccessor, dataLoader, softDeleteManager, entityCacheManager)
+	protected ApplicationSettingsDbRepositoryBase(IDbContext dbContext, IEntityKeyAccessor<Dominex.Model.Common.ApplicationSettings, System.Int32> entityKeyAccessor, IDataLoader dataLoader, ISoftDeleteManager softDeleteManager, IEntityCacheManager entityCacheManager, IRepositoryQueryProvider<Dominex.Model.Common.ApplicationSettings, System.Int32> repositoryQueryProvider)
+		: base(dbContext, entityKeyAccessor, dataLoader, softDeleteManager, entityCacheManager, repositoryQueryProvider)
 	{
 	}
 

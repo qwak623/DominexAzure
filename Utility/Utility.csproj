@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net9.0</TargetFramework>
 		<AssemblyName>Dominex.Utility</AssemblyName>
 		<RootNamespace>Dominex.Utility</RootNamespace>
 		<ImplicitUsings>true</ImplicitUsings>
@@ -22,16 +22,17 @@
 		</Content>
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Hangfire.AspNetCore" Version="1.7.29" />
-		<PackageReference Include="Hangfire.SqlServer" Version="1.7.29" />
-		<PackageReference Include="Hangfire.Console.Extensions" Version="1.0.5" />
-		<PackageReference Include="Havit.ApplicationInsights.DependencyCollector" Version="2.0.6" />
-		<PackageReference Include="Havit.AspNetCore" Version="2.0.9" />
-		<PackageReference Include="Havit.Hangfire.Extensions" Version="2.0.8" />
-		<PackageReference Include="Microsoft.ApplicationInsights.WorkerService" Version="2.20.0" />
-		<PackageReference Include="Microsoft.Azure.WebJobs" Version="3.0.33" />
-		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.1" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
+		<PackageReference Include="Hangfire.AspNetCore" />
+		<PackageReference Include="Hangfire.SqlServer" />
+		<PackageReference Include="Hangfire.Console.Extensions"/>
+		<PackageReference Include="Havit.ApplicationInsights.DependencyCollector"/>
+		<PackageReference Include="Havit.AspNetCore" />
+		<PackageReference Include="Havit.Hangfire.Extensions" />
+		<PackageReference Include="Microsoft.ApplicationInsights.WorkerService" />
+		<PackageReference Include="Microsoft.Azure.WebJobs" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables"/>
+		<PackageReference Include="Microsoft.Extensions.Hosting"/>
+		<PackageReference Include="Microsoft.Extensions.Logging.Console"/>
 	</ItemGroup>
 
 	<ItemGroup>

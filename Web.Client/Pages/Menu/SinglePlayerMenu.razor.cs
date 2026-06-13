@@ -22,7 +22,7 @@ public partial class SinglePlayerMenu
 	{
 		await GameFacade.StartWithCards(State.SelectedCards.Select(c => c.Type));
 
-		Navigation.NavigateTo(Routes.Game.GamePage);
+		Navigation.NavigateTo(AppRoutes.Game.GamePage);
 	}
 
 	private void ClickSaveSettings()
