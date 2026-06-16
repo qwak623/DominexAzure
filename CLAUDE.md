@@ -106,6 +106,44 @@ Key settings to configure locally:
 
 The `Entity/appSettings.Entity.json` file is copied to output and used during EF tooling commands.
 
+## Authentication & Authorization
+
+Auth uses **Google OAuth2 + Cookie** scheme via `Microsoft.AspNetCore.Authentication.Google`.
+
+**Flow:**
+1. Unauthenticated user → redirected to `/login` (Blazor page)
+2. "Sign in with Google" → `GET /authentication/login` → Google OAuth challenge
+3. Google callback → `HandleSigningInAsync` fires → `CustomClaimsBuilder.GetCustomClaimsAsync` runs
+4. `GetCustomClaimsAsync` looks up local `User` by email; creates one if first login (`OnboardUserAsync`)
+5. Custom claims (`dominex:user_id`, roles) baked into auth cookie
+6. `PersistingAuthenticationStateProvider` (server) serializes `UserInfo` into prerendered HTML
+7. `PersistentAuthenticationStateProvider` (client WASM) reads it — auth state fixed for session lifetime
+8. Logout: `POST /authentication/logout` clears the cookie, full page reload required
+
+**Key files:**
+- `Web.Server/Infrastructure/ConfigurationExtensions/AuthenticationConfigurationExtension.cs` — registers cookie + Google schemes
+- `Web.Server/Infrastructure/Security/LoginLogoutEndpointRouteBuilderExtensions.cs` — `/authentication/login` and `/authentication/logout` endpoints
+- `Facades/Infrastructure/Security/Claims/CustomClaimsBuilder.cs` — find-or-create `User`, builds custom claims
+- `Web.Server/Infrastructure/Security/PersistingAuthenticationStateProvider.cs` — server-side, persists auth state to HTML
+- `Web.Client/Infrastructure/Security/PersistentAuthenticationStateProvider.cs` — client-side, reads persisted state
+- `Web.Client/Pages/Account/Login.razor` — login landing page
+- `Contracts/Infrastructure/Security/ClaimConstants.cs` — claim name constants (`dominex:user_id`)
+
+**Roles** are stored in `UserRoles` DB table. First user in DEBUG gets all roles automatically.
+
+**Local secrets** (never commit):
+```powershell
+dotnet user-secrets set "Authentication:Google:ClientId" "..." --project Web.Server
+dotnet user-secrets set "Authentication:Google:ClientSecret" "..." --project Web.Server
+```
+
+Google Cloud Console redirect URI must match: `https://localhost:{port}/signin-google`
+
+**Protecting pages/endpoints:**
+- All Blazor pages: `@attribute [Authorize]` in `Web.Client/_Imports.razor`
+- Login page exempt: `@attribute [AllowAnonymous]` in `Login.razor`
+- gRPC facades: `[Authorize]` on `GameFacade`; `[Authorize(Roles = nameof(RoleEntry.SystemAdministrator))]` on `DataSeedFacade` and `MaintenanceFacade` (currently commented out — uncomment when ready)
+
 ## Build Notes
 
 - `Directory.Build.props` sets `LangVersion=latest`, `Nullable=disable`, and `Warnings as Errors` in Release
