@@ -21,4 +21,6 @@ public enum ChoiceType
 	Gain,
 	MoatDefend,
 	GameEnd,
+	BaronDiscard,
+	MoneylenderTrash,
 }

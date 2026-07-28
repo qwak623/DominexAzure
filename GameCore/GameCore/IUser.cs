@@ -1,27 +1,34 @@
 ﻿using GameCore.Cards;
-using GameCore.Cards.Base;
 using GameCore.Observers;
 
 namespace GameCore;
 public interface IUser
 {
+	string GetName();
+	IPlayerStateObserver GetPlayerStateObserver();
+	Card PlayCard(IEnumerable<Card> cards, PlayerState ps, Kingdom k, Phase phase, Card card = null);
+	Card SelectCardToGain(KingdomWrapper wrapper, PlayerState ps, Kingdom k, Phase phase);
+	void SetCanCelationTokenSource(CancellationTokenSource tokenSource);
+
+	#region cards base
 	Card BureaucratPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k);
 	List<Card> CellarDiscard(Card cardPlayed, PlayerState ps, Kingdom k);
 	bool ChancellorDiscard(Card cardPlayed, PlayerState ps, Kingdom k);
 	List<Card> ChapelTrash(Card cardPlayed, PlayerState ps, Kingdom k);
-	string GetName();
-	IPlayerStateObserver GetPlayerStateObserver();
 	bool LibrarySkip(Card cardPlayed, PlayerState ps, Kingdom k, Card c);
 	List<Card> MilitiaDiscard(Card cardPlayed, PlayerState ps, Kingdom k, int discardCount);
 	Card MineTrash(Card cardPlayed, PlayerState ps, Kingdom k, IList<Card> cardSelection);
 	bool MoneylenderTrash(Card cardPlayed, PlayerState ps, Kingdom k);
-	Card PlayCard(IEnumerable<Card> cards, PlayerState ps, Kingdom k, Phase phase, Card card = null);
 	Card RemodelTrash(Card cardPlayed, PlayerState ps, Kingdom k);
-	Card SelectCardToGain(KingdomWrapper wrapper, PlayerState ps, Kingdom k, Phase phase);
-	void SetCanCelationTokenSource(CancellationTokenSource tokenSource);
 	bool SpyDiscard(Card cardPlayed, PlayerState ps, Kingdom k, Card c, Phase p);
 	Card ThiefChoose(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<Card> cards);
 	bool ThiefSteal(Card cardPlayed, PlayerState ps, Kingdom k, Card c);
 	Card ThroneRoomPlay(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<Card> cards);
+	#endregion cards base
+
+	#region cards intrique
+	bool BaronDiscard(Card cardPlayed, PlayerState ps, Kingdom k);
+	#endregion cards intrique
+
 	string ToString();
 }

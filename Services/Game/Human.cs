@@ -23,10 +23,31 @@ public class Human : User, IHuman
 	{
 		return playerStateObserver;
 	}
+
+	public override Card PlayCard(IEnumerable<Card> cards, PlayerState ps, Kingdom k, Phase phase, Card attackingCard = null)
+	{
+		var cardSelection = ps.Hand.Where(p => p.IsAction).ToList();
+
+		// todo je třeba vyřešit attacking card, asi ideálně přidat do choice
+		var answer = CallClient(new ChoiceDto
+		(
+			cardPlayed: null,
+			ChoiceType.Play,
+			min: 0,
+			max: 1,
+			cards: cardSelection.Select(cardMapper.ToCardDtoWithIndex),
+			operations: new List<OperationType> { OperationType.Default, OperationType.Play }
+		));
+
+		return answer.Values.Any() ? cardSelection[answer.Values.Single().Index] : null;
+	}
+
 	public override string GetName() => "Todo Name";
 
 	// todo ps - možná by mělo být jen card selection
 	// todo kingdom - možná by to nemuselo být tady
+
+	#region cards base
 	public override Card BureaucratPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k)
 	{
 		var cardSelection = ps.Hand.Where(c => c.IsVictory).ToList();
@@ -148,7 +169,7 @@ public class Human : User, IHuman
 		var answer = CallClient(new ChoiceDto
 		(
 			cardPlayed: cardMapper.ToCardDto(cardPlayed),
-			ChoiceType.MoatDefend,
+			ChoiceType.MoneylenderTrash,
 			min: 0,
 			max: 1,
 			cards: new List<CardDto>() { cardMapper.ToCardDto(Copper.Get()) },
@@ -156,24 +177,6 @@ public class Human : User, IHuman
 		));
 
 		return answer.Values.Any();
-	}
-
-	public override Card PlayCard(IEnumerable<Card> cards, PlayerState ps, Kingdom k, Phase phase, Card attackingCard = null)
-	{
-		var cardSelection = ps.Hand.Where(p => p.IsAction).ToList();
-
-		// todo je třeba vyřešit atacking card, asi ideálně přidat do choice
-		var answer = CallClient(new ChoiceDto
-		(
-			cardPlayed: null,
-			ChoiceType.Play,
-			min: 0,
-			max: 1,
-			cards: cardSelection.Select(cardMapper.ToCardDtoWithIndex),
-			operations: new List<OperationType> { OperationType.Default, OperationType.Play }
-		));
-
-		return answer.Values.Any() ? cardSelection[answer.Values.Single().Index] : null;
 	}
 
 	public override Card RemodelTrash(Card cardPlayed, PlayerState ps, Kingdom k)
@@ -277,4 +280,22 @@ public class Human : User, IHuman
 
 		return answer.Values.Any() ? cardSelection[answer.Values.Single().Index] : null;
 	}
+	#endregion cards base
+
+	#region cards intrique
+	public override bool BaronDiscard(Card cardPlayed, PlayerState playerState, Kingdom kingdom)
+	{
+		var answer = CallClient(new ChoiceDto
+		(
+			cardPlayed: cardMapper.ToCardDto(cardPlayed),
+			ChoiceType.BaronDiscard,
+			min: 0,
+			max: 1,
+			cards: new List<CardDto>() { cardMapper.ToCardDto(Estate.Get()) },
+			operations: new List<OperationType> { OperationType.Default, OperationType.Discard }
+		));
+
+		return answer.Values.Any();
+	}
+	#endregion cards intrique
 }

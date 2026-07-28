@@ -5,6 +5,7 @@ using GameCore.Observers;
 namespace Dominex.Services.Game;
 public interface IHuman
 {
+	#region cards base
 	Card BureaucratPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k);
 	List<Card> CellarDiscard(Card cardPlayed, PlayerState ps, Kingdom k);
 	bool ChancellorDiscard(Card cardPlayed, PlayerState ps, Kingdom k);
@@ -21,4 +22,9 @@ public interface IHuman
 	Card ThiefChoose(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<Card> cards);
 	bool ThiefSteal(Card cardPlayed, PlayerState ps, Kingdom k, Card c);
 	Card ThroneRoomPlay(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<Card> cards);
+	#endregion cards base
+
+	#region cards intrique
+	bool BaronDiscard(Card cardPlayed, PlayerState ps, Kingdom k);
+	#endregion cards intrique
 }

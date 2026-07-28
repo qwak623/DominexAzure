@@ -210,6 +210,10 @@ public class ProvincialAI : User
 				where m == c.Score(ps.Hand, ps, Phase.Action)
 				select c).FirstOrDefault();
 	}
-	#endregion
+	#endregion cards base
+
+	#region cards intrique
+	public override bool BaronDiscard(Card cardPlayed, PlayerState ps, Kingdom k) => true;
+	#endregion cards intrique
 }
 

@@ -5,6 +5,7 @@ using GameCore.Cards.Base;
 namespace Dominex.Services.Game;
 public class Decoy : User
 {
+	#region cards base
 	public override Card BureaucratPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k)
 	{
 		return ps.Hand.FirstOrDefault();
@@ -81,4 +82,9 @@ public class Decoy : User
 	{
 		return null;
 	}
+	#endregion cards base
+
+	#region cards intrique
+	public override bool BaronDiscard(Card cardPlayed, PlayerState ps, Kingdom k) => true;
+	#endregion cards intrique
 }
