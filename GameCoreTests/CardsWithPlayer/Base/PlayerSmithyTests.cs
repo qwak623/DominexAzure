@@ -49,8 +49,9 @@ public class PlayerSmithyTests : CardWithPlayerTestsBase
 		CollectionAssert.AreEquivalent(new List<Card> { copper, copper, copper }, player.PlayerState.Hand);
 		Assert.IsFalse(player.PlayerState.DrawPile.Any());
 
-		// smithy was added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { smithy }, player.PlayerState.PlayedCards);
+		// smithy was added to played cards and actions
+		CollectionAssert.AreEquivalent(new List<Card> { smithy }, player.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { smithy }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -84,7 +85,10 @@ public class PlayerSmithyTests : CardWithPlayerTestsBase
 			player.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
 
 		// smithy and throne room were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { smithy, throneRoom }, player.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { smithy, throneRoom }, player.PlayerState.CardsPlayed);
+
+		// smithy was added to actions played twice, throne room once
+		CollectionAssert.AreEquivalent(new List<Card> { smithy, smithy, throneRoom }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 }

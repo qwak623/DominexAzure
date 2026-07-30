@@ -55,8 +55,9 @@ public class PlayerAdventurerTests : CardWithPlayerTestsBase
 		// player has the two treasures in his hand
 		CollectionAssert.AreEquivalent(new List<Card> { copper, copper, silver }, player.PlayerState.Hand);
 
-		// adventurer was added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { adventurer }, player.PlayerState.PlayedCards);
+		// adventurer was added to played cards and actions
+		CollectionAssert.AreEquivalent(new List<Card> { adventurer }, player.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { adventurer }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -87,8 +88,9 @@ public class PlayerAdventurerTests : CardWithPlayerTestsBase
 		// player has the two treasures in his hand
 		CollectionAssert.AreEquivalent(new List<Card> { copper, silver, gold }, player.PlayerState.Hand);
 
-		// adventurer was added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { adventurer }, player.PlayerState.PlayedCards);
+		// adventurer was added to played cards and actions
+		CollectionAssert.AreEquivalent(new List<Card> { adventurer }, player.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { adventurer }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -119,8 +121,9 @@ public class PlayerAdventurerTests : CardWithPlayerTestsBase
 		// player has the treasure in his hand
 		CollectionAssert.AreEquivalent(new List<Card> { copper, gold }, player.PlayerState.Hand);
 
-		// adventurer was added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { adventurer }, player.PlayerState.PlayedCards);
+		// adventurer was added to played cards and actions
+		CollectionAssert.AreEquivalent(new List<Card> { adventurer }, player.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { adventurer }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -148,8 +151,9 @@ public class PlayerAdventurerTests : CardWithPlayerTestsBase
 		// nothing was added to the player's hand
 		CollectionAssert.AreEquivalent(new List<Card> { copper }, player.PlayerState.Hand);
 
-		// adventurer was added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { adventurer }, player.PlayerState.PlayedCards);
+		// adventurer was added to played cards and actions
+		CollectionAssert.AreEquivalent(new List<Card> { adventurer }, player.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { adventurer }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -188,7 +192,10 @@ public class PlayerAdventurerTests : CardWithPlayerTestsBase
 		CollectionAssert.AreEquivalent(new List<Card> { province, province, province, adventurer, province }, player.PlayerState.DiscardPile);
 
 		// throne room and adventurer were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, adventurer }, player.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, adventurer }, player.PlayerState.CardsPlayed);
+
+		// throne room and two adventurers were added to played actions
+		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, adventurer, adventurer }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -232,7 +239,10 @@ public class PlayerAdventurerTests : CardWithPlayerTestsBase
 		CollectionAssert.AreEquivalent(new List<Card> { province, province, province, province, adventurer, province }, player.PlayerState.DiscardPile);
 
 		// throne room and adventurer were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, adventurer }, player.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, adventurer }, player.PlayerState.CardsPlayed);
+
+		// throne room and two adventurers were added to played actions
+		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, adventurer, adventurer }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 }

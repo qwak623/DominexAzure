@@ -61,8 +61,9 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 		// silver was gained to hand
 		CollectionAssert.AreEquivalent(new List<Card> { silver }, player.PlayerState.Hand);
 
-		// mine was added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { mine }, player.PlayerState.PlayedCards);
+		// mine was added to played cards and actions
+		CollectionAssert.AreEquivalent(new List<Card> { mine }, player.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { mine }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -96,8 +97,9 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 		// copper stayed in hand
 		CollectionAssert.AreEquivalent(new List<Card> { copper }, player.PlayerState.Hand);
 
-		// mine was added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { mine }, player.PlayerState.PlayedCards);
+		// mine was added to played cards and actions
+		CollectionAssert.AreEquivalent(new List<Card> { mine }, player.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { mine }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -133,8 +135,9 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 		// nothing was gained to hand
 		Assert.IsFalse(player.PlayerState.Hand.Any());
 
-		// mine was added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { mine }, player.PlayerState.PlayedCards);
+		// mine was added to played cards and actions
+		CollectionAssert.AreEquivalent(new List<Card> { mine }, player.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { mine }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -188,7 +191,10 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Once);
 
 		// mine and throne room were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { mine, throneRoom }, player.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { mine, throneRoom }, player.PlayerState.CardsPlayed);
+
+		// two mines and throne room were added to played actions
+		CollectionAssert.AreEquivalent(new List<Card> { mine, mine, throneRoom }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -240,7 +246,10 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Exactly(2));
 
 		// mine and throne room were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { mine, throneRoom }, player.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { mine, throneRoom }, player.PlayerState.CardsPlayed);
+
+		// two mines and throne room were added to played actions
+		CollectionAssert.AreEquivalent(new List<Card> { mine, mine, throneRoom }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 }

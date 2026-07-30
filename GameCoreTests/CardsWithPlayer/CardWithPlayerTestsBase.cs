@@ -26,7 +26,8 @@ public class CardWithPlayerTestsBase
 		player.PlayerState.Buys = 0;
 		player.PlayerState.Coins = 0;
 		player.PlayerState.Hand = new List<Card> { };
-		player.PlayerState.PlayedCards = new List<Card> { };
+		player.PlayerState.CardsPlayed = new List<Card> { };
+		player.PlayerState.ActionsPlayed = new List<Card> { };
 		player.PlayerState.DrawPile = new List<Card> { };
 		player.PlayerState.DiscardPile = new List<Card> { };
 		return player;

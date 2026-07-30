@@ -59,8 +59,9 @@ public class PlayerMoatTests : CardWithPlayerTestsBase
 		CollectionAssert.AreEquivalent(new List<Card> { copper, copper }, defender.PlayerState.Hand);
 		Assert.IsFalse(defender.PlayerState.DrawPile.Any());
 
-		// moat was added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { moat }, defender.PlayerState.PlayedCards);
+		// moat was added to played cards and actions
+		CollectionAssert.AreEquivalent(new List<Card> { moat }, defender.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { moat }, defender.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -94,7 +95,10 @@ public class PlayerMoatTests : CardWithPlayerTestsBase
 			defender.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
 
 		// moat and throne room were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { moat, throneRoom }, defender.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { moat, throneRoom }, defender.PlayerState.CardsPlayed);
+
+		// two moats and throne room were added to played actions
+		CollectionAssert.AreEquivalent(new List<Card> { moat, moat, throneRoom }, defender.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -124,6 +128,10 @@ public class PlayerMoatTests : CardWithPlayerTestsBase
 
 		// player blocked the attack and therefore his hand did not change
 		CollectionAssert.AreEquivalent(new List<Card> { copper, copper, moat, copper, copper }, defender.PlayerState.Hand);
+
+		// moat was not added to played cards or actions
+		CollectionAssert.AreEquivalent(new List<Card> { }, defender.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { }, defender.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -159,6 +167,10 @@ public class PlayerMoatTests : CardWithPlayerTestsBase
 		// player discarded two cards
 		CollectionAssert.AreEquivalent(new List<Card> { moat, copper, copper }, defender.PlayerState.Hand);
 		CollectionAssert.AreEquivalent(new List<Card> { copper, copper }, defender.PlayerState.DiscardPile);
+
+		// moat was not added to played cards or actions
+		CollectionAssert.AreEquivalent(new List<Card> { }, defender.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { }, defender.PlayerState.ActionsPlayed);
 		#endregion
 	}
 }

@@ -15,7 +15,7 @@ public class Player : IPlayer
 	public PlayerState PlayerState => ps;
 
 	// todo tohle se mi moc nelibi, na konci hry by bylo nejlepsi udelat jeden balicek a ten prochazet
-	public int CardCount => ps.DrawPile.Count + ps.DiscardPile.Count + ps.Hand.Count + ps.PlayedCards.Count;
+	public int CardCount => ps.DrawPile.Count + ps.DiscardPile.Count + ps.Hand.Count + ps.CardsPlayed.Count;
 
 	private int? victoryPoints;
 
@@ -135,7 +135,8 @@ public class Player : IPlayer
 		Game.Logger?.Log(new GameLog { PlayerId = Name, Message = $"{Name} plays {card.Name}." });
 
 		ps.Hand.Remove(card);
-		ps.PlayedCards.Add(card);
+		ps.CardsPlayed.Add(card);
+		ps.ActionsPlayed.Add(card);
 		ps.Actions--;
 
 		card.WhenPlayAction(this);
@@ -195,8 +196,9 @@ public class Player : IPlayer
 	{
 		ps.Hand.ForEach(card => ps.DiscardPile.Add(card));
 		ps.Hand.Clear();
-		ps.PlayedCards.ForEach(card => ps.DiscardPile.Add(card));
-		ps.PlayedCards.Clear();
+		ps.CardsPlayed.ForEach(card => ps.DiscardPile.Add(card));
+		ps.CardsPlayed.Clear();
+		ps.ActionsPlayed.Clear();
 	}
 
 	/// <summary>

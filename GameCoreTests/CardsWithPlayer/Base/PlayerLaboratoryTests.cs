@@ -49,8 +49,9 @@ public class PlayerLaboratoryTests : CardWithPlayerTestsBase
 		CollectionAssert.AreEquivalent(new List<Card> { copper, copper }, player.PlayerState.Hand);
 		Assert.IsFalse(player.PlayerState.DrawPile.Any());
 
-		// laboratory was added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { laboratory }, player.PlayerState.PlayedCards);
+		// laboratory was added to played cards and actions
+		CollectionAssert.AreEquivalent(new List<Card> { laboratory }, player.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { laboratory }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -84,7 +85,10 @@ public class PlayerLaboratoryTests : CardWithPlayerTestsBase
 			player.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
 
 		// laboratory and throne room were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { laboratory, throneRoom }, player.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { laboratory, throneRoom }, player.PlayerState.CardsPlayed);
+
+		// two laboratories and throne room were added to played actions
+		CollectionAssert.AreEquivalent(new List<Card> { laboratory, laboratory, throneRoom }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 }

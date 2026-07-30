@@ -104,13 +104,17 @@ public class PlayerSpyTests : CardWithPlayerTestsBase
 		Assert.IsFalse(player4.PlayerState.DrawPile.Any());
 		Assert.IsFalse(player4.PlayerState.DiscardPile.Any());
 
-		// spy was added to the player1's played cards
-		CollectionAssert.AreEquivalent(new List<Card> { spy }, player1.PlayerState.PlayedCards);
+		// spy was added to the player1's played cards and actions
+		CollectionAssert.AreEquivalent(new List<Card> { spy }, player1.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { spy }, player1.PlayerState.ActionsPlayed);
 
-		// spy was not added to the other players' played cards
-		Assert.IsFalse(player2.PlayerState.PlayedCards.Any());
-		Assert.IsFalse(player3.PlayerState.PlayedCards.Any());
-		Assert.IsFalse(player4.PlayerState.PlayedCards.Any());
+		// spy was not added to the other players' played cards or actions
+		Assert.IsFalse(player2.PlayerState.CardsPlayed.Any());
+		Assert.IsFalse(player2.PlayerState.ActionsPlayed.Any());
+		Assert.IsFalse(player3.PlayerState.CardsPlayed.Any());
+		Assert.IsFalse(player3.PlayerState.ActionsPlayed.Any());
+		Assert.IsFalse(player4.PlayerState.CardsPlayed.Any());
+		Assert.IsFalse(player4.PlayerState.ActionsPlayed.Any());
 		#endregion
 	}
 
@@ -171,13 +175,17 @@ public class PlayerSpyTests : CardWithPlayerTestsBase
 		Assert.IsFalse(player4.PlayerState.DrawPile.Any());
 		CollectionAssert.AreEquivalent(new List<Card> { province }, player4.PlayerState.DiscardPile);
 
-		// spy was added to the player1's played cards
-		CollectionAssert.AreEquivalent(new List<Card> { spy }, player1.PlayerState.PlayedCards);
+		// spy was added to the player1's played cards and actions
+		CollectionAssert.AreEquivalent(new List<Card> { spy }, player1.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { spy }, player1.PlayerState.ActionsPlayed);
 
-		// spy was not added to the other players' played cards
-		Assert.IsFalse(player2.PlayerState.PlayedCards.Any());
-		Assert.IsFalse(player3.PlayerState.PlayedCards.Any());
-		Assert.IsFalse(player4.PlayerState.PlayedCards.Any());
+		// spy was not added to the other players' played cards or actions
+		Assert.IsFalse(player2.PlayerState.CardsPlayed.Any());
+		Assert.IsFalse(player2.PlayerState.ActionsPlayed.Any());
+		Assert.IsFalse(player3.PlayerState.CardsPlayed.Any());
+		Assert.IsFalse(player3.PlayerState.ActionsPlayed.Any());
+		Assert.IsFalse(player4.PlayerState.CardsPlayed.Any());
+		Assert.IsFalse(player4.PlayerState.ActionsPlayed.Any());
 		#endregion
 	}
 
@@ -281,12 +289,18 @@ public class PlayerSpyTests : CardWithPlayerTestsBase
 		Assert.IsFalse(player4.PlayerState.DiscardPile.Any());
 
 		// spy and throne room were added to the player1's played cards
-		CollectionAssert.AreEquivalent(new List<Card> { spy, throneRoom }, player1.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { spy, throneRoom }, player1.PlayerState.CardsPlayed);
 
-		// nothing was added to the other players' played cards
-		Assert.IsFalse(player2.PlayerState.PlayedCards.Any());
-		Assert.IsFalse(player3.PlayerState.PlayedCards.Any());
-		Assert.IsFalse(player4.PlayerState.PlayedCards.Any());
+		// two spies and throne room were added to the player1's played actions
+		CollectionAssert.AreEquivalent(new List<Card> { spy, spy, throneRoom }, player1.PlayerState.ActionsPlayed);
+
+		// nothing was added to the other players' played cards or actions
+		Assert.IsFalse(player2.PlayerState.CardsPlayed.Any());
+		Assert.IsFalse(player2.PlayerState.ActionsPlayed.Any());
+		Assert.IsFalse(player3.PlayerState.CardsPlayed.Any());
+		Assert.IsFalse(player3.PlayerState.ActionsPlayed.Any());
+		Assert.IsFalse(player4.PlayerState.CardsPlayed.Any());
+		Assert.IsFalse(player4.PlayerState.ActionsPlayed.Any());
 		#endregion
 	}
 }

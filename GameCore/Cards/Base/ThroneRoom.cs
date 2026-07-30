@@ -37,9 +37,10 @@ public class ThroneRoom : Card
 
 		// TODO asi by bylo lepší tohle udělat přes player.PlayActionCard a přidat tam flag "without action" nebo něco takového
 		player.PlayerState.Hand.Remove(card);
-		player.PlayerState.PlayedCards.Add(card);
+		player.PlayerState.CardsPlayed.Add(card);
 		for (int i = 0; i < 2; i++)
 		{
+			player.PlayerState.ActionsPlayed.Add(card);
 			card.WhenPlayAction(player);
 			if (card.IsAttack)
 			{

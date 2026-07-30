@@ -18,7 +18,8 @@ public class FeastTests : CardTestsBase
 	public void Init()
 	{
 		player = MockPlayer(MockKingdom(feast));
-		player.Object.PlayerState.PlayedCards = new List<Card> { feast };
+		player.Object.PlayerState.CardsPlayed = new List<Card> { feast };
+		player.Object.PlayerState.ActionsPlayed = new List<Card> { feast };
 		player.Setup(p => p.Game.Trash).Returns(new List<Card>());
 	}
 
@@ -47,7 +48,10 @@ public class FeastTests : CardTestsBase
 		CollectionAssert.AreEquivalent(new List<Card> { feast }, player.Object.Game.Trash);
 
 		// the card was transferred from played cards to trash 
-		Assert.IsFalse(player.Object.PlayerState.PlayedCards.Any());
+		Assert.IsFalse(player.Object.PlayerState.CardsPlayed.Any());
+
+		// feast stayed in the actions played even after it was trashed
+		CollectionAssert.AreEquivalent(new List<Card> { feast }, player.Object.PlayerState.ActionsPlayed);
 
 		// user has to select a card with price max 5 to gain
 		player.Verify(p => p.User.SelectCardToGain(It.Is<KingdomWrapper>(k => k.Price == 5 && k.OnlyTreasures == false),
@@ -83,7 +87,10 @@ public class FeastTests : CardTestsBase
 		CollectionAssert.AreEquivalent(new List<Card> { feast }, player.Object.Game.Trash);
 
 		// the feast was transferred from played cards to trash 
-		Assert.IsFalse(player.Object.PlayerState.PlayedCards.Any());
+		Assert.IsFalse(player.Object.PlayerState.CardsPlayed.Any());
+
+		// feast stayed in the actions played even after it was trashed
+		CollectionAssert.AreEquivalent(new List<Card> { feast }, player.Object.PlayerState.ActionsPlayed);
 
 		// user has to select a card with price max 5 to gain - there is none
 		player.Verify(p => p.User.SelectCardToGain(It.Is<KingdomWrapper>(k => k.Price == 5 && k.OnlyTreasures == false),
@@ -100,6 +107,8 @@ public class FeastTests : CardTestsBase
 		// TODO hostina je dvakrát na smetišti
 
 		#region arrange
+		player.Object.PlayerState.CardsPlayed = new List<Card> { throneRoom };
+		player.Object.PlayerState.ActionsPlayed = new List<Card> { throneRoom };
 		player.Object.PlayerState.Hand = new List<Card> { feast };
 		player.Setup(p => p.User.ThroneRoomPlay(throneRoom, player.Object.PlayerState,
 			player.Object.Game.Kingdom, It.Is<IEnumerable<Card>>(c => c.SingleOrDefault() == feast))).Returns(feast);
@@ -127,8 +136,11 @@ public class FeastTests : CardTestsBase
 		// player has to trash feast
 		CollectionAssert.AreEquivalent(new List<Card> { feast }, player.Object.Game.Trash);
 
-		// the card was transferred from played cards to trash 
-		Assert.IsFalse(player.Object.PlayerState.PlayedCards.Any());
+		// feast was not added to played cards because it was trashed immediately, throne room is still in played cards
+		CollectionAssert.AreEquivalent(new List<Card> { throneRoom }, player.Object.PlayerState.CardsPlayed);
+
+		// feast stayed in the actions played even after it was trashed
+		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, feast, feast }, player.Object.PlayerState.ActionsPlayed);
 
 		// user has to select a card with price max 5 to gain two times
 		player.Verify(p => p.User.SelectCardToGain(It.Is<KingdomWrapper>(k => k.Price == 5 && k.OnlyTreasures == false),
@@ -143,6 +155,8 @@ public class FeastTests : CardTestsBase
 	public void ThroneRoomOneDuchyAvailable()
 	{
 		#region arrange
+		player.Object.PlayerState.CardsPlayed = new List<Card> { throneRoom };
+		player.Object.PlayerState.ActionsPlayed = new List<Card> { throneRoom };
 		player.Object.PlayerState.Hand = new List<Card> { feast };
 		player.Setup(p => p.User.ThroneRoomPlay(throneRoom, player.Object.PlayerState,
 			player.Object.Game.Kingdom, It.Is<IEnumerable<Card>>(c => c.SingleOrDefault() == feast))).Returns(feast);
@@ -170,8 +184,11 @@ public class FeastTests : CardTestsBase
 		// player has to trash feast
 		CollectionAssert.AreEquivalent(new List<Card> { feast }, player.Object.Game.Trash);
 
-		// the card was transferred from played cards to trash 
-		Assert.IsFalse(player.Object.PlayerState.PlayedCards.Any());
+		// feast was not added to played cards because it was trashed immediately, throne room is still in played cards
+		CollectionAssert.AreEquivalent(new List<Card> { throneRoom }, player.Object.PlayerState.CardsPlayed);
+
+		// feast stayed in the actions played even after it was trashed
+		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, feast, feast }, player.Object.PlayerState.ActionsPlayed);
 
 		// user has to select a card with price max 5 to gain - there is only one duchy
 		player.Verify(p => p.User.SelectCardToGain(It.Is<KingdomWrapper>(k => k.Price == 5 && k.OnlyTreasures == false),
@@ -186,6 +203,8 @@ public class FeastTests : CardTestsBase
 	public void ThroneRoomNothingToGain()
 	{
 		#region arrange
+		player.Object.PlayerState.CardsPlayed = new List<Card> { throneRoom };
+		player.Object.PlayerState.ActionsPlayed = new List<Card> { throneRoom };
 		player.Object.PlayerState.Hand = new List<Card> { feast };
 		player.Setup(p => p.User.ThroneRoomPlay(throneRoom, player.Object.PlayerState,
 			player.Object.Game.Kingdom, It.Is<IEnumerable<Card>>(c => c.SingleOrDefault() == feast))).Returns(feast);
@@ -213,8 +232,11 @@ public class FeastTests : CardTestsBase
 		// player has to trash feast
 		CollectionAssert.AreEquivalent(new List<Card> { feast }, player.Object.Game.Trash);
 
-		// the card was transferred from played cards to trash 
-		Assert.IsFalse(player.Object.PlayerState.PlayedCards.Any());
+		// feast was not added to played cards because it was trashed immediately, throne room is still in played cards
+		CollectionAssert.AreEquivalent(new List<Card> { throneRoom }, player.Object.PlayerState.CardsPlayed);
+
+		// feast stayed in the actions played even after it was trashed
+		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, feast, feast }, player.Object.PlayerState.ActionsPlayed);
 
 		// user has to select a card with price max 5 to gain - there is none
 		player.Verify(p => p.User.SelectCardToGain(It.Is<KingdomWrapper>(k => k.Price == 5 && k.OnlyTreasures == false),

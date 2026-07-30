@@ -58,8 +58,9 @@ public class PlayerMoneylenderTests : CardWithPlayerTestsBase
 		// the hand should be empty
 		Assert.IsFalse(player.PlayerState.Hand.Any());
 
-		// moneylender was added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { moneylender }, player.PlayerState.PlayedCards);
+		// moneylender was added to played cards and actiions
+		CollectionAssert.AreEquivalent(new List<Card> { moneylender }, player.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { moneylender }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -94,8 +95,9 @@ public class PlayerMoneylenderTests : CardWithPlayerTestsBase
 		// the copper should stay in the players hand
 		CollectionAssert.AreEquivalent(new List<Card> { copper }, player.PlayerState.Hand);
 
-		// moneylender was added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { moneylender }, player.PlayerState.PlayedCards);
+		// moneylender was added to played cards and actiions
+		CollectionAssert.AreEquivalent(new List<Card> { moneylender }, player.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { moneylender }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -129,8 +131,9 @@ public class PlayerMoneylenderTests : CardWithPlayerTestsBase
 		// the hand should be empty
 		Assert.IsFalse(player.PlayerState.Hand.Any());
 
-		// moneylender was added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { moneylender }, player.PlayerState.PlayedCards);
+		// moneylender was added to played cards and actiions
+		CollectionAssert.AreEquivalent(new List<Card> { moneylender }, player.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { moneylender }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -183,7 +186,10 @@ public class PlayerMoneylenderTests : CardWithPlayerTestsBase
 		CollectionAssert.AreEquivalent(Enumerable.Repeat(copper, trashCount).ToList(), player.Game.Trash);
 
 		// moneylender and throne room were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { moneylender, throneRoom }, player.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { moneylender, throneRoom }, player.PlayerState.CardsPlayed);
+
+		// two moneylenders and throne room were added to played actions
+		CollectionAssert.AreEquivalent(new List<Card> { moneylender, moneylender, throneRoom }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 }

@@ -49,8 +49,9 @@ public class PlayerMarketTests : CardWithPlayerTestsBase
 		CollectionAssert.AreEquivalent(new List<Card> { copper }, player.PlayerState.Hand);
 		Assert.IsFalse(player.PlayerState.DrawPile.Any());
 
-		// market was added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { market }, player.PlayerState.PlayedCards);
+		// market was added to played cards and actions
+		CollectionAssert.AreEquivalent(new List<Card> { market }, player.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { market }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -84,7 +85,10 @@ public class PlayerMarketTests : CardWithPlayerTestsBase
 			player.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
 
 		// market and throne room were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { market, throneRoom }, player.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { market, throneRoom }, player.PlayerState.CardsPlayed);
+
+		// two markets and throne room were added to played actions
+		CollectionAssert.AreEquivalent(new List<Card> { market, market, throneRoom }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 }

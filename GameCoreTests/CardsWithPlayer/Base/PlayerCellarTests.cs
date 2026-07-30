@@ -58,8 +58,9 @@ public class PlayerCellarTests : CardWithPlayerTestsBase
 		// hand stayed the same except for the played cellar
 		CollectionAssert.AreEquivalent(new List<Card> { silver, silver, copper, silver }, player.PlayerState.Hand);
 
-		// cellar was added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { cellar }, player.PlayerState.PlayedCards);
+		// cellar was added to played cards and actions
+		CollectionAssert.AreEquivalent(new List<Card> { cellar }, player.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { cellar }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -96,8 +97,9 @@ public class PlayerCellarTests : CardWithPlayerTestsBase
 		// the gold was removed from the draw pile
 		Assert.IsFalse(player.PlayerState.DrawPile.Any());
 
-		// cellar was added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { cellar }, player.PlayerState.PlayedCards);
+		// cellar was added to played cards and actions
+		CollectionAssert.AreEquivalent(new List<Card> { cellar }, player.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { cellar }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -134,8 +136,9 @@ public class PlayerCellarTests : CardWithPlayerTestsBase
 		// the cards were removed from the draw pile
 		Assert.IsFalse(player.PlayerState.DrawPile.Any());
 
-		// cellar was added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { cellar }, player.PlayerState.PlayedCards);
+		// cellar was added to played cards and actions
+		CollectionAssert.AreEquivalent(new List<Card> { cellar }, player.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { cellar }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -171,8 +174,9 @@ public class PlayerCellarTests : CardWithPlayerTestsBase
 		// nothing stayed on the draw pile
 		Assert.IsFalse(player.PlayerState.DrawPile.Any());
 
-		// cellar was added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { cellar }, player.PlayerState.PlayedCards);
+		// cellar was added to played cards and actions
+		CollectionAssert.AreEquivalent(new List<Card> { cellar }, player.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { cellar }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -215,7 +219,10 @@ public class PlayerCellarTests : CardWithPlayerTestsBase
 		CollectionAssert.AreEquivalent(new List<Card> { gold, gold, silver }, player.PlayerState.Hand);
 
 		// throne room and cellar were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, cellar }, player.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, cellar }, player.PlayerState.CardsPlayed);
+
+		// throne room and two cellars were added to played actions
+		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, cellar, cellar }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 }

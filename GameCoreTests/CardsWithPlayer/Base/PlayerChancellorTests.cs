@@ -60,8 +60,9 @@ public class PlayerChancellorTests : CardWithPlayerTestsBase
 		Assert.IsFalse(player.PlayerState.DrawPile.Any());
 		CollectionAssert.AreEquivalent(new List<Card> { copper, silver, silver }, player.PlayerState.DiscardPile);
 
-		// chancellor was added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { chancellor }, player.PlayerState.PlayedCards);
+		// chancellor was added to played cards and actions
+		CollectionAssert.AreEquivalent(new List<Card> { chancellor }, player.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { chancellor }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -96,8 +97,9 @@ public class PlayerChancellorTests : CardWithPlayerTestsBase
 		CollectionAssert.AreEquivalent(new List<Card> { silver, silver }, player.PlayerState.DrawPile);
 		CollectionAssert.AreEquivalent(new List<Card> { copper }, player.PlayerState.DiscardPile);
 
-		// chancellor was added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { chancellor }, player.PlayerState.PlayedCards);
+		// chancellor was added to played cards and actions
+		CollectionAssert.AreEquivalent(new List<Card> { chancellor }, player.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { chancellor }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -143,7 +145,10 @@ public class PlayerChancellorTests : CardWithPlayerTestsBase
 		CollectionAssert.AreEquivalent(new List<Card> { copper, silver, silver }, player.PlayerState.DiscardPile);
 
 		// chancellor and throne room were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { chancellor, throneRoom }, player.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { chancellor, throneRoom }, player.PlayerState.CardsPlayed);
+
+		// two chancellors and throne room were added to played actions
+		CollectionAssert.AreEquivalent(new List<Card> { chancellor, chancellor, throneRoom }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -186,7 +191,10 @@ public class PlayerChancellorTests : CardWithPlayerTestsBase
 		CollectionAssert.AreEquivalent(new List<Card> { copper }, player.PlayerState.DiscardPile);
 
 		// chancellor and throne room were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { chancellor, throneRoom }, player.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { chancellor, throneRoom }, player.PlayerState.CardsPlayed);
+
+		// two chancellors and throne room were added to played actions
+		CollectionAssert.AreEquivalent(new List<Card> { chancellor, chancellor, throneRoom }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 }

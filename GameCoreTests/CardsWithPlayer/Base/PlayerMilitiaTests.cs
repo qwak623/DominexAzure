@@ -62,8 +62,9 @@ public class PlayerMilitiaTests : CardWithPlayerTestsBase
 		Assert.IsFalse(attacker.PlayerState.DrawPile.Any());
 		Assert.IsFalse(attacker.PlayerState.DiscardPile.Any());
 
-		// militia was added to the attacker's played cards
-		CollectionAssert.AreEquivalent(new List<Card> { militia }, attacker.PlayerState.PlayedCards);
+		// militia was added to the attacker's played cards and actions
+		CollectionAssert.AreEquivalent(new List<Card> { militia }, attacker.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { militia }, attacker.PlayerState.ActionsPlayed);
 
 		// defender's actions, coins and buys shouldn't change
 		Assert.AreEqual(0, defender.PlayerState.Actions);
@@ -77,8 +78,9 @@ public class PlayerMilitiaTests : CardWithPlayerTestsBase
 		CollectionAssert.AreEquivalent(new List<Card> { silver, silver, silver }, defender.PlayerState.Hand);
 		CollectionAssert.AreEquivalent(new List<Card> { silver, copper }, defender.PlayerState.DiscardPile);
 
-		// nothing was added to the defender's played cards
-		Assert.IsFalse(defender.PlayerState.PlayedCards.Any());
+		// nothing was added to the defender's played cards or actions
+		Assert.IsFalse(defender.PlayerState.CardsPlayed.Any());
+		Assert.IsFalse(defender.PlayerState.ActionsPlayed.Any());
 		#endregion
 	}
 
@@ -106,8 +108,10 @@ public class PlayerMilitiaTests : CardWithPlayerTestsBase
 		Assert.IsFalse(attacker.PlayerState.DrawPile.Any());
 		Assert.IsFalse(attacker.PlayerState.DiscardPile.Any());
 
-		// militia was added to the attacker's played cards
-		CollectionAssert.AreEquivalent(new List<Card> { militia }, attacker.PlayerState.PlayedCards);
+		// militia was added to the attacker's played cards and actions
+		CollectionAssert.AreEquivalent(new List<Card> { militia }, attacker.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { militia }, attacker.PlayerState.ActionsPlayed);
+
 
 		// defender's actions, coins and buys shouldn't change
 		Assert.AreEqual(0, defender.PlayerState.Actions);
@@ -121,8 +125,9 @@ public class PlayerMilitiaTests : CardWithPlayerTestsBase
 		CollectionAssert.AreEquivalent(new List<Card> { silver, copper, copper }, defender.PlayerState.Hand);
 		Assert.IsFalse(defender.PlayerState.DiscardPile.Any());
 
-		// nothing was added to the defender's played cards
-		Assert.IsFalse(defender.PlayerState.PlayedCards.Any());
+		// nothing was added to the defender's played cards or actions	
+		Assert.IsFalse(defender.PlayerState.CardsPlayed.Any());
+		Assert.IsFalse(defender.PlayerState.ActionsPlayed.Any());
 		#endregion
 	}
 
@@ -137,12 +142,12 @@ public class PlayerMilitiaTests : CardWithPlayerTestsBase
 		defender.PlayerState.Hand = new List<Card> { silver, silver, silver, silver, copper };
 		defenderUser.Setup(du => du.MilitiaDiscard(militia, defender.PlayerState, defender.Game.Kingdom, 2))
 			.Returns(new List<Card> { silver, copper });
-
 		#endregion
+
 		#region act
 		attacker.PlayActionCardInternal(throneRoom);
-
 		#endregion
+
 		#region assert
 		// (+0 Actions, +2 Coins, +0 Buys) * 2
 		Assert.AreEqual(4, attacker.PlayerState.Coins);
@@ -159,7 +164,10 @@ public class PlayerMilitiaTests : CardWithPlayerTestsBase
 			attacker.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
 
 		// militia and throne room were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { militia, throneRoom }, attacker.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { militia, throneRoom }, attacker.PlayerState.CardsPlayed);
+
+		// two militias and throne room were added to played actions
+		CollectionAssert.AreEquivalent(new List<Card> { militia, militia, throneRoom }, attacker.PlayerState.ActionsPlayed);
 
 		// defender's actions, coins and buys shouldn't change
 		Assert.AreEqual(0, defender.PlayerState.Actions);
@@ -173,8 +181,9 @@ public class PlayerMilitiaTests : CardWithPlayerTestsBase
 		CollectionAssert.AreEquivalent(new List<Card> { silver, silver, silver }, defender.PlayerState.Hand);
 		CollectionAssert.AreEquivalent(new List<Card> { silver, copper }, defender.PlayerState.DiscardPile);
 
-		// nothing was added to the defender's played cards
-		Assert.IsFalse(defender.PlayerState.PlayedCards.Any());
+		// nothing was added to the defender's played cards or actions
+		Assert.IsFalse(defender.PlayerState.CardsPlayed.Any());
+		Assert.IsFalse(defender.PlayerState.ActionsPlayed.Any());
 		#endregion
 	}
 }

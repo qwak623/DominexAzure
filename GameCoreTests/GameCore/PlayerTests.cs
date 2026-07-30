@@ -81,7 +81,8 @@ public class PlayerTests
 		Assert.AreEqual(village, playedCard);
 
 		CollectionAssert.AreEquivalent(new List<Card> { copper, silver, village, silver }, player.PlayerState.Hand);
-		CollectionAssert.AreEquivalent(new List<Card> { village }, player.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { village }, player.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { village }, player.PlayerState.ActionsPlayed);
 		CollectionAssert.AreEquivalent(new List<Card> { }, player.PlayerState.DrawPile);
 		Assert.AreEqual(2, player.PlayerState.Actions);
 		Assert.AreEqual(0, player.PlayerState.Coins);
@@ -108,7 +109,8 @@ public class PlayerTests
 		Assert.IsNull(playedCard);
 
 		CollectionAssert.AreEquivalent(new List<Card> { copper, silver, village, village }, player.PlayerState.Hand);
-		CollectionAssert.AreEquivalent(new List<Card> { }, player.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { }, player.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { }, player.PlayerState.ActionsPlayed);
 		CollectionAssert.AreEquivalent(new List<Card> { silver }, player.PlayerState.DrawPile);
 		Assert.AreEqual(0, player.PlayerState.Actions);
 		Assert.AreEqual(0, player.PlayerState.Coins);
@@ -134,7 +136,8 @@ public class PlayerTests
 		Assert.IsNull(playedCard);
 
 		CollectionAssert.AreEquivalent(new List<Card> { copper, silver, silver }, player.PlayerState.Hand);
-		CollectionAssert.AreEquivalent(new List<Card> { }, player.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { }, player.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { }, player.PlayerState.ActionsPlayed);
 		CollectionAssert.AreEquivalent(new List<Card> { silver }, player.PlayerState.DrawPile);
 		Assert.AreEqual(1, player.PlayerState.Actions);
 		Assert.AreEqual(0, player.PlayerState.Coins);
@@ -165,7 +168,8 @@ public class PlayerTests
 		Assert.IsNull(playedCard);
 
 		CollectionAssert.AreEquivalent(new List<Card> { copper, silver, village, village }, player.PlayerState.Hand);
-		CollectionAssert.AreEquivalent(new List<Card> { }, player.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { }, player.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { }, player.PlayerState.ActionsPlayed);
 		CollectionAssert.AreEquivalent(new List<Card> { silver }, player.PlayerState.DrawPile);
 		Assert.AreEqual(1, player.PlayerState.Actions);
 		Assert.AreEqual(0, player.PlayerState.Coins);
@@ -187,6 +191,7 @@ public class PlayerTests
 
 		#region assert
 		Assert.AreEqual(5, player.PlayerState.Coins);
+		CollectionAssert.AreEquivalent(new List<Card> { }, player.PlayerState.ActionsPlayed);
 		// TODO neměly by být v played? 
 		//CollectionAssert.AreEquivalent(new List<Card> { copper, silver, silver }, player.PlayerState.PlayedCards);
 		//CollectionAssert.AreEquivalent(new List<Card> { village }, player.PlayerState.Hand);
@@ -272,7 +277,8 @@ public class PlayerTests
 		player.PlayerState.DrawPile = new List<Card> { copper, silver, village };
 		player.PlayerState.Hand = new List<Card> { village, silver };
 		player.PlayerState.DiscardPile = new List<Card> { village };
-		player.PlayerState.PlayedCards = new List<Card> { silver };
+		player.PlayerState.CardsPlayed = new List<Card> { silver };
+		player.PlayerState.ActionsPlayed = new List<Card> { };
 		#endregion
 
 		#region act
@@ -281,7 +287,8 @@ public class PlayerTests
 
 		#region assert
 		Assert.IsFalse(player.PlayerState.Hand.Any());
-		Assert.IsFalse(player.PlayerState.PlayedCards.Any());
+		Assert.IsFalse(player.PlayerState.CardsPlayed.Any());
+		Assert.IsFalse(player.PlayerState.ActionsPlayed.Any());
 		CollectionAssert.AreEquivalent(new List<Card> { copper, silver, village }, player.PlayerState.DrawPile);
 		CollectionAssert.AreEquivalent(new List<Card> { village, silver, village, silver }, player.PlayerState.DiscardPile);
 		#endregion

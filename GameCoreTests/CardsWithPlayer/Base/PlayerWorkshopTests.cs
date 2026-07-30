@@ -58,8 +58,9 @@ public class PlayerWorkshopTests : CardWithPlayerTestsBase
 		// player gains the village
 		CollectionAssert.AreEquivalent(new List<Card> { village }, player.PlayerState.DiscardPile);
 
-		// workshop was added to the played cards
-		CollectionAssert.AreEquivalent(new List<Card> { workshop }, player.PlayerState.PlayedCards);
+		// workshop was added to the played cards and actions
+		CollectionAssert.AreEquivalent(new List<Card> { workshop }, player.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { workshop }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -94,8 +95,9 @@ public class PlayerWorkshopTests : CardWithPlayerTestsBase
 		// player gains nothing
 		Assert.IsFalse(player.PlayerState.DiscardPile.Any());
 
-		// workshop was added to the played cards
-		CollectionAssert.AreEquivalent(new List<Card> { workshop }, player.PlayerState.PlayedCards);
+		// workshop was added to the played cards and actions
+		CollectionAssert.AreEquivalent(new List<Card> { workshop }, player.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { workshop }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -136,7 +138,10 @@ public class PlayerWorkshopTests : CardWithPlayerTestsBase
 		CollectionAssert.AreEquivalent(new List<Card> { village, village }, player.PlayerState.DiscardPile);
 
 		// throne room and workshop were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, workshop }, player.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, workshop }, player.PlayerState.CardsPlayed);
+
+		// throne room and two workshops were added to actions played
+		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, workshop, workshop }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -177,7 +182,10 @@ public class PlayerWorkshopTests : CardWithPlayerTestsBase
 		CollectionAssert.AreEquivalent(new List<Card> { village }, player.PlayerState.DiscardPile);
 
 		// throne room and workshop were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, workshop }, player.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, workshop }, player.PlayerState.CardsPlayed);
+
+		// throne room and two workshops were added to actions played
+		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, workshop, workshop }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -218,7 +226,10 @@ public class PlayerWorkshopTests : CardWithPlayerTestsBase
 		Assert.IsFalse(player.PlayerState.DiscardPile.Any());
 
 		// throne room and workshop were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, workshop }, player.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, workshop }, player.PlayerState.CardsPlayed);
+
+		// throne room and two workshops were added to actions played
+		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, workshop, workshop }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 }

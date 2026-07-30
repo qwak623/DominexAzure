@@ -58,8 +58,9 @@ public class PlayerBaronTests : CardWithPlayerTestsBase
 		// the hand should be empty
 		Assert.IsFalse(player.PlayerState.Hand.Any());
 
-		// baron was added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { baron }, player.PlayerState.PlayedCards);
+		// baron was added to played cards and actions
+		CollectionAssert.AreEquivalent(new List<Card> { baron }, player.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { baron }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -93,11 +94,12 @@ public class PlayerBaronTests : CardWithPlayerTestsBase
 		// the estate should stay in the players hand
 		CollectionAssert.AreEquivalent(new List<Card> { estate }, player.PlayerState.Hand);
 
-		// baron was added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { baron }, player.PlayerState.PlayedCards);
-
 		// player gained an estate
 		CollectionAssert.AreEquivalent(new List<Card> { estate }, player.PlayerState.DiscardPile);
+
+		// baron was added to played cards and actions
+		CollectionAssert.AreEquivalent(new List<Card> { baron }, player.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { baron }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -130,11 +132,12 @@ public class PlayerBaronTests : CardWithPlayerTestsBase
 		// the hand should be empty
 		Assert.IsFalse(player.PlayerState.Hand.Any());
 
-		// baron was added to the played cards
-		CollectionAssert.AreEquivalent(new List<Card> { baron }, player.PlayerState.PlayedCards);
-
 		// player gained an estate
 		CollectionAssert.AreEquivalent(new List<Card> { estate }, player.PlayerState.DiscardPile);
+
+		// baron was added to played cards and actions
+		CollectionAssert.AreEquivalent(new List<Card> { baron }, player.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { baron }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -190,7 +193,10 @@ public class PlayerBaronTests : CardWithPlayerTestsBase
 		CollectionAssert.AreEquivalent(Enumerable.Repeat(estate, 2).ToList(), player.PlayerState.DiscardPile);
 
 		// baron and throne room were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { baron, throneRoom }, player.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { baron, throneRoom }, player.PlayerState.CardsPlayed);
+
+		// two barons and throne room were added to actions played
+		CollectionAssert.AreEquivalent(new List<Card> { baron, baron, throneRoom }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 }

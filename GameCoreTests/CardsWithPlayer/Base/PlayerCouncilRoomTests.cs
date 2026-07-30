@@ -70,8 +70,9 @@ public class PlayerCouncilRoomTests : CardWithPlayerTestsBase
 		Assert.IsFalse(player.PlayerState.DrawPile.Any());
 		Assert.IsFalse(player.PlayerState.DiscardPile.Any());
 
-		// council room was added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { councilRoom }, player.PlayerState.PlayedCards);
+		// council room was added to played cards and actions
+		CollectionAssert.AreEquivalent(new List<Card> { councilRoom }, player.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { councilRoom }, player.PlayerState.ActionsPlayed);
 
 		// players 2 and 3 draw one card
 		CollectionAssert.AreEquivalent(new List<Card> { copper }, player2.PlayerState.Hand);
@@ -123,7 +124,10 @@ public class PlayerCouncilRoomTests : CardWithPlayerTestsBase
 			player.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
 
 		// council room and throne room were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { councilRoom, throneRoom }, player.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { councilRoom, throneRoom }, player.PlayerState.CardsPlayed);
+
+		// two council rooms and throne room were added to played actions
+		CollectionAssert.AreEquivalent(new List<Card> { councilRoom, councilRoom, throneRoom }, player.PlayerState.ActionsPlayed);
 
 		// player 2 draws 2 cards
 		CollectionAssert.AreEquivalent(new List<Card> { copper, silver }, player2.PlayerState.Hand);

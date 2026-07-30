@@ -71,8 +71,9 @@ public class PlayerRemodelTests : CardWithPlayerTestsBase
 		// laboratory is gained
 		CollectionAssert.AreEquivalent(new List<Card>() { laboratory }, player.PlayerState.DiscardPile);
 
-		// remodel was added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { remodel }, player.PlayerState.PlayedCards);
+		// remodel was added to played cards and actions
+		CollectionAssert.AreEquivalent(new List<Card> { remodel }, player.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { remodel }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -113,8 +114,9 @@ public class PlayerRemodelTests : CardWithPlayerTestsBase
 		// nothing is gained
 		Assert.IsFalse(player.PlayerState.DiscardPile.Any());
 
-		// remodel was added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { remodel }, player.PlayerState.PlayedCards);
+		// remodel was added to played cards and actions
+		CollectionAssert.AreEquivalent(new List<Card> { remodel }, player.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { remodel }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -158,8 +160,9 @@ public class PlayerRemodelTests : CardWithPlayerTestsBase
 		// nothing is gained
 		Assert.IsFalse(player.PlayerState.DiscardPile.Any());
 
-		// remodel was added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { remodel }, player.PlayerState.PlayedCards);
+		// remodel was added to played cards and actions
+		CollectionAssert.AreEquivalent(new List<Card> { remodel }, player.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { remodel }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -209,7 +212,10 @@ public class PlayerRemodelTests : CardWithPlayerTestsBase
 		CollectionAssert.AreEquivalent(new List<Card> { laboratory, gold }, player.PlayerState.DiscardPile);
 
 		// remodel and throne room were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { remodel, throneRoom }, player.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { remodel, throneRoom }, player.PlayerState.CardsPlayed);
+
+		// two remodels and throne room were added to played actions
+		CollectionAssert.AreEquivalent(new List<Card> { remodel, remodel, throneRoom }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 }

@@ -57,8 +57,9 @@ public class PlayerLibraryTests : CardWithPlayerTestsBase
 		// nothing was discarded
 		Assert.IsFalse(player.PlayerState.DiscardPile.Any());
 
-		// library was added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { library }, player.PlayerState.PlayedCards);
+		// library was added to played cards and actions
+		CollectionAssert.AreEquivalent(new List<Card> { library }, player.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { library }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -95,8 +96,9 @@ public class PlayerLibraryTests : CardWithPlayerTestsBase
 		// library was discarded
 		CollectionAssert.AreEquivalent(new List<Card> { library }, player.PlayerState.DiscardPile);
 
-		// library was added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { library }, player.PlayerState.PlayedCards);
+		// library was added to played cards and actions
+		CollectionAssert.AreEquivalent(new List<Card> { library }, player.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { library }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -144,7 +146,10 @@ public class PlayerLibraryTests : CardWithPlayerTestsBase
 		CollectionAssert.AreEquivalent(new List<Card> { library }, player.PlayerState.DiscardPile);
 
 		// throne room and library were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, library }, player.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, library }, player.PlayerState.CardsPlayed);
+
+		// throne room and two libraries were added to played actions
+		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, library, library }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -193,7 +198,10 @@ public class PlayerLibraryTests : CardWithPlayerTestsBase
 		CollectionAssert.AreEquivalent(new List<Card> { library }, player.PlayerState.DiscardPile);
 
 		// throne room and library were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, library }, player.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, library }, player.PlayerState.CardsPlayed);
+
+		// throne room and two libraries were added to played actions
+		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, library, library }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 }

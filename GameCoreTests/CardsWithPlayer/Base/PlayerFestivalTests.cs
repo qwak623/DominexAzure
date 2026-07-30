@@ -45,8 +45,9 @@ public class PlayerFestivalTests : CardWithPlayerTestsBase
 		// +0 Cards
 		Assert.IsFalse(player.PlayerState.Hand.Any());
 
-		// festival was added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { festival }, player.PlayerState.PlayedCards);
+		// festival was added to played cards and actions
+		CollectionAssert.AreEquivalent(new List<Card> { festival }, player.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { festival }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -79,7 +80,10 @@ public class PlayerFestivalTests : CardWithPlayerTestsBase
 			player.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
 
 		// festival and throne room were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { festival, throneRoom }, player.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { festival, throneRoom }, player.PlayerState.CardsPlayed);
+
+		// two festival and throne room were added to played actions
+		CollectionAssert.AreEquivalent(new List<Card> { festival, festival, throneRoom }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 }

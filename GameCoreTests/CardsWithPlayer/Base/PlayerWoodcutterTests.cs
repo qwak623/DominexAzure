@@ -47,8 +47,9 @@ public class PlayerWoodcutterTests : CardWithPlayerTestsBase
 		Assert.IsFalse(player.PlayerState.DrawPile.Any());
 		Assert.IsFalse(player.PlayerState.DiscardPile.Any());
 
-		// woodcutter was added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { woodcutter }, player.PlayerState.PlayedCards);
+		// woodcutter was added to played cards and actions
+		CollectionAssert.AreEquivalent(new List<Card> { woodcutter }, player.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { woodcutter }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -81,7 +82,10 @@ public class PlayerWoodcutterTests : CardWithPlayerTestsBase
 			player.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
 
 		// woodcutter and throne room were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { woodcutter, throneRoom }, player.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { woodcutter, throneRoom }, player.PlayerState.CardsPlayed);
+
+		// two woodcutters and throne room were added to actions played
+		CollectionAssert.AreEquivalent(new List<Card> { woodcutter, woodcutter, throneRoom }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 }

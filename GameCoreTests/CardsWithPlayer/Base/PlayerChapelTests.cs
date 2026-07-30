@@ -53,8 +53,9 @@ public class PlayerChapelTests : CardWithPlayerTestsBase
 		CollectionAssert.AreEquivalent(new List<Card> { copper, silver, silver, copper }, player.PlayerState.Hand);
 		Assert.IsFalse(player.Game.Trash.Any());
 
-		// chapel was added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { chapel }, player.PlayerState.PlayedCards);
+		// chapel was added to played cards and actions
+		CollectionAssert.AreEquivalent(new List<Card> { chapel }, player.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { chapel }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 	[TestMethod]
@@ -81,8 +82,9 @@ public class PlayerChapelTests : CardWithPlayerTestsBase
 		CollectionAssert.AreEquivalent(new List<Card> { copper, silver, silver }, player.PlayerState.Hand);
 		CollectionAssert.AreEquivalent(new List<Card> { copper }, player.Game.Trash);
 
-		// chapel was added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { chapel }, player.PlayerState.PlayedCards);
+		// chapel was added to played cards and actions
+		CollectionAssert.AreEquivalent(new List<Card> { chapel }, player.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { chapel }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -111,8 +113,9 @@ public class PlayerChapelTests : CardWithPlayerTestsBase
 		Assert.IsFalse(player.PlayerState.Hand.Any());
 		CollectionAssert.AreEquivalent(new List<Card> { copper, silver, silver, copper }, player.Game.Trash);
 
-		// chapel was added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { chapel }, player.PlayerState.PlayedCards);
+		// chapel was added to played cards and actions
+		CollectionAssert.AreEquivalent(new List<Card> { chapel }, player.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { chapel }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -155,7 +158,10 @@ public class PlayerChapelTests : CardWithPlayerTestsBase
 		CollectionAssert.AreEquivalent(new List<Card> { copper, copper, silver, silver, copper, copper }, player.Game.Trash);
 
 		// chapel and throne room were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { chapel, throneRoom }, player.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { chapel, throneRoom }, player.PlayerState.CardsPlayed);
+
+		// two chapels and throne room were added to played actions
+		CollectionAssert.AreEquivalent(new List<Card> { chapel, chapel, throneRoom }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 }

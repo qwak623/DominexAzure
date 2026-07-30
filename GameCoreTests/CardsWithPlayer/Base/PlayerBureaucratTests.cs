@@ -64,8 +64,9 @@ public class PlayerBureaucratTests : CardWithPlayerTestsBase
 		// attacker got silver to his draw pile
 		CollectionAssert.AreEquivalent(new List<Card> { silver }, attacker.PlayerState.DrawPile);
 
-		// bureaucrat was added to the attacker's played cards
-		CollectionAssert.AreEquivalent(new List<Card> { bureaucrat }, attacker.PlayerState.PlayedCards);
+		// bureaucrat was added to the attacker's played cards and actions
+		CollectionAssert.AreEquivalent(new List<Card> { bureaucrat }, attacker.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { bureaucrat }, attacker.PlayerState.ActionsPlayed);
 
 		// defender's actions, coins and buys shouldn't change
 		Assert.AreEqual(0, defender.PlayerState.Actions);
@@ -82,8 +83,9 @@ public class PlayerBureaucratTests : CardWithPlayerTestsBase
 		// the other card stayed in the defender's hand
 		CollectionAssert.AreEquivalent(new List<Card> { duchy }, defender.PlayerState.Hand);
 
-		// nothing was added to the defender's played cards
-		Assert.IsFalse(defender.PlayerState.PlayedCards.Any());
+		// nothing was added to the defender's played cards and actions
+		Assert.IsFalse(defender.PlayerState.CardsPlayed.Any());
+		Assert.IsFalse(defender.PlayerState.ActionsPlayed.Any());
 		#endregion
 	}
 
@@ -111,8 +113,9 @@ public class PlayerBureaucratTests : CardWithPlayerTestsBase
 		// attacker got silver to his draw pile
 		CollectionAssert.AreEquivalent(new List<Card> { silver }, attacker.PlayerState.DrawPile);
 
-		// bureaucrat was added to the attacker's played cards
-		CollectionAssert.AreEquivalent(new List<Card> { bureaucrat }, attacker.PlayerState.PlayedCards);
+		// bureaucrat was added to the attacker's played cards and actions
+		CollectionAssert.AreEquivalent(new List<Card> { bureaucrat }, attacker.PlayerState.CardsPlayed);
+		CollectionAssert.AreEquivalent(new List<Card> { bureaucrat }, attacker.PlayerState.ActionsPlayed);
 
 		// defender's actions, coins and buys shouldn't change
 		Assert.AreEqual(0, defender.PlayerState.Actions);
@@ -129,8 +132,9 @@ public class PlayerBureaucratTests : CardWithPlayerTestsBase
 		// nothing was added to the defender's hand
 		Assert.IsFalse(defender.PlayerState.Hand.Any());
 
-		// nothing was added to the defender's played cards
-		Assert.IsFalse(defender.PlayerState.PlayedCards.Any());
+		// nothing was added to the defender's played cards or actions
+		Assert.IsFalse(defender.PlayerState.CardsPlayed.Any());
+		Assert.IsFalse(defender.PlayerState.ActionsPlayed.Any());
 		#endregion
 	}
 
@@ -173,7 +177,10 @@ public class PlayerBureaucratTests : CardWithPlayerTestsBase
 			attacker.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
 
 		// bureaucrat and throne room were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { bureaucrat, throneRoom }, attacker.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { bureaucrat, throneRoom }, attacker.PlayerState.CardsPlayed);
+
+		// two bureaucrats and throne room were added to played actions
+		CollectionAssert.AreEquivalent(new List<Card> { bureaucrat, bureaucrat, throneRoom }, attacker.PlayerState.ActionsPlayed);
 
 		// defender's actions, coins and buys shouldn't change
 		Assert.AreEqual(0, defender.PlayerState.Actions);
@@ -192,8 +199,9 @@ public class PlayerBureaucratTests : CardWithPlayerTestsBase
 		expectedHand.AddRange(Enumerable.Repeat(province, provinceCount - provincesPutOnTop));
 		CollectionAssert.AreEquivalent(expectedHand, defender.PlayerState.Hand);
 
-		// nothing was added to the defender's played cards
-		Assert.IsFalse(defender.PlayerState.PlayedCards.Any());
+		// nothing was added to the defender's played cards or actions
+		Assert.IsFalse(defender.PlayerState.CardsPlayed.Any());
+		Assert.IsFalse(defender.PlayerState.ActionsPlayed.Any());
 		#endregion
 	}
 }

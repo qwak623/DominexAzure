@@ -57,7 +57,10 @@ public class PlayerFeastTests : CardWithPlayerTestsBase
 		CollectionAssert.AreEquivalent(new List<Card> { feast }, player.Game.Trash);
 
 		// the feast was transferred from played cards to trash 
-		Assert.IsFalse(player.PlayerState.PlayedCards.Any());
+		Assert.IsFalse(player.PlayerState.CardsPlayed.Any());
+
+		// feast was added to played actions
+		CollectionAssert.AreEquivalent(new List<Card> { feast }, player.PlayerState.ActionsPlayed);
 
 		// player gains the duchy to the discard pile
 		CollectionAssert.AreEquivalent(new List<Card> { duchy }, player.PlayerState.DiscardPile);
@@ -94,7 +97,10 @@ public class PlayerFeastTests : CardWithPlayerTestsBase
 		CollectionAssert.AreEquivalent(new List<Card> { feast }, player.Game.Trash);
 
 		// the feast was transferred from played cards to trash 
-		Assert.IsFalse(player.PlayerState.PlayedCards.Any());
+		Assert.IsFalse(player.PlayerState.CardsPlayed.Any());
+
+		// feast was added to played actions
+		CollectionAssert.AreEquivalent(new List<Card> { feast }, player.PlayerState.ActionsPlayed);
 
 		// player gains nothing
 		Assert.IsFalse(player.PlayerState.DiscardPile.Any());
@@ -142,9 +148,11 @@ public class PlayerFeastTests : CardWithPlayerTestsBase
 		// player gains the duchy
 		CollectionAssert.AreEquivalent(new List<Card> { duchy, duchy }, player.PlayerState.DiscardPile);
 
-		// TODO je to dobře? 
 		// throne room was added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { throneRoom }, player.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { throneRoom }, player.PlayerState.CardsPlayed);
+
+		// throne room and two feasts were added to played actions
+		CollectionAssert.AreEquivalent(new List<Card> { feast, feast, throneRoom }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -187,9 +195,11 @@ public class PlayerFeastTests : CardWithPlayerTestsBase
 		// player gains the one duchy
 		CollectionAssert.AreEquivalent(new List<Card> { duchy }, player.PlayerState.DiscardPile);
 
-		// TODO je to dobře? 
 		// throne room was added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { throneRoom }, player.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { throneRoom }, player.PlayerState.CardsPlayed);
+
+		// throne room and two feasts were added to played actions
+		CollectionAssert.AreEquivalent(new List<Card> { feast, feast, throneRoom }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -232,9 +242,11 @@ public class PlayerFeastTests : CardWithPlayerTestsBase
 		// player gains nothing
 		Assert.IsFalse(player.PlayerState.DiscardPile.Any());
 
-		// TODO je to dobře?
 		// throne room was added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { throneRoom }, player.PlayerState.PlayedCards);
+		CollectionAssert.AreEquivalent(new List<Card> { throneRoom }, player.PlayerState.CardsPlayed);
+
+		// throne room and two feasts were added to played actions
+		CollectionAssert.AreEquivalent(new List<Card> { feast, feast, throneRoom }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 }
