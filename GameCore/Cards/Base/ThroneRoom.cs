@@ -36,6 +36,8 @@ public class ThroneRoom : Card
 		}
 
 		// TODO asi by bylo lepší tohle udělat přes player.PlayActionCard a přidat tam flag "without action" nebo něco takového
+		// TODO this way the throneroom is stored in the list after the card selected,
+		// but it should be stored before the card selected, so the order of the cards played is correct
 		player.PlayerState.Hand.Remove(card);
 		player.PlayerState.CardsPlayed.Add(card);
 		for (int i = 0; i < 2; i++)
