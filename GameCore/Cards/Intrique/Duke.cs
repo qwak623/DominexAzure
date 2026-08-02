@@ -19,7 +19,7 @@ public class Duke : Card
 	)
 	{
 		duke = this;
-		Description = "Worth 1 VP per 10 cards you have (round down).";
+		Description = "Worth 1 VP per Duchy you have.";
 	}
 
 	public static Duke Get() => duke ?? new Duke();
