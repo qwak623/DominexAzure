@@ -1,10 +1,7 @@
-﻿using GameCore.GameCore;
-
-namespace GameCore.Cards;
+﻿namespace GameCore.Cards;
 
 public abstract class Card
 {
-	public readonly int Id;
 	public readonly string Name;
 	public readonly CardType Type;
 	public readonly int Price;
@@ -54,12 +51,13 @@ public abstract class Card
 		IsVictory = isVictory;
 		IsTreasure = isTreasure;
 	}
-	
+
 	/// <summary>
 	/// Special action card effect including adding actions etc.
 	/// </summary>
 	/// <param name="player"></param>
-	public void WhenPlayAction(IPlayer player)
+	/// <param name="card"></param>
+	public void WhenPlayAction(IPlayer player, CardInstance thisCard)
 	{
 		player.PlayerState.Actions += AddActions;
 		player.PlayerState.Coins += AddCoins;
@@ -69,7 +67,7 @@ public abstract class Card
 			player.Draw(DrawCards);
 		}
 
-		ActionEffect(player);
+		ActionEffect(player, thisCard);
 	}
 
 	/// <summary>
@@ -78,7 +76,8 @@ public abstract class Card
 	/// drawing cards so theese effect shouldn be implemented here.
 	/// </summary>
 	/// <param name="player"></param>
-	protected virtual void ActionEffect(IPlayer player) { }
+	/// <param name="thisCard"></param>
+	protected virtual void ActionEffect(IPlayer player, CardInstance thisCard) { }
 
 	public void WhenPlayTreasure(IPlayer player)
 	{

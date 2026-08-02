@@ -1,8 +1,7 @@
-﻿using GameCore.Cards;
+using GameCore.Cards;
 using GameCore.Cards.Base;
 using GameCore.Cards.GeneralCards;
 using GameCore.CardWithPlayer.Tests;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
 namespace GameCore.CardsWithPlayer.Base.Tests;
@@ -35,31 +34,25 @@ public class PlayerLibraryTests : CardWithPlayerTestsBase
 	public void AlreadyHas7Cards()
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { copper, copper, library, adventurer, silver, silver, gold, province };
+		player.PlayerState.Hand = CreatePile([copper, copper, library, adventurer, silver, silver, gold, province]);
+		var libraryToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Library);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(library);
+		player.PlayActionCardInternal(libraryToPlay);
 		#endregion
 
 		#region assert
-		// -1 Action, +0 Coins, +0 Buys
-		Assert.AreEqual(0, player.PlayerState.Actions);
-		Assert.AreEqual(0, player.PlayerState.Coins);
-		Assert.AreEqual(0, player.PlayerState.Buys);
+		AssertNumbers(0, 0, 0, player);
+		AssertPile([copper, copper, adventurer, silver, silver, gold, province], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([], player.PlayerState.DiscardPile);
+		AssertPile([library], player.PlayerState.CardsPlayed);
+		AssertPile([library], player.PlayerState.ActionsPlayed);
+		AssertPile([], player.Game.Trash);
 
-		// user does not need to decide whether to skip action card
-		user.Verify(u => u.LibrarySkip(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<Card>()), Times.Never);
-
-		// the hand hasn't changed 
-		CollectionAssert.AreEquivalent(new List<Card> { copper, copper, adventurer, silver, silver, gold, province }, player.PlayerState.Hand);
-
-		// nothing was discarded
-		Assert.IsFalse(player.PlayerState.DiscardPile.Any());
-
-		// library was added to played cards and actions
-		CollectionAssert.AreEquivalent(new List<Card> { library }, player.PlayerState.CardsPlayed);
-		CollectionAssert.AreEquivalent(new List<Card> { library }, player.PlayerState.ActionsPlayed);
+		// hand is already at 7, so the loop never runs and nothing is ever shown
+		user.Verify(u => u.LibrarySkip(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<CardInstance>()), Times.Never);
 		#endregion
 	}
 
@@ -67,38 +60,37 @@ public class PlayerLibraryTests : CardWithPlayerTestsBase
 	public void Play()
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { adventurer, copper, silver };
-		player.PlayerState.DrawPile = new List<Card> { library, adventurer, copper };
-		user.Setup(u => u.LibrarySkip(library, player.PlayerState, player.Game.Kingdom, adventurer)).Returns(false);
-		user.Setup(u => u.LibrarySkip(library, player.PlayerState, player.Game.Kingdom, library)).Returns(true);
+		player.PlayerState.Hand = CreatePile([adventurer, copper, silver, library]);
+		player.PlayerState.DrawPile = CreatePile([library, adventurer, copper]);
+		var libraryToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Library);
+		var adventurerShown = player.PlayerState.DrawPile.First(c => c.Card.Type == CardType.Adventurer);
+		var libraryShown = player.PlayerState.DrawPile.First(c => c.Card.Type == CardType.Library);
+
+		user.Setup(u => u.LibrarySkip(library, player.PlayerState, player.Game.Kingdom, adventurerShown)).Returns(false);
+		user.Setup(u => u.LibrarySkip(library, player.PlayerState, player.Game.Kingdom, libraryShown)).Returns(true);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(library);
+		player.PlayActionCardInternal(libraryToPlay);
 		#endregion
 
 		#region assert
-		// -1 Action, +0 Coins, +0 Buys
-		Assert.AreEqual(0, player.PlayerState.Actions);
-		Assert.AreEqual(0, player.PlayerState.Coins);
-		Assert.AreEqual(0, player.PlayerState.Buys);
+		AssertNumbers(0, 0, 0, player);
+		AssertPile([adventurer, copper, silver, copper, adventurer], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
 
-		// user needs to decide whether to skip two action cards
-		user.Verify(u => u.LibrarySkip(library, player.PlayerState, player.Game.Kingdom, adventurer), Times.Once);
-		user.Verify(u => u.LibrarySkip(library, player.PlayerState, player.Game.Kingdom, library), Times.Once);
+		// the library shown from the draw pile - a different physical card than the one being
+		// played - gets skipped and discarded rather than drawn
+		AssertPile([library], player.PlayerState.DiscardPile);
+		AssertPile([library], player.PlayerState.CardsPlayed);
+		AssertPile([library], player.PlayerState.ActionsPlayed);
+		AssertPile([], player.Game.Trash);
 
-		// user does not need to decide whether to skip non-action cards
-		user.Verify(u => u.LibrarySkip(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), copper), Times.Never);
+		user.Verify(u => u.LibrarySkip(library, player.PlayerState, player.Game.Kingdom, adventurerShown), Times.Once);
+		user.Verify(u => u.LibrarySkip(library, player.PlayerState, player.Game.Kingdom, libraryShown), Times.Once);
 
-		// the hand should now include copper and adventurer
-		CollectionAssert.AreEquivalent(new List<Card> { adventurer, copper, silver, copper, adventurer }, player.PlayerState.Hand);
-
-		// library was discarded
-		CollectionAssert.AreEquivalent(new List<Card> { library }, player.PlayerState.DiscardPile);
-
-		// library was added to played cards and actions
-		CollectionAssert.AreEquivalent(new List<Card> { library }, player.PlayerState.CardsPlayed);
-		CollectionAssert.AreEquivalent(new List<Card> { library }, player.PlayerState.ActionsPlayed);
+		// only action cards are offered as a skip choice
+		user.Verify(u => u.LibrarySkip(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.Is<CardInstance>(c => !c.IsAction)), Times.Never);
 		#endregion
 	}
 
@@ -106,50 +98,38 @@ public class PlayerLibraryTests : CardWithPlayerTestsBase
 	public void ThroneRoomDrawToSevenCards()
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { adventurer, copper, silver, library, throneRoom };
-		player.PlayerState.DrawPile = new List<Card> { copper, silver, library, adventurer, copper };
-		user.Setup(u => u.LibrarySkip(library, player.PlayerState, player.Game.Kingdom, adventurer)).Returns(false);
-		user.Setup(u => u.LibrarySkip(library, player.PlayerState, player.Game.Kingdom, library)).Returns(true);
+		player.PlayerState.Hand = CreatePile([adventurer, copper, silver, library, throneRoom]);
+		player.PlayerState.DrawPile = CreatePile([copper, silver, library, adventurer, copper]);
+		var libraryToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Library);
+		var adventurerShown = player.PlayerState.DrawPile.First(c => c.Card.Type == CardType.Adventurer);
+		var libraryShown = player.PlayerState.DrawPile.First(c => c.Card.Type == CardType.Library);
+
+		user.Setup(u => u.LibrarySkip(library, player.PlayerState, player.Game.Kingdom, adventurerShown)).Returns(false);
+		user.Setup(u => u.LibrarySkip(library, player.PlayerState, player.Game.Kingdom, libraryShown)).Returns(true);
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<Card>>(c => c.Contains(library)))).Returns(library);
+			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Contains(libraryToPlay)))).Returns(libraryToPlay);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(throneRoom);
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
 		#endregion
 
 		#region assert
-		// -1 Action, (+0 Action, +0 Coins, +0 Buys) * 2
-		Assert.AreEqual(0, player.PlayerState.Actions);
-		Assert.AreEqual(0, player.PlayerState.Coins);
-		Assert.AreEqual(0, player.PlayerState.Buys);
+		AssertNumbers(0, 0, 0, player);
+		AssertPile([adventurer, copper, silver, copper, adventurer, silver, copper], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([library], player.PlayerState.DiscardPile);
+		AssertPile([throneRoom, library], player.PlayerState.CardsPlayed);
+		AssertPile([throneRoom, library, library], player.PlayerState.ActionsPlayed);
+		AssertPile([], player.Game.Trash);
 
-		// +0 Cards
-		Assert.IsFalse(player.PlayerState.DrawPile.Any());
-
-		// user is asked which card to play using throne room
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
+			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
 
-		// user needs to decide whether to skip two action cards
-		user.Verify(u => u.LibrarySkip(library, player.PlayerState, player.Game.Kingdom, adventurer), Times.Once);
-		user.Verify(u => u.LibrarySkip(library, player.PlayerState, player.Game.Kingdom, library), Times.Once);
-
-		// user does not need to decide whether to skip non-action cards
-		user.Verify(u => u.LibrarySkip(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), copper), Times.Never);
-		user.Verify(u => u.LibrarySkip(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), silver), Times.Never);
-
-		// the hand should now have 7 cards
-		CollectionAssert.AreEquivalent(new List<Card> { adventurer, copper, silver, copper, adventurer, silver, copper }, player.PlayerState.Hand);
-
-		// library was discarded
-		CollectionAssert.AreEquivalent(new List<Card> { library }, player.PlayerState.DiscardPile);
-
-		// throne room and library were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, library }, player.PlayerState.CardsPlayed);
-
-		// throne room and two libraries were added to played actions
-		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, library, library }, player.PlayerState.ActionsPlayed);
+		// the first resolution fills the hand to exactly 7, so the second resolution's loop
+		// condition is false from the start and never shows anything
+		user.Verify(u => u.LibrarySkip(library, player.PlayerState, player.Game.Kingdom, adventurerShown), Times.Once);
+		user.Verify(u => u.LibrarySkip(library, player.PlayerState, player.Game.Kingdom, libraryShown), Times.Once);
 		#endregion
 	}
 
@@ -157,51 +137,44 @@ public class PlayerLibraryTests : CardWithPlayerTestsBase
 	public void ThroneRoomNotEnoughCards()
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { adventurer, copper, silver, library, throneRoom };
-		player.PlayerState.DrawPile = new List<Card> { copper, throneRoom, library, adventurer };
-		user.Setup(u => u.LibrarySkip(library, player.PlayerState, player.Game.Kingdom, adventurer)).Returns(false);
-		user.Setup(u => u.LibrarySkip(library, player.PlayerState, player.Game.Kingdom, library)).Returns(true);
-		user.SetupSequence(u => u.LibrarySkip(library, player.PlayerState, player.Game.Kingdom, throneRoom)).Returns(true).Returns(false);
+		player.PlayerState.Hand = CreatePile([adventurer, copper, silver, library, throneRoom]);
+		player.PlayerState.DrawPile = CreatePile([copper, throneRoom, library, adventurer]);
+		var libraryToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Library);
+		var adventurerShown = player.PlayerState.DrawPile.First(c => c.Card.Type == CardType.Adventurer);
+		var libraryShown = player.PlayerState.DrawPile.First(c => c.Card.Type == CardType.Library);
+		var throneRoomShown = player.PlayerState.DrawPile.First(c => c.Card.Type == CardType.ThroneRoom);
+
+		user.Setup(u => u.LibrarySkip(library, player.PlayerState, player.Game.Kingdom, adventurerShown)).Returns(false);
+		user.Setup(u => u.LibrarySkip(library, player.PlayerState, player.Game.Kingdom, libraryShown)).Returns(true);
+		user.SetupSequence(u => u.LibrarySkip(library, player.PlayerState, player.Game.Kingdom, throneRoomShown))
+			.Returns(true).Returns(false);
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<Card>>(c => c.Contains(library)))).Returns(library);
+			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Contains(libraryToPlay)))).Returns(libraryToPlay);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(throneRoom);
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
 		#endregion
 
 		#region assert
-		// -1 Action, (+0 Action, +0 Coins, +0 Buys) * 2
-		Assert.AreEqual(0, player.PlayerState.Actions);
-		Assert.AreEqual(0, player.PlayerState.Coins);
-		Assert.AreEqual(0, player.PlayerState.Buys);
+		// the first resolution's draw pile runs out after setting library and throne room aside;
+		// those get discarded at the end of that resolution, so when the second resolution's
+		// draw pile is also empty, ShuffleIfNeeded reshuffles them straight back in and shows
+		// them again - library is skipped a second time, throne room isn't and gets drawn
+		AssertNumbers(0, 0, 0, player);
+		AssertPile([adventurer, copper, silver, adventurer, copper, throneRoom], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([library], player.PlayerState.DiscardPile);
+		AssertPile([throneRoom, library], player.PlayerState.CardsPlayed);
+		AssertPile([throneRoom, library, library], player.PlayerState.ActionsPlayed);
+		AssertPile([], player.Game.Trash);
 
-		// +0 Cards
-		Assert.IsFalse(player.PlayerState.DrawPile.Any());
-
-		// user is asked which card to play using throne room
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
-
-		// user needs to decide whether to skip three action cards
-		user.Verify(u => u.LibrarySkip(library, player.PlayerState, player.Game.Kingdom, adventurer), Times.Once);
-		user.Verify(u => u.LibrarySkip(library, player.PlayerState, player.Game.Kingdom, library), Times.Exactly(2));
-		user.Verify(u => u.LibrarySkip(library, player.PlayerState, player.Game.Kingdom, throneRoom), Times.Exactly(2));
-
-		// user does not need to decide whether to skip non-action cards
-		user.Verify(u => u.LibrarySkip(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), copper), Times.Never);
-
-		// player gained the cards to the hand
-		CollectionAssert.AreEquivalent(new List<Card> { adventurer, copper, silver, adventurer, throneRoom, copper }, player.PlayerState.Hand);
-
-		// library was discarded
-		CollectionAssert.AreEquivalent(new List<Card> { library }, player.PlayerState.DiscardPile);
-
-		// throne room and library were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, library }, player.PlayerState.CardsPlayed);
-
-		// throne room and two libraries were added to played actions
-		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, library, library }, player.PlayerState.ActionsPlayed);
+			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+		user.Verify(u => u.LibrarySkip(library, player.PlayerState, player.Game.Kingdom, adventurerShown), Times.Once);
+		user.Verify(u => u.LibrarySkip(library, player.PlayerState, player.Game.Kingdom, libraryShown), Times.Exactly(2));
+		user.Verify(u => u.LibrarySkip(library, player.PlayerState, player.Game.Kingdom, throneRoomShown), Times.Exactly(2));
+		user.Verify(u => u.LibrarySkip(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.Is<CardInstance>(c => !c.IsAction)), Times.Never);
 		#endregion
 	}
 }

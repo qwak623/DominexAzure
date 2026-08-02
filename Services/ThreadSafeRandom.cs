@@ -10,11 +10,11 @@ public class ThreadSafeRandom
 		//_local = _global;
 		//return; // zdeterministicteni
 
-		if (_local == null)
+		if (_local is null)
 		{
 			lock (_global)
 			{
-				if (_local == null)
+				if (_local is null)
 				{
 					int seed = _global.Next();
 					_local = new Random(seed);

@@ -25,11 +25,11 @@ public class Cellar : Card
 
 	public static Cellar Get() => cellar ?? new Cellar();
 
-	protected override void ActionEffect(IPlayer player)
+	protected override void ActionEffect(IPlayer player, CardInstance thisCard)
 	{
 		var selectedCards = player.User.CellarDiscard(this, player.PlayerState, player.Game.Kingdom);
 
-		if (selectedCards.Any())
+		if (selectedCards.Count > 0)
 		{
 			selectedCards.ForEach(player.Discard);
 			player.Draw(selectedCards.Count);

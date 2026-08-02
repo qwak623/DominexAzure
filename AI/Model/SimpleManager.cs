@@ -59,7 +59,7 @@ public class SimpleManager : BuyAgendaManager
 		var id = cards.ToId();
 		int i = cards.OrderBy(p => p.Type).Select(p => (int)p.Type).First();
 
-		if (Load(cards) == null)
+		if (Load(cards) is null)
 			lock (_lock)
 				using (var writer = File.AppendText($"{directoryPath}{prefix}{i}.txt"))
 					writer.WriteLine(agenda.ToString(id));
@@ -93,7 +93,7 @@ public class SimpleManager : BuyAgendaManager
 					while (!reader.EndOfStream)
 					{
 						var cards = reader.ReadLine().Split(':')[0].ToCardList();
-						if (cards != null)
+						if (cards is not null)
 						{
 							list.Add(cards);
 						}

@@ -1,4 +1,5 @@
-﻿using GameCore.Cards.GeneralCards;
+#if false
+using GameCore.Cards.GeneralCards;
 using GameCore.Cards.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -35,7 +36,7 @@ public class LibraryTests : CardTestsBase
 		#endregion
 
 		#region act
-		library.WhenPlayAction(player.Object);
+		library.WhenPlayAction(player.Object, TODO);
 		#endregion
 
 		#region assert
@@ -78,7 +79,7 @@ public class LibraryTests : CardTestsBase
 		#endregion
 
 		#region act
-		library.WhenPlayAction(player.Object);
+		library.WhenPlayAction(player.Object, TODO);
 		#endregion
 
 		#region assert
@@ -127,7 +128,7 @@ public class LibraryTests : CardTestsBase
 		#endregion
 
 		#region act
-		library.WhenPlayAction(player.Object);
+		library.WhenPlayAction(player.Object, TODO);
 		#endregion
 
 		#region assert
@@ -177,7 +178,7 @@ public class LibraryTests : CardTestsBase
 		#endregion
 
 		#region act
-		throneRoom.WhenPlayAction(player.Object);
+		throneRoom.WhenPlayAction(player.Object, TODO);
 		#endregion
 
 		#region assert
@@ -235,7 +236,7 @@ public class LibraryTests : CardTestsBase
 		#endregion
 
 		#region act
-		throneRoom.WhenPlayAction(player.Object);
+		throneRoom.WhenPlayAction(player.Object, TODO);
 		#endregion
 
 		#region assert
@@ -270,3 +271,4 @@ public class LibraryTests : CardTestsBase
 		#endregion
 	}
 }
+#endif

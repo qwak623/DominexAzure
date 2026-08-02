@@ -14,12 +14,12 @@ public class KingdomWrapper
 	/// </summary>
 	/// <param name="type"></param>
 	/// <returns></returns>
-	public Card GetCard(CardType type)
+	public CardInstance GetCard(CardType type)
 	{
 		var pile = Kingdom.GetPile(type);
-		if (pile != null && IsAvailable(pile))
+		if (pile is not null && IsAvailable(pile))
 		{
-			return Kingdom.GetPile(type).Card;
+			return pile.CardInstance;
 		}
 
 		return null;
@@ -28,9 +28,10 @@ public class KingdomWrapper
 	/// <summary>
 	/// Returns all available cards.
 	/// </summary>
-	public IEnumerable<Card> AvailableCards =>
+	public IEnumerable<CardInstance> AvailableCards =>
 		Kingdom.Where(IsAvailable)
-		.Select(p => p.Card);
+		.Select(p => p.CardInstance);
 
-	private bool IsAvailable(Pile pile) => pile.Count > 0 && pile.Price <= Price && (OnlyTreasures && pile.Card.IsTreasure || !OnlyTreasures);
+	private bool IsAvailable(KingdomPile kp) =>
+		kp.Count > 0 && kp.Price <= Price && ((OnlyTreasures && kp.CardInstance.IsTreasure) || !OnlyTreasures);
 }

@@ -6,24 +6,24 @@ public interface IUser
 {
 	string GetName();
 	IPlayerStateObserver GetPlayerStateObserver();
-	Card PlayCard(IEnumerable<Card> cards, PlayerState ps, Kingdom k, Phase phase, Card card = null);
-	Card SelectCardToGain(KingdomWrapper wrapper, PlayerState ps, Kingdom k, Phase phase);
+	CardInstance PlayCard(IEnumerable<CardInstance> cards, PlayerState ps, Kingdom k, Phase phase, Card card = null);
+	CardInstance SelectCardToGain(KingdomWrapper wrapper, PlayerState ps, Kingdom k, Phase phase);
 	void SetCanCelationTokenSource(CancellationTokenSource tokenSource);
 
 	#region cards base
-	Card BureaucratPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k);
-	List<Card> CellarDiscard(Card cardPlayed, PlayerState ps, Kingdom k);
+	CardInstance BureaucratPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k);
+	List<CardInstance> CellarDiscard(Card cardPlayed, PlayerState ps, Kingdom k);
 	bool ChancellorDiscard(Card cardPlayed, PlayerState ps, Kingdom k);
-	List<Card> ChapelTrash(Card cardPlayed, PlayerState ps, Kingdom k);
-	bool LibrarySkip(Card cardPlayed, PlayerState ps, Kingdom k, Card c);
-	List<Card> MilitiaDiscard(Card cardPlayed, PlayerState ps, Kingdom k, int discardCount);
-	Card MineTrash(Card cardPlayed, PlayerState ps, Kingdom k, IList<Card> cardSelection);
+	List<CardInstance> ChapelTrash(Card cardPlayed, PlayerState ps, Kingdom k);
+	bool LibrarySkip(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance c);
+	List<CardInstance> MilitiaDiscard(Card cardPlayed, PlayerState ps, Kingdom k, int discardCount);
+	CardInstance MineTrash(Card cardPlayed, PlayerState ps, Kingdom k, IList<CardInstance> cardSelection);
 	bool MoneylenderTrash(Card cardPlayed, PlayerState ps, Kingdom k);
-	Card RemodelTrash(Card cardPlayed, PlayerState ps, Kingdom k);
-	bool SpyDiscard(Card cardPlayed, PlayerState ps, Kingdom k, Card c, Phase p);
-	Card ThiefChoose(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<Card> cards);
-	bool ThiefSteal(Card cardPlayed, PlayerState ps, Kingdom k, Card c);
-	Card ThroneRoomPlay(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<Card> cards);
+	CardInstance RemodelTrash(Card cardPlayed, PlayerState ps, Kingdom k);
+	bool SpyDiscard(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance c, Phase p);
+	CardInstance ThiefChoose(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards);
+	bool ThiefSteal(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance c);
+	CardInstance ThroneRoomPlay(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards);
 	#endregion cards base
 
 	#region cards intrique

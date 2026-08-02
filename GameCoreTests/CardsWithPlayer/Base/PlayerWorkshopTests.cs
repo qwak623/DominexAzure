@@ -1,7 +1,6 @@
-﻿using GameCore.Cards;
+using GameCore.Cards;
 using GameCore.Cards.Base;
 using GameCore.CardWithPlayer.Tests;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
 namespace GameCore.CardsWithPlayer.Base.Tests;
@@ -11,6 +10,7 @@ public class PlayerWorkshopTests : CardWithPlayerTestsBase
 {
 	private readonly Card workshop = Workshop.Get();
 	private readonly Card village = Village.Get();
+	private readonly Card moat = Moat.Get();
 	private readonly Card throneRoom = ThroneRoom.Get();
 
 	private Player player;
@@ -21,7 +21,7 @@ public class PlayerWorkshopTests : CardWithPlayerTestsBase
 	[TestInitialize]
 	public void Init()
 	{
-		game = MockGame(new List<Card> { workshop, village });
+		game = MockGame(new List<Card> { workshop, village, moat });
 		user = new Mock<IUser>();
 		player = CreatePlayer(game.Object, user.Object);
 	}
@@ -30,37 +30,29 @@ public class PlayerWorkshopTests : CardWithPlayerTestsBase
 	public void GainVillage()
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { workshop };
+		player.PlayerState.Hand = CreatePile([workshop]);
+		var workshopToPlay = player.PlayerState.Hand[0];
+		var villageToGain =	player.Game.Kingdom.GetPile(CardType.Village).CardInstance;
 
 		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
-			.Returns(village);
+			.Returns(villageToGain);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(workshop);
+		player.PlayActionCardInternal(workshopToPlay);
 		#endregion
 
 		#region assert
-		// -1 Action
-		Assert.AreEqual(0, player.PlayerState.Actions);
+		AssertNumbers(0, 0, 0, player);
+		AssertPile([], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([village], player.PlayerState.DiscardPile);
+		AssertPile([workshop], player.PlayerState.CardsPlayed);
+		AssertPile([workshop], player.PlayerState.ActionsPlayed);
+		AssertPile([], player.Game.Trash);
 
-		// coins and buys shouldn't change 
-		Assert.AreEqual(0, player.PlayerState.Coins);
-		Assert.AreEqual(0, player.PlayerState.Buys);
-
-		// player does not draw a card
-		Assert.IsFalse(player.PlayerState.Hand.Any());
-
-		// user has to select a card with price max 4 to gain
 		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.Price == 4 && k.OnlyTreasures == false),
-			player.PlayerState, player.Game.Kingdom, Phase.Gain));
-
-		// player gains the village
-		CollectionAssert.AreEquivalent(new List<Card> { village }, player.PlayerState.DiscardPile);
-
-		// workshop was added to the played cards and actions
-		CollectionAssert.AreEquivalent(new List<Card> { workshop }, player.PlayerState.CardsPlayed);
-		CollectionAssert.AreEquivalent(new List<Card> { workshop }, player.PlayerState.ActionsPlayed);
+			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Once);
 		#endregion
 	}
 
@@ -68,80 +60,63 @@ public class PlayerWorkshopTests : CardWithPlayerTestsBase
 	public void NothingToGain()
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { workshop };
+		player.PlayerState.Hand = CreatePile([workshop]);
+		var workshopToPlay = player.PlayerState.Hand[0];
 
 		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
-			.Returns<Card>(null);
+			.Returns((CardInstance)null);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(workshop);
+		player.PlayActionCardInternal(workshopToPlay);
 		#endregion
 
 		#region assert
-		// -1 Action
-		Assert.AreEqual(0, player.PlayerState.Actions);
+		AssertNumbers(0, 0, 0, player);
+		AssertPile([], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([], player.PlayerState.DiscardPile);
+		AssertPile([workshop], player.PlayerState.CardsPlayed);
+		AssertPile([workshop], player.PlayerState.ActionsPlayed);
+		AssertPile([], player.Game.Trash);
 
-		// coins and buys shouldn't change 
-		Assert.AreEqual(0, player.PlayerState.Coins);
-		Assert.AreEqual(0, player.PlayerState.Buys);
-
-		// player does not draw a card
-		Assert.IsFalse(player.PlayerState.Hand.Any());
-
-		// user has to select a card with price max 4 to gain - there is none
-		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.Price == 4 && k.OnlyTreasures == false), player.PlayerState, player.Game.Kingdom, Phase.Gain));
-
-		// player gains nothing
-		Assert.IsFalse(player.PlayerState.DiscardPile.Any());
-
-		// workshop was added to the played cards and actions
-		CollectionAssert.AreEquivalent(new List<Card> { workshop }, player.PlayerState.CardsPlayed);
-		CollectionAssert.AreEquivalent(new List<Card> { workshop }, player.PlayerState.ActionsPlayed);
+		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.Price == 4 && k.OnlyTreasures == false),
+			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Once);
 		#endregion
 	}
 
 	[TestMethod]
-	public void ThroneRoomGainTwoVillages()
+	public void ThroneRoomGainVillageAndMoat()
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { throneRoom, workshop };
+		player.PlayerState.Hand = CreatePile([throneRoom, workshop]);
+		var workshopToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Workshop);
+		var villageToGain = player.Game.Kingdom.GetPile(CardType.Village).CardInstance;
+		var moatToGain = player.Game.Kingdom.GetPile(CardType.Moat).CardInstance;
+
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<Card>>(c => c.SingleOrDefault() == workshop))).Returns(workshop);
-		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
-			.Returns(village);
+			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == workshopToPlay))).Returns(workshopToPlay);
+		user.SetupSequence(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
+			.Returns(villageToGain).Returns(moatToGain);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(throneRoom);
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
 		#endregion
 
 		#region assert
-		// +0 Actions, +0 Coins, +0 Buys
-		Assert.AreEqual(0, player.PlayerState.Actions);
-		Assert.AreEqual(0, player.PlayerState.Coins);
-		Assert.AreEqual(0, player.PlayerState.Buys);
+		AssertNumbers(0, 0, 0, player);
+		AssertPile([], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([village, moat], player.PlayerState.DiscardPile);
+		AssertPile([throneRoom, workshop], player.PlayerState.CardsPlayed);
+		AssertPile([throneRoom, workshop, workshop], player.PlayerState.ActionsPlayed);
+		AssertPile([], player.Game.Trash);
 
-		// +0 Cards
-		Assert.IsFalse(player.PlayerState.Hand.Any());
-		Assert.IsFalse(player.PlayerState.DrawPile.Any());
-
-		// user was asked which card to play using throne room
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
-
-		// user has to select a card with price max 4 to gain two times
+			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
 		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.Price == 4 && k.OnlyTreasures == false),
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Exactly(2));
-
-		// player gains the village
-		CollectionAssert.AreEquivalent(new List<Card> { village, village }, player.PlayerState.DiscardPile);
-
-		// throne room and workshop were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, workshop }, player.PlayerState.CardsPlayed);
-
-		// throne room and two workshops were added to actions played
-		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, workshop, workshop }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -149,43 +124,33 @@ public class PlayerWorkshopTests : CardWithPlayerTestsBase
 	public void ThroneRoomOneVillageAvailable()
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { throneRoom, workshop };
+		player.PlayerState.Hand = CreatePile([throneRoom, workshop]);
+		var workshopToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Workshop);
+		var villageToGain = player.Game.Kingdom.GetPile(CardType.Village).CardInstance;
+
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<Card>>(c => c.SingleOrDefault() == workshop))).Returns(workshop);
+			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == workshopToPlay))).Returns(workshopToPlay);
 		user.SetupSequence(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
-			.Returns(village).Returns((Card)null);
+			.Returns(villageToGain).Returns((CardInstance)null);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(throneRoom);
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
 		#endregion
 
 		#region assert
-		// +0 Actions, +0 Coins, +0 Buys
-		Assert.AreEqual(0, player.PlayerState.Actions);
-		Assert.AreEqual(0, player.PlayerState.Coins);
-		Assert.AreEqual(0, player.PlayerState.Buys);
+		AssertNumbers(0, 0, 0, player);
+		AssertPile([], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([village], player.PlayerState.DiscardPile);
+		AssertPile([throneRoom, workshop], player.PlayerState.CardsPlayed);
+		AssertPile([throneRoom, workshop, workshop], player.PlayerState.ActionsPlayed);
+		AssertPile([], player.Game.Trash);
 
-		// +0 Cards
-		Assert.IsFalse(player.PlayerState.Hand.Any());
-		Assert.IsFalse(player.PlayerState.DrawPile.Any());
-
-		// user was asked which card to play using throne room
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
-
-		// user has to select a card with price max 4 to gain - there is only one village
+			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
 		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.Price == 4 && k.OnlyTreasures == false),
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Exactly(2));
-
-		// player gains the one village
-		CollectionAssert.AreEquivalent(new List<Card> { village }, player.PlayerState.DiscardPile);
-
-		// throne room and workshop were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, workshop }, player.PlayerState.CardsPlayed);
-
-		// throne room and two workshops were added to actions played
-		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, workshop, workshop }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -193,43 +158,32 @@ public class PlayerWorkshopTests : CardWithPlayerTestsBase
 	public void ThroneRoomNothingToGain()
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { throneRoom, workshop };
+		player.PlayerState.Hand = CreatePile([throneRoom, workshop]);
+		var workshopToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Workshop);
+
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<Card>>(c => c.SingleOrDefault() == workshop))).Returns(workshop);
+			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == workshopToPlay))).Returns(workshopToPlay);
 		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
-			.Returns<Card>(null);
+			.Returns((CardInstance)null);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(throneRoom);
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
 		#endregion
 
 		#region assert
-		// +0 Actions, +0 Coins, +0 Buys
-		Assert.AreEqual(0, player.PlayerState.Actions);
-		Assert.AreEqual(0, player.PlayerState.Coins);
-		Assert.AreEqual(0, player.PlayerState.Buys);
+		AssertNumbers(0, 0, 0, player);
+		AssertPile([], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([], player.PlayerState.DiscardPile);
+		AssertPile([throneRoom, workshop], player.PlayerState.CardsPlayed);
+		AssertPile([throneRoom, workshop, workshop], player.PlayerState.ActionsPlayed);
+		AssertPile([], player.Game.Trash);
 
-		// +0 Cards
-		Assert.IsFalse(player.PlayerState.Hand.Any());
-		Assert.IsFalse(player.PlayerState.DrawPile.Any());
-
-		// user was asked which card to play using throne room
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
-
-		// user has to select a card with price max 4 to gain - there is none
+			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
 		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.Price == 4 && k.OnlyTreasures == false),
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Exactly(2));
-
-		// player gains nothing
-		Assert.IsFalse(player.PlayerState.DiscardPile.Any());
-
-		// throne room and workshop were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, workshop }, player.PlayerState.CardsPlayed);
-
-		// throne room and two workshops were added to actions played
-		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, workshop, workshop }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 }

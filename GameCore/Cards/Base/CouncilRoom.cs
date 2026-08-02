@@ -24,7 +24,7 @@ public class CouncilRoom : Card
 
 	public static CouncilRoom Get() => councilRoom ?? new CouncilRoom();
 
-	protected override void ActionEffect(IPlayer player)
+	protected override void ActionEffect(IPlayer player, CardInstance thisCard)
 	{
 		foreach (var plr in player.Game.Players.Where(p => p != player))
 		{

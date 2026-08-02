@@ -26,7 +26,7 @@ public class Bureaucrat : Card
 
 	public static Bureaucrat Get() => bureaucrat ?? new Bureaucrat();
 
-	protected override void ActionEffect(IPlayer player) => player.GainToDrawPile(CardType.Silver);
+	protected override void ActionEffect(IPlayer player, CardInstance thisCard) => player.GainToDrawPile(CardType.Silver);
 
 	public override void Attack(IPlayer def, IPlayer att)
 	{

@@ -25,7 +25,7 @@ public class Conspirator : Card
 
 	public static Conspirator Get() => conspirator ?? new Conspirator();
 
-	protected override void ActionEffect(IPlayer player)
+	protected override void ActionEffect(IPlayer player, CardInstance thisCard)
 	{
 		if (player.PlayerState.ActionsPlayed.Count >= 3)
 		{

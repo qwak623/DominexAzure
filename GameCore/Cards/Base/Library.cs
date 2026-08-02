@@ -27,29 +27,30 @@ public class Library : Card
 
 	public static Library Get() => library ?? new Library();
 
-	protected override void ActionEffect(IPlayer player)
+	protected override void ActionEffect(IPlayer player, CardInstance thisCard)
 	{
-		var cardsAside = new List<Card>();
+		var cardsAside = new Pile();
 
 		while (player.PlayerState.Hand.Count < 7)
 		{
-			var card = player.Show(1).SingleOrDefault();
-			if (card == null)
+			var cardsShown = player.Show(1);
+			if (cardsShown.Count == 0)
 			{
 				break;
 			}
+			var card = cardsShown.Single();
 
 			if (card.IsAction && player.User.LibrarySkip(this, player.PlayerState, player.Game.Kingdom, card))
 			{
-				cardsAside.Add(card);
+				cardsAside.Move(card);
 			}
 			else
 			{
 				player.Game.Logger?.Log(new GameLog { PlayerId = Name, Message = $"{Name} draws {card.Name}" });
-				player.PlayerState.Hand.Add(card);
+				player.PlayerState.Hand.Move(card);
 			}
 		}
 
-		cardsAside.ForEach(player.PlayerState.DiscardPile.Add);
+		player.PlayerState.DiscardPile.MoveAll(cardsAside);
 	}
 }

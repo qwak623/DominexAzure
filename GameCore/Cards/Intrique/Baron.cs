@@ -28,13 +28,13 @@ public class Baron : Card
 
 	public static Baron Get() => baron ?? new Baron();
 
-	protected override void ActionEffect(IPlayer player)
+	protected override void ActionEffect(IPlayer player, CardInstance thisCard)
 	{
-		var estateInHand = player.PlayerState.Hand.FirstOrDefault(c => c.Type == CardType.Estate);
-		if (estateInHand is not null && player.User.BaronDiscard(this, player.PlayerState, player.Game.Kingdom))
+		if (player.PlayerState.Hand.Any(c => c.Card.Type == CardType.Estate)
+			&& player.User.BaronDiscard(this, player.PlayerState, player.Game.Kingdom))
 		{
 			player.Game.Logger?.Log(new GameLog { PlayerId = player.Name, Message = $"{player.Name} discards Estate and gains 4$" });
-			player.Discard(estateInHand);
+			player.Discard(player.PlayerState.Hand.First(c => c.Card.Type == CardType.Estate));
 			player.PlayerState.Coins += 4;
 		}
 		else

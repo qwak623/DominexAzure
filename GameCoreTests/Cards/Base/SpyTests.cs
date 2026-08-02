@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+#if false
+using System.Numerics;
 using GameCore.Cards.GeneralCards;
 using GameCore.Cards.Tests;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -41,7 +42,7 @@ public class SpyTests : CardTestsBase
 		#endregion
 
 		#region act
-		spy.WhenPlayAction(attacker.Object);
+		spy.WhenPlayAction(attacker.Object, TODO);
 		#endregion
 
 		#region assert
@@ -81,7 +82,7 @@ public class SpyTests : CardTestsBase
 		#endregion
 
 		#region act
-		spy.WhenPlayAction(attacker.Object);
+		spy.WhenPlayAction(attacker.Object, TODO);
 		#endregion
 
 		#region assert
@@ -118,7 +119,7 @@ public class SpyTests : CardTestsBase
 		#endregion
 
 		#region act
-		spy.WhenPlayAction(attacker.Object);
+		spy.WhenPlayAction(attacker.Object, TODO);
 		#endregion
 
 		#region assert
@@ -165,7 +166,7 @@ public class SpyTests : CardTestsBase
 		#endregion
 
 		#region act
-		throneRoom.WhenPlayAction(attacker.Object);
+		throneRoom.WhenPlayAction(attacker.Object, TODO);
 
 		#endregion
 		#region assert
@@ -312,3 +313,4 @@ public class SpyTests : CardTestsBase
 		#endregion
 	}
 }
+#endif

@@ -1,8 +1,7 @@
-﻿using GameCore.Cards;
+using GameCore.Cards;
 using GameCore.Cards.Base;
 using GameCore.Cards.GeneralCards;
 using GameCore.CardWithPlayer.Tests;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
 namespace GameCore.CardsWithPlayer.Base.Tests;
@@ -31,36 +30,25 @@ public class PlayerMoneylenderTests : CardWithPlayerTestsBase
 	public void TrashCopper()
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { moneylender, copper };
+		player.PlayerState.Hand = CreatePile([moneylender, copper]);
+		var moneylenderToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Moneylender);
 		user.Setup(u => u.MoneylenderTrash(moneylender, player.PlayerState, player.Game.Kingdom)).Returns(true);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(moneylender);
+		player.PlayActionCardInternal(moneylenderToPlay);
 		#endregion
 
 		#region assert
-		// (-1 Action, +0 Actions), +3 Coins, +0 Buys
-		Assert.AreEqual(0, player.PlayerState.Actions);
-		Assert.AreEqual(3, player.PlayerState.Coins);
-		Assert.AreEqual(0, player.PlayerState.Buys);
+		AssertNumbers(0, 3, 0, player);
+		AssertPile([], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([], player.PlayerState.DiscardPile);
+		AssertPile([moneylender], player.PlayerState.CardsPlayed);
+		AssertPile([moneylender], player.PlayerState.ActionsPlayed);
+		AssertPile([copper], player.Game.Trash);
 
-		// +0 Cards
-		Assert.IsFalse(player.PlayerState.DrawPile.Any());
-		Assert.IsFalse(player.PlayerState.DiscardPile.Any());
-
-		// user is asked to choose whether to trash a copper
 		user.Verify(u => u.MoneylenderTrash(moneylender, player.PlayerState, player.Game.Kingdom), Times.Once);
-
-		// player trashes the copper
-		CollectionAssert.AreEquivalent(new List<Card> { copper }, player.Game.Trash);
-
-		// the hand should be empty
-		Assert.IsFalse(player.PlayerState.Hand.Any());
-
-		// moneylender was added to played cards and actiions
-		CollectionAssert.AreEquivalent(new List<Card> { moneylender }, player.PlayerState.CardsPlayed);
-		CollectionAssert.AreEquivalent(new List<Card> { moneylender }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -68,36 +56,25 @@ public class PlayerMoneylenderTests : CardWithPlayerTestsBase
 	public void DoesntWantToTrashCopper()
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { moneylender, copper };
+		player.PlayerState.Hand = CreatePile([moneylender, copper]);
+		var moneylenderToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Moneylender);
 		user.Setup(u => u.MoneylenderTrash(moneylender, player.PlayerState, player.Game.Kingdom)).Returns(false);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(moneylender);
+		player.PlayActionCardInternal(moneylenderToPlay);
 		#endregion
 
 		#region assert
-		// (-1 Action, +0 Actions), +0 Coins, +0 Buys
-		Assert.AreEqual(0, player.PlayerState.Actions);
-		Assert.AreEqual(0, player.PlayerState.Coins);
-		Assert.AreEqual(0, player.PlayerState.Buys);
+		AssertNumbers(0, 0, 0, player);
+		AssertPile([copper], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([], player.PlayerState.DiscardPile);
+		AssertPile([moneylender], player.PlayerState.CardsPlayed);
+		AssertPile([moneylender], player.PlayerState.ActionsPlayed);
+		AssertPile([], player.Game.Trash);
 
-		// +0 Cards
-		Assert.IsFalse(player.PlayerState.DrawPile.Any());
-		Assert.IsFalse(player.PlayerState.DiscardPile.Any());
-
-		// user is asked to choose whether to trash a copper
 		user.Verify(u => u.MoneylenderTrash(moneylender, player.PlayerState, player.Game.Kingdom), Times.Once);
-
-		// player does not trash anything
-		Assert.IsFalse(player.Game.Trash.Any());
-
-		// the copper should stay in the players hand
-		CollectionAssert.AreEquivalent(new List<Card> { copper }, player.PlayerState.Hand);
-
-		// moneylender was added to played cards and actiions
-		CollectionAssert.AreEquivalent(new List<Card> { moneylender }, player.PlayerState.CardsPlayed);
-		CollectionAssert.AreEquivalent(new List<Card> { moneylender }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -105,35 +82,25 @@ public class PlayerMoneylenderTests : CardWithPlayerTestsBase
 	public void PlayerDoesntHaveAnyCopper()
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { moneylender };
+		player.PlayerState.Hand = CreatePile([moneylender]);
+		var moneylenderToPlay = player.PlayerState.Hand[0];
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(moneylender);
+		player.PlayActionCardInternal(moneylenderToPlay);
 		#endregion
 
 		#region assert
-		// (-1 Action, +0 Actions), +0 Coins, +0 Buys
-		Assert.AreEqual(0, player.PlayerState.Actions);
-		Assert.AreEqual(0, player.PlayerState.Coins);
-		Assert.AreEqual(0, player.PlayerState.Buys);
+		AssertNumbers(0, 0, 0, player);
+		AssertPile([], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([], player.PlayerState.DiscardPile);
+		AssertPile([moneylender], player.PlayerState.CardsPlayed);
+		AssertPile([moneylender], player.PlayerState.ActionsPlayed);
+		AssertPile([], player.Game.Trash);
 
-		// +0 Cards
-		Assert.IsFalse(player.PlayerState.DrawPile.Any());
-		Assert.IsFalse(player.PlayerState.DiscardPile.Any());
-
-		// user isnt asked to choose whether to trash a copper - he doesnt have any
+		// no copper to trash, so the user is never asked
 		user.Verify(u => u.MoneylenderTrash(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>()), Times.Never);
-
-		// player doesnt trash anything
-		Assert.IsFalse(player.Game.Trash.Any());
-
-		// the hand should be empty
-		Assert.IsFalse(player.PlayerState.Hand.Any());
-
-		// moneylender was added to played cards and actiions
-		CollectionAssert.AreEquivalent(new List<Card> { moneylender }, player.PlayerState.CardsPlayed);
-		CollectionAssert.AreEquivalent(new List<Card> { moneylender }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -149,47 +116,35 @@ public class PlayerMoneylenderTests : CardWithPlayerTestsBase
 	public void ThroneRoomPlay(int coppersInHand, bool trashFirstTime, bool trashSecondTime, int coins, int askedToTrash, int trashCount)
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { throneRoom, moneylender };
-		player.PlayerState.Hand.AddRange(Enumerable.Repeat(copper, coppersInHand));
+		player.PlayerState.Hand = CreatePile([throneRoom, moneylender, .. Enumerable.Repeat(copper, coppersInHand)]);
+		var moneylenderToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Moneylender);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<Card>>(c => c.SingleOrDefault() == moneylender))).Returns(moneylender);
+			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == moneylenderToPlay))).Returns(moneylenderToPlay);
 		user.SetupSequence(u => u.MoneylenderTrash(moneylender, player.PlayerState, player.Game.Kingdom))
 			.Returns(trashFirstTime).Returns(trashSecondTime);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(throneRoom);
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
 		#endregion
 
 		#region assert
-		// +given amount of coins
-		Assert.AreEqual(coins, player.PlayerState.Coins);
+		AssertNumbers(0, coins, 0, player);
+		AssertPile(Enumerable.Repeat(copper, coppersInHand - trashCount).ToList(), player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([], player.PlayerState.DiscardPile);
+		AssertPile([moneylender, throneRoom], player.PlayerState.CardsPlayed);
+		AssertPile([moneylender, moneylender, throneRoom], player.PlayerState.ActionsPlayed);
+		AssertPile(Enumerable.Repeat(copper, trashCount).ToList(), player.Game.Trash);
 
-		// -1 Action, (+0 Actions, +0 Buys) * 2
-		Assert.AreEqual(0, player.PlayerState.Actions);
-		Assert.AreEqual(0, player.PlayerState.Buys);
-
-		// +0 Cards
-		Assert.IsFalse(player.PlayerState.DrawPile.Any());
-		Assert.IsFalse(player.PlayerState.DiscardPile.Any());
-
-		// user is asked which card to play using throne room
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
+			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
 
-		// user is asked to choose whether to trash a copper given amout of times
+		// the second resolution only asks if a copper is still left to offer - e.g. the (1, true,
+		// true, ...) case trashes the only copper on the first resolution, so Hand.Any(copper) is
+		// false by the second and MoneylenderTrash is never called for it
 		user.Verify(u => u.MoneylenderTrash(moneylender, player.PlayerState, player.Game.Kingdom), Times.Exactly(askedToTrash));
-
-		// player trashes the given amount of coppers
-		CollectionAssert.AreEquivalent(Enumerable.Repeat(copper, coppersInHand - trashCount).ToList(), player.PlayerState.Hand);
-		CollectionAssert.AreEquivalent(Enumerable.Repeat(copper, trashCount).ToList(), player.Game.Trash);
-
-		// moneylender and throne room were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { moneylender, throneRoom }, player.PlayerState.CardsPlayed);
-
-		// two moneylenders and throne room were added to played actions
-		CollectionAssert.AreEquivalent(new List<Card> { moneylender, moneylender, throneRoom }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 }

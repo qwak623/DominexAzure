@@ -1,8 +1,7 @@
-﻿using GameCore.Cards;
+using GameCore.Cards;
 using GameCore.Cards.Base;
 using GameCore.Cards.GeneralCards;
 using GameCore.CardWithPlayer.Tests;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
 namespace GameCore.CardsWithPlayer.Base.Tests;
@@ -24,7 +23,7 @@ public class PlayerRemodelTests : CardWithPlayerTestsBase
 	[TestInitialize]
 	public void Init()
 	{
-		game = MockGame(new List<Card> { remodel, laboratory });
+		game = MockGame([remodel, laboratory]);
 		user = new Mock<IUser>();
 		player = CreatePlayer(game.Object, user.Object);
 	}
@@ -33,47 +32,35 @@ public class PlayerRemodelTests : CardWithPlayerTestsBase
 	public void UpgradeSilverToLaboratory()
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { remodel, silver, laboratory };
+		player.PlayerState.Hand = CreatePile([remodel, silver, laboratory]);
+		var remodelToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Remodel);
+		var silverInHand = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Silver);
+		var laboratoryToGain = player.Game.Kingdom.GetPile(CardType.Laboratory).CardInstance;
 
 		user.Setup(u => u.RemodelTrash(remodel, player.PlayerState, player.Game.Kingdom))
-			.Returns(silver);
+			.Returns(silverInHand);
 		user.Setup(u => u.SelectCardToGain(
 				It.Is<KingdomWrapper>(kw => kw.Price == 5 && !kw.OnlyTreasures),
 				player.PlayerState, player.Game.Kingdom, Phase.Gain))
-			.Returns(laboratory);
+			.Returns(laboratoryToGain);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(remodel);
+		player.PlayActionCardInternal(remodelToPlay);
 		#endregion
 
 		#region assert
-		// -1 Action
-		Assert.AreEqual(0, player.PlayerState.Actions);
+		AssertNumbers(0, 0, 0, player);
+		AssertPile([laboratory], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([laboratory], player.PlayerState.DiscardPile);
+		AssertPile([remodel], player.PlayerState.CardsPlayed);
+		AssertPile([remodel], player.PlayerState.ActionsPlayed);
+		AssertPile([silver], player.Game.Trash);
 
-		// coins and buys shouldn't change
-		Assert.AreEqual(0, player.PlayerState.Coins);
-		Assert.AreEqual(0, player.PlayerState.Buys);
-
-		// user is asked to choose a card to trash
 		user.Verify(u => u.RemodelTrash(remodel, player.PlayerState, player.Game.Kingdom), Times.Once);
-
-		// player trashes the chosen card
-		CollectionAssert.AreEquivalent(new List<Card> { silver }, player.Game.Trash);
-
-		// user is asked to select a card with max price 5 to gain
 		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.Price == 5 && !kw.OnlyTreasures),
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Once);
-
-		// no card is drawn to hand
-		CollectionAssert.AreEquivalent(new List<Card>() { laboratory }, player.PlayerState.Hand);
-
-		// laboratory is gained
-		CollectionAssert.AreEquivalent(new List<Card>() { laboratory }, player.PlayerState.DiscardPile);
-
-		// remodel was added to played cards and actions
-		CollectionAssert.AreEquivalent(new List<Card> { remodel }, player.PlayerState.CardsPlayed);
-		CollectionAssert.AreEquivalent(new List<Card> { remodel }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -81,42 +68,30 @@ public class PlayerRemodelTests : CardWithPlayerTestsBase
 	public void DontTrashAnything()
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { remodel, silver, laboratory };
+		player.PlayerState.Hand = CreatePile([remodel, silver, laboratory]);
+		var remodelToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Remodel);
 
-		user.Setup(u => u.RemodelTrash(remodel, player.PlayerState, player.Game.Kingdom)).Returns<Card>(null);
+		user.Setup(u => u.RemodelTrash(remodel, player.PlayerState, player.Game.Kingdom)).Returns((CardInstance)null);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(remodel);
+		player.PlayActionCardInternal(remodelToPlay);
 		#endregion
 
 		#region assert
-		// -1 Action
-		Assert.AreEqual(0, player.PlayerState.Actions);
+		AssertNumbers(0, 0, 0, player);
+		AssertPile([silver, laboratory], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([], player.PlayerState.DiscardPile);
+		AssertPile([remodel], player.PlayerState.CardsPlayed);
+		AssertPile([remodel], player.PlayerState.ActionsPlayed);
+		AssertPile([], player.Game.Trash);
 
-		// coins and buys shouldn't change
-		Assert.AreEqual(0, player.PlayerState.Coins);
-		Assert.AreEqual(0, player.PlayerState.Buys);
-
-		// user is asked to choose a card to trash
 		user.Verify(u => u.RemodelTrash(remodel, player.PlayerState, player.Game.Kingdom), Times.Once);
 
-		// player does not trash anything
-		Assert.IsFalse(player.Game.Trash.Any());
-
-		// user is never asked to choose any card to gain
+		// nothing was trashed, so the user is never asked to choose anything to gain
 		user.Verify(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(),
 			It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<Phase>()), Times.Never);
-
-		// no card is drawn to hand
-		CollectionAssert.AreEquivalent(new List<Card>() { silver, laboratory }, player.PlayerState.Hand);
-
-		// nothing is gained
-		Assert.IsFalse(player.PlayerState.DiscardPile.Any());
-
-		// remodel was added to played cards and actions
-		CollectionAssert.AreEquivalent(new List<Card> { remodel }, player.PlayerState.CardsPlayed);
-		CollectionAssert.AreEquivalent(new List<Card> { remodel }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -124,45 +99,34 @@ public class PlayerRemodelTests : CardWithPlayerTestsBase
 	public void DontGainAnything()
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { remodel, silver, laboratory };
+		player.PlayerState.Hand = CreatePile([remodel, silver, laboratory]);
+		var remodelToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Remodel);
+		var laboratoryInHand = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Laboratory);
 
 		user.Setup(u => u.RemodelTrash(remodel, player.PlayerState, player.Game.Kingdom))
-			.Returns(laboratory);
+			.Returns(laboratoryInHand);
 		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
-			.Returns<Card>(null);
+			.Returns((CardInstance)null);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(remodel);
+		player.PlayActionCardInternal(remodelToPlay);
 		#endregion
 
 		#region assert
-		// -1 Action
-		Assert.AreEqual(0, player.PlayerState.Actions);
+		AssertNumbers(0, 0, 0, player);
+		AssertPile([silver], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([], player.PlayerState.DiscardPile);
+		AssertPile([remodel], player.PlayerState.CardsPlayed);
+		AssertPile([remodel], player.PlayerState.ActionsPlayed);
+		AssertPile([laboratory], player.Game.Trash);
 
-		// coins and buys shouldn't change
-		Assert.AreEqual(0, player.PlayerState.Coins);
-		Assert.AreEqual(0, player.PlayerState.Buys);
-
-		// user is asked to choose a card to trash
 		user.Verify(u => u.RemodelTrash(remodel, player.PlayerState, player.Game.Kingdom), Times.Once);
 
-		// player trashes the chosen card
-		CollectionAssert.AreEquivalent(new List<Card> { laboratory }, player.Game.Trash);
-
-		// user is asked to select a card with max price 7 to gain, but there is no such card available
+		// max price 7 (laboratory costs 5, +2), but nothing is selected
 		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.Price == 7 && !kw.OnlyTreasures),
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Once);
-
-		// no card was drawn to hand
-		CollectionAssert.AreEquivalent(new List<Card>() { silver }, player.PlayerState.Hand);
-
-		// nothing is gained
-		Assert.IsFalse(player.PlayerState.DiscardPile.Any());
-
-		// remodel was added to played cards and actions
-		CollectionAssert.AreEquivalent(new List<Card> { remodel }, player.PlayerState.CardsPlayed);
-		CollectionAssert.AreEquivalent(new List<Card> { remodel }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -170,52 +134,46 @@ public class PlayerRemodelTests : CardWithPlayerTestsBase
 	public void ThroneRoomPlay()
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { remodel, silver, throneRoom, throneRoom };
+		player.PlayerState.Hand = CreatePile([remodel, silver, throneRoom, throneRoom]);
+		var throneRoomsInHand = player.PlayerState.Hand.Where(c => c.Card.Type == CardType.ThroneRoom).ToList();
+		var throneRoomToPlay = throneRoomsInHand[0];
+		var throneRoomFodder = throneRoomsInHand[1];
+		var remodelToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Remodel);
+		var silverInHand = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Silver);
+		var laboratoryToGain = player.Game.Kingdom.GetPile(CardType.Laboratory).CardInstance;
+		var goldToGain = player.Game.Kingdom.GetPile(CardType.Gold).CardInstance;
+
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<Card>>(c => c.Contains(remodel)))).Returns(remodel);
+			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Contains(remodelToPlay)))).Returns(remodelToPlay);
 		user.SetupSequence(u => u.RemodelTrash(remodel, player.PlayerState, player.Game.Kingdom))
-			.Returns(silver).Returns(throneRoom);
+			.Returns(silverInHand).Returns(throneRoomFodder);
 		user.SetupSequence(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
-			.Returns(laboratory).Returns(gold);
+			.Returns(laboratoryToGain).Returns(goldToGain);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(throneRoom);
+		player.PlayActionCardInternal(throneRoomToPlay);
 		#endregion
 
 		#region assert
-		// -1 Action, +0 Coins, +0 Buys
-		Assert.AreEqual(0, player.PlayerState.Actions);
-		Assert.AreEqual(0, player.PlayerState.Coins);
-		Assert.AreEqual(0, player.PlayerState.Buys);
+		AssertNumbers(0, 0, 0, player);
+		AssertPile([], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([laboratory, gold], player.PlayerState.DiscardPile);
+		AssertPile([remodel, throneRoom], player.PlayerState.CardsPlayed);
+		AssertPile([remodel, remodel, throneRoom], player.PlayerState.ActionsPlayed);
 
-		// +0 Cards
-		Assert.IsFalse(player.PlayerState.DrawPile.Any());
+		// the second resolution trashes the throne room still sitting in hand - the one that
+		// wasn't itself used to play remodel twice
+		AssertPile([silver, throneRoom], player.Game.Trash);
 
-		// user is asked which card to play using throne room
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
-
-		// user is asked to choose a card to trash two times
+			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
 		user.Verify(u => u.RemodelTrash(remodel, player.PlayerState, player.Game.Kingdom), Times.Exactly(2));
-
-		// player trashes the chosen cards
-		Assert.IsFalse(player.PlayerState.Hand.Any());
-
-		// user is asked to select a card with max price 5 or 6 to gain
 		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.Price == 5 && !kw.OnlyTreasures),
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Once);
 		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.Price == 6 && !kw.OnlyTreasures),
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Once);
-
-		// laboratory and gold are gained
-		CollectionAssert.AreEquivalent(new List<Card> { laboratory, gold }, player.PlayerState.DiscardPile);
-
-		// remodel and throne room were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { remodel, throneRoom }, player.PlayerState.CardsPlayed);
-
-		// two remodels and throne room were added to played actions
-		CollectionAssert.AreEquivalent(new List<Card> { remodel, remodel, throneRoom }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 }

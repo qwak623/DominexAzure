@@ -43,7 +43,7 @@ public class CustomClaimsBuilder : ICustomClaimsBuilder
 			? await _userRepository.GetByEmailAsync(email, cancellationToken)
 			: null;
 
-		if (user == null)
+		if (user is null)
 		{
 			user = await OnboardUserAsync(principal, cancellationToken);
 		}

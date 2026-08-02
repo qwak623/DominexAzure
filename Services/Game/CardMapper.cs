@@ -29,9 +29,10 @@ public class CardMapper : ICardMapper
 		};
 	}
 
-	public CardDto ToCardDtoWithIndex(Card card, int index)
+	// todo i might not need this since card already have id
+	public CardDto ToCardDtoWithIndex(CardInstance card, int index)
 	{
-		return ToCardDto(card) with { Index = index };
+		return ToCardDto(card.Card) with { Index = index };
 	}
 
 	public IEnumerable<CardDto> ToCardDto(IEnumerable<Card> cards)

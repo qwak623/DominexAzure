@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace GameCore.Cards.Base;
+﻿namespace GameCore.Cards.Base;
 public class ThroneRoom : Card
 {
 	private static ThroneRoom throneRoom;
@@ -27,23 +25,21 @@ public class ThroneRoom : Card
 
 	public static ThroneRoom Get() => throneRoom ?? new ThroneRoom();
 
-	protected override void ActionEffect(IPlayer player)
+	protected override void ActionEffect(IPlayer player, CardInstance thisCard)
 	{
-		var card = player.User.ThroneRoomPlay(this, player.PlayerState, player.Game.Kingdom, player.PlayerState.Hand.Where(c => c.IsAction));
-		if (card == null)
+		var cardInstance = player.User
+			.ThroneRoomPlay(this, player.PlayerState, player.Game.Kingdom, player.PlayerState.Hand.Where(c => c.IsAction));
+		if (cardInstance is null)
 		{
 			return;
 		}
 
-		// TODO asi by bylo lepší tohle udělat přes player.PlayActionCard a přidat tam flag "without action" nebo něco takového
-		// TODO this way the throneroom is stored in the list after the card selected,
-		// but it should be stored before the card selected, so the order of the cards played is correct
-		player.PlayerState.Hand.Remove(card);
-		player.PlayerState.CardsPlayed.Add(card);
+		player.PlayerState.CardsPlayed.Move(cardInstance);
+		var card = cardInstance.Card;
 		for (int i = 0; i < 2; i++)
 		{
 			player.PlayerState.ActionsPlayed.Add(card);
-			card.WhenPlayAction(player);
+			cardInstance.WhenPlayAction(player);
 			if (card.IsAttack)
 			{
 				foreach (var defender in player.Game.Players.Where(p => p != player))

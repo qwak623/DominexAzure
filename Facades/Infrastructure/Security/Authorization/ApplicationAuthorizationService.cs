@@ -21,16 +21,16 @@
 
 //	public async Task<bool> IsAuthorizedAsync(ClaimsPrincipal user, IAuthorizationRequirement requirement, object resource = null)
 //	{
-//		Contract.Requires<ArgumentNullException>(user != null);
-//		Contract.Requires<ArgumentNullException>(requirement != null);
+//		Contract.Requires<ArgumentNullException>(user is not null);
+//		Contract.Requires<ArgumentNullException>(requirement is not null);
 
 //		return (await authorizationService.AuthorizeAsync(user, resource, requirement)).Succeeded;
 //	}
 
 //	public async Task VerifyAuthorizationAsync(ClaimsPrincipal user, IAuthorizationRequirement requirement, object resource = null)
 //	{
-//		Contract.Requires<ArgumentNullException>(user != null);
-//		Contract.Requires<ArgumentNullException>(requirement != null);
+//		Contract.Requires<ArgumentNullException>(user is not null);
+//		Contract.Requires<ArgumentNullException>(requirement is not null);
 
 //		if (!await IsAuthorizedAsync(user, requirement, resource))
 //		{
@@ -40,14 +40,14 @@
 
 //	public async Task<bool> IsCurrentUserAuthorizedAsync(IAuthorizationRequirement requirement, object resource = null)
 //	{
-//		Contract.Requires<ArgumentNullException>(requirement != null);
+//		Contract.Requires<ArgumentNullException>(requirement is not null);
 
 //		return await IsAuthorizedAsync(applicationAuthenticationService.GetCurrentClaimsPrincipal(), requirement, resource);
 //	}
 
 //	public async Task VerifyCurrentUserAuthorizationAsync(IAuthorizationRequirement requirement, object resource = null)
 //	{
-//		Contract.Requires<ArgumentNullException>(requirement != null);
+//		Contract.Requires<ArgumentNullException>(requirement is not null);
 
 //		await VerifyAuthorizationAsync(applicationAuthenticationService.GetCurrentClaimsPrincipal(), requirement, resource);
 //	}

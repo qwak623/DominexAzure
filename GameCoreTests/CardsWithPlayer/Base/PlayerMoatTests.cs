@@ -1,8 +1,7 @@
-﻿using GameCore.Cards;
+using GameCore.Cards;
 using GameCore.Cards.Base;
 using GameCore.Cards.GeneralCards;
 using GameCore.CardWithPlayer.Tests;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
 namespace GameCore.CardsWithPlayer.Base.Tests;
@@ -39,29 +38,23 @@ public class PlayerMoatTests : CardWithPlayerTestsBase
 	public void Play()
 	{
 		#region arrange
-		defender.PlayerState.Hand = new List<Card> { moat };
-		defender.PlayerState.DrawPile = new List<Card> { copper, copper };
+		defender.PlayerState.Hand = CreatePile([moat]);
+		defender.PlayerState.DrawPile = CreatePile([copper, copper]);
+		var moatToPlay = defender.PlayerState.Hand[0];
 		#endregion
 
 		#region act
-		defender.PlayActionCardInternal(moat);
+		defender.PlayActionCardInternal(moatToPlay);
 		#endregion
 
 		#region assert
-		// -1 Action
-		Assert.AreEqual(0, defender.PlayerState.Actions);
-
-		// +0 Coins, +0 Buys
-		Assert.AreEqual(0, defender.PlayerState.Coins);
-		Assert.AreEqual(0, defender.PlayerState.Buys);
-
-		// +2 Cards
-		CollectionAssert.AreEquivalent(new List<Card> { copper, copper }, defender.PlayerState.Hand);
-		Assert.IsFalse(defender.PlayerState.DrawPile.Any());
-
-		// moat was added to played cards and actions
-		CollectionAssert.AreEquivalent(new List<Card> { moat }, defender.PlayerState.CardsPlayed);
-		CollectionAssert.AreEquivalent(new List<Card> { moat }, defender.PlayerState.ActionsPlayed);
+		AssertNumbers(0, 0, 0, defender);
+		AssertPile([copper, copper], defender.PlayerState.Hand);
+		AssertPile([], defender.PlayerState.DrawPile);
+		AssertPile([], defender.PlayerState.DiscardPile);
+		AssertPile([moat], defender.PlayerState.CardsPlayed);
+		AssertPile([moat], defender.PlayerState.ActionsPlayed);
+		AssertPile([], defender.Game.Trash);
 		#endregion
 	}
 
@@ -69,36 +62,29 @@ public class PlayerMoatTests : CardWithPlayerTestsBase
 	public void ThroneRoomPlay()
 	{
 		#region arrange
-		defender.PlayerState.Hand = new List<Card> { throneRoom, moat };
-		defender.PlayerState.DrawPile = new List<Card> { copper, copper, copper, copper };
+		defender.PlayerState.Hand = CreatePile([throneRoom, moat]);
+		defender.PlayerState.DrawPile = CreatePile([copper, copper, copper, copper]);
+		var moatToPlay = defender.PlayerState.Hand.First(c => c.Card.Type == CardType.Moat);
+
 		defenderUser.Setup(u => u.ThroneRoomPlay(throneRoom, defender.PlayerState,
-			defender.Game.Kingdom, It.Is<IEnumerable<Card>>(c => c.SingleOrDefault() == moat))).Returns(moat);
-
+			defender.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == moatToPlay))).Returns(moatToPlay);
 		#endregion
+
 		#region act
-		defender.PlayActionCardInternal(throneRoom);
-
+		defender.PlayActionCardInternal(defender.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
 		#endregion
+
 		#region assert
-		// -1 Action, (+0 Action, +0 Coins, +0 Buys) * 2
-		Assert.AreEqual(0, defender.PlayerState.Actions);
-		Assert.AreEqual(0, defender.PlayerState.Coins);
-		Assert.AreEqual(0, defender.PlayerState.Buys);
+		AssertNumbers(0, 0, 0, defender);
+		AssertPile([copper, copper, copper, copper], defender.PlayerState.Hand);
+		AssertPile([], defender.PlayerState.DrawPile);
+		AssertPile([], defender.PlayerState.DiscardPile);
+		AssertPile([moat, throneRoom], defender.PlayerState.CardsPlayed);
+		AssertPile([moat, moat, throneRoom], defender.PlayerState.ActionsPlayed);
+		AssertPile([], defender.Game.Trash);
 
-		// (+2 Card) * 2
-		CollectionAssert.AreEquivalent(new List<Card> { copper, copper, copper, copper }, defender.PlayerState.Hand);
-		Assert.IsFalse(defender.PlayerState.DrawPile.Any());
-		Assert.IsFalse(defender.PlayerState.DiscardPile.Any());
-
-		// defender was asked which card to play using throne room
 		defenderUser.Verify(u => u.ThroneRoomPlay(throneRoom, defender.PlayerState,
-			defender.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
-
-		// moat and throne room were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { moat, throneRoom }, defender.PlayerState.CardsPlayed);
-
-		// two moats and throne room were added to played actions
-		CollectionAssert.AreEquivalent(new List<Card> { moat, moat, throneRoom }, defender.PlayerState.ActionsPlayed);
+			defender.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
 		#endregion
 	}
 
@@ -107,11 +93,12 @@ public class PlayerMoatTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		defender.PlayerState.Actions = 0;
-		defender.PlayerState.Hand = new List<Card> { copper, copper, moat, copper, copper };
+		defender.PlayerState.Hand = CreatePile([copper, copper, moat, copper, copper]);
+		var moatInHand = defender.PlayerState.Hand.First(c => c.Card.Type == CardType.Moat);
 
-		defenderUser.Setup(u => u.PlayCard(It.Is<LinkedList<Card>>(r => r.SingleOrDefault() == moat),
+		defenderUser.Setup(u => u.PlayCard(It.Is<IEnumerable<CardInstance>>(r => r.Single() == moatInHand),
 			defender.PlayerState, defender.Game.Kingdom, Phase.Reaction, militia))
-			.Returns(moat);
+			.Returns(moatInHand);
 		#endregion
 
 		#region act
@@ -119,19 +106,22 @@ public class PlayerMoatTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region assert
-		// reaction should not need or consume action
-		Assert.AreEqual(0, defender.PlayerState.Actions);
+		// reaction should not need or consume an action
+		AssertNumbers(0, 0, 0, defender);
 
-		// user is asked to choose a reaction to play
-		defenderUser.Verify(u => u.PlayCard(It.IsAny<LinkedList<Card>>(),
+		// revealing a reaction doesn't move it out of hand or into played cards
+		AssertPile([copper, copper, moat, copper, copper], defender.PlayerState.Hand);
+		AssertPile([], defender.PlayerState.DrawPile);
+		AssertPile([], defender.PlayerState.DiscardPile);
+		AssertPile([], defender.PlayerState.CardsPlayed);
+		AssertPile([], defender.PlayerState.ActionsPlayed);
+		AssertPile([], defender.Game.Trash);
+
+		defenderUser.Verify(u => u.PlayCard(It.IsAny<IEnumerable<CardInstance>>(),
 			defender.PlayerState, defender.Game.Kingdom, Phase.Reaction, militia), Times.Once);
 
-		// player blocked the attack and therefore his hand did not change
-		CollectionAssert.AreEquivalent(new List<Card> { copper, copper, moat, copper, copper }, defender.PlayerState.Hand);
-
-		// moat was not added to played cards or actions
-		CollectionAssert.AreEquivalent(new List<Card> { }, defender.PlayerState.CardsPlayed);
-		CollectionAssert.AreEquivalent(new List<Card> { }, defender.PlayerState.ActionsPlayed);
+		// the moat blocked the attack, so militia's own effect never runs
+		defenderUser.Verify(du => du.MilitiaDiscard(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<int>()), Times.Never);
 		#endregion
 	}
 
@@ -140,13 +130,15 @@ public class PlayerMoatTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		defender.PlayerState.Actions = 0;
-		defender.PlayerState.Hand = new List<Card> { copper, copper, moat, copper, copper };
+		defender.PlayerState.Hand = CreatePile([copper, copper, moat, copper, copper]);
+		var moatInHand = defender.PlayerState.Hand.First(c => c.Card.Type == CardType.Moat);
+		var coppersToDiscard = defender.PlayerState.Hand.Where(c => c.Card.Type == CardType.Copper).Take(2).ToList();
 
-		defenderUser.Setup(u => u.PlayCard(It.Is<LinkedList<Card>>(r => r.SingleOrDefault() == moat),
+		defenderUser.Setup(u => u.PlayCard(It.Is<IEnumerable<CardInstance>>(r => r.Single() == moatInHand),
 			defender.PlayerState, defender.Game.Kingdom, Phase.Reaction, militia))
-			.Returns<Card>(null);
+			.Returns((CardInstance)null);
 		defenderUser.Setup(du => du.MilitiaDiscard(militia, defender.PlayerState, defender.Game.Kingdom, 2))
-			.Returns(new List<Card> { copper, copper });
+			.Returns(coppersToDiscard);
 		#endregion
 
 		#region act
@@ -154,23 +146,19 @@ public class PlayerMoatTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region assert
-		// reaction should not need or consume action
-		Assert.AreEqual(0, defender.PlayerState.Actions);
+		AssertNumbers(0, 0, 0, defender);
 
-		// user is asked to choose a reaction to play
-		defenderUser.Verify(u => u.PlayCard(It.IsAny<LinkedList<Card>>(),
+		// declining the reaction leaves moat in hand and lets the attack resolve normally
+		AssertPile([moat, copper, copper], defender.PlayerState.Hand);
+		AssertPile([], defender.PlayerState.DrawPile);
+		AssertPile([copper, copper], defender.PlayerState.DiscardPile);
+		AssertPile([], defender.PlayerState.CardsPlayed);
+		AssertPile([], defender.PlayerState.ActionsPlayed);
+		AssertPile([], defender.Game.Trash);
+
+		defenderUser.Verify(u => u.PlayCard(It.IsAny<IEnumerable<CardInstance>>(),
 			defender.PlayerState, defender.Game.Kingdom, Phase.Reaction, militia), Times.Once);
-
-		// user chose not to block the attack and therefore he needs to choose two cards to discard
 		defenderUser.Verify(du => du.MilitiaDiscard(militia, defender.PlayerState, defender.Game.Kingdom, 2), Times.Once);
-
-		// player discarded two cards
-		CollectionAssert.AreEquivalent(new List<Card> { moat, copper, copper }, defender.PlayerState.Hand);
-		CollectionAssert.AreEquivalent(new List<Card> { copper, copper }, defender.PlayerState.DiscardPile);
-
-		// moat was not added to played cards or actions
-		CollectionAssert.AreEquivalent(new List<Card> { }, defender.PlayerState.CardsPlayed);
-		CollectionAssert.AreEquivalent(new List<Card> { }, defender.PlayerState.ActionsPlayed);
 		#endregion
 	}
 }

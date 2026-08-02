@@ -40,8 +40,8 @@ public partial class Workspace
 
 	private string GetTitle()
 	{
-		return Choice?.Message != null ? Choice.Message
-			: Choice?.CardPlayed != null ? Choice.CardPlayed.Description
+		return Choice?.Message is not null ? Choice.Message
+			: Choice?.CardPlayed is not null ? Choice.CardPlayed.Description
 			: Choice?.Type.ToString();
 	}
 }

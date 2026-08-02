@@ -1,4 +1,5 @@
-﻿using GameCore.GameCore;
+﻿using System.ComponentModel.DataAnnotations;
+using GameCore.GameCore;
 
 namespace GameCore.Cards.Base;
 
@@ -27,28 +28,30 @@ public class Adventurer : Card
 
 	public static Adventurer Get() => adventurer ?? new Adventurer();
 
-	protected override void ActionEffect(IPlayer player)
+	protected override void ActionEffect(IPlayer player, CardInstance thisCard)
 	{
-		var revealedCards = new List<Card> { };
+		var revealedCards = new Pile();
 		int treasuresDrawn = 0;
 		while (treasuresDrawn < 2)
 		{
-			var card = player.Show(1).SingleOrDefault();
-			if (card == null)
+			var cardsShown = player.Show(1);
+			if (cardsShown.Count == 0)
 			{
 				break;
 			}
+			var card = cardsShown.Single();
+
 			if (card.IsTreasure)
 			{
 				player.Game.Logger?.Log(new GameLog { PlayerId = Name, Message = $"{Name} draws {card.Name}" });
-				player.PlayerState.Hand.Add(card);
+				player.PlayerState.Hand.Move(card);
 				treasuresDrawn++;
 			}
 			else
 			{
-				revealedCards.Add(card);
+				revealedCards.Move(card);
 			}
 		}
-		revealedCards.ForEach(player.Discard);
+		player.PlayerState.DiscardPile.MoveAll(revealedCards);
 	}
 }

@@ -2,7 +2,6 @@
 using GameCore.Cards.Base;
 using GameCore.Cards.GeneralCards;
 using GameCore.CardWithPlayer.Tests;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
 namespace GameCore.CardsWithPlayer.Base.Tests;
@@ -42,52 +41,55 @@ public class PlayerCouncilRoomTests : CardWithPlayerTestsBase
 		player3 = CreatePlayer(game.Object, user3.Object);
 		player4 = CreatePlayer(game.Object, user4.Object);
 
-		game.Setup(g => g.Players).Returns(new List<IPlayer> { player2, player, player3, player4 });
+		game.Setup(g => g.Players).Returns([player2, player, player3, player4]);
 	}
 
 	[TestMethod]
 	public void Play()
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { councilRoom, copper };
-		player.PlayerState.DrawPile = new List<Card> { copper, silver, silver, councilRoom };
-		player2.PlayerState.DrawPile = new List<Card> { copper };
-		player3.PlayerState.DrawPile = new List<Card> { silver };
+		player.PlayerState.Hand = CreatePile([councilRoom, copper]);
+		player.PlayerState.DrawPile = CreatePile([copper, silver, silver, councilRoom]);
+		player2.PlayerState.DrawPile = CreatePile([copper]);
+		player3.PlayerState.DrawPile = CreatePile([silver]);
+		var councilRoomToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.CouncilRoom);
+
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(councilRoom);
+		player.PlayActionCardInternal(councilRoomToPlay);
 		#endregion
 
 		#region assert
-		// (-1 Action, +0 Actions), +0 Coins, +1 Buy 
-		Assert.AreEqual(0, player.PlayerState.Actions);
-		Assert.AreEqual(0, player.PlayerState.Coins);
-		Assert.AreEqual(1, player.PlayerState.Buys);
+		AssertNumbers(0, 0, 1, player);
+		AssertPile([copper, copper, silver, silver, councilRoom], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([], player.PlayerState.DiscardPile);
+		AssertPile([councilRoom], player.PlayerState.CardsPlayed);
+		AssertPile([councilRoom], player.PlayerState.ActionsPlayed);
 
-		// +4 Cards
-		CollectionAssert.AreEquivalent(new List<Card> { copper, copper, silver, silver, councilRoom }, player.PlayerState.Hand);
-		Assert.IsFalse(player.PlayerState.DrawPile.Any());
-		Assert.IsFalse(player.PlayerState.DiscardPile.Any());
+		AssertNumbers(1, 0, 0, player2);
+		AssertPile([copper], player2.PlayerState.Hand);
+		AssertPile([], player2.PlayerState.DrawPile);
+		AssertPile([], player2.PlayerState.DiscardPile);
+		AssertPile([], player2.PlayerState.CardsPlayed);
+		AssertPile([], player2.PlayerState.ActionsPlayed);
 
-		// council room was added to played cards and actions
-		CollectionAssert.AreEquivalent(new List<Card> { councilRoom }, player.PlayerState.CardsPlayed);
-		CollectionAssert.AreEquivalent(new List<Card> { councilRoom }, player.PlayerState.ActionsPlayed);
+		AssertNumbers(1, 0, 0, player3);
+		AssertPile([silver], player3.PlayerState.Hand);
+		AssertPile([], player3.PlayerState.DrawPile);
+		AssertPile([], player3.PlayerState.DiscardPile);
+		AssertPile([], player3.PlayerState.CardsPlayed);
+		AssertPile([], player3.PlayerState.ActionsPlayed);
 
-		// players 2 and 3 draw one card
-		CollectionAssert.AreEquivalent(new List<Card> { copper }, player2.PlayerState.Hand);
-		CollectionAssert.AreEquivalent(new List<Card> { silver }, player3.PlayerState.Hand);
+		AssertNumbers(1, 0, 0, player4);
+		AssertPile([], player4.PlayerState.Hand);
+		AssertPile([], player4.PlayerState.DrawPile);
+		AssertPile([], player4.PlayerState.DiscardPile);
+		AssertPile([], player4.PlayerState.CardsPlayed);
+		AssertPile([], player4.PlayerState.ActionsPlayed);
 
-		// player 4 does not have any card to draw
-		Assert.IsFalse(player4.PlayerState.Hand.Any());
-
-		// all the other players' draw piles and discard piles are empty
-		Assert.IsFalse(player2.PlayerState.DrawPile.Any());
-		Assert.IsFalse(player3.PlayerState.DrawPile.Any());
-		Assert.IsFalse(player4.PlayerState.DrawPile.Any());
-		Assert.IsFalse(player2.PlayerState.DiscardPile.Any());
-		Assert.IsFalse(player3.PlayerState.DiscardPile.Any());
-		Assert.IsFalse(player4.PlayerState.DiscardPile.Any());
+		AssertPile([], player.Game.Trash);
 		#endregion
 	}
 
@@ -95,56 +97,56 @@ public class PlayerCouncilRoomTests : CardWithPlayerTestsBase
 	public void ThroneRoomPlay()
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { throneRoom, councilRoom };
-		player.PlayerState.DrawPile = new List<Card> { copper, silver, silver, councilRoom, copper, silver, councilRoom, copper };
-		player2.PlayerState.DrawPile = new List<Card> { copper, silver };
-		player3.PlayerState.DrawPile = new List<Card> { silver };
+		player.PlayerState.Hand = CreatePile([throneRoom, councilRoom]);
+		player.PlayerState.DrawPile = CreatePile([copper, silver, silver, councilRoom, copper, silver, councilRoom, copper]);
+		player2.PlayerState.DrawPile = CreatePile([copper, silver]);
+		player3.PlayerState.DrawPile = CreatePile([silver]);
+		player4.PlayerState.DrawPile = CreatePile([]);
+		var councilRoomToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.CouncilRoom);
+		var throneRoomToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<Card>>(c => c.SingleOrDefault() == councilRoom))).Returns(councilRoom);
+			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == councilRoomToPlay))).Returns(councilRoomToPlay);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(throneRoom);
+		player.PlayActionCardInternal(throneRoomToPlay);
 		#endregion
 
 		#region assert
-		// -1 Action, (+0 Actions, +0 Coins, +1 Buy) * 2
-		Assert.AreEqual(0, player.PlayerState.Actions);
-		Assert.AreEqual(0, player.PlayerState.Coins);
-		Assert.AreEqual(2, player.PlayerState.Buys);
+		AssertNumbers(0, 0, 2, player);
+		AssertPile([copper, silver, silver, councilRoom, copper, silver, councilRoom, copper], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([], player.PlayerState.DiscardPile);
+		AssertPile([throneRoom, councilRoom], player.PlayerState.CardsPlayed);
+		AssertPile([throneRoom, councilRoom, councilRoom], player.PlayerState.ActionsPlayed);
 
-		// (+4 Cards) * 2
-		CollectionAssert.AreEquivalent(new List<Card> { copper, silver, silver, councilRoom, copper, silver, councilRoom, copper }, player.PlayerState.Hand);
-		Assert.IsFalse(player.PlayerState.DrawPile.Any());
-		Assert.IsFalse(player.PlayerState.DiscardPile.Any());
+		AssertNumbers(1, 0, 0, player2);
+		AssertPile([copper, silver], player2.PlayerState.Hand);
+		AssertPile([], player2.PlayerState.DrawPile);
+		AssertPile([], player2.PlayerState.DiscardPile);
+		AssertPile([], player2.PlayerState.CardsPlayed);
+		AssertPile([], player2.PlayerState.ActionsPlayed);
+
+		AssertNumbers(1, 0, 0, player3);
+		AssertPile([silver], player3.PlayerState.Hand);
+		AssertPile([], player3.PlayerState.DrawPile);
+		AssertPile([], player3.PlayerState.DiscardPile);
+		AssertPile([], player3.PlayerState.CardsPlayed);
+		AssertPile([], player3.PlayerState.ActionsPlayed);
+
+		AssertNumbers(1, 0, 0, player4);
+		AssertPile([], player4.PlayerState.Hand);
+		AssertPile([], player4.PlayerState.DrawPile);
+		AssertPile([], player4.PlayerState.DiscardPile);
+		AssertPile([], player4.PlayerState.CardsPlayed);
+		AssertPile([], player4.PlayerState.ActionsPlayed);
+
+		AssertPile([], player.Game.Trash);
 
 		// user is asked which card to play using throne room
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
-
-		// council room and throne room were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { councilRoom, throneRoom }, player.PlayerState.CardsPlayed);
-
-		// two council rooms and throne room were added to played actions
-		CollectionAssert.AreEquivalent(new List<Card> { councilRoom, councilRoom, throneRoom }, player.PlayerState.ActionsPlayed);
-
-		// player 2 draws 2 cards
-		CollectionAssert.AreEquivalent(new List<Card> { copper, silver }, player2.PlayerState.Hand);
-
-		//  player 3 draws one card
-		CollectionAssert.AreEquivalent(new List<Card> { silver }, player3.PlayerState.Hand);
-
-		// player 4 does not have any card to draw
-		Assert.IsFalse(player4.PlayerState.Hand.Any());
-
-		// all the other players' draw piles and discard piles are empty
-		Assert.IsFalse(player2.PlayerState.DrawPile.Any());
-		Assert.IsFalse(player3.PlayerState.DrawPile.Any());
-		Assert.IsFalse(player4.PlayerState.DrawPile.Any());
-		Assert.IsFalse(player2.PlayerState.DiscardPile.Any());
-		Assert.IsFalse(player3.PlayerState.DiscardPile.Any());
-		Assert.IsFalse(player4.PlayerState.DiscardPile.Any());
+			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
 		#endregion
 	}
 }

@@ -53,7 +53,7 @@ public class Evolution
 			sw.Stop();
 			var elapsed = sw.Elapsed;
 
-			if (referenceAgenda != null)
+			if (referenceAgenda is not null)
 				ComputeFitness(leaders[0], gen);
 			//referenceAgenda = leaders[0];
 

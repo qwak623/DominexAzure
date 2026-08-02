@@ -6,15 +6,16 @@ namespace GameCore.Cards;
 /// Contains all cards for game.
 /// For each game there should be unique instance.
 /// </summary>
-public class Kingdom : IEnumerable<Pile>
+public class Kingdom : IEnumerable<KingdomPile>
 {
-	public int EmptyPilesCount;
-	private List<Pile> piles;
+	public int EmptyKingdomPilesCount => kingdomPiles.Count(p => p.Empty);
+	private List<KingdomPile> kingdomPiles;
 	private Dictionary<CardType, int> cardTypeToIndex = new Dictionary<CardType, int>();
+	private int nextCardInstanceId = 0;
 
 	public Kingdom(List<Card> cards, int playerCount, IKingdomObserver kingdomObserver = null)
 	{
-		piles = cards.AddRequiredCards()
+		kingdomPiles = cards.AddRequiredCards()
 			.Select(card =>
 			{
 				int count = 10;
@@ -38,13 +39,13 @@ public class Kingdom : IEnumerable<Pile>
 				{
 					count = 30;
 				}
-				return new Pile(card, count, () => kingdomObserver?.Notify(this));
+				return new KingdomPile(this, card, count);
 			})
 			.ToList();
 
-		for (int i = 0; i < piles.Count; i++)
+		for (int i = 0; i < kingdomPiles.Count; i++)
 		{
-			cardTypeToIndex.Add(piles[i].Card.Type, i);
+			cardTypeToIndex.Add(kingdomPiles[i].Type, i);
 		}
 		kingdomObserver?.Notify(this);
 	}
@@ -70,23 +71,25 @@ public class Kingdom : IEnumerable<Pile>
 	/// </summary>
 	/// <param name="type"></param>
 	/// <returns></returns>
-	public Pile GetPile(CardType type)
+	public KingdomPile GetPile(CardType type)
 	{
 		if (cardTypeToIndex.TryGetValue(type, out int index))
 		{
-			return piles[index];
+			return kingdomPiles[index];
 		}
 
 		return null;
 	}
 
-	public Pile this[int index] => piles[index];
+	public KingdomPile this[int index] => kingdomPiles[index];
 
-	public int Count => piles.Count;
+	public int Count => kingdomPiles.Count;
 
-	public IEnumerator<Pile> GetEnumerator()
+	public int GetNextCardInstanceId() => nextCardInstanceId++;
+
+	public IEnumerator<KingdomPile> GetEnumerator()
 	{
-		foreach (var pile in piles)
+		foreach (var pile in kingdomPiles)
 		{
 			yield return pile;
 		}

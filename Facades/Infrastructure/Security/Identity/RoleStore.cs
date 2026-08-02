@@ -68,7 +68,7 @@ public class RoleStore : IRoleStore<Role>
 
 	public Task<string> GetNormalizedRoleNameAsync(Role role, CancellationToken cancellationToken)
 	{
-		if (role == null)
+		if (role is null)
 		{
 			throw new ArgumentNullException(nameof(role));
 		}
@@ -80,7 +80,7 @@ public class RoleStore : IRoleStore<Role>
 
 	public Task<string> GetRoleIdAsync(Role role, CancellationToken cancellationToken)
 	{
-		if (role == null)
+		if (role is null)
 		{
 			throw new ArgumentNullException(nameof(role));
 		}
@@ -90,7 +90,7 @@ public class RoleStore : IRoleStore<Role>
 
 	public Task<string> GetRoleNameAsync(Role role, CancellationToken cancellationToken)
 	{
-		if (role == null)
+		if (role is null)
 		{
 			throw new ArgumentNullException(nameof(role));
 		}

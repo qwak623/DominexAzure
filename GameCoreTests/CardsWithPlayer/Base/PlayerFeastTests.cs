@@ -2,7 +2,6 @@
 using GameCore.Cards.Base;
 using GameCore.Cards.GeneralCards;
 using GameCore.CardWithPlayer.Tests;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
 namespace GameCore.CardsWithPlayer.Base.Tests;
@@ -31,39 +30,30 @@ public class PlayerFeastTests : CardWithPlayerTestsBase
 	public void GainDuchy()
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { feast };
+		player.PlayerState.Hand = CreatePile([feast]);
 
-		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain)).Returns(duchy);
+		var duchyToGain = new CardInstance(duchy, new Pile(), 10);
+		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
+			.Returns(duchyToGain);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(feast);
+		player.PlayActionCardInternal(player.PlayerState.Hand[0]);
 		#endregion
 
 		#region assert
-		// -1 Action, +0 Coins, +0 Buys
-		Assert.AreEqual(0, player.PlayerState.Actions);
-		Assert.AreEqual(0, player.PlayerState.Coins);
-		Assert.AreEqual(0, player.PlayerState.Buys);
+		// the feast was transferred from played cards to trash 
+		AssertNumbers(0, 0, 0, player);
+		AssertPile([], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([duchy], player.PlayerState.DiscardPile);
+		AssertPile([], player.PlayerState.CardsPlayed);
+		AssertPile([feast], player.PlayerState.ActionsPlayed);
+		AssertPile([feast], player.Game.Trash);
 
 		// user has to select a card with price max 5 to gain
 		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.Price == 5 && k.OnlyTreasures == false),
-			player.PlayerState, player.Game.Kingdom, Phase.Gain));
-
-		// +0 Cards
-		Assert.IsFalse(player.PlayerState.Hand.Any());
-
-		// player has to trash feast
-		CollectionAssert.AreEquivalent(new List<Card> { feast }, player.Game.Trash);
-
-		// the feast was transferred from played cards to trash 
-		Assert.IsFalse(player.PlayerState.CardsPlayed.Any());
-
-		// feast was added to played actions
-		CollectionAssert.AreEquivalent(new List<Card> { feast }, player.PlayerState.ActionsPlayed);
-
-		// player gains the duchy to the discard pile
-		CollectionAssert.AreEquivalent(new List<Card> { duchy }, player.PlayerState.DiscardPile);
+			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Once);
 		#endregion
 	}
 
@@ -71,39 +61,27 @@ public class PlayerFeastTests : CardWithPlayerTestsBase
 	public void NothingToGain()
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { feast };
+		player.PlayerState.Hand = CreatePile([feast]);
 
 		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain)).Returns<Card>(null);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(feast);
+		player.PlayActionCardInternal(player.PlayerState.Hand[0]);
 		#endregion
 
 		#region assert
-		// -1 Action, +0 Coins, +0 Buys
-		Assert.AreEqual(0, player.PlayerState.Actions);
-		Assert.AreEqual(0, player.PlayerState.Coins);
-		Assert.AreEqual(0, player.PlayerState.Buys);
+		AssertNumbers(0, 0, 0, player);
+		AssertPile([], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([], player.PlayerState.DiscardPile);
+		AssertPile([], player.PlayerState.CardsPlayed);
+		AssertPile([feast], player.PlayerState.ActionsPlayed);
+		AssertPile([feast], player.Game.Trash);
 
 		// user has to select a card with price max 5 to gain
 		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.Price == 5 && k.OnlyTreasures == false),
-			player.PlayerState, player.Game.Kingdom, Phase.Gain));
-
-		// +0 Cards
-		Assert.IsFalse(player.PlayerState.Hand.Any());
-
-		// player has to trash feast
-		CollectionAssert.AreEquivalent(new List<Card> { feast }, player.Game.Trash);
-
-		// the feast was transferred from played cards to trash 
-		Assert.IsFalse(player.PlayerState.CardsPlayed.Any());
-
-		// feast was added to played actions
-		CollectionAssert.AreEquivalent(new List<Card> { feast }, player.PlayerState.ActionsPlayed);
-
-		// player gains nothing
-		Assert.IsFalse(player.PlayerState.DiscardPile.Any());
+			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Once);
 		#endregion
 	}
 
@@ -113,46 +91,38 @@ public class PlayerFeastTests : CardWithPlayerTestsBase
 		// TODO hostina je dvakrát na smetišti
 
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { throneRoom, feast };
+		player.PlayerState.Hand = CreatePile([throneRoom, feast]);
+
+		var duchyToGain = new CardInstance(duchy, new Pile(), 10);
+		var duchyToGain2 = new CardInstance(duchy, new Pile(), 11);
+		var feastToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Feast);
+
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<Card>>(c => c.SingleOrDefault() == feast))).Returns(feast);
-		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
-			.Returns(duchy);
+			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == feastToPlay))).Returns(feastToPlay);
+		user.SetupSequence(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
+			.Returns(duchyToGain).Returns(duchyToGain2);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(throneRoom);
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
 		#endregion
 
 		#region assert
-		// +0 Actions, +0 Coins, +0 Buys
-		Assert.AreEqual(0, player.PlayerState.Actions);
-		Assert.AreEqual(0, player.PlayerState.Coins);
-		Assert.AreEqual(0, player.PlayerState.Buys);
+		AssertNumbers(0, 0, 0, player);
+		AssertPile([], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([duchy, duchy], player.PlayerState.DiscardPile);
+		AssertPile([throneRoom], player.PlayerState.CardsPlayed);
+		AssertPile([throneRoom, feast, feast], player.PlayerState.ActionsPlayed);
+		AssertPile([feast], player.Game.Trash);
 
-		// +0 Cards
-		Assert.IsFalse(player.PlayerState.Hand.Any());
-		Assert.IsFalse(player.PlayerState.DrawPile.Any());
-
-		// user was asked which card to play using throne room
-		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
-
-		// player has to trash feast
-		CollectionAssert.AreEquivalent(new List<Card> { feast }, player.Game.Trash);
-
-		// user has to select a card with price max 5 to gain two times
+		// user has to select a card with price max 5 to gain
 		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.Price == 5 && k.OnlyTreasures == false),
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Exactly(2));
 
-		// player gains the duchy
-		CollectionAssert.AreEquivalent(new List<Card> { duchy, duchy }, player.PlayerState.DiscardPile);
-
-		// throne room was added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { throneRoom }, player.PlayerState.CardsPlayed);
-
-		// throne room and two feasts were added to played actions
-		CollectionAssert.AreEquivalent(new List<Card> { feast, feast, throneRoom }, player.PlayerState.ActionsPlayed);
+		// user was asked which card to play using throne room
+		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
+			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
 		#endregion
 	}
 
@@ -160,46 +130,37 @@ public class PlayerFeastTests : CardWithPlayerTestsBase
 	public void ThroneRoomOneDuchyAvailable()
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { throneRoom, feast };
+		player.PlayerState.Hand = CreatePile([throneRoom, feast]);
+
+		var duchyToGain = new CardInstance(duchy, new Pile(), 10);
+		var feastToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Feast);
+
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<Card>>(c => c.SingleOrDefault() == feast))).Returns(feast);
+			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == feastToPlay))).Returns(feastToPlay);
 		user.SetupSequence(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
-			.Returns(duchy).Returns((Card)null);
+			.Returns(duchyToGain).Returns((CardInstance)null);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(throneRoom);
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
 		#endregion
 
 		#region assert
-		// +0 Actions, +0 Coins, +0 Buys
-		Assert.AreEqual(0, player.PlayerState.Actions);
-		Assert.AreEqual(0, player.PlayerState.Coins);
-		Assert.AreEqual(0, player.PlayerState.Buys);
-
-		// +0 Cards
-		Assert.IsFalse(player.PlayerState.Hand.Any());
-		Assert.IsFalse(player.PlayerState.DrawPile.Any());
+		AssertNumbers(0, 0, 0, player);
+		AssertPile([], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([duchy], player.PlayerState.DiscardPile);
+		AssertPile([throneRoom], player.PlayerState.CardsPlayed);
+		AssertPile([throneRoom, feast, feast], player.PlayerState.ActionsPlayed);
+		AssertPile([feast], player.Game.Trash);
 
 		// user was asked which card to play using throne room
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
-
-		// player has to trash feast
-		CollectionAssert.AreEquivalent(new List<Card> { feast }, player.Game.Trash);
+			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
 
 		// user has to select a card with price max 5 to gain - there is only one duchy
 		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.Price == 5 && k.OnlyTreasures == false),
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Exactly(2));
-
-		// player gains the one duchy
-		CollectionAssert.AreEquivalent(new List<Card> { duchy }, player.PlayerState.DiscardPile);
-
-		// throne room was added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { throneRoom }, player.PlayerState.CardsPlayed);
-
-		// throne room and two feasts were added to played actions
-		CollectionAssert.AreEquivalent(new List<Card> { feast, feast, throneRoom }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -207,46 +168,34 @@ public class PlayerFeastTests : CardWithPlayerTestsBase
 	public void ThroneRoomNothingToGain()
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { throneRoom, feast };
+		player.PlayerState.Hand = CreatePile([throneRoom, feast]);
+		var feastToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Feast);
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<Card>>(c => c.SingleOrDefault() == feast))).Returns(feast);
+			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == feastToPlay))).Returns(feastToPlay);
 		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
 			.Returns<Card>(null);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(throneRoom);
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
 		#endregion
 
 		#region assert
-		// +0 Actions, +0 Coins, +0 Buys
-		Assert.AreEqual(0, player.PlayerState.Actions);
-		Assert.AreEqual(0, player.PlayerState.Coins);
-		Assert.AreEqual(0, player.PlayerState.Buys);
-
-		// +0 Cards
-		Assert.IsFalse(player.PlayerState.Hand.Any());
-		Assert.IsFalse(player.PlayerState.DrawPile.Any());
+		AssertNumbers(0, 0, 0, player);
+		AssertPile([], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([], player.PlayerState.DiscardPile);
+		AssertPile([throneRoom], player.PlayerState.CardsPlayed);
+		AssertPile([throneRoom, feast, feast], player.PlayerState.ActionsPlayed);
+		AssertPile([feast], player.Game.Trash);
 
 		// user was asked which card to play using throne room
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
-
-		// player has to trash feast
-		CollectionAssert.AreEquivalent(new List<Card> { feast }, player.Game.Trash);
+			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
 
 		// user has to select a card with price max 5 to gain - there is none
 		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.Price == 5 && k.OnlyTreasures == false),
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Exactly(2));
-
-		// player gains nothing
-		Assert.IsFalse(player.PlayerState.DiscardPile.Any());
-
-		// throne room was added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { throneRoom }, player.PlayerState.CardsPlayed);
-
-		// throne room and two feasts were added to played actions
-		CollectionAssert.AreEquivalent(new List<Card> { feast, feast, throneRoom }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 }

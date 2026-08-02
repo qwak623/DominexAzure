@@ -26,15 +26,14 @@ public class Feast : Card
 
 	public static Feast Get() => feast ?? new Feast();
 
-	protected override void ActionEffect(IPlayer player)
+	protected override void ActionEffect(IPlayer player, CardInstance thisCard)
 	{
-		player.PlayerState.CardsPlayed.Remove(this);
-		player.Game.Trash.Add(this);
+		player.Trash(thisCard);
 		player.Game.Logger?.Log(new GameLog { PlayerId = Name, Message = $"{player.Name} trashes {Name}" });
 		var card = player.User.SelectCardToGain(player.Game.Kingdom.GetWrapper(5), player.PlayerState, player.Game.Kingdom, Phase.Gain);
-		if (card != null)
+		if (card is not null)
 		{
-			player.Gain(card.Type);
+			player.Gain(card);
 		}
 	}
 }

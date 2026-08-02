@@ -1,8 +1,7 @@
-﻿using GameCore.Cards;
+using GameCore.Cards;
 using GameCore.Cards.Base;
 using GameCore.Cards.GeneralCards;
 using GameCore.CardWithPlayer.Tests;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
 namespace GameCore.CardsWithPlayer.Base.Tests;
@@ -33,37 +32,29 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 	public void UpgradeCopperToSilver()
 	{
 		#region arrange
-		user.Setup(u => u.MineTrash(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<IList<Card>>()))
-			.Returns(copper);
-		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), Phase.Gain))
-			.Returns(silver);
+		player.PlayerState.Hand = CreatePile([mine, copper]);
+		var mineToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Mine);
+		var copperInHand = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Copper);
+		var silverToGain = player.Game.Kingdom.GetPile(CardType.Silver).CardInstance;
 
-		player.PlayerState.Hand = new List<Card> { mine, copper };
+		user.Setup(u => u.MineTrash(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<IList<CardInstance>>()))
+			.Returns(copperInHand);
+		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), Phase.Gain))
+			.Returns(silverToGain);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(mine);
+		player.PlayActionCardInternal(mineToPlay);
 		#endregion
 
 		#region assert
-		// -1 Action, +0 Coins, +0 Buys
-		Assert.AreEqual(0, player.PlayerState.Actions);
-		Assert.AreEqual(0, player.PlayerState.Coins);
-		Assert.AreEqual(0, player.PlayerState.Buys);
-
-		// +0 Cards
-		Assert.IsFalse(player.PlayerState.DrawPile.Any());
-		Assert.IsFalse(player.PlayerState.DiscardPile.Any());
-
-		// copper was trashed
-		CollectionAssert.AreEquivalent(new List<Card> { copper }, player.Game.Trash);
-
-		// silver was gained to hand
-		CollectionAssert.AreEquivalent(new List<Card> { silver }, player.PlayerState.Hand);
-
-		// mine was added to played cards and actions
-		CollectionAssert.AreEquivalent(new List<Card> { mine }, player.PlayerState.CardsPlayed);
-		CollectionAssert.AreEquivalent(new List<Card> { mine }, player.PlayerState.ActionsPlayed);
+		AssertNumbers(0, 0, 0, player);
+		AssertPile([silver], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([], player.PlayerState.DiscardPile);
+		AssertPile([mine], player.PlayerState.CardsPlayed);
+		AssertPile([mine], player.PlayerState.ActionsPlayed);
+		AssertPile([copper], player.Game.Trash);
 		#endregion
 	}
 
@@ -71,35 +62,25 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 	public void DontTrashAnything()
 	{
 		#region arrange
-		user.Setup(u => u.MineTrash(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<IList<Card>>()))
-			.Returns<Card>(null);
+		player.PlayerState.Hand = CreatePile([mine, copper]);
+		var mineToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Mine);
 
-		player.PlayerState.Hand = new List<Card> { mine, copper };
+		user.Setup(u => u.MineTrash(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<IList<CardInstance>>()))
+			.Returns((CardInstance)null);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(mine);
+		player.PlayActionCardInternal(mineToPlay);
 		#endregion
 
 		#region assert
-		// -1 Action, +0 Coins, +0 Buys
-		Assert.AreEqual(0, player.PlayerState.Actions);
-		Assert.AreEqual(0, player.PlayerState.Coins);
-		Assert.AreEqual(0, player.PlayerState.Buys);
-
-		// +0 Cards
-		Assert.IsFalse(player.PlayerState.DrawPile.Any());
-		Assert.IsFalse(player.PlayerState.DiscardPile.Any());
-
-		// nothing was trashed
-		Assert.IsFalse(player.Game.Trash.Any());
-
-		// copper stayed in hand
-		CollectionAssert.AreEquivalent(new List<Card> { copper }, player.PlayerState.Hand);
-
-		// mine was added to played cards and actions
-		CollectionAssert.AreEquivalent(new List<Card> { mine }, player.PlayerState.CardsPlayed);
-		CollectionAssert.AreEquivalent(new List<Card> { mine }, player.PlayerState.ActionsPlayed);
+		AssertNumbers(0, 0, 0, player);
+		AssertPile([copper], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([], player.PlayerState.DiscardPile);
+		AssertPile([mine], player.PlayerState.CardsPlayed);
+		AssertPile([mine], player.PlayerState.ActionsPlayed);
+		AssertPile([], player.Game.Trash);
 		#endregion
 	}
 
@@ -107,37 +88,28 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 	public void DontGainAnything()
 	{
 		#region arrange
-		user.Setup(u => u.MineTrash(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<IList<Card>>()))
-			.Returns(copper);
-		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), Phase.Gain))
-			.Returns<Card>(null);
+		player.PlayerState.Hand = CreatePile([mine, copper]);
+		var mineToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Mine);
+		var copperInHand = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Copper);
 
-		player.PlayerState.Hand = new List<Card> { mine, copper };
+		user.Setup(u => u.MineTrash(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<IList<CardInstance>>()))
+			.Returns(copperInHand);
+		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), Phase.Gain))
+			.Returns((CardInstance)null);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(mine);
+		player.PlayActionCardInternal(mineToPlay);
 		#endregion
 
 		#region assert
-		// -1 Action, +0 Coins, +0 Buys
-		Assert.AreEqual(0, player.PlayerState.Actions);
-		Assert.AreEqual(0, player.PlayerState.Coins);
-		Assert.AreEqual(0, player.PlayerState.Buys);
-
-		// +0 Cards
-		Assert.IsFalse(player.PlayerState.DrawPile.Any());
-		Assert.IsFalse(player.PlayerState.DiscardPile.Any());
-
-		// copper was trashed
-		CollectionAssert.AreEquivalent(new List<Card> { copper }, player.Game.Trash);
-
-		// nothing was gained to hand
-		Assert.IsFalse(player.PlayerState.Hand.Any());
-
-		// mine was added to played cards and actions
-		CollectionAssert.AreEquivalent(new List<Card> { mine }, player.PlayerState.CardsPlayed);
-		CollectionAssert.AreEquivalent(new List<Card> { mine }, player.PlayerState.ActionsPlayed);
+		AssertNumbers(0, 0, 0, player);
+		AssertPile([], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([], player.PlayerState.DiscardPile);
+		AssertPile([mine], player.PlayerState.CardsPlayed);
+		AssertPile([mine], player.PlayerState.ActionsPlayed);
+		AssertPile([copper], player.Game.Trash);
 		#endregion
 	}
 
@@ -145,56 +117,47 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 	public void ThroneRoomCopperToGold()
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { mine, throneRoom, copper };
+		player.PlayerState.Hand = CreatePile([mine, throneRoom, copper]);
+		var mineToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Mine);
+		var copperInHand = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Copper);
+		var silverToGain = player.Game.Kingdom.GetPile(CardType.Silver).CardInstance;
+		var goldToGain = player.Game.Kingdom.GetPile(CardType.Gold).CardInstance;
+
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<Card>>(c => c.SingleOrDefault() == mine))).Returns(mine);
-		user.SetupSequence(u => u.MineTrash(mine, player.PlayerState, player.Game.Kingdom, It.IsAny<IList<Card>>()))
-			.Returns(copper).Returns(silver);
+			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == mineToPlay))).Returns(mineToPlay);
+		user.SetupSequence(u => u.MineTrash(mine, player.PlayerState, player.Game.Kingdom, It.IsAny<IList<CardInstance>>()))
+			.Returns(copperInHand).Returns(silverToGain);
 		user.SetupSequence(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
-			.Returns(silver).Returns(gold);
+			.Returns(silverToGain).Returns(goldToGain);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(throneRoom);
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
 		#endregion
 
 		#region assert
-		// -1 Action, (+0 Actions, +0 Coins, +0 Buys) * 2
-		Assert.AreEqual(0, player.PlayerState.Actions);
-		Assert.AreEqual(0, player.PlayerState.Coins);
-		Assert.AreEqual(0, player.PlayerState.Buys);
+		AssertNumbers(0, 0, 0, player);
+		AssertPile([gold], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([], player.PlayerState.DiscardPile);
+		AssertPile([mine, throneRoom], player.PlayerState.CardsPlayed);
+		AssertPile([mine, mine, throneRoom], player.PlayerState.ActionsPlayed);
+		AssertPile([copper, silver], player.Game.Trash);
 
-		// +0 Cards
-		Assert.IsFalse(player.PlayerState.DrawPile.Any());
-		Assert.IsFalse(player.PlayerState.DiscardPile.Any());
-
-		// user is asked which card to play using throne room
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
+			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
 
-		// user is asked to choose a treasure to trash
+		// second resolution's selection is the silver the first resolution just gained - it goes
+		// straight back in for a gold
 		user.Verify(u => u.MineTrash(mine, player.PlayerState, player.Game.Kingdom,
-			It.Is<IList<Card>>(c => c.SequenceEqual(new List<Card> { copper }))), Times.Once);
+			It.Is<IList<CardInstance>>(c => c.SequenceEqual(new List<CardInstance> { copperInHand }))), Times.Once);
 		user.Verify(u => u.MineTrash(mine, player.PlayerState, player.Game.Kingdom,
-			It.Is<IList<Card>>(c => c.SequenceEqual(new List<Card> { silver }))), Times.Once);
+			It.Is<IList<CardInstance>>(c => c.SequenceEqual(new List<CardInstance> { silverToGain }))), Times.Once);
 
-		// player trashes the chosen cards
-		CollectionAssert.AreEquivalent(new List<Card> { copper, silver }, player.Game.Trash);
-
-		// gold is added to the hand
-		CollectionAssert.AreEquivalent(new List<Card> { gold }, player.PlayerState.Hand);
-
-		// user is asked to select a treasure with max price 3 or 6 to gain
 		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.Price == 3 && kw.OnlyTreasures),
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Once);
 		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.Price == 6 && kw.OnlyTreasures),
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Once);
-
-		// mine and throne room were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { mine, throneRoom }, player.PlayerState.CardsPlayed);
-
-		// two mines and throne room were added to played actions
-		CollectionAssert.AreEquivalent(new List<Card> { mine, mine, throneRoom }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -202,54 +165,50 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 	public void ThroneRoomTwoCoppersToSilvers()
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { mine, throneRoom, copper, copper };
+		player.PlayerState.Hand = CreatePile([mine, throneRoom, copper, copper]);
+		var mineToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Mine);
+		var coppersInHand = player.PlayerState.Hand.Where(c => c.Card.Type == CardType.Copper).ToList();
+		var copper1 = coppersInHand[0];
+		var copper2 = coppersInHand[1];
+		var silver1 = player.Game.Kingdom.GetPile(CardType.Silver).CardInstance;
+
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<Card>>(c => c.SingleOrDefault() == mine))).Returns(mine);
-		user.Setup(u => u.MineTrash(mine, player.PlayerState, player.Game.Kingdom, It.IsAny<IList<Card>>()))
-			.Returns(copper);
+			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == mineToPlay))).Returns(mineToPlay);
+		user.SetupSequence(u => u.MineTrash(mine, player.PlayerState, player.Game.Kingdom, It.IsAny<IList<CardInstance>>()))
+			.Returns(copper1).Returns(copper2);
+
+		CardInstance silverToGain = null;
 		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
-			.Returns(silver);
+			.Callback<KingdomWrapper, PlayerState, Kingdom, Phase>((kw, ps, k, p) =>
+				silverToGain = kw.AvailableCards.First(c => c.Card.Type == CardType.Silver))
+			.Returns(() => silverToGain);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(throneRoom);
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
 		#endregion
 
 		#region assert
-		// -1 Action, (+0 Actions, +0 Coins, +0 Buys) * 2
-		Assert.AreEqual(0, player.PlayerState.Actions);
-		Assert.AreEqual(0, player.PlayerState.Coins);
-		Assert.AreEqual(0, player.PlayerState.Buys);
+		AssertNumbers(0, 0, 0, player);
+		AssertPile([silver, silver], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([], player.PlayerState.DiscardPile);
+		AssertPile([mine, throneRoom], player.PlayerState.CardsPlayed);
+		AssertPile([mine, mine, throneRoom], player.PlayerState.ActionsPlayed);
+		AssertPile([copper, copper], player.Game.Trash);
 
-		// +0 Cards
-		Assert.IsFalse(player.PlayerState.DrawPile.Any());
-		Assert.IsFalse(player.PlayerState.DiscardPile.Any());
-
-		// user is asked which card to play using throne room
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
+			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
 
-		// user is asked to choose a treasure to trash
+		// first resolution offers both starting coppers; second offers whichever wasn't trashed
+		// plus the silver the first resolution just gained
 		user.Verify(u => u.MineTrash(mine, player.PlayerState, player.Game.Kingdom,
-			It.Is<IList<Card>>(c => c.SequenceEqual(new List<Card> { copper, copper }))), Times.Once);
+			It.Is<IList<CardInstance>>(c => c.SequenceEqual(new List<CardInstance> { copper1, copper2 }))), Times.Once);
 		user.Verify(u => u.MineTrash(mine, player.PlayerState, player.Game.Kingdom,
-			It.Is<IList<Card>>(c => c.SequenceEqual(new List<Card> { copper, silver }))), Times.Once);
+			It.Is<IList<CardInstance>>(c => c.SequenceEqual(new List<CardInstance> { copper2, silver1 }))), Times.Once);
 
-		// player trashes the chosen cards
-		CollectionAssert.AreEquivalent(new List<Card> { copper, copper }, player.Game.Trash);
-
-		// silvers are added to the hand
-		CollectionAssert.AreEquivalent(new List<Card> { silver, silver }, player.PlayerState.Hand);
-
-		// user is asked to select a treasure with max price 3 to gain
 		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.Price == 3 && kw.OnlyTreasures),
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Exactly(2));
-
-		// mine and throne room were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { mine, throneRoom }, player.PlayerState.CardsPlayed);
-
-		// two mines and throne room were added to played actions
-		CollectionAssert.AreEquivalent(new List<Card> { mine, mine, throneRoom }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 }

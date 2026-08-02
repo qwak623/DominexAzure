@@ -21,7 +21,7 @@
                 Answer.Values.Add(model);
                 <div class="row">
                     <div class="col-6">
-                        @if (item.Card != null)
+                        @if (item.Card is not null)
                         {
                             <CardTooltip CardDto="@item.Card">
                                 <div class="card-in-hand mr-1">@item.Card.Name $@item.Card.Price</div>

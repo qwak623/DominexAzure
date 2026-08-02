@@ -1,5 +1,4 @@
 ﻿using GameCore.Cards;
-using GameCore.Cards.Base;
 using GameCore.Observers;
 
 namespace GameCore;
@@ -14,38 +13,36 @@ public abstract class User : IUser
 
 	public virtual void SetCanCelationTokenSource(CancellationTokenSource tokenSource) { }
 
-	public abstract Card PlayCard(IEnumerable<Card> cards, PlayerState ps, Kingdom k, Phase phase, Card card = null);
+	public abstract CardInstance PlayCard(IEnumerable<CardInstance> cards, PlayerState ps, Kingdom k, Phase phase, Card card = null);
 
-	public abstract Card SelectCardToGain(KingdomWrapper wrapper, PlayerState ps, Kingdom k, Phase phase);
+	public abstract CardInstance SelectCardToGain(KingdomWrapper wrapper, PlayerState ps, Kingdom k, Phase phase);
 
 	public virtual IPlayerStateObserver GetPlayerStateObserver() => null;
 
 	#region cards base
-	public abstract List<Card> CellarDiscard(Card cardPlayed, PlayerState ps, Kingdom k);
+	public abstract List<CardInstance> CellarDiscard(Card cardPlayed, PlayerState ps, Kingdom k);
 
-	public abstract Card BureaucratPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k);
+	public abstract CardInstance BureaucratPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k);
 
 	public abstract bool ChancellorDiscard(Card cardPlayed, PlayerState ps, Kingdom k);
 
-	public abstract List<Card> ChapelTrash(Card cardPlayed, PlayerState ps, Kingdom k);
+	public abstract List<CardInstance> ChapelTrash(Card cardPlayed, PlayerState ps, Kingdom k);
 
-	public abstract bool LibrarySkip(Card cardPlayed, PlayerState ps, Kingdom k, Card c);
+	public abstract bool LibrarySkip(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance c);
 
-	public abstract List<Card> MilitiaDiscard(Card cardPlayed, PlayerState ps, Kingdom k, int discardCount);
+	public abstract List<CardInstance> MilitiaDiscard(Card cardPlayed, PlayerState ps, Kingdom k, int discardCount);
 
-	public abstract Card MineTrash(Card cardPlayed, PlayerState ps, Kingdom k, IList<Card> cardSelection);
-
+	public abstract CardInstance MineTrash(Card cardPlayed, PlayerState ps, Kingdom k, IList<CardInstance> cardSelection);
 	public abstract bool MoneylenderTrash(Card cardPlayed, PlayerState ps, Kingdom k);
 
-	public abstract Card RemodelTrash(Card cardPlayed, PlayerState ps, Kingdom k);
+	public abstract CardInstance RemodelTrash(Card cardPlayed, PlayerState ps, Kingdom k);
 
-	public abstract bool SpyDiscard(Card cardPlayed, PlayerState ps, Kingdom k, Card c, Phase p);
+	public abstract bool SpyDiscard(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance c, Phase p);
 
-	public abstract Card ThiefChoose(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<Card> cards);
+	public abstract CardInstance ThiefChoose(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards);
+	public abstract bool ThiefSteal(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance c);
 
-	public abstract bool ThiefSteal(Card cardPlayed, PlayerState ps, Kingdom k, Card c);
-
-	public abstract Card ThroneRoomPlay(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<Card> cards);
+	public abstract CardInstance ThroneRoomPlay(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards);
 	#endregion cards intrique
 
 	#region cards intrique

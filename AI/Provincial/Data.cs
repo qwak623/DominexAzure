@@ -21,12 +21,12 @@ namespace AI.Provincial
         public static float[] GetPriorityList()
         {
             // avoiding locking when its unnecesarry
-            if (priorityList != null)
+            if (priorityList is not null)
                 return priorityList;
 
             lock (obj)
             {
-                if (priorityList == null)
+                if (priorityList is null)
                     priorityList = getPriorityList();
                 return priorityList;
             }

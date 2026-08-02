@@ -53,7 +53,7 @@ public partial class GameLogger
 
 	public async ValueTask DisposeAsync()
 	{
-		if (hubConnection != null)
+		if (hubConnection is not null)
 		{
 			await hubConnection.DisposeAsync();
 		}

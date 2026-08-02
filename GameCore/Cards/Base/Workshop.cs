@@ -24,10 +24,12 @@ public class Workshop : Card
 
 	public static Workshop Get() => workshop ?? new Workshop();
 
-	protected override void ActionEffect(IPlayer p)
+	protected override void ActionEffect(IPlayer p, CardInstance thisCard)
 	{
 		var card = p.User.SelectCardToGain(p.Game.Kingdom.GetWrapper(4), p.PlayerState, p.Game.Kingdom, Phase.Gain);
-		if (card != null)
-			p.Gain(card.Type);
+		if (card is not null)
+		{
+			p.Gain(card);
+		}
 	}
 }

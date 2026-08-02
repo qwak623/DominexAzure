@@ -5,6 +5,6 @@ namespace Dominex.Services.Game;
 public interface ICardMapper
 {
 	CardDto ToCardDto(Card card);
-	CardDto ToCardDtoWithIndex(Card card, int index);
+	CardDto ToCardDtoWithIndex(CardInstance cardInstance, int index);
 	IEnumerable<CardDto> ToCardDto(IEnumerable<Card> card);
 }

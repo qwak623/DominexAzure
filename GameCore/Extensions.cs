@@ -13,9 +13,7 @@ public static class Extensions
 		{
 			n--;
 			int k = ThreadSafeRandom.Next(n + 1);
-			T value = list[k];
-			list[k] = list[n];
-			list[n] = value;
+			(list[k], list[n]) = (list[n], list[k]);
 		}
 	}
 
@@ -34,7 +32,7 @@ public static class Extensions
 	public static List<Card> AddRequiredCards(this IEnumerable<Card> cards)
 	{
 		return cards.Concat(PresetGames.VictoryAndTreasures())
-			.Concat(cards.Select(c => c.RequiredCards).Where(c => c != null).Distinct()).ToList();
+			.Concat(cards.Select(c => c.RequiredCards).Where(c => c is not null).Distinct()).ToList();
 	}
 
 	public static bool Contains(this IEnumerable<Card> cards, CardType type)

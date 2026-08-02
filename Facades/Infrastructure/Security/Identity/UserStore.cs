@@ -30,7 +30,7 @@ public class UserStore :
 
 	public Task AddToRoleAsync(User user, string normalizedRoleName, CancellationToken cancellationToken)
 	{
-		Contract.Requires<ArgumentNullException>(user != null);
+		Contract.Requires<ArgumentNullException>(user is not null);
 		Contract.Requires<ArgumentException>(!String.IsNullOrWhiteSpace(normalizedRoleName));
 
 		var roleEntry = Enum.Parse<RoleEntry>(normalizedRoleName, ignoreCase: true);
@@ -46,7 +46,7 @@ public class UserStore :
 
 	public async Task<IdentityResult> CreateAsync(User user, CancellationToken cancellationToken)
 	{
-		Contract.Requires<ArgumentNullException>(user != null);
+		Contract.Requires<ArgumentNullException>(user is not null);
 
 		unitOfWork.AddForInsert(user);
 		await unitOfWork.CommitAsync();
@@ -55,7 +55,7 @@ public class UserStore :
 
 	public async Task<IdentityResult> DeleteAsync(User user, CancellationToken cancellationToken)
 	{
-		Contract.Requires<ArgumentNullException>(user != null);
+		Contract.Requires<ArgumentNullException>(user is not null);
 
 		unitOfWork.AddForDelete(user);
 		await unitOfWork.CommitAsync();
@@ -91,63 +91,63 @@ public class UserStore :
 
 	public Task<int> GetAccessFailedCountAsync(User user, CancellationToken cancellationToken)
 	{
-		Contract.Requires<ArgumentNullException>(user != null);
+		Contract.Requires<ArgumentNullException>(user is not null);
 
 		return Task.FromResult(user.AccessFailedCount);
 	}
 
 	public Task<string> GetEmailAsync(User user, CancellationToken cancellationToken)
 	{
-		Contract.Requires<ArgumentNullException>(user != null);
+		Contract.Requires<ArgumentNullException>(user is not null);
 
 		return Task.FromResult(user.Email);
 	}
 
 	public Task<bool> GetEmailConfirmedAsync(User user, CancellationToken cancellationToken)
 	{
-		Contract.Requires<ArgumentNullException>(user != null);
+		Contract.Requires<ArgumentNullException>(user is not null);
 
 		return Task.FromResult(user.EmailConfirmed);
 	}
 
 	public Task<bool> GetLockoutEnabledAsync(User user, CancellationToken cancellationToken)
 	{
-		Contract.Requires<ArgumentNullException>(user != null);
+		Contract.Requires<ArgumentNullException>(user is not null);
 
 		return Task.FromResult(user.LockoutEnabled);
 	}
 
 	public Task<DateTimeOffset?> GetLockoutEndDateAsync(User user, CancellationToken cancellationToken)
 	{
-		Contract.Requires<ArgumentNullException>(user != null);
+		Contract.Requires<ArgumentNullException>(user is not null);
 
 		return Task.FromResult(user.LockoutEnd);
 	}
 
 	public Task<string> GetNormalizedEmailAsync(User user, CancellationToken cancellationToken)
 	{
-		Contract.Requires<ArgumentNullException>(user != null);
+		Contract.Requires<ArgumentNullException>(user is not null);
 
 		return Task.FromResult(user.NormalizedEmail);
 	}
 
 	public Task<string> GetNormalizedUserNameAsync(User user, CancellationToken cancellationToken)
 	{
-		Contract.Requires<ArgumentNullException>(user != null);
+		Contract.Requires<ArgumentNullException>(user is not null);
 
 		return Task.FromResult(user.NormalizedUsername);
 	}
 
 	public Task<string> GetPasswordHashAsync(User user, CancellationToken cancellationToken)
 	{
-		Contract.Requires<ArgumentNullException>(user != null);
+		Contract.Requires<ArgumentNullException>(user is not null);
 
 		return Task.FromResult(user.PasswordHash);
 	}
 
 	public Task<IList<string>> GetRolesAsync(User user, CancellationToken cancellationToken)
 	{
-		Contract.Requires<ArgumentNullException>(user != null);
+		Contract.Requires<ArgumentNullException>(user is not null);
 
 		// Role entity [Cache]d, no need for async
 		return Task.FromResult<IList<string>>(user.UserRoles.Select(ur => roleRepository.GetObject(ur.RoleId).Name).ToList());
@@ -155,21 +155,21 @@ public class UserStore :
 
 	public Task<string> GetSecurityStampAsync(User user, CancellationToken cancellationToken)
 	{
-		Contract.Requires<ArgumentNullException>(user != null);
+		Contract.Requires<ArgumentNullException>(user is not null);
 
 		return Task.FromResult(user.SecurityStamp);
 	}
 
 	public Task<string> GetUserIdAsync(User user, CancellationToken cancellationToken)
 	{
-		Contract.Requires<ArgumentNullException>(user != null);
+		Contract.Requires<ArgumentNullException>(user is not null);
 
 		return Task.FromResult(user.Id.ToString());
 	}
 
 	public Task<string> GetUserNameAsync(User user, CancellationToken cancellationToken)
 	{
-		Contract.Requires<ArgumentNullException>(user != null);
+		Contract.Requires<ArgumentNullException>(user is not null);
 
 		return Task.FromResult(user.Username);
 	}
@@ -184,14 +184,14 @@ public class UserStore :
 
 	public Task<bool> HasPasswordAsync(User user, CancellationToken cancellationToken)
 	{
-		Contract.Requires<ArgumentNullException>(user != null);
+		Contract.Requires<ArgumentNullException>(user is not null);
 
-		return Task.FromResult(user.PasswordHash != null);
+		return Task.FromResult(user.PasswordHash is not null);
 	}
 
 	public Task<int> IncrementAccessFailedCountAsync(User user, CancellationToken cancellationToken)
 	{
-		Contract.Requires<ArgumentNullException>(user != null);
+		Contract.Requires<ArgumentNullException>(user is not null);
 
 		user.AccessFailedCount++;
 		return Task.FromResult(user.AccessFailedCount);
@@ -199,7 +199,7 @@ public class UserStore :
 
 	public Task<bool> IsInRoleAsync(User user, string roleName, CancellationToken cancellationToken)
 	{
-		Contract.Requires<ArgumentNullException>(user != null);
+		Contract.Requires<ArgumentNullException>(user is not null);
 
 		var roleEntry = Enum.Parse<RoleEntry>(roleName, ignoreCase: true);
 		return Task.FromResult(user.IsInRole(roleEntry));
@@ -207,7 +207,7 @@ public class UserStore :
 
 	public Task RemoveFromRoleAsync(User user, string roleName, CancellationToken cancellationToken)
 	{
-		Contract.Requires<ArgumentNullException>(user != null);
+		Contract.Requires<ArgumentNullException>(user is not null);
 
 		var roleEntry = Enum.Parse<RoleEntry>(roleName, ignoreCase: true);
 		user.UserRoles.RemoveAll(ur => ur.RoleId == (int)roleEntry);
@@ -217,7 +217,7 @@ public class UserStore :
 
 	public Task ResetAccessFailedCountAsync(User user, CancellationToken cancellationToken)
 	{
-		Contract.Requires<ArgumentNullException>(user != null);
+		Contract.Requires<ArgumentNullException>(user is not null);
 
 		user.AccessFailedCount = 0;
 		return Task.CompletedTask;
@@ -225,7 +225,7 @@ public class UserStore :
 
 	public Task SetEmailAsync(User user, string email, CancellationToken cancellationToken)
 	{
-		Contract.Requires<ArgumentNullException>(user != null);
+		Contract.Requires<ArgumentNullException>(user is not null);
 		Contract.Requires<ArgumentException>(!String.IsNullOrWhiteSpace(email));
 
 		user.Email = email;
@@ -234,7 +234,7 @@ public class UserStore :
 
 	public Task SetEmailConfirmedAsync(User user, bool confirmed, CancellationToken cancellationToken)
 	{
-		Contract.Requires<ArgumentNullException>(user != null);
+		Contract.Requires<ArgumentNullException>(user is not null);
 
 		user.EmailConfirmed = confirmed;
 		return Task.CompletedTask;
@@ -242,7 +242,7 @@ public class UserStore :
 
 	public Task SetLockoutEnabledAsync(User user, bool enabled, CancellationToken cancellationToken)
 	{
-		Contract.Requires<ArgumentNullException>(user != null);
+		Contract.Requires<ArgumentNullException>(user is not null);
 
 		user.LockoutEnabled = enabled;
 		return Task.CompletedTask;
@@ -250,7 +250,7 @@ public class UserStore :
 
 	public Task SetLockoutEndDateAsync(User user, DateTimeOffset? lockoutEnd, CancellationToken cancellationToken)
 	{
-		Contract.Requires<ArgumentNullException>(user != null);
+		Contract.Requires<ArgumentNullException>(user is not null);
 
 		user.LockoutEnd = lockoutEnd;
 		return Task.CompletedTask;
@@ -258,7 +258,7 @@ public class UserStore :
 
 	public Task SetNormalizedEmailAsync(User user, string normalizedEmail, CancellationToken cancellationToken)
 	{
-		Contract.Requires<ArgumentNullException>(user != null);
+		Contract.Requires<ArgumentNullException>(user is not null);
 		Contract.Requires<ArgumentException>(!String.IsNullOrWhiteSpace(normalizedEmail));
 
 		user.NormalizedEmail = normalizedEmail;
@@ -267,7 +267,7 @@ public class UserStore :
 
 	public Task SetNormalizedUserNameAsync(User user, string normalizedName, CancellationToken cancellationToken)
 	{
-		Contract.Requires<ArgumentNullException>(user != null);
+		Contract.Requires<ArgumentNullException>(user is not null);
 		Contract.Requires<ArgumentException>(!String.IsNullOrWhiteSpace(normalizedName));
 
 		user.NormalizedUsername = normalizedName;
@@ -276,7 +276,7 @@ public class UserStore :
 
 	public Task SetPasswordHashAsync(User user, string passwordHash, CancellationToken cancellationToken)
 	{
-		Contract.Requires<ArgumentNullException>(user != null);
+		Contract.Requires<ArgumentNullException>(user is not null);
 
 		user.PasswordHash = passwordHash;
 		return Task.CompletedTask;
@@ -284,8 +284,8 @@ public class UserStore :
 
 	public Task SetSecurityStampAsync(User user, string stamp, CancellationToken cancellationToken)
 	{
-		Contract.Requires<ArgumentNullException>(user != null);
-		Contract.Requires<ArgumentNullException>(stamp != null);
+		Contract.Requires<ArgumentNullException>(user is not null);
+		Contract.Requires<ArgumentNullException>(stamp is not null);
 
 		user.SecurityStamp = stamp;
 		return Task.CompletedTask;
@@ -293,7 +293,7 @@ public class UserStore :
 
 	public Task SetUserNameAsync(User user, string userName, CancellationToken cancellationToken)
 	{
-		Contract.Requires<ArgumentNullException>(user != null);
+		Contract.Requires<ArgumentNullException>(user is not null);
 		Contract.Requires<ArgumentException>(!String.IsNullOrWhiteSpace(userName));
 
 		user.Username = userName;
@@ -302,7 +302,7 @@ public class UserStore :
 
 	public async Task<IdentityResult> UpdateAsync(User user, CancellationToken cancellationToken)
 	{
-		Contract.Requires<ArgumentNullException>(user != null);
+		Contract.Requires<ArgumentNullException>(user is not null);
 
 		unitOfWork.AddForUpdate(user);
 		await unitOfWork.CommitAsync();

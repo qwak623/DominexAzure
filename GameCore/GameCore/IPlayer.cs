@@ -12,21 +12,23 @@ public interface IPlayer
 	IUser User { get; }
 	IGame Game { get; }
 
-	Card Buy();
+	CardInstance Buy();
 	void Cleanup();
 	void DealAttack(IPlayer attacker, Card attackCard);
-	void Discard(Card card);
-	void DiscardDrawPile();
+	void Discard(CardInstance card);
 	void Draw(int count);
+	// TODO nebude tohle zbytečné? 
 	void Gain(CardType type);
+	void Gain(CardInstance card);
 	void GainToDrawPile(CardType type);
 	void GainToHand(CardType type);
+	void GainToHand(CardInstance card);
 	void Notify();
-	Card PlayActionCard();
+	CardInstance PlayActionCard();
 	void PlayTreasure();
 	void PlayTurn(int drawCount);
-	void ReturnToDrawPile(Card card);
-	List<Card> Show(int count);
+	void ReturnToDrawPile(CardInstance card);
+	Pile Show(int count);
 	string ToString();
-	void Trash(Card card);
+	void Trash(CardInstance card);
 }

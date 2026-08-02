@@ -35,7 +35,7 @@ public class DataSeedFacade : IDataSeedFacade
 
 		Type type = GetProfileTypes().FirstOrDefault(item => string.Equals(item.Name, profileName.Value, StringComparison.InvariantCultureIgnoreCase));
 
-		if (type == null)
+		if (type is null)
 		{
 			throw new OperationFailedException($"DataSeedProfile {profileName.Value} not found.");
 		}

@@ -1,9 +1,8 @@
-﻿using GameCore.Cards;
+using GameCore.Cards;
 using GameCore.Cards.Base;
 using GameCore.Cards.GeneralCards;
 using GameCore.Cards.Intrique;
 using GameCore.CardWithPlayer.Tests;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
 namespace GameCore.CardsWithPlayer.Intrique.Tests;
@@ -32,35 +31,25 @@ public class PlayerBaronTests : CardWithPlayerTestsBase
 	public void DiscardEstate()
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { baron, estate };
+		player.PlayerState.Hand = CreatePile([baron, estate]);
+		var baronToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Baron);
 		user.Setup(u => u.BaronDiscard(baron, player.PlayerState, player.Game.Kingdom)).Returns(true);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(baron);
+		player.PlayActionCardInternal(baronToPlay);
 		#endregion
 
 		#region assert
-		// (-1 Action, +0 Actions), +4 Coins, +1 Buys
-		Assert.AreEqual(0, player.PlayerState.Actions);
-		Assert.AreEqual(4, player.PlayerState.Coins);
-		Assert.AreEqual(1, player.PlayerState.Buys);
+		AssertNumbers(0, 4, 1, player);
+		AssertPile([], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([estate], player.PlayerState.DiscardPile);
+		AssertPile([baron], player.PlayerState.CardsPlayed);
+		AssertPile([baron], player.PlayerState.ActionsPlayed);
+		AssertPile([], player.Game.Trash);
 
-		// +0 Cards
-		Assert.IsFalse(player.PlayerState.DrawPile.Any());
-
-		// the estate should be in the discard pile
-		CollectionAssert.AreEquivalent(new List<Card> { estate }, player.PlayerState.DiscardPile);
-
-		// user is asked to choose whether to discard an estate
 		user.Verify(u => u.BaronDiscard(baron, player.PlayerState, player.Game.Kingdom), Times.Once);
-
-		// the hand should be empty
-		Assert.IsFalse(player.PlayerState.Hand.Any());
-
-		// baron was added to played cards and actions
-		CollectionAssert.AreEquivalent(new List<Card> { baron }, player.PlayerState.CardsPlayed);
-		CollectionAssert.AreEquivalent(new List<Card> { baron }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -68,38 +57,25 @@ public class PlayerBaronTests : CardWithPlayerTestsBase
 	public void DoesntWantToDiscardEstate()
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { baron, estate };
+		player.PlayerState.Hand = CreatePile([baron, estate]);
+		var baronToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Baron);
 		user.Setup(u => u.BaronDiscard(baron, player.PlayerState, player.Game.Kingdom)).Returns(false);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(baron);
+		player.PlayActionCardInternal(baronToPlay);
 		#endregion
 
 		#region assert
-		// (-1 Action, +0 Actions), +0 Coins, +1 Buys
-		Assert.AreEqual(0, player.PlayerState.Actions);
-		Assert.AreEqual(0, player.PlayerState.Coins);
-		Assert.AreEqual(1, player.PlayerState.Buys);
+		AssertNumbers(0, 0, 1, player);
+		AssertPile([estate], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([estate], player.PlayerState.DiscardPile);
+		AssertPile([baron], player.PlayerState.CardsPlayed);
+		AssertPile([baron], player.PlayerState.ActionsPlayed);
+		AssertPile([], player.Game.Trash);
 
-		// +0 Cards
-		Assert.IsFalse(player.PlayerState.DrawPile.Any());
-
-		// user is asked to choose whether to trash a copper
 		user.Verify(u => u.BaronDiscard(baron, player.PlayerState, player.Game.Kingdom), Times.Once);
-
-		// player does not trash anything
-		Assert.IsFalse(player.Game.Trash.Any());
-
-		// the estate should stay in the players hand
-		CollectionAssert.AreEquivalent(new List<Card> { estate }, player.PlayerState.Hand);
-
-		// player gained an estate
-		CollectionAssert.AreEquivalent(new List<Card> { estate }, player.PlayerState.DiscardPile);
-
-		// baron was added to played cards and actions
-		CollectionAssert.AreEquivalent(new List<Card> { baron }, player.PlayerState.CardsPlayed);
-		CollectionAssert.AreEquivalent(new List<Card> { baron }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -107,37 +83,25 @@ public class PlayerBaronTests : CardWithPlayerTestsBase
 	public void PlayerDoesntHaveAnyEstate()
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { baron };
+		player.PlayerState.Hand = CreatePile([baron]);
+		var baronToPlay = player.PlayerState.Hand[0];
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(baron);
+		player.PlayActionCardInternal(baronToPlay);
 		#endregion
 
 		#region assert
-		// (-1 Action, +0 Actions), +0 Coins, +1 Buys
-		Assert.AreEqual(0, player.PlayerState.Actions);
-		Assert.AreEqual(0, player.PlayerState.Coins);
-		Assert.AreEqual(1, player.PlayerState.Buys);
+		AssertNumbers(0, 0, 1, player);
+		AssertPile([], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([estate], player.PlayerState.DiscardPile);
+		AssertPile([baron], player.PlayerState.CardsPlayed);
+		AssertPile([baron], player.PlayerState.ActionsPlayed);
+		AssertPile([], player.Game.Trash);
 
-		// +0 Cards
-		Assert.IsFalse(player.PlayerState.DrawPile.Any());
-
-		// user isn't asked to choose whether to discard an estate - he doesn't have any
+		// no estate to discard, so the user is never asked - baron just gains one instead
 		user.Verify(u => u.BaronDiscard(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>()), Times.Never);
-
-		// player does not trash anything
-		Assert.IsFalse(player.Game.Trash.Any());
-
-		// the hand should be empty
-		Assert.IsFalse(player.PlayerState.Hand.Any());
-
-		// player gained an estate
-		CollectionAssert.AreEquivalent(new List<Card> { estate }, player.PlayerState.DiscardPile);
-
-		// baron was added to played cards and actions
-		CollectionAssert.AreEquivalent(new List<Card> { baron }, player.PlayerState.CardsPlayed);
-		CollectionAssert.AreEquivalent(new List<Card> { baron }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 
@@ -153,50 +117,34 @@ public class PlayerBaronTests : CardWithPlayerTestsBase
 	public void ThroneRoomPlay(int estatesInHand, bool discardFirstTime, bool discardSecondTime, int coins, int askedToDiscard, int discardCount)
 	{
 		#region arrange
-		player.PlayerState.Hand = [throneRoom, baron, .. Enumerable.Repeat(estate, estatesInHand)];
+		player.PlayerState.Hand = CreatePile([throneRoom, baron, .. Enumerable.Repeat(estate, estatesInHand)]);
+		var baronToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Baron);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<Card>>(c => c.SingleOrDefault() == baron))).Returns(baron);
+			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == baronToPlay))).Returns(baronToPlay);
 		user.SetupSequence(u => u.BaronDiscard(baron, player.PlayerState, player.Game.Kingdom))
 			.Returns(discardFirstTime).Returns(discardSecondTime);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(throneRoom);
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
 		#endregion
 
 		#region assert
-		// +given amount of coins
-		Assert.AreEqual(coins, player.PlayerState.Coins);
+		AssertNumbers(0, coins, 2, player);
+		AssertPile(Enumerable.Repeat(estate, estatesInHand - discardCount).ToList(), player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
 
-		// -1 Action, (+0 Actions, +1 Buys) * 2
-		Assert.AreEqual(0, player.PlayerState.Actions);
-		Assert.AreEqual(2, player.PlayerState.Buys);
+		// every resolution either discards an estate for coins or gains one instead - the discard
+		// pile always ends up with exactly two, whichever mix of the two happened
+		AssertPile(Enumerable.Repeat(estate, 2).ToList(), player.PlayerState.DiscardPile);
+		AssertPile([baron, throneRoom], player.PlayerState.CardsPlayed);
+		AssertPile([baron, baron, throneRoom], player.PlayerState.ActionsPlayed);
+		AssertPile([], player.Game.Trash);
 
-		// +0 Cards
-		Assert.IsFalse(player.PlayerState.DrawPile.Any());
-
-		// user is asked which card to play using throne room
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
-
-		// user is asked to choose whether to discard an estate the given amount of times
+			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
 		user.Verify(u => u.BaronDiscard(baron, player.PlayerState, player.Game.Kingdom), Times.Exactly(askedToDiscard));
-
-		// player discards the given amount of estates
-		CollectionAssert.AreEquivalent(Enumerable.Repeat(estate, estatesInHand - discardCount).ToList(), player.PlayerState.Hand);
-
-		// player does not trash anything
-		Assert.IsFalse(player.Game.Trash.Any());
-
-		// player gained or discarded two estates
-		CollectionAssert.AreEquivalent(Enumerable.Repeat(estate, 2).ToList(), player.PlayerState.DiscardPile);
-
-		// baron and throne room were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { baron, throneRoom }, player.PlayerState.CardsPlayed);
-
-		// two barons and throne room were added to actions played
-		CollectionAssert.AreEquivalent(new List<Card> { baron, baron, throneRoom }, player.PlayerState.ActionsPlayed);
 		#endregion
 	}
 }

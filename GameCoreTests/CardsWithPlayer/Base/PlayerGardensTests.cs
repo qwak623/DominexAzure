@@ -31,9 +31,9 @@ public class PlayerGardensTests : CardWithPlayerTestsBase
 	public void CountPoints()
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { gardens, copper, copper, copper, copper };
-		player.PlayerState.DrawPile = new List<Card> { adventurer, copper, copper };
-		player.PlayerState.DiscardPile = new List<Card> { copper, copper, gardens, adventurer, copper };
+		player.PlayerState.Hand = CreatePile([gardens, copper, copper, copper, copper]);
+		player.PlayerState.DrawPile = CreatePile([adventurer, copper, copper]);
+		player.PlayerState.DiscardPile = CreatePile([copper, copper, gardens, adventurer, copper]);
 
 		game.Setup(g => g.GameEnd).Returns(true);
 		#endregion

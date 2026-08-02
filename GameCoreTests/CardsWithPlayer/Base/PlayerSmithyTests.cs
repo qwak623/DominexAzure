@@ -1,8 +1,7 @@
-﻿using GameCore.Cards;
+using GameCore.Cards;
 using GameCore.Cards.Base;
 using GameCore.Cards.GeneralCards;
 using GameCore.CardWithPlayer.Tests;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
 namespace GameCore.CardsWithPlayer.Base.Tests;
@@ -31,27 +30,23 @@ public class PlayerSmithyTests : CardWithPlayerTestsBase
 	public void Play()
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { smithy };
-		player.PlayerState.DrawPile = new List<Card> { copper, copper, copper };
+		player.PlayerState.Hand = CreatePile([smithy]);
+		player.PlayerState.DrawPile = CreatePile([copper, copper, copper]);
+		var smithyToPlay = player.PlayerState.Hand[0];
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(smithy);
+		player.PlayActionCardInternal(smithyToPlay);
 		#endregion
 
 		#region assert
-		// -1 Action, +0 Coins, +0 Buys
-		Assert.AreEqual(0, player.PlayerState.Actions);
-		Assert.AreEqual(0, player.PlayerState.Coins);
-		Assert.AreEqual(0, player.PlayerState.Buys);
-
-		// +3 Cards
-		CollectionAssert.AreEquivalent(new List<Card> { copper, copper, copper }, player.PlayerState.Hand);
-		Assert.IsFalse(player.PlayerState.DrawPile.Any());
-
-		// smithy was added to played cards and actions
-		CollectionAssert.AreEquivalent(new List<Card> { smithy }, player.PlayerState.CardsPlayed);
-		CollectionAssert.AreEquivalent(new List<Card> { smithy }, player.PlayerState.ActionsPlayed);
+		AssertNumbers(0, 0, 0, player);
+		AssertPile([copper, copper, copper], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([], player.PlayerState.DiscardPile);
+		AssertPile([smithy], player.PlayerState.CardsPlayed);
+		AssertPile([smithy], player.PlayerState.ActionsPlayed);
+		AssertPile([], player.Game.Trash);
 		#endregion
 	}
 
@@ -59,36 +54,29 @@ public class PlayerSmithyTests : CardWithPlayerTestsBase
 	public void ThroneRoomPlay()
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { throneRoom, smithy };
-		player.PlayerState.DrawPile = new List<Card> { copper, copper, copper, copper, copper, copper };
+		player.PlayerState.Hand = CreatePile([throneRoom, smithy]);
+		player.PlayerState.DrawPile = CreatePile([copper, copper, copper, copper, copper, copper]);
+		var smithyToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Smithy);
+
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<Card>>(c => c.SingleOrDefault() == smithy))).Returns(smithy);
+			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == smithyToPlay))).Returns(smithyToPlay);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(throneRoom);
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
 		#endregion
 
 		#region assert
-		// -1 Action, (+0 Action, +0 Coins, +0 Buys) * 2
-		Assert.AreEqual(0, player.PlayerState.Actions);
-		Assert.AreEqual(0, player.PlayerState.Coins);
-		Assert.AreEqual(0, player.PlayerState.Buys);
+		AssertNumbers(0, 0, 0, player);
+		AssertPile([copper, copper, copper, copper, copper, copper], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([], player.PlayerState.DiscardPile);
+		AssertPile([smithy, throneRoom], player.PlayerState.CardsPlayed);
+		AssertPile([smithy, smithy, throneRoom], player.PlayerState.ActionsPlayed);
+		AssertPile([], player.Game.Trash);
 
-		// (+3 Card) * 2
-		CollectionAssert.AreEquivalent(new List<Card> { copper, copper, copper, copper, copper, copper }, player.PlayerState.Hand);
-		Assert.IsFalse(player.PlayerState.DrawPile.Any());
-		Assert.IsFalse(player.PlayerState.DiscardPile.Any());
-
-		// user is asked which card to play using throne room
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
-
-		// smithy and throne room were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { smithy, throneRoom }, player.PlayerState.CardsPlayed);
-
-		// smithy was added to actions played twice, throne room once
-		CollectionAssert.AreEquivalent(new List<Card> { smithy, smithy, throneRoom }, player.PlayerState.ActionsPlayed);
+			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
 		#endregion
 	}
 }

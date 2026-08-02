@@ -25,21 +25,21 @@ public class Mine : Card
 
 	public static Mine Get() => mine ?? new Mine(); // todo tohle neni thread safe - je potreba aby bylo?
 
-	protected override void ActionEffect(IPlayer p)
+	protected override void ActionEffect(IPlayer p, CardInstance thisCard)
 	{
 		var cardSelection = p.PlayerState.Hand.Where(c => c.IsTreasure).ToList();
 
 		var oldCard = p.User.MineTrash(this, p.PlayerState, p.Game.Kingdom, cardSelection);
-		if (oldCard == null)
+		if (oldCard is null)
 		{
 			return;
 		}
 
 		p.Trash(oldCard);
-		var newCard = p.User.SelectCardToGain(p.Game.Kingdom.GetWrapper(oldCard.Price + 3, true), p.PlayerState, p.Game.Kingdom, Phase.Gain);
-		if (newCard != null)
+		var newCard = p.User.SelectCardToGain(p.Game.Kingdom.GetWrapper(oldCard.Card.Price + 3, true), p.PlayerState, p.Game.Kingdom, Phase.Gain);
+		if (newCard is not null)
 		{
-			p.GainToHand(newCard.Type);
+			p.GainToHand(newCard);
 		}
 	}
 }

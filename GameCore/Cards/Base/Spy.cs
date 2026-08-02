@@ -27,42 +27,46 @@ public class Spy : Card
 
 	public static Spy Get() => spy ?? new Spy();
 
-	protected override void ActionEffect(IPlayer player)
+	protected override void ActionEffect(IPlayer player, CardInstance thisCard)
 	{
-		var card = player.Show(1).SingleOrDefault();
-		if (card == null)
+		var cardsShown = player.Show(1);
+		if (cardsShown.Count == 0)
 		{
 			return;
 		}
 
+		var card = cardsShown.Single();
+
 		if (player.User.SpyDiscard(this, player.PlayerState, player.Game.Kingdom, card, Phase.Action))
 		{
 			player.Game.Logger?.Log(new GameLog { PlayerId = player.Name, Message = $"{player.Name} discards {card.Name}" });
-			player.PlayerState.DiscardPile.Add(card);
+			player.Discard(card);
 		}
 		else
 		{
-			player.PlayerState.DrawPile.Add(card);
+			player.PlayerState.DrawPile.Move(card);
 		}
 	}
 
 	public override void Attack(IPlayer defender, IPlayer attacker)
 	{
-		var card = defender.Show(1).SingleOrDefault();
-		if (card == null)
+		var cardsShown = defender.Show(1);
+		if (cardsShown.Count == 0)
 		{
 			return;
 		}
+
+		var card = cardsShown.Single();
 
 		// TODO není poznat, komu odhazujeme kartu
 		if (attacker.User.SpyDiscard(this, attacker.PlayerState, attacker.Game.Kingdom, card, Phase.Attack))
 		{
 			defender.Game.Logger?.Log(new GameLog { PlayerId = defender.Name, Message = $"{defender.Name} discards {card.Name}" });
-			defender.PlayerState.DiscardPile.Add(card);
+			defender.Discard(card);
 		}
 		else
 		{
-			defender.PlayerState.DrawPile.Add(card);
+			defender.PlayerState.DrawPile.Move(card);
 		}
 	}
 }

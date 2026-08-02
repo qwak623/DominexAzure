@@ -2,7 +2,6 @@
 using GameCore.Cards.Base;
 using GameCore.Cards.GeneralCards;
 using GameCore.CardWithPlayer.Tests;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
 namespace GameCore.CardsWithPlayer.Base.Tests;
@@ -41,51 +40,39 @@ public class PlayerBureaucratTests : CardWithPlayerTestsBase
 	public void AttackPlayerThatHasVictory()
 	{
 		#region arrange
-		defenderUser.Setup(du => du.BureaucratPutOnTop(bureaucrat, defender.PlayerState, defender.Game.Kingdom)).Returns(province);
+		attacker.PlayerState.Hand = CreatePile([bureaucrat]);
+		defender.PlayerState.Hand = CreatePile([province, duchy]);
 
-		attacker.PlayerState.Hand = new List<Card> { bureaucrat };
-		defender.PlayerState.Hand = new List<Card> { province, duchy };
+		var provinceInHand = defender.PlayerState.Hand.First(c => c.Card.Type == CardType.Province);
+		defenderUser.Setup(du => du.BureaucratPutOnTop(bureaucrat, defender.PlayerState, defender.Game.Kingdom)).Returns(provinceInHand);
 		#endregion
 
 		#region act
-		attacker.PlayActionCardInternal(bureaucrat);
+		attacker.PlayActionCardInternal(attacker.PlayerState.Hand[0]);
 		#endregion
 
 		#region assert
-		// -1 Action, +0 Coins, +0 Buys
-		Assert.AreEqual(0, attacker.PlayerState.Actions);
-		Assert.AreEqual(0, attacker.PlayerState.Coins);
-		Assert.AreEqual(0, attacker.PlayerState.Buys);
-
-		// +0 Cards
-		Assert.IsFalse(attacker.PlayerState.Hand.Any());
-		Assert.IsFalse(attacker.PlayerState.DiscardPile.Any());
-
 		// attacker got silver to his draw pile
-		CollectionAssert.AreEquivalent(new List<Card> { silver }, attacker.PlayerState.DrawPile);
+		AssertNumbers(0, 0, 0, attacker);
+		AssertPile([], attacker.PlayerState.Hand);
+		AssertPile([silver], attacker.PlayerState.DrawPile);
+		AssertPile([], attacker.PlayerState.DiscardPile);
+		AssertPile([bureaucrat], attacker.PlayerState.CardsPlayed);
+		AssertPile([bureaucrat], attacker.PlayerState.ActionsPlayed);
 
-		// bureaucrat was added to the attacker's played cards and actions
-		CollectionAssert.AreEquivalent(new List<Card> { bureaucrat }, attacker.PlayerState.CardsPlayed);
-		CollectionAssert.AreEquivalent(new List<Card> { bureaucrat }, attacker.PlayerState.ActionsPlayed);
+		// province was put on defender's draw pile
+		// the other card stayed in the defender's hand
+		AssertNumbers(0, 0, 0, defender);
+		AssertPile([duchy], defender.PlayerState.Hand);
+		AssertPile([province], defender.PlayerState.DrawPile);
+		AssertPile([], defender.PlayerState.DiscardPile);
+		AssertPile([], defender.PlayerState.CardsPlayed);
+		AssertPile([], defender.PlayerState.ActionsPlayed);
 
-		// defender's actions, coins and buys shouldn't change
-		Assert.AreEqual(0, defender.PlayerState.Actions);
-		Assert.AreEqual(0, defender.PlayerState.Coins);
-		Assert.AreEqual(0, defender.PlayerState.Buys);
-		Assert.IsFalse(defender.PlayerState.DiscardPile.Any());
+		AssertPile([], defender.Game.Trash);
 
 		// defender's user is asked to choose a victory card to put on top
 		defenderUser.Verify(du => du.BureaucratPutOnTop(bureaucrat, defender.PlayerState, defender.Game.Kingdom), Times.Once);
-
-		// province was put on defender's draw pile
-		CollectionAssert.AreEquivalent(new List<Card> { province }, defender.PlayerState.DrawPile);
-
-		// the other card stayed in the defender's hand
-		CollectionAssert.AreEquivalent(new List<Card> { duchy }, defender.PlayerState.Hand);
-
-		// nothing was added to the defender's played cards and actions
-		Assert.IsFalse(defender.PlayerState.CardsPlayed.Any());
-		Assert.IsFalse(defender.PlayerState.ActionsPlayed.Any());
 		#endregion
 	}
 
@@ -93,48 +80,35 @@ public class PlayerBureaucratTests : CardWithPlayerTestsBase
 	public void AttackPlayerThatHasNoVictoryCard()
 	{
 		#region arrange
-		attacker.PlayerState.Hand = new List<Card> { bureaucrat };
+		attacker.PlayerState.Hand = CreatePile([bureaucrat]);
 		#endregion
 
 		#region act
-		attacker.PlayActionCardInternal(bureaucrat);
+		attacker.PlayActionCardInternal(attacker.PlayerState.Hand[0]);
 		#endregion
 
 		#region assert
-		// -1 Action, +0 Coins, +0 Buys
-		Assert.AreEqual(0, attacker.PlayerState.Actions);
-		Assert.AreEqual(0, attacker.PlayerState.Coins);
-		Assert.AreEqual(0, attacker.PlayerState.Buys);
-
-		// +0 Cards
-		Assert.IsFalse(attacker.PlayerState.Hand.Any());
-		Assert.IsFalse(attacker.PlayerState.DiscardPile.Any());
-
 		// attacker got silver to his draw pile
-		CollectionAssert.AreEquivalent(new List<Card> { silver }, attacker.PlayerState.DrawPile);
+		AssertNumbers(0, 0, 0, attacker);
+		AssertPile([], attacker.PlayerState.Hand);
+		AssertPile([silver], attacker.PlayerState.DrawPile);
+		AssertPile([], attacker.PlayerState.DiscardPile);
+		AssertPile([bureaucrat], attacker.PlayerState.CardsPlayed);
+		AssertPile([bureaucrat], attacker.PlayerState.ActionsPlayed);
 
-		// bureaucrat was added to the attacker's played cards and actions
-		CollectionAssert.AreEquivalent(new List<Card> { bureaucrat }, attacker.PlayerState.CardsPlayed);
-		CollectionAssert.AreEquivalent(new List<Card> { bureaucrat }, attacker.PlayerState.ActionsPlayed);
+		// province was put on defender's draw pile
+		// the other card stayed in the defender's hand
+		AssertNumbers(0, 0, 0, defender);
+		AssertPile([], defender.PlayerState.Hand);
+		AssertPile([], defender.PlayerState.DrawPile);
+		AssertPile([], defender.PlayerState.DiscardPile);
+		AssertPile([], defender.PlayerState.CardsPlayed);
+		AssertPile([], defender.PlayerState.ActionsPlayed);
 
-		// defender's actions, coins and buys shouldn't change
-		Assert.AreEqual(0, defender.PlayerState.Actions);
-		Assert.AreEqual(0, defender.PlayerState.Coins);
-		Assert.AreEqual(0, defender.PlayerState.Buys);
-		Assert.IsFalse(defender.PlayerState.DiscardPile.Any());
+		AssertPile([], defender.Game.Trash);
 
 		// defender's user is not asked to choose a victory card to put on top
 		defenderUser.Verify(du => du.BureaucratPutOnTop(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>()), Times.Never);
-
-		// nothing was put on the defender's draw pile
-		Assert.IsFalse(defender.PlayerState.DrawPile.Any());
-
-		// nothing was added to the defender's hand
-		Assert.IsFalse(defender.PlayerState.Hand.Any());
-
-		// nothing was added to the defender's played cards or actions
-		Assert.IsFalse(defender.PlayerState.CardsPlayed.Any());
-		Assert.IsFalse(defender.PlayerState.ActionsPlayed.Any());
 		#endregion
 	}
 
@@ -146,62 +120,51 @@ public class PlayerBureaucratTests : CardWithPlayerTestsBase
 	public void ThroneRoomPlay(int provinceCount, int provincesPutOnTop)
 	{
 		#region arrange
-		attacker.PlayerState.Hand = new List<Card> { throneRoom, bureaucrat };
+		attacker.PlayerState.Hand = CreatePile([throneRoom, bureaucrat]);
+		var bureaucratToPlay = attacker.PlayerState.Hand[1];
 		attackerUser.Setup(u => u.ThroneRoomPlay(throneRoom, attacker.PlayerState,
-			attacker.Game.Kingdom, It.Is<IEnumerable<Card>>(c => c.SingleOrDefault() == bureaucrat))).Returns(bureaucrat);
+			attacker.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == bureaucratToPlay))).Returns(bureaucratToPlay);
 
-		defender.PlayerState.Hand = Enumerable.Repeat(province, provinceCount).ToList();
-		defender.PlayerState.Hand.AddRange(new List<Card> { silver, bureaucrat });
-		defenderUser.Setup(du => du.BureaucratPutOnTop(bureaucrat, defender.PlayerState, defender.Game.Kingdom)).Returns(province);
+		defender.PlayerState.Hand = CreatePile([.. Enumerable.Repeat(province, provinceCount), silver, bureaucrat]);
+		var provincesInHand = defender.PlayerState.Hand.Where(c => c.Card.Type == CardType.Province).ToList();
+		var firstProvince = provincesInHand.FirstOrDefault();
+		if (firstProvince != null)
+		{
+			defenderUser.SetupSequence(du => du.BureaucratPutOnTop(bureaucrat, defender.PlayerState, defender.Game.Kingdom))
+				.Returns(firstProvince).Returns(provincesInHand.Last());
+		}
 		#endregion
 
 		#region act
-		attacker.PlayActionCardInternal(throneRoom);
+		attacker.PlayActionCardInternal(attacker.PlayerState.Hand[0]);
 		#endregion
 
 		#region assert
-		// -1 Actions, +0 Coins, +0 Buys
-		Assert.AreEqual(0, attacker.PlayerState.Actions);
-		Assert.AreEqual(0, attacker.PlayerState.Coins);
-		Assert.AreEqual(0, attacker.PlayerState.Buys);
+		// attacker got two silvers to his draw pile
+		AssertNumbers(0, 0, 0, attacker);
+		AssertPile([], attacker.PlayerState.Hand);
+		AssertPile([silver, silver], attacker.PlayerState.DrawPile);
+		AssertPile([], attacker.PlayerState.DiscardPile);
+		AssertPile([throneRoom, bureaucrat], attacker.PlayerState.CardsPlayed);
+		AssertPile([throneRoom, bureaucrat, bureaucrat], attacker.PlayerState.ActionsPlayed);
 
-		// +0 Cards
-		Assert.IsFalse(attacker.PlayerState.Hand.Any());
-		Assert.IsFalse(attacker.PlayerState.DiscardPile.Any());
+		// if there were up to two provinces in defender's hand, they are now at his draw pile
+		// non-victory cards stayed in defender's hand
+		AssertNumbers(0, 0, 0, defender);
+		AssertPile([silver, bureaucrat, .. Enumerable.Repeat(province, provinceCount - provincesPutOnTop)], defender.PlayerState.Hand);
+		AssertPile([.. Enumerable.Repeat(province, provincesPutOnTop)], defender.PlayerState.DrawPile);
+		AssertPile([], defender.PlayerState.DiscardPile);
+		AssertPile([], defender.PlayerState.CardsPlayed);
+		AssertPile([], defender.PlayerState.ActionsPlayed);
 
-		// attacker got silver to his draw pile
-		CollectionAssert.AreEquivalent(new List<Card> { silver, silver }, attacker.PlayerState.DrawPile);
+		AssertPile([], defender.Game.Trash);
 
 		// attacker was asked which card to play using throne room
 		attackerUser.Verify(u => u.ThroneRoomPlay(throneRoom, attacker.PlayerState,
-			attacker.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
-
-		// bureaucrat and throne room were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { bureaucrat, throneRoom }, attacker.PlayerState.CardsPlayed);
-
-		// two bureaucrats and throne room were added to played actions
-		CollectionAssert.AreEquivalent(new List<Card> { bureaucrat, bureaucrat, throneRoom }, attacker.PlayerState.ActionsPlayed);
-
-		// defender's actions, coins and buys shouldn't change
-		Assert.AreEqual(0, defender.PlayerState.Actions);
-		Assert.AreEqual(0, defender.PlayerState.Coins);
-		Assert.AreEqual(0, defender.PlayerState.Buys);
-		Assert.IsFalse(defender.PlayerState.DiscardPile.Any());
+			attacker.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
 
 		// defender's user is asked to choose a victory card to put on top given amount of times
 		defenderUser.Verify(du => du.BureaucratPutOnTop(bureaucrat, defender.PlayerState, defender.Game.Kingdom), Times.Exactly(provincesPutOnTop));
-
-		// if there were up to two provinces in defender's hand, they are now at his draw pile
-		CollectionAssert.AreEquivalent(Enumerable.Repeat(province, provincesPutOnTop).ToList(), defender.PlayerState.DrawPile);
-
-		// non-victory cards stayed in defender's hand
-		var expectedHand = new List<Card> { silver, bureaucrat };
-		expectedHand.AddRange(Enumerable.Repeat(province, provinceCount - provincesPutOnTop));
-		CollectionAssert.AreEquivalent(expectedHand, defender.PlayerState.Hand);
-
-		// nothing was added to the defender's played cards or actions
-		Assert.IsFalse(defender.PlayerState.CardsPlayed.Any());
-		Assert.IsFalse(defender.PlayerState.ActionsPlayed.Any());
 		#endregion
 	}
 }

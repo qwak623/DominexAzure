@@ -1,9 +1,7 @@
-﻿using System.Numerics;
 using GameCore.Cards;
 using GameCore.Cards.Base;
 using GameCore.Cards.GeneralCards;
 using GameCore.CardWithPlayer.Tests;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
 namespace GameCore.CardsWithPlayer.Base.Tests;
@@ -41,48 +39,32 @@ public class PlayerWitchTests : CardWithPlayerTestsBase
 	public void Play()
 	{
 		#region arrange
-		attacker.PlayerState.Hand = new List<Card> { witch };
-		attacker.PlayerState.DrawPile = new List<Card> { silver, silver };
+		attacker.PlayerState.Hand = CreatePile([witch]);
+		attacker.PlayerState.DrawPile = CreatePile([silver, silver]);
+		var witchToPlay = attacker.PlayerState.Hand[0];
 		#endregion
 
 		#region act
-		attacker.PlayActionCardInternal(witch);
+		attacker.PlayActionCardInternal(witchToPlay);
 		#endregion
 
 		#region assert
-		// -1 Action
-		Assert.AreEqual(0, attacker.PlayerState.Actions);
+		AssertNumbers(0, 0, 0, attacker);
+		AssertPile([silver, silver], attacker.PlayerState.Hand);
+		AssertPile([], attacker.PlayerState.DrawPile);
+		AssertPile([], attacker.PlayerState.DiscardPile);
+		AssertPile([witch], attacker.PlayerState.CardsPlayed);
+		AssertPile([witch], attacker.PlayerState.ActionsPlayed);
+		AssertPile([], attacker.Game.Trash);
 
-		// +0 Coins, +0 Buys
-		Assert.AreEqual(0, attacker.PlayerState.Coins);
-		Assert.AreEqual(0, attacker.PlayerState.Buys);
-
-		// +2 Cards
-		CollectionAssert.AreEquivalent(new List<Card> { silver, silver }, attacker.PlayerState.Hand);
-		Assert.IsFalse(attacker.PlayerState.DrawPile.Any());
-
-		// attacker's discard pile did not change
-		Assert.IsFalse(attacker.PlayerState.DiscardPile.Any());
-
-		// witch was added to the attacker's played cards and actions
-		CollectionAssert.AreEquivalent(new List<Card> { witch }, attacker.PlayerState.CardsPlayed);
-		CollectionAssert.AreEquivalent(new List<Card> { witch }, attacker.PlayerState.ActionsPlayed);
-
-		// defender's actions, coins and buys shouldn't change
-		Assert.AreEqual(0, defender.PlayerState.Actions);
-		Assert.AreEqual(0, defender.PlayerState.Coins);
-		Assert.AreEqual(0, defender.PlayerState.Buys);
-
-		// defender got a curse to his discard pile
-		CollectionAssert.AreEquivalent(new List<Card> { curse }, defender.PlayerState.DiscardPile);
-
-		// defender's hand and draw pile did not change
-		Assert.IsFalse(defender.PlayerState.Hand.Any());
-		Assert.IsFalse(defender.PlayerState.DrawPile.Any());
-
-		// nothing was added to the defender's played cards or actions
-		Assert.IsFalse(defender.PlayerState.CardsPlayed.Any());
-		Assert.IsFalse(defender.PlayerState.ActionsPlayed.Any());
+		// defender got a curse to his discard pile; nothing else about him changed
+		AssertNumbers(0, 0, 0, defender);
+		AssertPile([], defender.PlayerState.Hand);
+		AssertPile([], defender.PlayerState.DrawPile);
+		AssertPile([curse], defender.PlayerState.DiscardPile);
+		AssertPile([], defender.PlayerState.CardsPlayed);
+		AssertPile([], defender.PlayerState.ActionsPlayed);
+		AssertPile([], defender.Game.Trash);
 		#endregion
 	}
 
@@ -90,53 +72,38 @@ public class PlayerWitchTests : CardWithPlayerTestsBase
 	public void ThroneRoomPlay()
 	{
 		#region arrange
-		attacker.PlayerState.Hand = new List<Card> { throneRoom, witch };
-		attacker.PlayerState.DrawPile = new List<Card> { silver, silver, curse, silver };
+		attacker.PlayerState.Hand = CreatePile([throneRoom, witch]);
+		attacker.PlayerState.DrawPile = CreatePile([silver, silver, curse, silver]);
+		var witchToPlay = attacker.PlayerState.Hand.First(c => c.Card.Type == CardType.Witch);
 
 		attackerUser.Setup(u => u.ThroneRoomPlay(throneRoom, attacker.PlayerState,
-			attacker.Game.Kingdom, It.Is<IEnumerable<Card>>(c => c.SingleOrDefault() == witch))).Returns(witch);
-
+			attacker.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == witchToPlay))).Returns(witchToPlay);
 		#endregion
+
 		#region act
-		attacker.PlayActionCardInternal(throneRoom);
-
+		attacker.PlayActionCardInternal(attacker.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
 		#endregion
+
 		#region assert
-		// -1 Action, (+0 Action, +0 Coins, +0 Buys) * 2
-		Assert.AreEqual(0, attacker.PlayerState.Actions);
-		Assert.AreEqual(0, attacker.PlayerState.Coins);
-		Assert.AreEqual(0, attacker.PlayerState.Buys);
+		AssertNumbers(0, 0, 0, attacker);
+		AssertPile([silver, silver, curse, silver], attacker.PlayerState.Hand);
+		AssertPile([], attacker.PlayerState.DrawPile);
+		AssertPile([], attacker.PlayerState.DiscardPile);
+		AssertPile([witch, throneRoom], attacker.PlayerState.CardsPlayed);
+		AssertPile([witch, witch, throneRoom], attacker.PlayerState.ActionsPlayed);
+		AssertPile([], attacker.Game.Trash);
 
-		// (+2 Card) * 2
-		CollectionAssert.AreEquivalent(new List<Card> { silver, silver, curse, silver }, attacker.PlayerState.Hand);
-		Assert.IsFalse(attacker.PlayerState.DrawPile.Any());
-		Assert.IsFalse(attacker.PlayerState.DiscardPile.Any());
-
-		// attacker was asked which card to play using throne room
 		attackerUser.Verify(u => u.ThroneRoomPlay(throneRoom, attacker.PlayerState,
-			attacker.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
+			attacker.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
 
-		// witch and throne room were added to played cards 
-		CollectionAssert.AreEquivalent(new List<Card> { witch, throneRoom }, attacker.PlayerState.CardsPlayed);
-
-		// two witches and throne room were added to actions played 
-		CollectionAssert.AreEquivalent(new List<Card> { witch, witch, throneRoom }, attacker.PlayerState.ActionsPlayed);
-
-		// defender's actions, coins and buys shouldn't change
-		Assert.AreEqual(0, defender.PlayerState.Actions);
-		Assert.AreEqual(0, defender.PlayerState.Coins);
-		Assert.AreEqual(0, defender.PlayerState.Buys);
-
-		// defender got two curses to his discard pile
-		CollectionAssert.AreEquivalent(new List<Card> { curse, curse }, defender.PlayerState.DiscardPile);
-
-		// defender's hand and draw pile did not change
-		Assert.IsFalse(defender.PlayerState.Hand.Any());
-		Assert.IsFalse(defender.PlayerState.DrawPile.Any());
-
-		// nothing was added to the defender's played cards or actions
-		Assert.IsFalse(defender.PlayerState.CardsPlayed.Any());
-		Assert.IsFalse(defender.PlayerState.ActionsPlayed.Any());
+		// the attack fires once per throne-room resolution, so the defender gets two curses
+		AssertNumbers(0, 0, 0, defender);
+		AssertPile([], defender.PlayerState.Hand);
+		AssertPile([], defender.PlayerState.DrawPile);
+		AssertPile([curse, curse], defender.PlayerState.DiscardPile);
+		AssertPile([], defender.PlayerState.CardsPlayed);
+		AssertPile([], defender.PlayerState.ActionsPlayed);
+		AssertPile([], defender.Game.Trash);
 		#endregion
 	}
 }

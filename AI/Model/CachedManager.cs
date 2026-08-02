@@ -41,7 +41,7 @@ public class CachedManager : BuyAgendaManager
 
 		try
 		{
-			if (files[i] == null)
+			if (files[i] is null)
 				LoadAllAgendas(i);
 
 			lock (locks[i])
@@ -76,7 +76,7 @@ public class CachedManager : BuyAgendaManager
 		string id = cards.ToId();
 		int i = cards.OrderBy(p => p).Select(p => (int)p.Type).First();
 
-		if (Load(cards) == null)
+		if (Load(cards) is null)
 			lock (locks[i])
 				File.AppendAllText($"{directoryPath}{prefix}{i}.txt", agenda.ToString(id) + Environment.NewLine);
 		else
@@ -116,7 +116,7 @@ public class CachedManager : BuyAgendaManager
 			var cards = five.Select(i => Card.Get((CardType)i)).ToList();
 
 			var agenda = Load(cards);
-			if (agenda != null)
+			if (agenda is not null)
 				agendas.Add(new BuyAgendaTournament.Tuple { Agenda = agenda, Wins = 0, Id = cards.ToId() });
 		}
 		Console.WriteLine("AgendaCount " + agendas.Count);
@@ -200,7 +200,7 @@ public class CachedManager : BuyAgendaManager
 			{
 				try
 				{
-					if (files[i] == null)
+					if (files[i] is null)
 						LoadAllAgendas(i);
 				}
 				catch

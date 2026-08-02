@@ -25,9 +25,8 @@ public class Chapel : Card
 
 	public static Chapel Get() => chapel ?? new Chapel();
 
-	protected override void ActionEffect(IPlayer player)
+	protected override void ActionEffect(IPlayer player, CardInstance thisCard)
 	{
-		// měli bychom kontrolovat, že jsou max čtyři
 		player.User.ChapelTrash(this, player.PlayerState, player.Game.Kingdom).ForEach(player.Trash);
 	}
 }

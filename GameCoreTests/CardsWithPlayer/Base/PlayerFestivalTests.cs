@@ -1,7 +1,6 @@
-﻿using GameCore.Cards;
+using GameCore.Cards;
 using GameCore.Cards.Base;
 using GameCore.CardWithPlayer.Tests;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
 namespace GameCore.CardsWithPlayer.Base.Tests;
@@ -29,25 +28,21 @@ public class PlayerFestivalTests : CardWithPlayerTestsBase
 	public void Play()
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { festival };
+		player.PlayerState.Hand = CreatePile([festival]);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(festival);
+		player.PlayActionCardInternal(player.PlayerState.Hand[0]);
 		#endregion
 
 		#region assert
-		// (-1 Action, +2 Actions), +2 Coins, +1 Buy
-		Assert.AreEqual(2, player.PlayerState.Actions);
-		Assert.AreEqual(2, player.PlayerState.Coins);
-		Assert.AreEqual(1, player.PlayerState.Buys);
-
-		// +0 Cards
-		Assert.IsFalse(player.PlayerState.Hand.Any());
-
-		// festival was added to played cards and actions
-		CollectionAssert.AreEquivalent(new List<Card> { festival }, player.PlayerState.CardsPlayed);
-		CollectionAssert.AreEquivalent(new List<Card> { festival }, player.PlayerState.ActionsPlayed);
+		AssertNumbers(2, 2, 1, player);
+		AssertPile([], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([], player.PlayerState.DiscardPile);
+		AssertPile([festival], player.PlayerState.CardsPlayed);
+		AssertPile([festival], player.PlayerState.ActionsPlayed);
+		AssertPile([], player.Game.Trash);
 		#endregion
 	}
 
@@ -55,35 +50,29 @@ public class PlayerFestivalTests : CardWithPlayerTestsBase
 	public void ThroneRoomPlay()
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { throneRoom, festival };
+		player.PlayerState.Hand = CreatePile([throneRoom, festival]);
+		var festivalToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Festival);
+
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<Card>>(c => c.SingleOrDefault() == festival))).Returns(festival);
+			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == festivalToPlay))).Returns(festivalToPlay);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(throneRoom);
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
 		#endregion
 
 		#region assert
-		// -1 Action, (+2 Actions, +2 Coins, +1 Buy) * 2
-		Assert.AreEqual(4, player.PlayerState.Actions);
-		Assert.AreEqual(4, player.PlayerState.Coins);
-		Assert.AreEqual(2, player.PlayerState.Buys);
-
-		// +0 Cards
-		Assert.IsFalse(player.PlayerState.Hand.Any());
-		Assert.IsFalse(player.PlayerState.DrawPile.Any());
-		Assert.IsFalse(player.PlayerState.DiscardPile.Any());
+		AssertNumbers(4, 4, 2, player);
+		AssertPile([], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([], player.PlayerState.DiscardPile);
+		AssertPile([throneRoom, festival], player.PlayerState.CardsPlayed);
+		AssertPile([throneRoom, festival, festival], player.PlayerState.ActionsPlayed);
+		AssertPile([], player.Game.Trash);
 
 		// user is asked which card to play using throne room
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
-
-		// festival and throne room were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { festival, throneRoom }, player.PlayerState.CardsPlayed);
-
-		// two festival and throne room were added to played actions
-		CollectionAssert.AreEquivalent(new List<Card> { festival, festival, throneRoom }, player.PlayerState.ActionsPlayed);
+			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
 		#endregion
 	}
 }

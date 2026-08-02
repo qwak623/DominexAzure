@@ -2,7 +2,6 @@
 using GameCore.Cards.Base;
 using GameCore.Cards.GeneralCards;
 using GameCore.CardWithPlayer.Tests;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
 namespace GameCore.CardsWithPlayer.Base.Tests;
@@ -34,30 +33,22 @@ public class PlayerAdventurerTests : CardWithPlayerTestsBase
 	public void DrawTwoTreasures()
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { adventurer, copper };
-		player.PlayerState.DrawPile = new List<Card> { copper, silver };
+		player.PlayerState.Hand = CreatePile([adventurer, copper]);
+		player.PlayerState.DrawPile = CreatePile([copper, silver]);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(adventurer);
+		player.PlayActionCardInternal(player.PlayerState.Hand[0]);
 		#endregion
 
 		#region assert
-		// -1 Action, +0 Coins, +0 Buys
-		Assert.AreEqual(0, player.PlayerState.Actions);
-		Assert.AreEqual(0, player.PlayerState.Coins);
-		Assert.AreEqual(0, player.PlayerState.Buys);
-
-		// +0 Cards
-		Assert.IsFalse(player.PlayerState.DrawPile.Any());
-		Assert.IsFalse(player.PlayerState.DiscardPile.Any());
-
-		// player has the two treasures in his hand
-		CollectionAssert.AreEquivalent(new List<Card> { copper, copper, silver }, player.PlayerState.Hand);
-
-		// adventurer was added to played cards and actions
-		CollectionAssert.AreEquivalent(new List<Card> { adventurer }, player.PlayerState.CardsPlayed);
-		CollectionAssert.AreEquivalent(new List<Card> { adventurer }, player.PlayerState.ActionsPlayed);
+		AssertNumbers(0, 0, 0, player);
+		AssertPile([copper, copper, silver], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([], player.PlayerState.DiscardPile);
+		AssertPile([adventurer], player.PlayerState.CardsPlayed);
+		AssertPile([adventurer], player.PlayerState.ActionsPlayed);
+		AssertPile([], player.Game.Trash);
 		#endregion
 	}
 
@@ -65,32 +56,22 @@ public class PlayerAdventurerTests : CardWithPlayerTestsBase
 	public void SkipNonTreasures()
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { adventurer, copper };
-		player.PlayerState.DrawPile = new List<Card> { province, gold, silver, adventurer, adventurer, province };
+		player.PlayerState.Hand = CreatePile([adventurer, copper]);
+		player.PlayerState.DrawPile = CreatePile([province, gold, silver, adventurer, adventurer, province]);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(adventurer);
+		player.PlayActionCardInternal(player.PlayerState.Hand[0]);
 		#endregion
 
 		#region assert
-		// -1 Action, +0 Coins, +0 Buys
-		Assert.AreEqual(0, player.PlayerState.Actions);
-		Assert.AreEqual(0, player.PlayerState.Coins);
-		Assert.AreEqual(0, player.PlayerState.Buys);
-
-		// +0 Cards
-		CollectionAssert.AreEquivalent(new List<Card> { province }, player.PlayerState.DrawPile);
-
-		// the non-treasure cards are on the discard pile
-		CollectionAssert.AreEquivalent(new List<Card> { province, adventurer, adventurer }, player.PlayerState.DiscardPile);
-
-		// player has the two treasures in his hand
-		CollectionAssert.AreEquivalent(new List<Card> { copper, silver, gold }, player.PlayerState.Hand);
-
-		// adventurer was added to played cards and actions
-		CollectionAssert.AreEquivalent(new List<Card> { adventurer }, player.PlayerState.CardsPlayed);
-		CollectionAssert.AreEquivalent(new List<Card> { adventurer }, player.PlayerState.ActionsPlayed);
+		AssertNumbers(0, 0, 0, player);
+		AssertPile([copper, silver, gold], player.PlayerState.Hand);
+		AssertPile([province], player.PlayerState.DrawPile);
+		AssertPile([province, adventurer, adventurer], player.PlayerState.DiscardPile);
+		AssertPile([adventurer], player.PlayerState.CardsPlayed);
+		AssertPile([adventurer], player.PlayerState.ActionsPlayed);
+		AssertPile([], player.Game.Trash);
 		#endregion
 	}
 
@@ -98,32 +79,24 @@ public class PlayerAdventurerTests : CardWithPlayerTestsBase
 	public void OneTreasureToDraw()
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { adventurer, copper };
-		player.PlayerState.DrawPile = new List<Card> { gold, province };
+		player.PlayerState.Hand = CreatePile([adventurer, copper]);
+		player.PlayerState.DrawPile = CreatePile([gold, province]);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(adventurer);
+		player.PlayActionCardInternal(player.PlayerState.Hand[0]);
 		#endregion
 
 		#region assert
-		// -1 Action, +0 Coins, +0 Buys
-		Assert.AreEqual(0, player.PlayerState.Actions);
-		Assert.AreEqual(0, player.PlayerState.Coins);
-		Assert.AreEqual(0, player.PlayerState.Buys);
-
-		// +0 Cards
-		Assert.IsFalse(player.PlayerState.DrawPile.Any());
-
 		// the non-treasure card is on the discard pile
-		CollectionAssert.AreEquivalent(new List<Card> { province }, player.PlayerState.DiscardPile);
-
 		// player has the treasure in his hand
-		CollectionAssert.AreEquivalent(new List<Card> { copper, gold }, player.PlayerState.Hand);
-
-		// adventurer was added to played cards and actions
-		CollectionAssert.AreEquivalent(new List<Card> { adventurer }, player.PlayerState.CardsPlayed);
-		CollectionAssert.AreEquivalent(new List<Card> { adventurer }, player.PlayerState.ActionsPlayed);
+		AssertNumbers(0, 0, 0, player);
+		AssertPile([copper, gold], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([province], player.PlayerState.DiscardPile);
+		AssertPile([adventurer], player.PlayerState.CardsPlayed);
+		AssertPile([adventurer], player.PlayerState.ActionsPlayed);
+		AssertPile([], player.Game.Trash);
 		#endregion
 	}
 
@@ -131,29 +104,22 @@ public class PlayerAdventurerTests : CardWithPlayerTestsBase
 	public void NoTreasuresToDraw()
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { adventurer, copper };
+		player.PlayerState.Hand = CreatePile([adventurer, copper]);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(adventurer);
+		player.PlayActionCardInternal(player.PlayerState.Hand[0]);
 		#endregion
 
 		#region assert
-		// -1 Action, +0 Coins, +0 Buys
-		Assert.AreEqual(0, player.PlayerState.Actions);
-		Assert.AreEqual(0, player.PlayerState.Coins);
-		Assert.AreEqual(0, player.PlayerState.Buys);
-
-		// +0 Cards
-		Assert.IsFalse(player.PlayerState.DrawPile.Any());
-		Assert.IsFalse(player.PlayerState.DiscardPile.Any());
-
 		// nothing was added to the player's hand
-		CollectionAssert.AreEquivalent(new List<Card> { copper }, player.PlayerState.Hand);
-
-		// adventurer was added to played cards and actions
-		CollectionAssert.AreEquivalent(new List<Card> { adventurer }, player.PlayerState.CardsPlayed);
-		CollectionAssert.AreEquivalent(new List<Card> { adventurer }, player.PlayerState.ActionsPlayed);
+		AssertNumbers(0, 0, 0, player);
+		AssertPile([copper], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([], player.PlayerState.DiscardPile);
+		AssertPile([adventurer], player.PlayerState.CardsPlayed);
+		AssertPile([adventurer], player.PlayerState.ActionsPlayed);
+		AssertPile([], player.Game.Trash);
 		#endregion
 	}
 
@@ -161,41 +127,34 @@ public class PlayerAdventurerTests : CardWithPlayerTestsBase
 	public void ThroneRoomFourTreasures()
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { adventurer, throneRoom };
-		player.PlayerState.DrawPile = new List<Card> { silver, province, copper, province, province, gold, province, silver, adventurer, province, copper };
+		player.PlayerState.Hand = CreatePile([adventurer, throneRoom]);
+		var adventurerToPlay = player.PlayerState.Hand[0];
+		player.PlayerState.DrawPile =
+			CreatePile([silver, province, copper, province, province, gold, province, silver, adventurer, province, copper]);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<Card>>(c => c.Contains(adventurer)))).Returns(adventurer);
+			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Contains(adventurerToPlay)))).Returns(adventurerToPlay);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(throneRoom);
+		player.PlayActionCardInternal(player.PlayerState.Hand[1]);
 		#endregion
 
 		#region assert
-		// +0 Actions, +0 Coins, +0 Buys
-		Assert.AreEqual(0, player.PlayerState.Actions);
-		Assert.AreEqual(0, player.PlayerState.Coins);
-		Assert.AreEqual(0, player.PlayerState.Buys);
-
-		// +0 Cards
-		CollectionAssert.AreEquivalent(new List<Card> { province, silver }, player.PlayerState.DrawPile);
+		// player gained the treasures to the hand
+		// non-treasure cards were discarded
+		// throne room and adventurer were added to played cards
+		AssertNumbers(0, 0, 0, player);
+		AssertPile([copper, silver, gold, copper], player.PlayerState.Hand);
+		AssertPile([province, silver], player.PlayerState.DrawPile);
+		AssertPile([province, province, province, adventurer, province], player.PlayerState.DiscardPile);
+		AssertPile([throneRoom, adventurer], player.PlayerState.CardsPlayed);
+		AssertPile([throneRoom, adventurer, adventurer], player.PlayerState.ActionsPlayed);
+		AssertPile([], player.Game.Trash);
 
 		// user is asked which card to play using throne room
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
-
-		// player gained the treasures to the hand
-		CollectionAssert.AreEquivalent(new List<Card> { copper, silver, gold, copper }, player.PlayerState.Hand);
-
-		// non-treasure cards were discarded
-		CollectionAssert.AreEquivalent(new List<Card> { province, province, province, adventurer, province }, player.PlayerState.DiscardPile);
-
-		// throne room and adventurer were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, adventurer }, player.PlayerState.CardsPlayed);
-
-		// throne room and two adventurers were added to played actions
-		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, adventurer, adventurer }, player.PlayerState.ActionsPlayed);
+			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
 		#endregion
 	}
 
@@ -207,42 +166,33 @@ public class PlayerAdventurerTests : CardWithPlayerTestsBase
 	public void ThroneRoomNotEnoughTreasures(int treasureCount)
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { adventurer, throneRoom };
-		player.PlayerState.DrawPile = new List<Card> { province, province, province, province, adventurer, province };
-		player.PlayerState.DrawPile.AddRange(Enumerable.Repeat(gold, treasureCount));
+		player.PlayerState.Hand = CreatePile([adventurer, throneRoom]);
+		var adventurerToPlay = player.PlayerState.Hand[0];
+		player.PlayerState.DrawPile =
+			CreatePile([province, province, province, province, adventurer, province, .. Enumerable.Repeat(gold, treasureCount)]);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<Card>>(c => c.Contains(adventurer)))).Returns(adventurer);
+			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Contains(adventurerToPlay)))).Returns(adventurerToPlay);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(throneRoom);
+		player.PlayActionCardInternal(player.PlayerState.Hand[1]);
 		#endregion
 
 		#region assert
-		// +0 Actions, +0 Coins, +0 Buys
-		Assert.AreEqual(0, player.PlayerState.Actions);
-		Assert.AreEqual(0, player.PlayerState.Coins);
-		Assert.AreEqual(0, player.PlayerState.Buys);
-
-		// +0 Cards
-		Assert.IsFalse(player.PlayerState.DrawPile.Any());
+		// player gained the treasures to the hand
+		// non-treasure cards were discarded
+		AssertNumbers(0, 0, 0, player);
+		AssertPile([.. Enumerable.Repeat(gold, treasureCount)], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([province, province, province, province, adventurer, province], player.PlayerState.DiscardPile);
+		AssertPile([throneRoom, adventurer], player.PlayerState.CardsPlayed);
+		AssertPile([throneRoom, adventurer, adventurer], player.PlayerState.ActionsPlayed);
+		AssertPile([], player.Game.Trash);
 
 		// user is asked which card to play using throne room
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
-
-		// player gained the treasures to the hand
-		CollectionAssert.AreEquivalent(Enumerable.Repeat(gold, treasureCount).ToList(), player.PlayerState.Hand);
-
-		// non-treasure cards were discarded
-		CollectionAssert.AreEquivalent(new List<Card> { province, province, province, province, adventurer, province }, player.PlayerState.DiscardPile);
-
-		// throne room and adventurer were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, adventurer }, player.PlayerState.CardsPlayed);
-
-		// throne room and two adventurers were added to played actions
-		CollectionAssert.AreEquivalent(new List<Card> { throneRoom, adventurer, adventurer }, player.PlayerState.ActionsPlayed);
+			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
 		#endregion
 	}
 }

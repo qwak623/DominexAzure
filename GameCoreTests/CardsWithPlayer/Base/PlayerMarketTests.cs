@@ -1,8 +1,7 @@
-﻿using GameCore.Cards;
+using GameCore.Cards;
 using GameCore.Cards.Base;
 using GameCore.Cards.GeneralCards;
 using GameCore.CardWithPlayer.Tests;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
 namespace GameCore.CardsWithPlayer.Base.Tests;
@@ -31,27 +30,23 @@ public class PlayerMarketTests : CardWithPlayerTestsBase
 	public void Play()
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { market };
-		player.PlayerState.DrawPile = new List<Card> { copper };
+		player.PlayerState.Hand = CreatePile([market]);
+		player.PlayerState.DrawPile = CreatePile([copper]);
+		var marketToPlay = player.PlayerState.Hand[0];
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(market);
+		player.PlayActionCardInternal(marketToPlay);
 		#endregion
 
 		#region assert
-		// (-1 Action, +1 Actions), +1 Coin, +1 Buy
-		Assert.AreEqual(1, player.PlayerState.Actions);
-		Assert.AreEqual(1, player.PlayerState.Coins);
-		Assert.AreEqual(1, player.PlayerState.Buys);
-
-		// +1 Card
-		CollectionAssert.AreEquivalent(new List<Card> { copper }, player.PlayerState.Hand);
-		Assert.IsFalse(player.PlayerState.DrawPile.Any());
-
-		// market was added to played cards and actions
-		CollectionAssert.AreEquivalent(new List<Card> { market }, player.PlayerState.CardsPlayed);
-		CollectionAssert.AreEquivalent(new List<Card> { market }, player.PlayerState.ActionsPlayed);
+		AssertNumbers(1, 1, 1, player);
+		AssertPile([copper], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([], player.PlayerState.DiscardPile);
+		AssertPile([market], player.PlayerState.CardsPlayed);
+		AssertPile([market], player.PlayerState.ActionsPlayed);
+		AssertPile([], player.Game.Trash);
 		#endregion
 	}
 
@@ -59,36 +54,29 @@ public class PlayerMarketTests : CardWithPlayerTestsBase
 	public void ThroneRoomPlay()
 	{
 		#region arrange
-		player.PlayerState.Hand = new List<Card> { throneRoom, market };
-		player.PlayerState.DrawPile = new List<Card> { copper, copper };
+		player.PlayerState.Hand = CreatePile([throneRoom, market]);
+		player.PlayerState.DrawPile = CreatePile([copper, copper]);
+		var marketToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Market);
+
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<Card>>(c => c.SingleOrDefault() == market))).Returns(market);
+			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == marketToPlay))).Returns(marketToPlay);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(throneRoom);
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
 		#endregion
 
 		#region assert
-		// -1 Action, (+1 Action, +1 Coin, +1 Buy) * 2
-		Assert.AreEqual(2, player.PlayerState.Actions);
-		Assert.AreEqual(2, player.PlayerState.Coins);
-		Assert.AreEqual(2, player.PlayerState.Buys);
+		AssertNumbers(2, 2, 2, player);
+		AssertPile([copper, copper], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.DrawPile);
+		AssertPile([], player.PlayerState.DiscardPile);
+		AssertPile([market, throneRoom], player.PlayerState.CardsPlayed);
+		AssertPile([market, market, throneRoom], player.PlayerState.ActionsPlayed);
+		AssertPile([], player.Game.Trash);
 
-		// (+1 Card) * 2
-		CollectionAssert.AreEquivalent(new List<Card> { copper, copper }, player.PlayerState.Hand);
-		Assert.IsFalse(player.PlayerState.DrawPile.Any());
-		Assert.IsFalse(player.PlayerState.DiscardPile.Any());
-
-		// user is asked which card to play using throne room
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<Card>>()), Times.Once);
-
-		// market and throne room were added to played cards
-		CollectionAssert.AreEquivalent(new List<Card> { market, throneRoom }, player.PlayerState.CardsPlayed);
-
-		// two markets and throne room were added to played actions
-		CollectionAssert.AreEquivalent(new List<Card> { market, market, throneRoom }, player.PlayerState.ActionsPlayed);
+			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
 		#endregion
 	}
 }

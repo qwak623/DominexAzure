@@ -119,11 +119,11 @@ public static class Program
 
 	private static async Task<bool> TryRunCommandAsync(IServiceProvider serviceProvider, string command)
 	{
-		Contract.Requires<ArgumentNullException>(serviceProvider != null);
+		Contract.Requires<ArgumentNullException>(serviceProvider is not null);
 		Contract.Requires<ArgumentException>(!String.IsNullOrEmpty(command));
 
 		var job = GetRecurringJobsToSchedule().SingleOrDefault(job => String.Equals(job.JobId, command, StringComparison.CurrentCultureIgnoreCase));
-		if (job == null)
+		if (job is null)
 		{
 			return false;
 		}

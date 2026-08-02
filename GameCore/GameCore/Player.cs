@@ -26,12 +26,12 @@ public class Player : IPlayer
 	{
 		get
 		{   // points can be counted only at the end of the game
-			if (Game.GameEnd && victoryPoints == null)
+			if (Game.GameEnd && victoryPoints is null)
 			{
-				// it will be better to have all cards in discard pile before counting
+				// it will be better to have all cards in discard kingdomPile before counting
 				Cleanup();
-				DiscardDrawPile();
-				victoryPoints = ps.DiscardPile.Select(c => c.CountPoints(this)).Sum();
+				PlayerState.DiscardPile.MoveAll(PlayerState.DrawPile);
+				victoryPoints = ps.DiscardPile.Select(c => c.Card.CountPoints(this)).Sum();
 			}
 			return victoryPoints.GetValueOrDefault();
 		}
@@ -67,12 +67,12 @@ public class Player : IPlayer
 		PlayerState.Actions = 1;
 		PlayerState.Coins = 0;
 
-		Card card;
+		CardInstance card;
 		do
 		{
 			card = PlayActionCard();
 		}
-		while (card != null);
+		while (card is not null);
 		#endregion
 
 		#region buy phase
@@ -88,7 +88,7 @@ public class Player : IPlayer
 		{
 			card = Buy();
 		}
-		while (card != null);
+		while (card is not null);
 		#endregion
 
 		#region cleanup
@@ -106,7 +106,7 @@ public class Player : IPlayer
 	///     when play actions and attack acitons are executed here.
 	/// </summary>
 	/// <returns>The played card.</returns>
-	public Card PlayActionCard()
+	public CardInstance PlayActionCard()
 	{
 		// if player has no actions left or he doesnt have any action cards, he cant select an action card
 		if (ps.Actions == 0 || ps.Hand.All(c => !c.IsAction))
@@ -116,7 +116,7 @@ public class Player : IPlayer
 
 		// user selects card to play, card is removed from hand and added to played cards
 		var card = User.PlayCard(ps.Hand.Where(c => c.IsAction), ps, Game.Kingdom, Phase.Action);
-		if (card == null)
+		if (card is null)
 		{
 			return null;
 		}
@@ -130,22 +130,21 @@ public class Player : IPlayer
 	///		puts the card from hand to the played cards and deals an attack in case of an attack card.
 	/// </summary>
 	/// <param name="card">Card to play.</param>
-	internal void PlayActionCardInternal(Card card)
+	internal void PlayActionCardInternal(CardInstance cardInstance)
 	{
-		Game.Logger?.Log(new GameLog { PlayerId = Name, Message = $"{Name} plays {card.Name}." });
+		Game.Logger?.Log(new GameLog { PlayerId = Name, Message = $"{Name} plays {cardInstance.Card.Name}." });
 
-		ps.Hand.Remove(card);
-		ps.CardsPlayed.Add(card);
-		ps.ActionsPlayed.Add(card);
+		ps.CardsPlayed.Move(cardInstance);
+		ps.ActionsPlayed.Add(cardInstance.Card);
 		ps.Actions--;
 
-		card.WhenPlayAction(this);
+		cardInstance.WhenPlayAction(this);
 
-		if (card.IsAttack)
+		if (cardInstance.Card.IsAttack)
 		{
 			foreach (var player in Game.Players.Where(p => p != this))
 			{
-				player.DealAttack(this, card);
+				player.DealAttack(this, cardInstance.Card);
 			}
 		}
 	}
@@ -155,7 +154,7 @@ public class Player : IPlayer
 	/// </summary>
 	public void PlayTreasure()
 	{
-		foreach (var card in ps.Hand.Where(c => c.IsTreasure))
+		foreach (var card in ps.Hand.Select(c => c.Card).Where(c => c.IsTreasure))
 		{
 			card.WhenPlayTreasure(this);
 		}
@@ -166,7 +165,7 @@ public class Player : IPlayer
 	///     Allowed buys player counts by himself.
 	/// </summary>
 	/// <returns>Purchased card.</returns>
-	public Card Buy()
+	public CardInstance Buy()
 	{
 		if (ps.Buys == 0)
 		{
@@ -175,14 +174,14 @@ public class Player : IPlayer
 
 		// buy
 		var card = User.SelectCardToGain(Game.Kingdom.GetWrapper(ps.Coins), ps, Game.Kingdom, Phase.Buy);
-		if (card == null)
+		if (card is null)
 		{
 			return null;
 		}
 
-		Game.Logger?.Log(new GameLog { PlayerId = name, Message = $"{name} pays ${card.Price}." });
+		Game.Logger?.Log(new GameLog { PlayerId = name, Message = $"{name} pays ${card.Card.Price}." });
 
-		Gain(card.Type);
+		Gain(card);
 		ps.Buys--;
 		ps.Coins -= card.Price;
 
@@ -190,20 +189,17 @@ public class Player : IPlayer
 	}
 
 	/// <summary>
-	///     Hand and all played and purchased cards are placed to discard pile.
+	///     Hand and all played and purchased cards are placed to discard kingdomPile.
 	/// </summary>
 	public void Cleanup()
 	{
-		ps.Hand.ForEach(card => ps.DiscardPile.Add(card));
-		ps.Hand.Clear();
-		ps.CardsPlayed.ForEach(card => ps.DiscardPile.Add(card));
-		ps.CardsPlayed.Clear();
-		ps.ActionsPlayed.Clear();
+		ps.DiscardPile.MoveAll(ps.Hand);
+		ps.DiscardPile.MoveAll(ps.CardsPlayed);
 	}
 
 	/// <summary>
-	///     Draws cards from draw pile to hand. If there are no cards 
-	///     shuffles the discard pile and places it onto draw pile place.
+	///     Draws cards from draw kingdomPile to hand. If there are no cards 
+	///     shuffles the discard kingdomPile and places it onto draw kingdomPile place.
 	///     Then draws cards.
 	/// </summary>
 	/// <param name="count">Count of cards to draw.</param>
@@ -214,7 +210,7 @@ public class Player : IPlayer
 			ShuffleIfNeeded();
 
 			// there are no cards to draw
-			if (!ps.DrawPile.Any())
+			if (ps.DrawPile.Count == 0)
 			{
 				Game.Logger?.Log(new GameLog { PlayerId = name, Message = $"{name} doesn't have any cards left to draw." });
 				return;
@@ -223,8 +219,7 @@ public class Player : IPlayer
 			// draw one card
 			var card = ps.DrawPile[^1];
 			Game.Logger?.Log(new GameLog { PlayerId = name, Message = $"{name} draws {card.Name}" });
-			ps.Hand.Add(card);
-			ps.DrawPile.RemoveAt(ps.DrawPile.Count - 1);
+			ps.Hand.Move(card);
 		}
 	}
 
@@ -232,22 +227,31 @@ public class Player : IPlayer
 	/// Takes specified card from hand and adds it to common trash list.
 	/// </summary>
 	/// <param name="card"></param>
-	public void Trash(Card card)
+	public void Trash(CardInstance card)
 	{
 		Game.Logger?.Log(new GameLog { PlayerId = name, Message = $"{name} trashes {card.Name}." });
-		ps.Hand.Remove(card);
-		Game.Trash.Add(card);
+		Game.Trash.Move(card);
 	}
 
 	/// <summary>
-	/// Takes specified card from hand and adds it to discard pile.
+	/// Takes specified card from hand and adds it to discard kingdomPile.
 	/// </summary>
 	/// <param name="card"></param>
-	public void Discard(Card card)
+	public void Discard(CardInstance card)
 	{
 		Game.Logger?.Log(new GameLog { PlayerId = name, Message = $"{name} discards {card.Name}." });
-		ps.Hand.Remove(card);
-		ps.DiscardPile.Add(card);
+		ps.DiscardPile.Move(card);
+	}
+
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="card"></param>
+	public void Gain(CardInstance card)
+	{
+		Game.Logger?.Log(new GameLog { PlayerId = name, Message = $"{name} gains {card.Name}." });
+		// TODO hook on gain event
+		ps.DiscardPile.Move(card);
 	}
 
 	/// <summary>
@@ -256,14 +260,14 @@ public class Player : IPlayer
 	/// <param name="type">Type of card to gain</param>
 	public void Gain(CardType type)
 	{
-		var card = GainCard(type);
-		if (card == null)
+		var card = GetCardToGain(type);
+		if (card is null)
 		{
 			return;
 		}
 
 		Game.Logger?.Log(new GameLog { PlayerId = name, Message = $"{name} gains {card.Name}." });
-		ps.DiscardPile.Add(card);
+		ps.DiscardPile.Move(card);
 	}
 
 	/// <summary>
@@ -272,81 +276,75 @@ public class Player : IPlayer
 	/// <param name="type">Type of card to gain</param>
 	public void GainToHand(CardType type)
 	{
-		var card = GainCard(type);
-		if (card == null)
+		var card = GetCardToGain(type);
+		if (card is null)
 		{
 			return;
 		}
 
 		Game.Logger?.Log(new GameLog { PlayerId = name, Message = $"{name} gains {card.Name} to hand." });
-		ps.Hand.Add(card);
+		ps.Hand.Move(card);
+	}
+
+	public void GainToHand(CardInstance card)
+	{
+		Game.Logger?.Log(new GameLog { PlayerId = name, Message = $"{name} gains {card.Name} to hand." });
+		// TODO hook on gain event
+		ps.Hand.Move(card);
 	}
 
 	/// <summary>
 	/// Gains card to the draw pile if possible.
 	/// </summary>
-	/// <param name="type">Type of card to gain</param>
+	/// <param name="type">Type of card to gain.</param>
 	public void GainToDrawPile(CardType type)
 	{
-		var card = GainCard(type);
-		if (card == null)
+		var card = GetCardToGain(type);
+		if (card is null)
 		{
 			return;
 		}
 
 		Game.Logger?.Log(new GameLog { PlayerId = name, Message = $"{name} gains {card.Name} to the draw pile." });
-		ps.DrawPile.Add(card);
+		ps.DrawPile.Move(card);
 	}
-
 
 	/// <summary>
 	/// Returns card from hand to the draw pile.
 	/// </summary>
 	/// <param name="card">Card to return to the draw pile.</param>
-	public void ReturnToDrawPile(Card card)
+	public void ReturnToDrawPile(CardInstance card)
 	{
 		Game.Logger?.Log(new GameLog { PlayerId = name, Message = $"{name} returns {card.Name} to the draw pile." });
-		ps.Hand.Remove(card);
-		ps.DrawPile.Add(card);
-	}
-
-	/// <summary>
-	/// Discards all cards in draw pile.
-	/// </summary>
-	public void DiscardDrawPile()
-	{
-		Game.Logger?.Log(new GameLog { PlayerId = name, Message = $"{name} discards draw pile." });
-		ps.DiscardPile.AddRange(ps.DrawPile);
-		ps.DrawPile.Clear();
+		ps.DrawPile.Move(card);
 	}
 
 	/// <summary>
 	/// Shows cards on top of the draw pile and returns them.
 	/// </summary>
 	/// <param name="count">Count of cards to show.</param>
-	/// <returns>List of the shown cards that were removed from the draw pile.</returns>
-	public List<Card> Show(int count)
+	/// <returns>List of the shown cards that were removed from the draw kingdomPile.</returns>
+	public Pile Show(int count)
 	{
-		var list = new List<Card>(count);
+		var shownCards = new Pile();
 
 		for (; count > 0; count--)
 		{
 			ShuffleIfNeeded();
 
-			// no cards to draw
-			if (!ps.DrawPile.Any())
+			// no cards to show
+			if (ps.DrawPile.Count == 0)
 			{
 				Game.Logger?.Log(new GameLog { PlayerId = name, Message = $"{name} doesn't have any cards left to show." });
-				return list;
+				return shownCards;
 			}
 
-			// draw one card
+			// show one card
 			var card = ps.DrawPile[^1];
-			ps.DrawPile.RemoveAt(ps.DrawPile.Count - 1);
 			Game.Logger?.Log(new GameLog { PlayerId = name, Message = $"{name} shows {card.Name}" });
-			list.Add(card);
+			shownCards.Move(card);
 		}
-		return list;
+		return shownCards;
 	}
 
 	/// <summary>
@@ -360,21 +358,24 @@ public class Player : IPlayer
 		Game.Logger?.Log(new GameLog { PlayerId = name, Message = $"{name} deals attack." });
 
 		// before attack is executed defender can select some reaction cards.
-		Card card = null;
+		CardInstance card = null;
 		bool defended = false;
-		var reactions = new LinkedList<Card>(ps.Hand.Where(c => c.IsReaction));
+		var reactions = new List<CardInstance>(ps.Hand.Where(c => c.IsReaction));
 
 		// TODO tenhle while se mi nelíbí
 		while (reactions.Count > 0)
 		{
 			card = User.PlayCard(reactions, ps, Game.Kingdom, Phase.Reaction, attackCard);
-			reactions.Remove(card);
-			if (card == null)
+			if (card is null)
 			{
 				break;
 			}
+			else
+			{
+				reactions.Remove(card);
+			}
 
-			defended |= card.Reaction(this);
+			defended |= card.Card.Reaction(this);
 		}
 
 		if (!defended)
@@ -391,36 +392,36 @@ public class Player : IPlayer
 	/// </summary>
 	/// <param name="type">Type of card to gain</param>
 	/// <returns>Card of the given type from the kingdom</returns>
-	private Card GainCard(CardType type)
+	private CardInstance GetCardToGain(CardType type)
 	{
-		var pile = Game.Kingdom.GetPile(type);
-		var card = pile.GainCard();
-
-		// counts empty piles without enumerating 
-		if (pile.Empty)
-		{
-			Game.Kingdom.EmptyPilesCount++;
-		}
-
-		return card;
+		var kingdomPile = Game.Kingdom.GetPile(type);
+		return kingdomPile.CardInstance;
 	}
 
 	private void InitiatePiles()
 	{
 		// TODO 5 2 mód, teď je to takhle divně kvůli 4 3 módu
-		// TODO vzít ty karty z kingdomu, ne vykouzlit
 		// Adds 3 estates and 7 coppers to the draw pile
-		ps.DrawPile.AddRange(Enumerable.Repeat(Cards.GeneralCards.Estate.Get(), 2));
-		ps.DrawPile.AddRange(Enumerable.Repeat(Cards.GeneralCards.Copper.Get(), 7));
-		ps.DrawPile.AddRange(Enumerable.Repeat(Cards.GeneralCards.Estate.Get(), 1));
+		for (int i = 0; i < 2; i++)
+		{
+			GainToDrawPile(Cards.GeneralCards.Estate.Get().Type);
+		}
+		for (int i = 0; i < 7; i++)
+		{
+			GainToDrawPile(Cards.GeneralCards.Copper.Get().Type);
+		}
+		for (int i = 0; i < 1; i++)
+		{
+			GainToDrawPile(Cards.GeneralCards.Estate.Get().Type);
+		}
 	}
 
 	/// <summary>
-	/// Shuffles the discard pile and puts it on the draw pile, if the draw pile is empty.
+	/// Shuffles the discard kingdomPile and puts it on the draw kingdomPile, if the draw kingdomPile is empty.
 	/// </summary>
 	private void ShuffleIfNeeded()
 	{
-		if (!ps.DrawPile.Any() && ps.DiscardPile.Any())
+		if (ps.DrawPile.Count == 0 && ps.DiscardPile.Count > 0)
 		{
 			Game.Logger?.Log(new GameLog { PlayerId = name, Message = $"{name} shuffles the pile." });
 

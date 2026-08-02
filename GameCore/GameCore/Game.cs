@@ -8,7 +8,7 @@ public class Game : IGame
 	private User[] users;
 	public List<IPlayer> Players { get; set; }
 	public Kingdom Kingdom { get; set; }
-	public List<Card> Trash { get; set; }
+	public Pile Trash { get; set; }
 	public IGameLogger Logger { get; set; }
 
 	public bool GameEnd { get; private set; }
@@ -31,7 +31,7 @@ public class Game : IGame
 		this.Logger = logger;
 		Kingdom = kingdom;
 		this.users = users;
-		Trash = new List<Card>();
+		Trash = new Pile();
 	}
 
 	/// <summary>
@@ -126,5 +126,5 @@ public class Game : IGame
 		}
 	}
 
-	private bool IsGameEnd() => Kingdom.GetPile(CardType.Province).Empty || Kingdom.EmptyPilesCount >= 3;
+	private bool IsGameEnd() => Kingdom.GetPile(CardType.Province).Empty || Kingdom.EmptyKingdomPilesCount >= 3;
 }

@@ -28,7 +28,7 @@ public class Bridge : Card
 
 	public static Bridge Get() => bridge ?? new Bridge();
 
-	protected override void ActionEffect(IPlayer player)
+	protected override void ActionEffect(IPlayer player, CardInstance thisCard)
 	{
 		// todo
 	}

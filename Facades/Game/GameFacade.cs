@@ -155,9 +155,9 @@ public class GameFacade : IGameFacade
 				Points = p.VictoryPoints,
 				Cards = p.PlayerState.DiscardPile.GroupBy(c => c).Select(group => new CardResultsDto
 				{
-					Card = cardMapper.ToCardDto(group.Key),
+					Card = cardMapper.ToCardDto(group.Key.Card),
 					Count = group.Count(),
-					PointsPerCard = group.Key.CountPoints(p),
+					PointsPerCard = group.Key.Card.CountPoints(p),
 				}).ToList(),
 			}).ToList(),
 		};
@@ -177,7 +177,7 @@ public class GameFacade : IGameFacade
 	{
 		await Task.Yield();
 
-		if (Game == null)
+		if (Game is null)
 		{
 			kingdom = cards.GetKingdom(2, kingdomObserver);
 

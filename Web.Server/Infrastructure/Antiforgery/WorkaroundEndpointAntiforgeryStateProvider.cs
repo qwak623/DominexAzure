@@ -48,7 +48,7 @@ public class WorkaroundEndpointAntiforgeryStateProvider : AntiforgeryStateProvid
 
 	public override AntiforgeryRequestToken GetAntiforgeryToken()
 	{
-		if (_httpContextAccessor.HttpContext == null)
+		if (_httpContextAccessor.HttpContext is null)
 		{
 			// We're in an interactive context. Use the token persisted during static rendering.
 			return _currentToken;

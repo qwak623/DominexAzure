@@ -16,7 +16,7 @@ public class KingdomObserver(IHubContext<KingdomHub> kingdomHubContext, ICardMap
 	{
 		var kingdomDto = kingdom.Select(pile =>
 		{
-			CardDto topCard = pile.Card is not null ? cardMapper.ToCardDtoWithIndex(pile.Card, 0) : new CardDto();
+			CardDto topCard = pile.CardInstance is not null ? cardMapper.ToCardDtoWithIndex(pile.CardInstance, 0) : new CardDto();
 			topCard.Name = pile.Name;
 			topCard.Type = pile.Type.ToString();
 			topCard.Price = pile.Price;

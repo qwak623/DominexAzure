@@ -1,46 +1,63 @@
-﻿namespace GameCore.Cards;
+using System.Collections;
 
-public class Pile
+namespace GameCore.Cards;
+
+public sealed class Pile : IReadOnlyList<CardInstance>
 {
-	// TODO zrefaktorovat, takhle bereme card místo top
-	private readonly Stack<Card> cards;
-	private readonly Action onGain;
-	private Card top;
+	private readonly List<CardInstance> cards;
 
 	public int Count => cards.Count;
-	public bool Empty => !cards.Any();
-	public CardType Type { get; init; }
-	public string Name { get; init; }
-	public int Price { get; init; }
-	public Card Card => cards.Any() ? top : null;
 
-	public Card GainCard()
+	public CardInstance this[int index] => cards[index];
+
+	public IEnumerator<CardInstance> GetEnumerator() => cards.GetEnumerator();
+
+	IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+	public Pile()
 	{
-		if (Empty)
-		{
-			return null;
-		}
-
-		var card = cards.Pop();
-		onGain?.Invoke();
-		top = Empty ? null : cards.Peek();
-		return card;
+		cards = [];
 	}
 
-	public Pile(Card card, int count = 1, Action onGain = null)
+	public Pile(Card card, int count, Kingdom kingdom)
 	{
-		cards = new Stack<Card>();
-		for (int i = 0; i < count; i++)
-		{
-			cards.Push(card);
-		}
-
-		top = cards.Peek();
-		Type = card.Type;
-		Name = card.Name;
-		Price = card.Price;
-		this.onGain = onGain;
+		cards = [.. Enumerable.Repeat(card, count).Select(c => new CardInstance(c, this, kingdom.GetNextCardInstanceId()))];
 	}
 
-	public override string ToString() => $"{Name} ${Price} ({Count})";
+	public Pile(List<Card> initCards, Kingdom kingdom)
+	{
+		cards = initCards.Select(c => new CardInstance(c, this, kingdom.GetNextCardInstanceId())).ToList();
+	}
+
+	public void Move(CardInstance cardInstance)
+	{
+		cards.Add(cardInstance);
+		cardInstance.Pile.cards.Remove(cardInstance);
+		cardInstance.Pile = this;
+	}
+
+	public void MoveRange(IList<CardInstance> cardInstances)
+	{
+		cards.AddRange(cardInstances);
+		foreach (var cardInstance in cardInstances)
+		{
+			cardInstance.Pile.cards.Remove(cardInstance);
+			cardInstance.Pile = this;
+		}
+	}
+
+	public void MoveAll(Pile pile)
+	{
+		cards.AddRange(pile);
+		foreach (var cardInstance in pile)
+		{
+			cardInstance.Pile = this;
+		}
+		pile.cards.Clear();
+	}
+
+	public void Shuffle()
+	{
+		cards.Shuffle();
+	}
 }

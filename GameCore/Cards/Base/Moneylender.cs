@@ -28,14 +28,13 @@ public class Moneylender : Card
 
 	public static Moneylender Get() => moneylender ?? new Moneylender();
 
-	protected override void ActionEffect(IPlayer player)
+	protected override void ActionEffect(IPlayer player, CardInstance thisCard)
 	{
-		var copperInHand = player.PlayerState.Hand.FirstOrDefault(c => c.Type == CardType.Copper);
-		if (copperInHand is not null
+		if (player.PlayerState.Hand.Any(c => c.Card.Type == CardType.Copper)
 			&& player.User.MoneylenderTrash(this, player.PlayerState, player.Game.Kingdom))
 		{
 			player.Game.Logger?.Log(new GameLog { PlayerId = player.Name, Message = $"{player.Name} trashes Copper and gains 3$" });
-			player.Trash(copperInHand);
+			player.Trash(player.PlayerState.Hand.First(c => c.Card.Type == CardType.Copper));
 			player.PlayerState.Coins += 3;
 		}
 	}

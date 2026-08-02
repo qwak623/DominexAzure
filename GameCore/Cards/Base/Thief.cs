@@ -39,37 +39,33 @@ public class Thief : Card
 			// TODO sjednotit thief choose a thief steal
 			// attacker has to pick one
 			var card = attacker.User.ThiefChoose(this, attacker.PlayerState, attacker.Game.Kingdom, treasures);
-			// the other one is discarded (if there is one)
-			cards.Remove(card);
 
-			var otherCard = cards.SingleOrDefault();
-			if (otherCard != null)
-			{
-				attacker.Game.Logger?.Log(new GameLog { PlayerId = defender.Name, Message = $"{defender.Name} discards {otherCard.Name}" });
-				defender.PlayerState.DiscardPile.Add(otherCard);
-			}
-
-			// attaker chooses if he will trash or steal
+			// attacker chooses if he will trash or steal
 			string steal = $"Steal {card.Name}";
 			string trash = $"Trash {card.Name}";
 			if (attacker.User.ThiefSteal(this, attacker.PlayerState, attacker.Game.Kingdom, card))
 			{
 				attacker.Game.Logger?.Log(new GameLog { PlayerId = attacker.Name, Message = $"{attacker.Name} steals {card.Name}" });
-				attacker.PlayerState.DiscardPile.Add(card);
+				attacker.Gain(card);
 			}
 			else
 			{
 				attacker.Game.Logger?.Log(new GameLog { PlayerId = defender.Name, Message = $"{defender.Name} trashes {card.Name}" });
-				attacker.Game.Trash.Add(card);
+				defender.Trash(card);
+			}
+
+			// the other one is discarded (if there is one)
+			var otherCard = cards.SingleOrDefault();
+			if (otherCard != null)
+			{
+				attacker.Game.Logger?.Log(new GameLog { PlayerId = defender.Name, Message = $"{defender.Name} discards {otherCard.Name}" });
+				defender.Discard(otherCard);
 			}
 		}
 		else
 		{
-			foreach (var card in cards)
-			{
-				attacker.Game.Logger?.Log(new GameLog { PlayerId = defender.Name, Message = $"{defender.Name} discards {card.Name}" });
-				defender.PlayerState.DiscardPile.Add(card);
-			}
+			attacker.Game.Logger?.Log(new GameLog { PlayerId = defender.Name, Message = $"{defender.Name} discards all shown cards." });
+			defender.PlayerState.DiscardPile.MoveAll(cards);
 		}
 	}
 }
