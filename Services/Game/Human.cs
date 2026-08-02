@@ -296,5 +296,20 @@ public class Human : User, IHuman
 
 		return answer.Values.Count != 0;
 	}
+
+	public override CardInstance CourtyardPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards)
+	{
+		var answer = CallClient(new ChoiceDto
+		(
+			cardPlayed: cardMapper.ToCardDto(cardPlayed),
+			ChoiceType.CourtyardPutOnTop,
+			min: 1,
+			max: 1,
+			cards: cards.Select(cardMapper.ToCardDtoWithIndex),
+			operations: [OperationType.Default, OperationType.PutOnTop]
+		));
+
+		return answer.Values.Count != 0 ? cards.ElementAt(answer.Values.Single().Index) : null;
+	}
 	#endregion cards intrique
 }

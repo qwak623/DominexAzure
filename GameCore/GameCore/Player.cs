@@ -310,7 +310,7 @@ public class Player : IPlayer
 	}
 
 	/// <summary>
-	/// Returns card from hand to the draw pile.
+	/// Returns card from hand on top of the draw pile.
 	/// </summary>
 	/// <param name="card">Card to return to the draw pile.</param>
 	public void ReturnToDrawPile(CardInstance card)

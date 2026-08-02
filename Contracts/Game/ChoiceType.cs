@@ -23,4 +23,5 @@ public enum ChoiceType
 	GameEnd,
 	BaronDiscard,
 	MoneylenderTrash,
+	CourtyardPutOnTop,
 }

@@ -43,10 +43,11 @@ public abstract class User : IUser
 	public abstract bool ThiefSteal(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance c);
 
 	public abstract CardInstance ThroneRoomPlay(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards);
-	#endregion cards intrique
+	#endregion cards base
 
 	#region cards intrique
 	public abstract bool BaronDiscard(Card cardPlayed, PlayerState ps, Kingdom k);
+	public abstract CardInstance CourtyardPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards);
 	#endregion cards intrique
 
 	public override string ToString() => GetName();
