@@ -152,12 +152,12 @@ public class GameFacade : IGameFacade
 			PlayerResults = results.Players.Select(p => new PlayerResultsDto
 			{
 				Name = p.Name,
-				Points = p.VictoryPoints,
-				Cards = p.PlayerState.DiscardPile.GroupBy(c => c).Select(group => new CardResultsDto
+				Points = p.GetVictoryPoints(),
+				Cards = p.PlayerState.DiscardPile.GroupBy(c => c.Card).Select(group => new CardResultsDto
 				{
-					Card = cardMapper.ToCardDto(group.Key.Card),
+					Card = cardMapper.ToCardDto(group.Key),
 					Count = group.Count(),
-					PointsPerCard = group.Key.Card.CountPoints(p),
+					PointsPerCard = group.Key.CountPoints(p),
 				}).ToList(),
 			}).ToList(),
 		};

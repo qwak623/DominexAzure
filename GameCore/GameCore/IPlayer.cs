@@ -8,7 +8,6 @@ public interface IPlayer
 	string Name { get; }
 	PlayerState PlayerState { get; }
 	int CardCount { get; }
-	int VictoryPoints { get; }
 	IUser User { get; }
 	IGame Game { get; }
 
@@ -17,7 +16,9 @@ public interface IPlayer
 	void DealAttack(IPlayer attacker, Card attackCard);
 	void Discard(CardInstance card);
 	void Draw(int count);
-	// TODO nebude tohle zbytečné? 
+	void FinalCleanup();
+	// TODO nebude tohle zbytečné?
+	int GetVictoryPoints();
 	void Gain(CardType type);
 	void Gain(CardInstance card);
 	void GainToDrawPile(CardType type);

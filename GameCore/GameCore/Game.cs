@@ -73,17 +73,18 @@ public class Game : IGame
 				GameEnd = IsGameEnd();
 				if (GameEnd)
 				{
+					Players.ForEach(p => p.FinalCleanup());
 					Logger?.Log(new GameLog { Message = "\r\n\tResults:" });
-					foreach (IPlayer player in Players.OrderBy(p => p.VictoryPoints))
+					foreach (IPlayer player in Players.OrderBy(p => p.GetVictoryPoints()))
 					{
-						Logger?.Log(new GameLog { PlayerId = player.Name, Message = $"{player.Name} has {player.VictoryPoints}." });
+						Logger?.Log(new GameLog { PlayerId = player.Name, Message = $"{player.Name} has {player.GetVictoryPoints()}." });
 					}
 
 					int playerIndex = 0;
 					return new GameResults
 					{
 						Players = Players,
-						Score = Players.Select(p => p.VictoryPoints).ToList(),
+						Score = Players.Select(p => p.GetVictoryPoints()).ToList(),
 						Turns = Players.Select(p => playerIndex++ <= i ? turn + 1 : turn).ToList()
 					};
 				}
@@ -100,10 +101,11 @@ public class Game : IGame
 				if (turn >= maxRounds)
 				{
 					GameEnd = true;
+					Players.ForEach(p => p.FinalCleanup());
 					Logger?.Log(new GameLog { Message = "\r\nGame was terminated, number of rounds exceeded {maxRounds}." });
-					foreach (IPlayer player in Players.OrderBy(p => p.VictoryPoints))
+					foreach (IPlayer player in Players.OrderBy(p => p.GetVictoryPoints()))
 					{
-						Logger?.Log(new GameLog { PlayerId = player.Name, Message = $"{player.Name} has {player.VictoryPoints}." });
+						Logger?.Log(new GameLog { PlayerId = player.Name, Message = $"{player.Name} has {player.GetVictoryPoints()}." });
 					}
 
 					return new GameResults

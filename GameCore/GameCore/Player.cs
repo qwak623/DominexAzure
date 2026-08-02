@@ -22,19 +22,25 @@ public class Player : IPlayer
 	/// <summary>
 	/// Returns earned victory points. Working properly only at the end of the game.
 	/// </summary>
-	public int VictoryPoints
+	public int GetVictoryPoints()
 	{
-		get
-		{   // points can be counted only at the end of the game
-			if (Game.GameEnd && victoryPoints is null)
-			{
-				// it will be better to have all cards in discard kingdomPile before counting
-				Cleanup();
-				PlayerState.DiscardPile.MoveAll(PlayerState.DrawPile);
-				victoryPoints = ps.DiscardPile.Select(c => c.Card.CountPoints(this)).Sum();
-			}
-			return victoryPoints.GetValueOrDefault();
+		// points can be counted only at the end of the game
+		if (!Game.GameEnd)
+		{
+			throw new InvalidOperationException("Victory points can only be counted at the end of the game.");
 		}
+		if (ps.Hand.Count > 0 || ps.DrawPile.Count > 0 || ps.CardsPlayed.Count > 0)
+		{
+			throw new InvalidOperationException("Victory points can only be counted after all cards are on the discard pile.");
+		}
+
+		if (!victoryPoints.HasValue)
+		{
+			victoryPoints = ps.DiscardPile
+				.GroupBy(c => c.Card)
+				.Sum(g => g.Count() * g.Key.CountPoints(this));
+		}
+		return victoryPoints.Value;
 	}
 
 	// todo je treba abstrahovat nahodnost
@@ -195,6 +201,12 @@ public class Player : IPlayer
 	{
 		ps.DiscardPile.MoveAll(ps.Hand);
 		ps.DiscardPile.MoveAll(ps.CardsPlayed);
+	}
+
+	public void FinalCleanup()
+	{
+		Cleanup();
+		ps.DiscardPile.MoveAll(ps.DrawPile);
 	}
 
 	/// <summary>

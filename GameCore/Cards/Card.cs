@@ -100,7 +100,7 @@ public abstract class Card
 	public virtual bool Reaction(IPlayer player) => false;
 
 	/// <summary>
-	/// Returns number of victory points.
+	/// Returns number of victory points earned by a single copy of this card.
 	/// Correct result appears only at the end of the game.
 	/// </summary>
 	/// <param name="player"></param>

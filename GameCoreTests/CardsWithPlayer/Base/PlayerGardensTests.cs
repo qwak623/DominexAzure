@@ -2,7 +2,6 @@
 using GameCore.Cards.Base;
 using GameCore.Cards.GeneralCards;
 using GameCore.CardWithPlayer.Tests;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
 namespace GameCore.CardsWithPlayer.Base.Tests;
@@ -22,7 +21,7 @@ public class PlayerGardensTests : CardWithPlayerTestsBase
 	[TestInitialize]
 	public void Init()
 	{
-		game = MockGame(new List<Card> { gardens, adventurer });
+		game = MockGame([gardens, adventurer]);
 		user = new Mock<IUser>();
 		player = CreatePlayer(game.Object, user.Object);
 	}
@@ -36,10 +35,11 @@ public class PlayerGardensTests : CardWithPlayerTestsBase
 		player.PlayerState.DiscardPile = CreatePile([copper, copper, gardens, adventurer, copper]);
 
 		game.Setup(g => g.GameEnd).Returns(true);
+		player.FinalCleanup();
 		#endregion
 
 		#region act
-		var points = player.VictoryPoints;
+		var points = player.GetVictoryPoints();
 		#endregion
 
 		#region assert
