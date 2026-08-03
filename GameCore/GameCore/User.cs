@@ -50,6 +50,7 @@ public abstract class User : IUser
 	public abstract CardInstance CourtyardPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards);
 	public abstract CardInstance MasqueradePass(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards);
 	public abstract CardInstance MasqueradeTrash(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards);
+	public abstract bool MiningVillageTrash(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance c);
 	#endregion cards intrique
 
 	public override string ToString() => GetName();

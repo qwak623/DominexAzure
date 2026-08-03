@@ -341,5 +341,20 @@ public class Human : User, IHuman
 
 		return answer.Values.Count != 0 ? cards.ElementAt(answer.Values.Single().Index) : null;
 	}
+
+	public override bool MiningVillageTrash(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance c)
+	{
+		var answer = CallClient(new ChoiceDto
+		(
+			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
+			type: ChoiceType.MasqueradeTrash,
+			min: 0,
+			max: 1,
+			cards: [cardMapper.ToCardDtoWithIndex(c, 0, ps)],
+			operations: [OperationType.Default, OperationType.Trash]
+		));
+
+		return answer.Values.Count != 0;
+	}
 	#endregion cards intrique
 }
