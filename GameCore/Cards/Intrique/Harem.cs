@@ -7,7 +7,7 @@ public class Harem : Card
 	(
 		name: "Harem",
 		type: CardType.Harem,
-		price: 0,
+		price: 6,
 		addBuys: 0,
 		coins: 2,
 		isVictory: true,
