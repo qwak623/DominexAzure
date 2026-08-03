@@ -36,7 +36,8 @@ public class Mine : Card
 		}
 
 		p.Trash(oldCard);
-		var newCard = p.User.SelectCardToGain(p.Game.Kingdom.GetWrapper(oldCard.Card.Price + 3, true), p.PlayerState, p.Game.Kingdom, Phase.Gain);
+		var newCard = p.User.SelectCardToGain(
+			p.Game.Kingdom.GetWrapper(p.PlayerState, oldCard.Card.GetPrice(p.PlayerState) + 3, true), p.PlayerState, p.Game.Kingdom, Phase.Gain);
 		if (newCard is not null)
 		{
 			p.GainToHand(newCard);

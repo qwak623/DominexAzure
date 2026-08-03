@@ -179,18 +179,17 @@ public class Player : IPlayer
 		}
 
 		// buy
-		var card = User.SelectCardToGain(Game.Kingdom.GetWrapper(ps.Coins), ps, Game.Kingdom, Phase.Buy);
+		var card = User.SelectCardToGain(Game.Kingdom.GetWrapper(ps, ps.Coins), ps, Game.Kingdom, Phase.Buy);
 		if (card is null)
 		{
 			return null;
 		}
 
-		Game.Logger?.Log(new GameLog { PlayerId = name, Message = $"{name} pays ${card.Card.Price}." });
+		Game.Logger?.Log(new GameLog { PlayerId = name, Message = $"{name} pays ${card.Card.GetPrice(ps)}." });
 
 		Gain(card);
 		ps.Buys--;
-		ps.Coins -= card.Price;
-
+		ps.Coins -= card.Card.GetPrice(ps);
 		return card;
 	}
 
@@ -201,6 +200,7 @@ public class Player : IPlayer
 	{
 		ps.DiscardPile.MoveAll(ps.Hand);
 		ps.DiscardPile.MoveAll(ps.CardsPlayed);
+		ps.TempEffects.Reset();
 	}
 
 	public void FinalCleanup()

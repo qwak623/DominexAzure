@@ -1,4 +1,5 @@
 ﻿using GameCore.Cards;
+using GameCore.GameCore;
 using GameCore.Observers;
 
 namespace GameCore;
@@ -15,7 +16,9 @@ public class PlayerState
 	public Pile DiscardPile = new();
 	public Pile Hand = new();
 	public Pile CardsPlayed = new();
-	public List<Card> ActionsPlayed = new();
+	public List<Card> ActionsPlayed = [];
+	public TempEffects TempEffects { get; } = new();
+
 	private int actions;
 	public int Actions
 	{

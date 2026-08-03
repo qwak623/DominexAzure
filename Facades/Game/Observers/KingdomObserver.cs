@@ -19,7 +19,7 @@ public class KingdomObserver(IHubContext<KingdomHub> kingdomHubContext, ICardMap
 			CardDto topCard = pile.CardInstance is not null ? cardMapper.ToCardDtoWithIndex(pile.CardInstance, 0) : new CardDto();
 			topCard.Name = pile.Name;
 			topCard.Type = pile.Type.ToString();
-			topCard.Price = pile.Price;
+			topCard.Price = pile.CardInstance.Card.DefaultPrice;
 			return new PileDto
 			{
 				CardCount = pile.Count,

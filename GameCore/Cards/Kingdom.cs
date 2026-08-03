@@ -56,13 +56,14 @@ public class Kingdom : IEnumerable<KingdomPile>
 	/// <param name="price"></param>
 	/// <param name="onlyTreasures"></param>
 	/// <returns></returns>
-	public KingdomWrapper GetWrapper(int price, bool onlyTreasures = false)
+	public KingdomWrapper GetWrapper(PlayerState ps, int price, bool onlyTreasures = false)
 	{
 		return new KingdomWrapper
 		{
 			Kingdom = this,
 			Price = price,
-			OnlyTreasures = onlyTreasures
+			OnlyTreasures = onlyTreasures,
+			PlayerState = ps,
 		};
 	}
 

@@ -27,7 +27,6 @@ public class CardInstance
 	public bool IsReaction => Card.IsReaction;
 	public bool IsAttack => Card.IsAttack;
 	public string Name => Card.Name;
-	public int Price => Card.Price;
 
 
 	public bool Equals(CardInstance other) => Id == other.Id;

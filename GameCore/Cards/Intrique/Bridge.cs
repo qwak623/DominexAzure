@@ -30,6 +30,6 @@ public class Bridge : Card
 
 	protected override void ActionEffect(IPlayer player, CardInstance thisCard)
 	{
-		// todo
+		player.PlayerState.TempEffects.ReduceCost(1);
 	}
 }

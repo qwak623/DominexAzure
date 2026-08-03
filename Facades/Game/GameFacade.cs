@@ -100,6 +100,8 @@ public class GameFacade : IGameFacade
 	}
 
 	// todo vymyslet jak udělat lépe request notification
+	// todo notification by měla být push, ne pull
+	// todo je třeba sehnat playerstate, aby se mohly ukázat slevy na kartách
 	public async Task RequestKingdomNotification(CancellationToken cancellationToken = default)
 	{
 		if (kingdom is not null)
@@ -155,7 +157,7 @@ public class GameFacade : IGameFacade
 				Points = p.GetVictoryPoints(),
 				Cards = p.PlayerState.DiscardPile.GroupBy(c => c.Card).Select(group => new CardResultsDto
 				{
-					Card = cardMapper.ToCardDto(group.Key),
+					Card = cardMapper.ToCardDto(group.Key, p.PlayerState),
 					Count = group.Count(),
 					PointsPerCard = group.Key.CountPoints(p),
 				}).ToList(),

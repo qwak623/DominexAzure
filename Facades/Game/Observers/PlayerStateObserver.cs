@@ -21,14 +21,14 @@ public class PlayerStateObserver : IPlayerStateObserver
 		this.playerStateHubContext = playerStateHubContext;
 		this.cardMapper = cardMapper;
 	}
-	public async Task Notify(PlayerState playerState)
+	public async Task Notify(PlayerState ps)
 	{
 		PlayerStateDto playerStateDto = new()
 		{
-			Actions = playerState.Actions,
-			Buys = playerState.Buys,
-			Coins = playerState.Coins,
-			Hand = playerState.Hand.Select(cardMapper.ToCardDtoWithIndex).ToList(),
+			Actions = ps.Actions,
+			Buys = ps.Buys,
+			Coins = ps.Coins,
+			Hand = ps.Hand.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)).ToList(),
 			GamePhase = "TODO fáze"
 		};
 		await playerStateHubContext.Clients.All.SendAsync("NotifyPlayerStateChanged", playerStateDto);

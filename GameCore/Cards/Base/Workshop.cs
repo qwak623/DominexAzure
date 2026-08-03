@@ -26,7 +26,7 @@ public class Workshop : Card
 
 	protected override void ActionEffect(IPlayer p, CardInstance thisCard)
 	{
-		var card = p.User.SelectCardToGain(p.Game.Kingdom.GetWrapper(4), p.PlayerState, p.Game.Kingdom, Phase.Gain);
+		var card = p.User.SelectCardToGain(p.Game.Kingdom.GetWrapper(p.PlayerState, 4), p.PlayerState, p.Game.Kingdom, Phase.Gain);
 		if (card is not null)
 		{
 			p.Gain(card);

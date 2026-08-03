@@ -109,9 +109,11 @@ public class ProvincialAI : User
 	}
 
 	#region cards base
-	public override CardInstance BureaucratPutOnTop(Card c, PlayerState ps, Kingdom k) => ps.Hand.Where(c => c.IsVictory).First();
+	public override CardInstance BureaucratPutOnTop(Card c, PlayerState ps, Kingdom k)
+		=> ps.Hand.Where(c => c.IsVictory).First();
 
-	public override List<CardInstance> CellarDiscard(Card c, PlayerState ps, Kingdom k) => ps.Hand.Where(c => c.IsVictory && !c.IsTreasure && !c.IsAction).ToList();
+	public override List<CardInstance> CellarDiscard(Card c, PlayerState ps, Kingdom k)
+		=> ps.Hand.Where(c => c.IsVictory && !c.IsTreasure && !c.IsAction).ToList();
 
 	public override bool ChancellorDiscard(Card c, PlayerState ps, Kingdom k) => false;
 
@@ -138,8 +140,8 @@ public class ProvincialAI : User
 
 		// trash only unnecesary coppers
 		int coins = cards.Select(c => c.Card.Coins).Sum() + ps.Coins;
-		var card = SelectCardToGain(k.GetWrapper(coins), ps, k, Phase.Buy);
-		int price = card is null ? 0 : card.Card.Price;
+		var card = SelectCardToGain(k.GetWrapper(ps, coins), ps, k, Phase.Buy);
+		int price = card is null ? 0 : card.Card.GetPrice(ps);
 
 		if (playerInfo.TreasureTotal > 3)
 		{
@@ -257,9 +259,10 @@ public class ProvincialAI : User
 		}
 	}
 
-	public override CardInstance ThiefChoose(Card c, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards) => cards.OrderByDescending(c => c.Price).First();
+	public override CardInstance ThiefChoose(Card c, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards)
+		=> cards.OrderByDescending(c => c.Card.GetPrice(ps)).First();
 
-	public override bool ThiefSteal(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance c) => c.Price >= 3;
+	public override bool ThiefSteal(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance c) => c.Card.GetPrice(ps) >= 3;
 
 	public override CardInstance ThroneRoomPlay(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards)
 	{
@@ -272,6 +275,11 @@ public class ProvincialAI : User
 
 	#region cards intrique
 	public override bool BaronDiscard(Card cardPlayed, PlayerState ps, Kingdom k) => true;
+
+	public override CardInstance CourtyardPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards)
+	{
+		throw new NotImplementedException();
+	}
 	#endregion cards intrique
 }
 

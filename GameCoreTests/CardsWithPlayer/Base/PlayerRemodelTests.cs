@@ -35,14 +35,16 @@ public class PlayerRemodelTests : CardWithPlayerTestsBase
 		player.PlayerState.Hand = CreatePile([remodel, silver, laboratory]);
 		var remodelToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Remodel);
 		var silverInHand = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Silver);
-		var laboratoryToGain = player.Game.Kingdom.GetPile(CardType.Laboratory).CardInstance;
 
 		user.Setup(u => u.RemodelTrash(remodel, player.PlayerState, player.Game.Kingdom))
 			.Returns(silverInHand);
-		user.Setup(u => u.SelectCardToGain(
-				It.Is<KingdomWrapper>(kw => kw.Price == 5 && !kw.OnlyTreasures),
-				player.PlayerState, player.Game.Kingdom, Phase.Gain))
-			.Returns(laboratoryToGain);
+
+		// selection is pulled from the wrapper itself, so this only succeeds if laboratory
+		// ($5) genuinely passes the wrapper's own availability check at the computed threshold
+		KingdomWrapper wrapper = null;
+		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
+			.Callback<KingdomWrapper, PlayerState, Kingdom, Phase>((kw, ps, k, p) => wrapper = kw)
+			.Returns(() => wrapper.GetCard(CardType.Laboratory));
 		#endregion
 
 		#region act
@@ -58,6 +60,7 @@ public class PlayerRemodelTests : CardWithPlayerTestsBase
 		AssertPile([remodel], player.PlayerState.ActionsPlayed);
 		AssertPile([silver], player.Game.Trash);
 
+		Assert.IsTrue(wrapper.AvailableCards.Any(c => c.Card.Type == CardType.Laboratory));
 		user.Verify(u => u.RemodelTrash(remodel, player.PlayerState, player.Game.Kingdom), Times.Once);
 		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.Price == 5 && !kw.OnlyTreasures),
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Once);
@@ -140,15 +143,23 @@ public class PlayerRemodelTests : CardWithPlayerTestsBase
 		var throneRoomFodder = throneRoomsInHand[1];
 		var remodelToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Remodel);
 		var silverInHand = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Silver);
-		var laboratoryToGain = player.Game.Kingdom.GetPile(CardType.Laboratory).CardInstance;
-		var goldToGain = player.Game.Kingdom.GetPile(CardType.Gold).CardInstance;
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
 			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Contains(remodelToPlay)))).Returns(remodelToPlay);
 		user.SetupSequence(u => u.RemodelTrash(remodel, player.PlayerState, player.Game.Kingdom))
 			.Returns(silverInHand).Returns(throneRoomFodder);
-		user.SetupSequence(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
-			.Returns(laboratoryToGain).Returns(goldToGain);
+
+		// each resolution's selection is pulled from its own wrapper, so this only succeeds
+		// if laboratory ($5) and gold ($6) genuinely pass the wrapper's own availability
+		// check at their respective computed thresholds
+		var expectedGains = new Queue<CardType>([CardType.Laboratory, CardType.Gold]);
+		var wrappers = new List<KingdomWrapper>();
+		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
+			.Returns<KingdomWrapper, PlayerState, Kingdom, Phase>((kw, ps, k, p) =>
+			{
+				wrappers.Add(kw);
+				return kw.GetCard(expectedGains.Dequeue());
+			});
 		#endregion
 
 		#region act
@@ -174,6 +185,9 @@ public class PlayerRemodelTests : CardWithPlayerTestsBase
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Once);
 		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.Price == 6 && !kw.OnlyTreasures),
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Once);
+
+		Assert.IsTrue(wrappers[0].AvailableCards.Any(c => c.Card.Type == CardType.Laboratory));
+		Assert.IsTrue(wrappers[1].AvailableCards.Any(c => c.Card.Type == CardType.Gold));
 		#endregion
 	}
 }

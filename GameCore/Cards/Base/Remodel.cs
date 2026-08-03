@@ -36,7 +36,8 @@ public class Remodel : Card
 		p.Trash(oldCard);
 
 		// todo rethink how to get old card price (can be influenced by bridge, etc.)
-		var newCard = p.User.SelectCardToGain(p.Game.Kingdom.GetWrapper(oldCard.Card.Price + 2), p.PlayerState, p.Game.Kingdom, Phase.Gain);
+		var newCard = p.User.SelectCardToGain(
+			p.Game.Kingdom.GetWrapper(p.PlayerState, oldCard.Card.GetPrice(p.PlayerState) + 2), p.PlayerState, p.Game.Kingdom, Phase.Gain);
 		if (newCard is not null)
 		{
 			p.Gain(newCard.Card.Type);

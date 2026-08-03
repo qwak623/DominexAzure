@@ -90,5 +90,8 @@ public class Decoy : User
 
 	#region cards intrique
 	public override bool BaronDiscard(Card cardPlayed, PlayerState ps, Kingdom k) => true;
+
+	public override CardInstance CourtyardPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards)
+		=> cards.FirstOrDefault();
 	#endregion cards intrique
 }

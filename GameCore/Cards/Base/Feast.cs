@@ -30,7 +30,7 @@ public class Feast : Card
 	{
 		player.Trash(thisCard);
 		player.Game.Logger?.Log(new GameLog { PlayerId = Name, Message = $"{player.Name} trashes {Name}" });
-		var card = player.User.SelectCardToGain(player.Game.Kingdom.GetWrapper(5), player.PlayerState, player.Game.Kingdom, Phase.Gain);
+		var card = player.User.SelectCardToGain(player.Game.Kingdom.GetWrapper(player.PlayerState, 5), player.PlayerState, player.Game.Kingdom, Phase.Gain);
 		if (card is not null)
 		{
 			player.Gain(card);

@@ -34,7 +34,7 @@ public class Human : User, IHuman
 			ChoiceType.Play,
 			min: 0,
 			max: 1,
-			cards: cardSelection.Select(cardMapper.ToCardDtoWithIndex),
+			cards: cardSelection.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
 			operations: [OperationType.Default, OperationType.Play]
 		));
 
@@ -53,11 +53,11 @@ public class Human : User, IHuman
 
 		var answer = CallClient(new ChoiceDto
 		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed),
+			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
 			ChoiceType.BureaucratPutOnTop,
 			min: 1,
 			max: 1,
-			cards: cardSelection.Select(cardMapper.ToCardDtoWithIndex),
+			cards: cardSelection.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
 			operations: [OperationType.Default, OperationType.PutOnTop],
 			message: "Choose a Victory card to put onto your draw pile."
 		));
@@ -71,11 +71,11 @@ public class Human : User, IHuman
 
 		var answer = CallClient(new ChoiceDto
 		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed),
+			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
 			ChoiceType.CellarDiscard,
 			min: 0,
 			max: cardSelection.Count,
-			cards: cardSelection.Select(cardMapper.ToCardDtoWithIndex),
+			cards: cardSelection.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
 			operations: [OperationType.Default, OperationType.Discard],
 			message: "Discard any number of cards."
 		));
@@ -87,7 +87,7 @@ public class Human : User, IHuman
 	{
 		var answer = CallClient(new ChoiceDto
 		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed),
+			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
 			ChoiceType.ChancellorDiscard,
 			min: 0,
 			max: 1,
@@ -104,11 +104,11 @@ public class Human : User, IHuman
 
 		var answer = CallClient(new ChoiceDto
 		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed),
+			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
 			ChoiceType.ChapelTrash,
 			min: 0,
 			max: Math.Min(ps.Hand.Count, 4), // todo můžeme zahodit kapli?
-			cards: cardSelection.Select(cardMapper.ToCardDtoWithIndex),
+			cards: cardSelection.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
 			operations: [OperationType.Default, OperationType.Trash]
 		));
 
@@ -120,11 +120,11 @@ public class Human : User, IHuman
 	{
 		var answer = CallClient(new ChoiceDto
 		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed),
+			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
 			ChoiceType.LibrarySkip,
 			min: 0,
 			max: 1,
-			cards: [cardMapper.ToCardDtoWithIndex(c, 0)],
+			cards: [cardMapper.ToCardDtoWithIndex(c, 0, ps)],
 			operations: [OperationType.Default, OperationType.Skip]
 		));
 
@@ -137,11 +137,11 @@ public class Human : User, IHuman
 
 		var answer = CallClient(new ChoiceDto
 		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed),
+			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
 			ChoiceType.MilitiaDiscard,
 			min: discardCount,
 			max: discardCount,
-			cards: cardSelection.Select(cardMapper.ToCardDtoWithIndex),
+			cards: cardSelection.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
 			operations: [OperationType.Default, OperationType.Discard]
 		));
 
@@ -152,11 +152,11 @@ public class Human : User, IHuman
 	{
 		var answer = CallClient(new ChoiceDto
 		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed),
+			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
 			ChoiceType.MineTrash,
 			min: 0,
 			max: 1,
-			cards: cardSelection.Select(cardMapper.ToCardDtoWithIndex),
+			cards: cardSelection.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
 			operations: [OperationType.Default, OperationType.Trash]
 		));
 
@@ -167,11 +167,11 @@ public class Human : User, IHuman
 	{
 		var answer = CallClient(new ChoiceDto
 		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed),
+			cardPlayed: cardMapper.ToCardDto(cardPlayed, playerState),
 			ChoiceType.MoneylenderTrash,
 			min: 0,
 			max: 1,
-			cards: [cardMapper.ToCardDto(Copper.Get())],
+			cards: [cardMapper.ToCardDto(Copper.Get(), playerState)],
 			operations: [OperationType.Default, OperationType.Trash]
 		));
 
@@ -184,11 +184,11 @@ public class Human : User, IHuman
 
 		var answer = CallClient(new ChoiceDto
 		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed),
+			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
 			type: ChoiceType.RemodelTrash, // todo nemůžeme remodelovat sám sebe
 			min: 0, // todo - neodpovida description - opravit
 			max: 1,
-			cards: cardSelection.Select(cardMapper.ToCardDtoWithIndex),
+			cards: cardSelection.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
 			operations: [OperationType.Default, OperationType.Trash]
 		));
 
@@ -205,8 +205,8 @@ public class Human : User, IHuman
 			type: phase == Phase.Buy ? ChoiceType.Buy : ChoiceType.Gain,
 			min: 0,
 			max: 1, // todo ps.Buys - více buyu najednou
-			cards: cardSelection.Select(cardMapper.ToCardDtoWithIndex),
-			operations: new List<OperationType> { OperationType.Default, phase == Phase.Buy ? OperationType.Buy : OperationType.Gain }
+			cards: cardSelection.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
+			operations: [OperationType.Default, phase == Phase.Buy ? OperationType.Buy : OperationType.Gain]
 		));
 
 		return answer.Values.Count != 0 ? cardSelection[answer.Values.Single().Index] : null;
@@ -217,11 +217,11 @@ public class Human : User, IHuman
 	{
 		var answer = CallClient(new ChoiceDto
 		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed),
+			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
 			type: ChoiceType.SpyDiscard,
 			min: 1,
 			max: 1,
-			cards: new List<CardDto> { cardMapper.ToCardDtoWithIndex(c, 0) },
+			cards: new List<CardDto> { cardMapper.ToCardDtoWithIndex(c, 0, ps) },
 			operations: [OperationType.Discard, OperationType.PutOnTop]
 		));
 
@@ -235,12 +235,12 @@ public class Human : User, IHuman
 
 		var answer = CallClient(new ChoiceDto
 		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed),
+			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
 			type: ChoiceType.ThiefChoose,
 			min: 1,
 			max: 1,
-			cards: cardSelection.Select(cardMapper.ToCardDtoWithIndex),
-			operations: new List<OperationType> { OperationType.Default, OperationType.Choose },
+			cards: cardSelection.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
+			operations: [OperationType.Default, OperationType.Choose],
 			message: "Choose an opponent's treasure to steal or trash." // todo funguje pro dva hrače, pro vice by chtělo jmeno
 		));
 
@@ -251,11 +251,11 @@ public class Human : User, IHuman
 	{
 		var answer = CallClient(new ChoiceDto
 		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed),
+			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
 			type: ChoiceType.ThiefSteal,
 			min: 1,
 			max: 1,
-			cards: [cardMapper.ToCardDtoWithIndex(c, 0)],
+			cards: [cardMapper.ToCardDtoWithIndex(c, 0, ps)],
 			operations: [OperationType.Trash, OperationType.Steal],
 			message: "Trash or steal this card."
 		));
@@ -269,11 +269,11 @@ public class Human : User, IHuman
 
 		var answer = CallClient(new ChoiceDto
 		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed),
+			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
 			type: ChoiceType.ThroneRoomPlay,
 			min: 0,
 			max: 1,
-			cards: cardSelection.Select(cardMapper.ToCardDtoWithIndex),
+			cards: cardSelection.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
 			operations: [OperationType.Default, OperationType.Play]
 		));
 
@@ -282,15 +282,15 @@ public class Human : User, IHuman
 	#endregion cards base
 
 	#region cards intrique
-	public override bool BaronDiscard(Card cardPlayed, PlayerState playerState, Kingdom kingdom)
+	public override bool BaronDiscard(Card cardPlayed, PlayerState ps, Kingdom kingdom)
 	{
 		var answer = CallClient(new ChoiceDto
 		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed),
+			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
 			ChoiceType.BaronDiscard,
 			min: 0,
 			max: 1,
-			cards: [cardMapper.ToCardDto(Estate.Get())],
+			cards: [cardMapper.ToCardDto(Estate.Get(), ps)],
 			operations: [OperationType.Default, OperationType.Discard]
 		));
 
@@ -301,11 +301,11 @@ public class Human : User, IHuman
 	{
 		var answer = CallClient(new ChoiceDto
 		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed),
+			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
 			ChoiceType.CourtyardPutOnTop,
 			min: 1,
 			max: 1,
-			cards: cards.Select(cardMapper.ToCardDtoWithIndex),
+			cards: cards.Select(c => cardMapper.ToCardDtoWithIndex(c, 0, ps)),
 			operations: [OperationType.Default, OperationType.PutOnTop]
 		));
 

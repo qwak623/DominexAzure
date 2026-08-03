@@ -8,6 +8,7 @@ public class KingdomWrapper
 	public Kingdom Kingdom;
 	public int Price { get; init; }
 	public bool OnlyTreasures { get; init; }
+	public PlayerState PlayerState { get; init; }
 
 	/// <summary>
 	/// Returns specified card, if it is available.
@@ -33,5 +34,6 @@ public class KingdomWrapper
 		.Select(p => p.CardInstance);
 
 	private bool IsAvailable(KingdomPile kp) =>
-		kp.Count > 0 && kp.Price <= Price && ((OnlyTreasures && kp.CardInstance.IsTreasure) || !OnlyTreasures);
+		kp.Count > 0 && kp.CardInstance.Card.GetPrice(PlayerState) <= Price
+		&& ((OnlyTreasures && kp.CardInstance.IsTreasure) || !OnlyTreasures);
 }

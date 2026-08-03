@@ -2,9 +2,11 @@
 
 public abstract class Card
 {
+
+	protected readonly int price;
+
 	public readonly string Name;
 	public readonly CardType Type;
-	public readonly int Price;
 	public readonly int AddActions;
 	public readonly int AddBuys;
 	public readonly int AddCoins;
@@ -28,7 +30,7 @@ public abstract class Card
 	{
 		Name = name;
 		Type = type;
-		Price = price;
+		this.price = price;
 		AddActions = addActions;
 		AddBuys = addBuys;
 		AddCoins = addCoins;
@@ -45,12 +47,19 @@ public abstract class Card
 	{
 		Name = name;
 		Type = type;
-		Price = price;
+		this.price = price;
 		AddBuys = addBuys;
 		Coins = coins;
 		IsVictory = isVictory;
 		IsTreasure = isTreasure;
 	}
+
+	public virtual int GetPrice(PlayerState playerState)
+	{
+		var price = this.price - playerState.TempEffects.GeneralCostReduction;
+		return price < 0 ? 0 : price;
+	}
+	public int DefaultPrice => price;
 
 	/// <summary>
 	/// Special action card effect including adding actions etc.
