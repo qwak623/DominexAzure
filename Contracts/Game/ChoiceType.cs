@@ -24,4 +24,6 @@ public enum ChoiceType
 	BaronDiscard,
 	MoneylenderTrash,
 	CourtyardPutOnTop,
+	MasqueradePass,
+	MasqueradeTrash,
 }

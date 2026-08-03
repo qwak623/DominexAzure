@@ -93,5 +93,9 @@ public class Decoy : User
 
 	public override CardInstance CourtyardPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards)
 		=> cards.FirstOrDefault();
+
+	public override CardInstance MasqueradePass(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards) => cards.FirstOrDefault();
+
+	public override CardInstance MasqueradeTrash(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards) => cards.FirstOrDefault();
 	#endregion cards intrique
 }

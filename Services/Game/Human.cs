@@ -311,5 +311,35 @@ public class Human : User, IHuman
 
 		return answer.Values.Count != 0 ? cards.ElementAt(answer.Values.Single().Index) : null;
 	}
+
+	public override CardInstance MasqueradePass(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards)
+	{
+		var answer = CallClient(new ChoiceDto
+		(
+			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
+			type: ChoiceType.MasqueradePass,
+			min: 1,
+			max: 1,
+			cards: cards.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
+			operations: [OperationType.Default, OperationType.Pass]
+		));
+
+		return cards.ElementAt(answer.Values.Single().Index);
+	}
+
+	public override CardInstance MasqueradeTrash(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards)
+	{
+		var answer = CallClient(new ChoiceDto
+		(
+			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
+			type: ChoiceType.MasqueradeTrash,
+			min: 0,
+			max: 1,
+			cards: cards.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
+			operations: [OperationType.Default, OperationType.Trash]
+		));
+
+		return answer.Values.Count != 0 ? cards.ElementAt(answer.Values.Single().Index) : null;
+	}
 	#endregion cards intrique
 }

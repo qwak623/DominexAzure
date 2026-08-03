@@ -13,4 +13,5 @@ public enum OperationType
 	Choose,
 	Gain,
 	React,
+	Pass,
 }

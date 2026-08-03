@@ -280,6 +280,16 @@ public class ProvincialAI : User
 	{
 		throw new NotImplementedException();
 	}
+
+	public override CardInstance MasqueradePass(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards)
+	{
+		throw new NotImplementedException();
+	}
+
+	public override CardInstance MasqueradeTrash(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards)
+	{
+		throw new NotImplementedException();
+	}
 	#endregion cards intrique
 }
 

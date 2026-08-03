@@ -48,6 +48,8 @@ public abstract class User : IUser
 	#region cards intrique
 	public abstract bool BaronDiscard(Card cardPlayed, PlayerState ps, Kingdom k);
 	public abstract CardInstance CourtyardPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards);
+	public abstract CardInstance MasqueradePass(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards);
+	public abstract CardInstance MasqueradeTrash(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards);
 	#endregion cards intrique
 
 	public override string ToString() => GetName();

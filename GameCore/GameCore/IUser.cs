@@ -29,6 +29,8 @@ public interface IUser
 	#region cards intrique
 	bool BaronDiscard(Card cardPlayed, PlayerState ps, Kingdom k);
 	CardInstance CourtyardPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards);
+	CardInstance MasqueradePass(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards);
+	CardInstance? MasqueradeTrash(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards);
 	#endregion cards intrique
 
 	string ToString();
