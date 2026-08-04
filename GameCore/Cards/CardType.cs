@@ -73,7 +73,7 @@ public enum CardType
 	Saboteur = 61,
 	Tribute = 62,
 	Harem = 63,
-	Nobbles = 64,
+	Nobles = 64,
 
 	// ingrigue 2nd edition
 	Lurker = 65,

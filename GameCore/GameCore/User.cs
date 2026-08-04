@@ -52,6 +52,7 @@ public abstract class User : IUser
 	public abstract CardInstance MasqueradeTrash(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards);
 	public abstract bool MiningVillageTrash(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance c);
 	public abstract bool MinionDiscard(Card cardPlayed, PlayerState ps, Kingdom k);
+	public abstract bool NoblesChooseCards(Card cardPlayed, PlayerState playerState, Kingdom kingdom);
 	#endregion cards intrique
 
 	public override string ToString() => GetName();

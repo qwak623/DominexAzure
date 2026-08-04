@@ -29,5 +29,6 @@ public interface IHuman
 	CardInstance CourtyardPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards);
 	bool MiningVillageTrash(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance c);
 	bool MinionDiscard(Card cardPlayed, PlayerState ps, Kingdom k);
+	bool NoblesChooseCards(Card cardPlayed, PlayerState playerState, Kingdom kingdom);
 	#endregion cards intrique
 }

@@ -301,6 +301,11 @@ public class ProvincialAI : User
 		throw new NotImplementedException();
 	}
 
+	public override bool NoblesChooseCards(Card cardPlayed, PlayerState playerState, Kingdom kingdom)
+	{
+		throw new NotImplementedException();
+	}
+
 	#endregion cards intrique
 }
 

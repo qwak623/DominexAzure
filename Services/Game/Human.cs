@@ -372,5 +372,21 @@ public class Human : User, IHuman
 		));
 		return answer.Values.Count != 0;
 	}
+
+	public override bool NoblesChooseCards(Card cardPlayed, PlayerState ps, Kingdom kingdom)
+	{
+		var answer = CallClient(new ChoiceDto
+		(
+			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
+			type: ChoiceType.MinionDiscard,
+			min: 0,
+			max: 1,
+			// todo potential null reference exception
+			cards: [null],
+			// todo better options - draw 3 cards or gain 2 actions
+			operations: [OperationType.Default, OperationType.Pass]
+		));
+		return answer.Values.Count != 0;
+	}
 	#endregion cards intrique
 }

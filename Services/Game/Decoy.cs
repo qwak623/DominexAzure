@@ -101,5 +101,7 @@ public class Decoy : User
 	public override bool MiningVillageTrash(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance c) => false;
 
 	public override bool MinionDiscard(Card cardPlayed, PlayerState ps, Kingdom k) => true;
+
+	public override bool NoblesChooseCards(Card cardPlayed, PlayerState playerState, Kingdom kingdom) => true;
 	#endregion cards intrique
 }

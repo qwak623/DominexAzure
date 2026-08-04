@@ -242,7 +242,7 @@ public abstract class Card
 			case CardType.Upgrade:
 			case CardType.Saboteur:
 			case CardType.Tribute:
-			case CardType.Nobbles:
+			case CardType.Nobles:
 			case CardType.Lurker:
 			case CardType.Diplomat:
 			case CardType.Mill:

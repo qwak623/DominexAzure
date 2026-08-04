@@ -36,4 +36,5 @@ public interface IUser
 	#endregion cards intrique
 
 	string ToString();
+	bool NoblesChooseCards(Card cardPlayed, PlayerState playerState, Kingdom kingdom);
 }
