@@ -290,6 +290,17 @@ public class ProvincialAI : User
 	{
 		throw new NotImplementedException();
 	}
+
+	public override bool MinionDiscard(Card cardPlayed, PlayerState ps, Kingdom k)
+	{
+		throw new NotImplementedException();
+	}
+
+	public override bool MiningVillageTrash(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance c)
+	{
+		throw new NotImplementedException();
+	}
+
 	#endregion cards intrique
 }
 

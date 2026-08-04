@@ -79,6 +79,14 @@ public abstract class Card
 		ActionEffect(player, thisCard);
 	}
 
+	protected void TriggerAttacks(IPlayer player)
+	{
+		foreach (var defender in player.Game.Players.Where(p => p != player))
+		{
+			defender.DealAttack(player, this);
+		}
+	}
+
 	/// <summary>
 	/// Template method with special card effect.
 	/// Method is called in WhenPlayAction after adding actions, coins, buys and 

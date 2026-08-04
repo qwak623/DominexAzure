@@ -27,6 +27,11 @@ public class Thief : Card
 
 	public static Thief Get() => thief ?? new Thief();
 
+	protected override void ActionEffect(IPlayer player, CardInstance thisCard)
+	{
+		TriggerAttacks(player);
+	}
+
 	public override void Attack(IPlayer defender, IPlayer attacker)
 	{
 		// show two cards

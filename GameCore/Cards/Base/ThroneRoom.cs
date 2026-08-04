@@ -40,13 +40,6 @@ public class ThroneRoom : Card
 		{
 			player.PlayerState.ActionsPlayed.Add(card);
 			cardInstance.WhenPlayAction(player);
-			if (card.IsAttack)
-			{
-				foreach (var defender in player.Game.Players.Where(p => p != player))
-				{
-					defender.DealAttack(player, card);
-				}
-			}
 		}
 	}
 }

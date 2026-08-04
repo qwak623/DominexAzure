@@ -356,5 +356,21 @@ public class Human : User, IHuman
 
 		return answer.Values.Count != 0;
 	}
+
+	public override bool MinionDiscard(Card cardPlayed, PlayerState ps, Kingdom k)
+	{
+		var answer = CallClient(new ChoiceDto
+		(
+			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
+			type: ChoiceType.MinionDiscard,
+			min: 0,
+			max: 1,
+			// todo potential null reference exception
+			cards: [null],
+			// todo better options - discard or gain 2 coins
+			operations: [OperationType.Default, OperationType.Discard]
+		));
+		return answer.Values.Count != 0;
+	}
 	#endregion cards intrique
 }

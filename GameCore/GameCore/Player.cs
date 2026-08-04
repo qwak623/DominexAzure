@@ -145,14 +145,6 @@ public class Player : IPlayer
 		ps.Actions--;
 
 		cardInstance.WhenPlayAction(this);
-
-		if (cardInstance.Card.IsAttack)
-		{
-			foreach (var player in Game.Players.Where(p => p != this))
-			{
-				player.DealAttack(this, cardInstance.Card);
-			}
-		}
 	}
 
 	/// <summary>

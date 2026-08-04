@@ -27,5 +27,10 @@ public class Witch : Card
 
 	public override Card RequiredCards => GeneralCards.Curse.Get();
 
+	protected override void ActionEffect(IPlayer player, CardInstance thisCard)
+	{
+		TriggerAttacks(player);
+	}
+
 	public override void Attack(IPlayer defender, IPlayer attacker) => defender.Gain(CardType.Curse);
 }

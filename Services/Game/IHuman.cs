@@ -26,6 +26,8 @@ public interface IHuman
 
 	#region cards intrique
 	bool BaronDiscard(Card cardPlayed, PlayerState ps, Kingdom k);
+	CardInstance CourtyardPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards);
 	bool MiningVillageTrash(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance c);
+	bool MinionDiscard(Card cardPlayed, PlayerState ps, Kingdom k);
 	#endregion cards intrique
 }

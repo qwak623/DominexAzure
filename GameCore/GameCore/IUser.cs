@@ -32,6 +32,7 @@ public interface IUser
 	CardInstance MasqueradePass(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards);
 	CardInstance MasqueradeTrash(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards);
 	bool MiningVillageTrash(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance c);
+	bool MinionDiscard(Card cardPlayed, PlayerState ps, Kingdom k);
 	#endregion cards intrique
 
 	string ToString();

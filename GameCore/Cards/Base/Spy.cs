@@ -46,6 +46,7 @@ public class Spy : Card
 		{
 			player.PlayerState.DrawPile.Move(card);
 		}
+		TriggerAttacks(player);
 	}
 
 	public override void Attack(IPlayer defender, IPlayer attacker)

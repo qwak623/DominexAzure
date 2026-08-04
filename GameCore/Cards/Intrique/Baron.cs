@@ -1,5 +1,4 @@
-﻿using GameCore.Cards.GeneralCards;
-using GameCore.GameCore;
+﻿using GameCore.GameCore;
 
 namespace GameCore.Cards.Intrique;
 

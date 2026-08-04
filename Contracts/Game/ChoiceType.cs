@@ -26,4 +26,5 @@ public enum ChoiceType
 	CourtyardPutOnTop,
 	MasqueradePass,
 	MasqueradeTrash,
+	MinionDiscard,
 }

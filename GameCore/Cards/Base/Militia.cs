@@ -25,6 +25,11 @@ public class Militia : Card
 
 	public static Militia Get() => militia ?? new Militia();
 
+	protected override void ActionEffect(IPlayer player, CardInstance thisCard)
+	{
+		TriggerAttacks(player);
+	}
+
 	public override void Attack(IPlayer defender, IPlayer attacker)
 	{
 		if (defender.PlayerState.Hand.Count <= 3)

@@ -1,7 +1,4 @@
-﻿using GameCore.Cards.GeneralCards;
-using GameCore.GameCore;
-
-namespace GameCore.Cards.Intrique;
+﻿namespace GameCore.Cards.Intrique;
 
 public class Bridge : Card
 {
