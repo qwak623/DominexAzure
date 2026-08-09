@@ -55,6 +55,7 @@ public abstract class User : IUser
 	public abstract bool NoblesChooseCards(Card cardPlayed, PlayerState ps, Kingdom k);
 	public abstract bool TorturerChooseCurse(Card cardPlayed, PlayerState ps, Kingdom k);
 	public abstract List<CardInstance> TorturerDiscard(Card cardPlayed, PlayerState ps, Kingdom k, int discardCount);
+	public abstract List<CardInstance> TradingPostTrash(Card cardPlayed, PlayerState ps, Kingdom k);
 	#endregion cards intrique
 
 	public override string ToString() => GetName();

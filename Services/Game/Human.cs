@@ -420,5 +420,22 @@ public class Human : User, IHuman
 
 		return answer.Values.Select(c => cardSelection[c.Index]).ToList();
 	}
+
+	public override List<CardInstance> TradingPostTrash(Card cardPlayed, PlayerState ps, Kingdom k)
+	{
+		var cardSelection = ps.Hand;
+
+		var answer = CallClient(new ChoiceDto
+		(
+			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
+			ChoiceType.TradingPostTrash,
+			min: 2,
+			max: 2,
+			cards: cardSelection.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
+			operations: [OperationType.Default, OperationType.Trash]
+		));
+
+		return [.. answer.Values.Select(c => cardSelection[c.Index])];
+	}
 	#endregion cards intrique
 }

@@ -306,6 +306,21 @@ public class ProvincialAI : User
 		throw new NotImplementedException();
 	}
 
+	public override bool TorturerChooseCurse(Card cardPlayed, PlayerState ps, Kingdom k)
+	{
+		throw new NotImplementedException();
+	}
+
+	public override List<CardInstance> TorturerDiscard(Card cardPlayed, PlayerState ps, Kingdom k, int discardCount)
+	{
+		throw new NotImplementedException();
+	}
+
+	public override List<CardInstance> TradingPostTrash(Card cardPlayed, PlayerState ps, Kingdom k)
+	{
+		throw new NotImplementedException();
+	}
+
 	#endregion cards intrique
 }
 

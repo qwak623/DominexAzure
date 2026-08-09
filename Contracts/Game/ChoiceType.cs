@@ -29,4 +29,5 @@ public enum ChoiceType
 	MinionDiscard,
 	TorturerChoose,
 	TorturerDiscard,
+	TradingPostTrash,
 }

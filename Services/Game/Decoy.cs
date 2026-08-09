@@ -1,6 +1,5 @@
-﻿using GameCore.Cards;
-using GameCore;
-using GameCore.Cards.Base;
+﻿using GameCore;
+using GameCore.Cards;
 
 namespace Dominex.Services.Game;
 public class Decoy : User
@@ -103,5 +102,11 @@ public class Decoy : User
 	public override bool MinionDiscard(Card cardPlayed, PlayerState ps, Kingdom k) => true;
 
 	public override bool NoblesChooseCards(Card cardPlayed, PlayerState playerState, Kingdom kingdom) => true;
+
+	public override bool TorturerChooseCurse(Card cardPlayed, PlayerState ps, Kingdom k) => true;
+
+	public override List<CardInstance> TorturerDiscard(Card cardPlayed, PlayerState ps, Kingdom k, int discardCount) => [.. ps.Hand.Take(discardCount)];
+
+	public override List<CardInstance> TradingPostTrash(Card cardPlayed, PlayerState ps, Kingdom k) => [.. ps.Hand.Take(2)];
 	#endregion cards intrique
 }

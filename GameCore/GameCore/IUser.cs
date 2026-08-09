@@ -35,6 +35,7 @@ public interface IUser
 	bool MinionDiscard(Card cardPlayed, PlayerState ps, Kingdom k);
 	bool TorturerChooseCurse(Card cardPlayed, PlayerState ps, Kingdom k);
 	List<CardInstance> TorturerDiscard(Card cardPlayed, PlayerState ps, Kingdom k, int discardCount);
+	List<CardInstance> TradingPostTrash(Card cardPlayed, PlayerState ps, Kingdom k);
 	#endregion cards intrique
 
 	string ToString();
