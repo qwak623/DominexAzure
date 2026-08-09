@@ -388,5 +388,37 @@ public class Human : User, IHuman
 		));
 		return answer.Values.Count != 0;
 	}
+
+	public override bool TorturerChooseCurse(Card cardPlayed, PlayerState ps, Kingdom k)
+	{
+		var answer = CallClient(new ChoiceDto
+		(
+			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
+			type: ChoiceType.TorturerChoose,
+			min: 0,
+			max: 1,
+			// todo potential null reference exception
+			cards: [null],
+			operations: [OperationType.Gain, OperationType.Discard]
+		));
+		return answer.Values.Any(c => c.OperationType == OperationType.Gain);
+	}
+
+	public override List<CardInstance> TorturerDiscard(Card cardPlayed, PlayerState ps, Kingdom k, int discardCount)
+	{
+		var cardSelection = ps.Hand;
+
+		var answer = CallClient(new ChoiceDto
+		(
+			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
+			ChoiceType.TorturerDiscard,
+			min: discardCount,
+			max: discardCount,
+			cards: cardSelection.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
+			operations: [OperationType.Default, OperationType.Discard]
+		));
+
+		return answer.Values.Select(c => cardSelection[c.Index]).ToList();
+	}
 	#endregion cards intrique
 }

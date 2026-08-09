@@ -27,4 +27,6 @@ public enum ChoiceType
 	MasqueradePass,
 	MasqueradeTrash,
 	MinionDiscard,
+	TorturerChoose,
+	TorturerDiscard,
 }
