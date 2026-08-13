@@ -14,4 +14,9 @@ public class Copper : Card
 	) => copper = this;
 
 	public static Copper Get() => copper ?? new Copper();
+
+	protected override void TreasureEffect(IPlayer player)
+	{
+		player.PlayerState.Coins += player.PlayerState.TempEffects.CopperValueIncrease;
+	}
 }
