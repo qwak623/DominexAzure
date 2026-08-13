@@ -1,4 +1,5 @@
 ﻿using GameCore.Cards;
+using GameCore.Cards.Intrique;
 using GameCore.Observers;
 
 namespace GameCore;
@@ -41,6 +42,7 @@ public interface IUser
 	List<CardInstance> SecretChamberDiscard(Card cardPlayed, PlayerState ps, Kingdom k);
 	List<CardInstance> SecretChamberPutOnDeck(Card cardPlayed, PlayerState ps, Kingdom k, int count);
 	List<CardInstance> ScoutOrderCards(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards);
+	List<CardInstance> DiplomatDiscard(Card cardPlayed, PlayerState ps, Kingdom k, int count);
 	#endregion cards intrique
 
 	string ToString();

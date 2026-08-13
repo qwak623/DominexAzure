@@ -119,5 +119,6 @@ public class Decoy : User
 	public override List<CardInstance> SecretChamberPutOnDeck(Card cardPlayed, PlayerState ps, Kingdom k, int count) => [.. ps.Hand.Take(count)];
 
 	public override List<CardInstance> ScoutOrderCards(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards) => cards;
+	public override List<CardInstance> DiplomatDiscard(Card cardPlayed, PlayerState ps, Kingdom k, int count) => [.. ps.Hand.Take(count)];
 	#endregion cards intrique
 }

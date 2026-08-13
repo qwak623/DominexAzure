@@ -64,6 +64,7 @@ public abstract class User : IUser
 
 	public override string ToString() => GetName();
 	public abstract List<CardInstance> ScoutOrderCards(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards);
+	public abstract List<CardInstance> DiplomatDiscard(Card cardPlayed, PlayerState ps, Kingdom k, int count);
 }
 
 public enum Phase { Action, Treasure, Buy, Gain, Reaction, Attack } // todo move to primitives

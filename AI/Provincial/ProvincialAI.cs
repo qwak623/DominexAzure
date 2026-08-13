@@ -341,6 +341,11 @@ public class ProvincialAI : User
 		throw new NotImplementedException();
 	}
 
+	public override List<CardInstance> DiplomatDiscard(Card cardPlayed, PlayerState ps, Kingdom k, int count)
+	{
+		throw new NotImplementedException();
+	}
+
 	#endregion cards intrique
 }
 

@@ -32,4 +32,5 @@ public enum ChoiceType
 	TradingPostTrash,
 	SecretChamberPutOnDeck,
 	SecretChamberDiscard,
+	DiplomatDiscard,
 }

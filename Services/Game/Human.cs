@@ -498,5 +498,20 @@ public class Human : User, IHuman
 		// TODO any order!
 		throw new NotImplementedException();
 	}
+
+	public override List<CardInstance> DiplomatDiscard(Card cardPlayed, PlayerState ps, Kingdom k, int count)
+	{
+		var answer = CallClient(new ChoiceDto
+		(
+			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
+			ChoiceType.DiplomatDiscard,
+			min: count,
+			max: count,
+			cards: ps.Hand.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
+			operations: [OperationType.Default, OperationType.Discard]
+		));
+
+		return [.. answer.Values.Select(c => ps.Hand[c.Index])];
+	}
 	#endregion cards intrique
 }
