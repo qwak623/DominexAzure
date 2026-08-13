@@ -17,6 +17,8 @@ public abstract class User : IUser
 
 	public abstract CardInstance SelectCardToGain(KingdomWrapper wrapper, PlayerState ps, Kingdom k, Phase phase);
 
+	public abstract CardInstance SelectOptionalCardToGain(KingdomWrapper wrapper, PlayerState ps, Kingdom k, Phase phase);
+
 	public virtual IPlayerStateObserver GetPlayerStateObserver() => null;
 
 	#region cards base

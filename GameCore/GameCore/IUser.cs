@@ -8,6 +8,7 @@ public interface IUser
 	IPlayerStateObserver GetPlayerStateObserver();
 	CardInstance PlayCard(IEnumerable<CardInstance> cards, PlayerState ps, Kingdom k, Phase phase, Card card = null);
 	CardInstance SelectCardToGain(KingdomWrapper wrapper, PlayerState ps, Kingdom k, Phase phase);
+	CardInstance SelectOptionalCardToGain(KingdomWrapper wrapper, PlayerState ps, Kingdom k, Phase phase);
 	void SetCanCelationTokenSource(CancellationTokenSource tokenSource);
 
 	#region cards base

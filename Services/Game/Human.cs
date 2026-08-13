@@ -199,14 +199,38 @@ public class Human : User, IHuman
 	{
 		var cardSelection = wrapper.AvailableCards.ToList();
 
+		// buying is always optional (a buy can go unspent); every other caller of this method
+		// is a mandatory "gain a card" effect (Workshop, Mine, Remodel, Feast, ...), so it can
+		// only be declined when there's genuinely nothing available to gain
+		var min = phase == Phase.Buy || cardSelection.Count == 0 ? 0 : 1;
+
 		var answer = CallClient(new ChoiceDto
 		(
 			cardPlayed: null,
 			type: phase == Phase.Buy ? ChoiceType.Buy : ChoiceType.Gain,
-			min: 0,
+			min: min,
 			max: 1, // todo ps.Buys - více buyu najednou
 			cards: cardSelection.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
 			operations: [OperationType.Default, phase == Phase.Buy ? OperationType.Buy : OperationType.Gain]
+		));
+
+		return answer.Values.Count != 0 ? cardSelection[answer.Values.Single().Index] : null;
+	}
+
+	// unlike SelectCardToGain, min is always 0 here - "may gain" cards (e.g. Saboteur) can be
+	// declined even when a valid target exists
+	public override CardInstance SelectOptionalCardToGain(KingdomWrapper wrapper, PlayerState ps, Kingdom k, Phase phase)
+	{
+		var cardSelection = wrapper.AvailableCards.ToList();
+
+		var answer = CallClient(new ChoiceDto
+		(
+			cardPlayed: null,
+			type: ChoiceType.Gain,
+			min: 0,
+			max: 1,
+			cards: cardSelection.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
+			operations: [OperationType.Default, OperationType.Gain]
 		));
 
 		return answer.Values.Count != 0 ? cardSelection[answer.Values.Single().Index] : null;

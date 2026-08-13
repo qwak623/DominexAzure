@@ -108,6 +108,11 @@ public class ProvincialAI : User
 		return null;
 	}
 
+	// the buy heuristic above already declines (returns null) when nothing on the agenda is
+	// available, so it doubles as a reasonable "is this worth gaining" check for optional gains
+	public override CardInstance SelectOptionalCardToGain(KingdomWrapper wrapper, PlayerState ps, Kingdom k, Phase phase)
+		=> SelectCardToGain(wrapper, ps, k, phase);
+
 	#region cards base
 	public override CardInstance BureaucratPutOnTop(Card c, PlayerState ps, Kingdom k)
 		=> ps.Hand.Where(c => c.IsVictory).First();

@@ -66,6 +66,11 @@ public class Decoy : User
 		return wrapper.AvailableCards.First();
 	}
 
+	public override CardInstance SelectOptionalCardToGain(KingdomWrapper wrapper, PlayerState ps, Kingdom k, Phase phase)
+	{
+		return null;
+	}
+
 	public override bool SpyDiscard(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance c, Phase p)
 	{
 		return false;
