@@ -1,4 +1,5 @@
 ﻿using GameCore.Cards;
+using GameCore.Cards.Intrique;
 using GameCore.Observers;
 
 namespace GameCore;
@@ -37,8 +38,10 @@ public interface IUser
 	bool TorturerChooseCurse(Card cardPlayed, PlayerState ps, Kingdom k);
 	List<CardInstance> TorturerDiscard(Card cardPlayed, PlayerState ps, Kingdom k, int discardCount);
 	List<CardInstance> TradingPostTrash(Card cardPlayed, PlayerState ps, Kingdom k);
+	bool NoblesChooseCards(Card cardPlayed, PlayerState playerState, Kingdom kingdom);
+	List<CardInstance> SecretChamberDiscard(Card cardPlayed, PlayerState ps, Kingdom k);
+	List<CardInstance> SecretChamberPutOnDeck(Card cardPlayed, PlayerState ps, Kingdom k, int count);
 	#endregion cards intrique
 
 	string ToString();
-	bool NoblesChooseCards(Card cardPlayed, PlayerState playerState, Kingdom kingdom);
 }

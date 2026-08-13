@@ -30,4 +30,6 @@ public enum ChoiceType
 	TorturerChoose,
 	TorturerDiscard,
 	TradingPostTrash,
+	SecretChamberPutOnDeck,
+	SecretChamberDiscard,
 }

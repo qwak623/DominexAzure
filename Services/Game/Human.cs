@@ -461,5 +461,36 @@ public class Human : User, IHuman
 
 		return [.. answer.Values.Select(c => cardSelection[c.Index])];
 	}
+
+	public override List<CardInstance> SecretChamberDiscard(Card cardPlayed, PlayerState ps, Kingdom k)
+	{
+		var answer = CallClient(new ChoiceDto
+		(
+			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
+			ChoiceType.SecretChamberDiscard,
+			min: 0,
+			max: ps.Hand.Count,
+			cards: ps.Hand.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
+			operations: [OperationType.Default, OperationType.Discard]
+		));
+
+		return [.. answer.Values.Select(c => ps.Hand[c.Index])];
+	}
+
+	// TODO any order!
+	public override List<CardInstance> SecretChamberPutOnDeck(Card cardPlayed, PlayerState ps, Kingdom k, int count)
+	{
+		var answer = CallClient(new ChoiceDto
+		(
+			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
+			ChoiceType.SecretChamberPutOnDeck,
+			min: count,
+			max: count,
+			cards: ps.Hand.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
+			operations: [OperationType.Default, OperationType.PutOnTop]
+		));
+
+		return [.. answer.Values.Select(c => ps.Hand[c.Index])];
+	}
 	#endregion cards intrique
 }

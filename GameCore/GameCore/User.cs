@@ -1,4 +1,5 @@
 ﻿using GameCore.Cards;
+using GameCore.Cards.Intrique;
 using GameCore.Observers;
 
 namespace GameCore;
@@ -58,6 +59,8 @@ public abstract class User : IUser
 	public abstract bool TorturerChooseCurse(Card cardPlayed, PlayerState ps, Kingdom k);
 	public abstract List<CardInstance> TorturerDiscard(Card cardPlayed, PlayerState ps, Kingdom k, int discardCount);
 	public abstract List<CardInstance> TradingPostTrash(Card cardPlayed, PlayerState ps, Kingdom k);
+	public abstract List<CardInstance> SecretChamberDiscard(Card cardPlayed, PlayerState ps, Kingdom k);
+	public abstract List<CardInstance> SecretChamberPutOnDeck(Card cardPlayed, PlayerState ps, Kingdom k, int count);
 	#endregion cards intrique
 
 	public override string ToString() => GetName();
