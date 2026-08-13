@@ -1,5 +1,4 @@
 ﻿using GameCore.Cards;
-using GameCore.Cards.Intrique;
 using GameCore.Observers;
 
 namespace GameCore;
@@ -64,6 +63,7 @@ public abstract class User : IUser
 	#endregion cards intrique
 
 	public override string ToString() => GetName();
+	public abstract List<CardInstance> ScoutOrderCards(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards);
 }
 
 public enum Phase { Action, Treasure, Buy, Gain, Reaction, Attack } // todo move to primitives

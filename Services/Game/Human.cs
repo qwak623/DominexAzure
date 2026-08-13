@@ -492,5 +492,11 @@ public class Human : User, IHuman
 
 		return [.. answer.Values.Select(c => ps.Hand[c.Index])];
 	}
+
+	public override List<CardInstance> ScoutOrderCards(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
+	{
+		// TODO any order!
+		throw new NotImplementedException();
+	}
 	#endregion cards intrique
 }
