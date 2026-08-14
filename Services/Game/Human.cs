@@ -558,5 +558,35 @@ public class Human : User, IHuman
 
 		return cards[answer.Values.Single().Index];
 	}
+
+	public override bool MillWantsToDiscard(Card cardPlayed, PlayerState ps, Kingdom k)
+	{
+		var answer = CallClient(new ChoiceDto
+		(
+			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
+			ChoiceType.MillDiscard,
+			min: 0,
+			max: 1,
+			cards: [],
+			operations: [OperationType.Default, OperationType.Discard]
+		));
+
+		return answer.Values.Count != 0;
+	}
+
+	public override List<CardInstance> MillChooseCardsToDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards, int count)
+	{
+		var answer = CallClient(new ChoiceDto
+		(
+			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
+			ChoiceType.MillDiscard,
+			min: count,
+			max: count,
+			cards: cards.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
+			operations: [OperationType.Default, OperationType.Discard]
+		));
+
+		return [.. answer.Values.Select(c => cards[c.Index])];
+	}
 	#endregion cards intrique
 }

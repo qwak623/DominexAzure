@@ -65,6 +65,8 @@ public abstract class User : IUser
 	public abstract bool LurkerTrash(Card cardPlayed, PlayerState ps, Kingdom k);
 	public abstract CardInstance LurkerChooseCardToTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards);
 	public abstract CardInstance LurkerChooseCardToGain(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards);
+	public abstract bool MillWantsToDiscard(Card cardPlayed, PlayerState ps, Kingdom k);
+	public abstract List<CardInstance> MillChooseCardsToDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards, int count);
 	#endregion cards intrique
 
 	public override string ToString() => GetName();

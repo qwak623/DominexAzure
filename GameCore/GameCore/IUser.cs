@@ -42,10 +42,12 @@ public interface IUser
 	List<CardInstance> SecretChamberPutOnDeck(Card cardPlayed, PlayerState ps, Kingdom k, int count);
 	List<CardInstance> ScoutOrderCards(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards);
 	List<CardInstance> DiplomatDiscard(Card cardPlayed, PlayerState ps, Kingdom k, int count);
-	#endregion cards intrique
-
-	string ToString();
 	bool LurkerTrash(Card cardPlayed, PlayerState ps, Kingdom k);
 	CardInstance LurkerChooseCardToTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards);
 	CardInstance LurkerChooseCardToGain(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards);
+	bool MillWantsToDiscard(Card cardPlayed, PlayerState ps, Kingdom k);
+	List<CardInstance> MillChooseCardsToDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards, int count);
+	#endregion cards intrique
+
+	string ToString();
 }

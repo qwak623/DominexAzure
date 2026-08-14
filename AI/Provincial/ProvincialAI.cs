@@ -361,6 +361,16 @@ public class ProvincialAI : User
 		throw new NotImplementedException();
 	}
 
+	public override bool MillWantsToDiscard(Card cardPlayed, PlayerState ps, Kingdom k)
+	{
+		throw new NotImplementedException();
+	}
+
+	public override List<CardInstance> MillChooseCardsToDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards, int count)
+	{
+		throw new NotImplementedException();
+	}
+
 	#endregion cards intrique
 }
 

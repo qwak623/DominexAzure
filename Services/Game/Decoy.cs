@@ -117,5 +117,8 @@ public class Decoy : User
 		=> cards.First();
 	public override CardInstance LurkerChooseCardToGain(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
 		=> cards.First();
+	public override bool MillWantsToDiscard(Card cardPlayed, PlayerState ps, Kingdom k) => true;
+	public override List<CardInstance> MillChooseCardsToDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards, int count)
+		=> cards.Take(count).ToList();
 	#endregion cards intrique
 }
