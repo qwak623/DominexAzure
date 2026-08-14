@@ -94,31 +94,28 @@ public class Decoy : User
 
 	#region cards intrique
 	public override bool BaronDiscard(Card cardPlayed, PlayerState ps, Kingdom k) => true;
-
 	public override CardInstance CourtyardPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards)
 		=> cards.FirstOrDefault();
-
-	public override CardInstance MasqueradePass(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards) => cards.FirstOrDefault();
-
-	public override CardInstance MasqueradeTrash(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards) => cards.FirstOrDefault();
-
+	public override CardInstance MasqueradePass(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards)
+		=> cards.FirstOrDefault();
+	public override CardInstance MasqueradeTrash(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards)
+		=> cards.FirstOrDefault();
 	public override bool MiningVillageTrash(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance c) => false;
-
 	public override bool MinionDiscard(Card cardPlayed, PlayerState ps, Kingdom k) => true;
-
 	public override bool NoblesChooseCards(Card cardPlayed, PlayerState playerState, Kingdom kingdom) => true;
-
 	public override bool TorturerChooseCurse(Card cardPlayed, PlayerState ps, Kingdom k) => true;
-
-	public override List<CardInstance> TorturerDiscard(Card cardPlayed, PlayerState ps, Kingdom k, int discardCount) => [.. ps.Hand.Take(discardCount)];
-
+	public override List<CardInstance> TorturerDiscard(Card cardPlayed, PlayerState ps, Kingdom k, int discardCount)
+		=> [.. ps.Hand.Take(discardCount)];
 	public override List<CardInstance> TradingPostTrash(Card cardPlayed, PlayerState ps, Kingdom k) => [.. ps.Hand.Take(2)];
-
 	public override List<CardInstance> SecretChamberDiscard(Card cardPlayed, PlayerState ps, Kingdom k) => [.. ps.Hand];
-
-	public override List<CardInstance> SecretChamberPutOnDeck(Card cardPlayed, PlayerState ps, Kingdom k, int count) => [.. ps.Hand.Take(count)];
-
+	public override List<CardInstance> SecretChamberPutOnDeck(Card cardPlayed, PlayerState ps, Kingdom k, int count)
+		=> [.. ps.Hand.Take(count)];
 	public override List<CardInstance> ScoutOrderCards(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards) => cards;
 	public override List<CardInstance> DiplomatDiscard(Card cardPlayed, PlayerState ps, Kingdom k, int count) => [.. ps.Hand.Take(count)];
+	public override bool LurkerTrash(Card cardPlayed, PlayerState ps, Kingdom k) => true;
+	public override CardInstance LurkerChooseCardToTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
+		=> cards.First();
+	public override CardInstance LurkerChooseCardToGain(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
+		=> cards.First();
 	#endregion cards intrique
 }

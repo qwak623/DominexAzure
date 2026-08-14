@@ -1,5 +1,4 @@
 ﻿using GameCore.Cards;
-using GameCore.Cards.Intrique;
 using GameCore.Observers;
 
 namespace GameCore;
@@ -46,4 +45,7 @@ public interface IUser
 	#endregion cards intrique
 
 	string ToString();
+	bool LurkerTrash(Card cardPlayed, PlayerState ps, Kingdom k);
+	CardInstance LurkerChooseCardToTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards);
+	CardInstance LurkerChooseCardToGain(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards);
 }

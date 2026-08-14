@@ -346,6 +346,21 @@ public class ProvincialAI : User
 		throw new NotImplementedException();
 	}
 
+	public override bool LurkerTrash(Card cardPlayed, PlayerState ps, Kingdom k)
+	{
+		throw new NotImplementedException();
+	}
+
+	public override CardInstance LurkerChooseCardToTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
+	{
+		throw new NotImplementedException();
+	}
+
+	public override CardInstance LurkerChooseCardToGain(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
+	{
+		throw new NotImplementedException();
+	}
+
 	#endregion cards intrique
 }
 

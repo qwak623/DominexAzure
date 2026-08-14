@@ -513,5 +513,50 @@ public class Human : User, IHuman
 
 		return [.. answer.Values.Select(c => ps.Hand[c.Index])];
 	}
+
+	public override bool LurkerTrash(Card cardPlayed, PlayerState ps, Kingdom k)
+	{
+		var answer = CallClient(new ChoiceDto
+		(
+			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
+			type: ChoiceType.LurkerChoose,
+			min: 1,
+			max: 1,
+			// todo potential null reference exception
+			cards: [null],
+			operations: [OperationType.Gain, OperationType.Trash]
+		));
+		return answer.Values.Any(c => c.OperationType == OperationType.Trash);
+	}
+
+	public override CardInstance LurkerChooseCardToTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
+	{
+		var answer = CallClient(new ChoiceDto
+		(
+			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
+			ChoiceType.LurkerTrash,
+			min: 1,
+			max: 1,
+			cards: cards.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
+			operations: [OperationType.Default, OperationType.Trash]
+		));
+
+		return cards[answer.Values.Single().Index];
+	}
+
+	public override CardInstance LurkerChooseCardToGain(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
+	{
+		var answer = CallClient(new ChoiceDto
+		(
+			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
+			ChoiceType.LurkerGain,
+			min: 1,
+			max: 1,
+			cards: cards.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
+			operations: [OperationType.Default, OperationType.Gain]
+		));
+
+		return cards[answer.Values.Single().Index];
+	}
 	#endregion cards intrique
 }

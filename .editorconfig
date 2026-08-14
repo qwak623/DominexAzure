@@ -78,6 +78,7 @@ dotnet_diagnostic.IDE0048.severity = warning # Add parenthesis for clarity
 dotnet_diagnostic.IDE0055.severity = warning # Fix formating
 dotnet_diagnostic.IDE0065.severity = warning # Misplaced using directive
 dotnet_diagnostic.IDE1006.severity = warning # Naming Styles
+dotnet_diagnostic.IDE0305.severity = none # Keep explicit .ToList()/.ToArray(), don't suggest collection expressions
 
 
 #### FxCop analyzers options ####

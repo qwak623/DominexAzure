@@ -27,7 +27,7 @@ public class TradingPost : Card
 	protected override void ActionEffect(IPlayer player, CardInstance thisCard)
 	{
 		List<CardInstance> cardsToTrash = player.PlayerState.Hand.Count <= 2
-			? [.. player.PlayerState.Hand]
+			? player.PlayerState.Hand.ToList()
 			: player.User.TradingPostTrash(this, player.PlayerState, player.Game.Kingdom);
 		cardsToTrash.ForEach(player.Trash);
 		if (cardsToTrash.Count == 2)

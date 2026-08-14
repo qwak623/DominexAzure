@@ -60,11 +60,14 @@ public abstract class User : IUser
 	public abstract List<CardInstance> TradingPostTrash(Card cardPlayed, PlayerState ps, Kingdom k);
 	public abstract List<CardInstance> SecretChamberDiscard(Card cardPlayed, PlayerState ps, Kingdom k);
 	public abstract List<CardInstance> SecretChamberPutOnDeck(Card cardPlayed, PlayerState ps, Kingdom k, int count);
+	public abstract List<CardInstance> ScoutOrderCards(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards);
+	public abstract List<CardInstance> DiplomatDiscard(Card cardPlayed, PlayerState ps, Kingdom k, int count);
+	public abstract bool LurkerTrash(Card cardPlayed, PlayerState ps, Kingdom k);
+	public abstract CardInstance LurkerChooseCardToTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards);
+	public abstract CardInstance LurkerChooseCardToGain(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards);
 	#endregion cards intrique
 
 	public override string ToString() => GetName();
-	public abstract List<CardInstance> ScoutOrderCards(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards);
-	public abstract List<CardInstance> DiplomatDiscard(Card cardPlayed, PlayerState ps, Kingdom k, int count);
 }
 
 public enum Phase { Action, Treasure, Buy, Gain, Reaction, Attack } // todo move to primitives

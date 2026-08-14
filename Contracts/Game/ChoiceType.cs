@@ -33,4 +33,7 @@ public enum ChoiceType
 	SecretChamberPutOnDeck,
 	SecretChamberDiscard,
 	DiplomatDiscard,
+	LurkerChoose,
+	LurkerTrash,
+	LurkerGain,
 }
