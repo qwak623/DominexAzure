@@ -2,6 +2,7 @@
 
 namespace GameCore.Cards.Intrique;
 
+// Use 8 Mills for games with 2 players, 12 for games with 3 or more players.
 public class Mill : Card
 {
 	private static Mill mill;
