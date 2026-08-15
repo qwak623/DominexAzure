@@ -371,6 +371,11 @@ public class ProvincialAI : User
 		throw new NotImplementedException();
 	}
 
+	public override List<CardInstance> PatrolOrderCards(Card cardPlayed, PlayerState playerState, Kingdom kingdom, List<CardInstance> cards)
+	{
+		throw new NotImplementedException();
+	}
+
 	#endregion cards intrique
 }
 

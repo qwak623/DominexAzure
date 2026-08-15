@@ -123,5 +123,6 @@ public class Decoy : User
 	public override bool MillWantsToDiscard(Card cardPlayed, PlayerState ps, Kingdom k) => true;
 	public override List<CardInstance> MillChooseCardsToDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards, int count)
 		=> cards.Take(count).ToList();
+	public override List<CardInstance> PatrolOrderCards(Card cardPlayed, PlayerState playerState, Kingdom kingdom, List<CardInstance> cards) => cards;
 	#endregion cards intrique
 }

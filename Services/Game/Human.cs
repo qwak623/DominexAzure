@@ -164,6 +164,12 @@ public class Human(IPlayerStateObserver playerStateObserver, ICardMapper cardMap
 
 	public override List<CardInstance> MillChooseCardsToDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards, int count)
 		=> AskForCards(cardPlayed, ps, cards, ChoiceType.MillDiscard, OperationType.Discard, count, count);
+
+
+	public override List<CardInstance> PatrolOrderCards(Card cardPlayed, PlayerState playerState, Kingdom kingdom, List<CardInstance> cards)
+	{
+		throw new NotImplementedException();
+	}
 	#endregion cards intrique
 
 	/// <summary>
