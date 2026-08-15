@@ -40,7 +40,7 @@ public class Torturer : Card
 		else if (defender.PlayerState.Hand.Count != 0)
 		{
 			var cardsToDiscard = defender.User.TorturerDiscard(
-				this, defender.PlayerState, defender.Game.Kingdom, Math.Min(2, defender.PlayerState.Hand.Count));
+				this, defender.PlayerState, defender.Game.Kingdom, defender.PlayerState.Hand.ToList(), Math.Min(2, defender.PlayerState.Hand.Count));
 			cardsToDiscard.ForEach(defender.Discard);
 		}
 	}

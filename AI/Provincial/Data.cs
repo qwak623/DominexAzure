@@ -6,51 +6,61 @@ using GameCore.Cards;
 
 namespace AI.Provincial
 {
-    static class Data
-    {
-        static float[] priorityList;
-        static object obj = new object();
+	internal static class Data
+	{
+		private static float[]? priorityList;
+		private static object obj = new object();
 
-        //static char sep = Path.DirectorySeparatorChar;
-        //static string path = $"..{sep}..{sep}..{sep}AI{sep}Provincial{sep}data{sep}priority.txt";
-        //static string path = $"..{sep}..{sep}..{sep}AI{sep}priority.txt";
-        static string path = BuyAgenda.DirectoryPath + BuyAgenda.sep + ".." + BuyAgenda.sep + "priority.txt";
+		//static char sep = Path.DirectorySeparatorChar;
+		//static string path = $"..{sep}..{sep}..{sep}AI{sep}Provincial{sep}data{sep}priority.txt";
+		//static string path = $"..{sep}..{sep}..{sep}AI{sep}priority.txt";
+		private static string path = BuyAgenda.DirectoryPath + BuyAgenda.sep + ".." + BuyAgenda.sep + "priority.txt";
 
-        // list is indexed by CardType
-        // priority list is computed only once
-        public static float[] GetPriorityList()
-        {
-            // avoiding locking when its unnecesarry
-            if (priorityList is not null)
-                return priorityList;
+		// list is indexed by CardType
+		// priority list is computed only once
+		public static float[] GetPriorityList()
+		{
+			// avoiding locking when its unnecesarry
+			if (priorityList is not null)
+			{
+				return priorityList;
+			}
 
-            lock (obj)
-            {
-                if (priorityList is null)
-                    priorityList = getPriorityList();
-                return priorityList;
-            }
-        }
+			lock (obj)
+			{
+				if (priorityList is null)
+				{
+					priorityList = getPriorityList();
+				}
 
-        // list is indexed by CardType
-        private static float[] getPriorityList()
-        {
-            var list = new List<string>();
-            using (var reader = new StreamReader(path))
-            {
-                while (!reader.EndOfStream)
-                {
-                    var line = reader.ReadLine();
-                    list.Add(line);
-                }
-            } 
+				return priorityList;
+			}
+		}
 
-            var array = new float[Enum.GetNames(typeof(CardType)).Length];
+		// list is indexed by CardType
+		private static float[] getPriorityList()
+		{
+			var list = new List<string>();
+			using (var reader = new StreamReader(path))
+			{
+				while (!reader.EndOfStream)
+				{
+					var line = reader.ReadLine();
+					list.Add(line);
+				}
+			}
 
-            for (int i = 0; i < list.Count; i++)
-                if (Enum.TryParse(list[i], out CardType type))
-                    array[(int)type] = (list.Count - i) * 2;
-            return array;
-        }
-    }
+			var array = new float[Enum.GetNames(typeof(CardType)).Length];
+
+			for (int i = 0; i < list.Count; i++)
+			{
+				if (Enum.TryParse(list[i], out CardType type))
+				{
+					array[(int)type] = (list.Count - i) * 2;
+				}
+			}
+
+			return array;
+		}
+	}
 }

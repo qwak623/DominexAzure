@@ -27,7 +27,7 @@ public class Remodel : Card
 	protected override void ActionEffect(IPlayer p, CardInstance thisCard)
 	{
 		// if user didn't select card, he wouldn't gain any.
-		var oldCard = p.User.RemodelTrash(this, p.PlayerState, p.Game.Kingdom);
+		var oldCard = p.User.RemodelTrash(this, p.PlayerState, p.Game.Kingdom, p.PlayerState.Hand.ToList());
 		if (oldCard is null)
 		{
 			return;

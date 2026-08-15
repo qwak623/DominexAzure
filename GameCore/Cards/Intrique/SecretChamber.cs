@@ -28,7 +28,7 @@ public class SecretChamber : Card
 
 	protected override void ActionEffect(IPlayer player, CardInstance thisCard)
 	{
-		var selectedCards = player.User.SecretChamberDiscard(this, player.PlayerState, player.Game.Kingdom);
+		var selectedCards = player.User.SecretChamberDiscard(this, player.PlayerState, player.Game.Kingdom, player.PlayerState.Hand.ToList());
 
 		if (selectedCards.Count > 0)
 		{
@@ -42,7 +42,7 @@ public class SecretChamber : Card
 		player.Draw(2);
 		// TODO in any order
 		var count = Math.Min(2, player.PlayerState.Hand.Count);
-		var cards = player.User.SecretChamberPutOnDeck(this, player.PlayerState, player.Game.Kingdom, count);
+		var cards = player.User.SecretChamberPutOnDeck(this, player.PlayerState, player.Game.Kingdom, player.PlayerState.Hand.ToList(), count);
 		foreach (var card in cards)
 		{
 			player.ReturnToDrawPile(card);

@@ -35,12 +35,13 @@ public class Bureaucrat : Card
 	public override void Attack(IPlayer def, IPlayer att)
 	{
 		// TODO REVEAL hand with no victory cards
-		if (!def.PlayerState.Hand.Any(c => c.IsVictory))
+		var victoryCards = def.PlayerState.Hand.Where(c => c.IsVictory).ToList();
+		if (victoryCards.Count == 0)
 		{
 			return;
 		}
 
-		var card = def.User.BureaucratPutOnTop(this, def.PlayerState, def.Game.Kingdom);
+		var card = def.User.BureaucratPutOnTop(this, def.PlayerState, def.Game.Kingdom, victoryCards);
 		def.ReturnToDrawPile(card);
 	}
 }

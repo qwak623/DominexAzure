@@ -18,7 +18,7 @@ public class BuyAgenda
 	public bool Loaded { get; set; }
 
 
-	public static BuyAgenda FromString(string str)
+	public static BuyAgenda? FromString(string str)
 	{
 		var line = str.Split(':');
 
@@ -84,9 +84,15 @@ public class BuyAgenda
 		{
 			agenda.BuyMenu.Add(item);
 			if (i == 2)
+			{
 				agenda.BuyMenu.Add((CardType.Gold, 99));
+			}
+
 			if (i == 7)
+			{
 				agenda.BuyMenu.Add((CardType.Silver, 10));
+			}
+
 			i++;
 		}
 

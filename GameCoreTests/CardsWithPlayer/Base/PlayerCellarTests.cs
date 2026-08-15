@@ -35,7 +35,7 @@ public class PlayerCellarTests : CardWithPlayerTestsBase
 		player.PlayerState.Hand = CreatePile([silver, silver, cellar, copper, silver]);
 		var cellarToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Cellar);
 
-		user.Setup(u => u.CellarDiscard(cellar, player.PlayerState, player.Game.Kingdom))
+		user.Setup(u => u.CellarDiscard(cellar, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns([]);
 		#endregion
 
@@ -54,7 +54,7 @@ public class PlayerCellarTests : CardWithPlayerTestsBase
 		AssertPile([], player.Game.Trash);
 
 		// user is asked to choose cards to discard
-		user.Verify(u => u.CellarDiscard(cellar, player.PlayerState, player.Game.Kingdom), Times.Once);
+		user.Verify(u => u.CellarDiscard(cellar, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		#endregion
 	}
 
@@ -66,7 +66,7 @@ public class PlayerCellarTests : CardWithPlayerTestsBase
 		player.PlayerState.Hand = CreatePile([silver, silver, cellar, copper, silver]);
 		var cellarToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Cellar);
 
-		user.Setup(u => u.CellarDiscard(cellar, player.PlayerState, player.Game.Kingdom))
+		user.Setup(u => u.CellarDiscard(cellar, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns([player.PlayerState.Hand.First(c => c.Card.Type == CardType.Copper)]);
 		#endregion
 
@@ -86,7 +86,7 @@ public class PlayerCellarTests : CardWithPlayerTestsBase
 		AssertPile([], player.Game.Trash);
 
 		// user is asked to choose cards to discard
-		user.Verify(u => u.CellarDiscard(cellar, player.PlayerState, player.Game.Kingdom), Times.Once);
+		user.Verify(u => u.CellarDiscard(cellar, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		#endregion
 	}
 
@@ -98,7 +98,7 @@ public class PlayerCellarTests : CardWithPlayerTestsBase
 		player.PlayerState.Hand = CreatePile([silver, copper, cellar, copper, cellar]);
 		var cellarToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Cellar);
 
-		user.Setup(u => u.CellarDiscard(cellar, player.PlayerState, player.Game.Kingdom))
+		user.Setup(u => u.CellarDiscard(cellar, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns([.. player.PlayerState.Hand.Where(c => c != cellarToPlay)]);
 		#endregion
 
@@ -118,7 +118,7 @@ public class PlayerCellarTests : CardWithPlayerTestsBase
 		AssertPile([], player.Game.Trash);
 
 		// user is asked to choose cards to discard
-		user.Verify(u => u.CellarDiscard(cellar, player.PlayerState, player.Game.Kingdom), Times.Once);
+		user.Verify(u => u.CellarDiscard(cellar, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		#endregion
 	}
 
@@ -129,7 +129,7 @@ public class PlayerCellarTests : CardWithPlayerTestsBase
 		player.PlayerState.Hand = CreatePile([silver, copper, cellar, copper, cellar]);
 		var cellarToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Cellar);
 
-		user.Setup(u => u.CellarDiscard(cellar, player.PlayerState, player.Game.Kingdom))
+		user.Setup(u => u.CellarDiscard(cellar, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns([player.PlayerState.Hand.First(c => c.Card.Type == CardType.Copper)]);
 		#endregion
 
@@ -150,7 +150,7 @@ public class PlayerCellarTests : CardWithPlayerTestsBase
 		AssertPile([], player.Game.Trash);
 
 		// user is asked to choose cards to discard
-		user.Verify(u => u.CellarDiscard(cellar, player.PlayerState, player.Game.Kingdom), Times.Once);
+		user.Verify(u => u.CellarDiscard(cellar, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		#endregion
 	}
 
@@ -162,13 +162,13 @@ public class PlayerCellarTests : CardWithPlayerTestsBase
 		player.PlayerState.DrawPile = CreatePile([gold, gold, copper]);
 		var throneRoomToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom);
 		var cellarToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Cellar);
-		user.SetupSequence(u => u.CellarDiscard(cellar, player.PlayerState, player.Game.Kingdom))
+		user.SetupSequence(u => u.CellarDiscard(cellar, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns([.. player.PlayerState.Hand.Where(c => c.Card.Type == CardType.Copper)])
 			// evaluated lazily: the copper the second resolution discards is the one the first
 			// resolution just drew back into hand, which doesn't exist yet at arrange time
 			.Returns(() => [player.PlayerState.Hand.First(c => c.Card.Type == CardType.Copper)]);
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Contains(cellarToPlay)))).Returns(cellarToPlay);
+			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Contains(cellarToPlay)))).Returns(cellarToPlay);
 		#endregion
 
 		#region act
@@ -185,11 +185,11 @@ public class PlayerCellarTests : CardWithPlayerTestsBase
 		AssertPile([], player.Game.Trash);
 
 		// user is asked to choose cards to discard two times
-		user.Verify(u => u.CellarDiscard(cellar, player.PlayerState, player.Game.Kingdom), Times.Exactly(2));
+		user.Verify(u => u.CellarDiscard(cellar, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Exactly(2));
 
 		// user is asked which card to play using throne room
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		#endregion
 	}
 }

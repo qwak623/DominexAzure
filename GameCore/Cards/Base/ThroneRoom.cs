@@ -28,7 +28,7 @@ public class ThroneRoom : Card
 	protected override void ActionEffect(IPlayer player, CardInstance thisCard)
 	{
 		var cardInstance = player.User
-			.ThroneRoomPlay(this, player.PlayerState, player.Game.Kingdom, player.PlayerState.Hand.Where(c => c.IsAction));
+			.ThroneRoomPlay(this, player.PlayerState, player.Game.Kingdom, player.PlayerState.Hand.Where(c => c.IsAction).ToList());
 		if (cardInstance is null)
 		{
 			return;

@@ -98,7 +98,7 @@ public class PlayerFeastTests : CardWithPlayerTestsBase
 		var feastToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Feast);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == feastToPlay))).Returns(feastToPlay);
+			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == feastToPlay))).Returns(feastToPlay);
 		user.SetupSequence(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
 			.Returns(duchyToGain).Returns(duchyToGain2);
 		#endregion
@@ -122,7 +122,7 @@ public class PlayerFeastTests : CardWithPlayerTestsBase
 
 		// user was asked which card to play using throne room
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		#endregion
 	}
 
@@ -136,7 +136,7 @@ public class PlayerFeastTests : CardWithPlayerTestsBase
 		var feastToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Feast);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == feastToPlay))).Returns(feastToPlay);
+			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == feastToPlay))).Returns(feastToPlay);
 		user.SetupSequence(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
 			.Returns(duchyToGain).Returns((CardInstance)null);
 		#endregion
@@ -156,7 +156,7 @@ public class PlayerFeastTests : CardWithPlayerTestsBase
 
 		// user was asked which card to play using throne room
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 
 		// user has to select a card with price max 5 to gain - there is only one duchy
 		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.Price == 5 && k.OnlyTreasures == false),
@@ -171,7 +171,7 @@ public class PlayerFeastTests : CardWithPlayerTestsBase
 		player.PlayerState.Hand = CreatePile([throneRoom, feast]);
 		var feastToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Feast);
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == feastToPlay))).Returns(feastToPlay);
+			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == feastToPlay))).Returns(feastToPlay);
 		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
 			.Returns<Card>(null);
 		#endregion
@@ -191,7 +191,7 @@ public class PlayerFeastTests : CardWithPlayerTestsBase
 
 		// user was asked which card to play using throne room
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 
 		// user has to select a card with price max 5 to gain - there is none
 		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.Price == 5 && k.OnlyTreasures == false),

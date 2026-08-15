@@ -162,7 +162,7 @@ public class PlayerMinionTests : CardWithPlayerTestsBase
 		var minionToPlay = attacker.PlayerState.Hand.First(c => c.Card.Type == CardType.Minion);
 
 		attackerUser.Setup(u => u.ThroneRoomPlay(throneRoom, attacker.PlayerState,
-			attacker.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == minionToPlay))).Returns(minionToPlay);
+			attacker.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == minionToPlay))).Returns(minionToPlay);
 
 		// each resolution's branch is chosen independently - the first resolution discards
 		// (and attacks), the second just takes the coins
@@ -200,7 +200,7 @@ public class PlayerMinionTests : CardWithPlayerTestsBase
 		AssertPile([], defender.Game.Trash);
 
 		attackerUser.Verify(u => u.ThroneRoomPlay(throneRoom, attacker.PlayerState,
-			attacker.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			attacker.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		attackerUser.Verify(u => u.MinionDiscard(minion, attacker.PlayerState, attacker.Game.Kingdom), Times.Exactly(2));
 		#endregion
 	}

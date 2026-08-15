@@ -74,7 +74,7 @@ public class PlayerTorturerTests : CardWithPlayerTestsBase
 		AssertPile([], defender.Game.Trash);
 
 		defenderUser.Verify(u => u.TorturerChooseCurse(torturer, defender.PlayerState, defender.Game.Kingdom), Times.Once);
-		defenderUser.Verify(u => u.TorturerDiscard(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<int>()), Times.Never);
+		defenderUser.Verify(u => u.TorturerDiscard(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>(), It.IsAny<int>()), Times.Never);
 		#endregion
 	}
 
@@ -90,7 +90,7 @@ public class PlayerTorturerTests : CardWithPlayerTestsBase
 		var coppersToDiscard = defender.PlayerState.Hand.Where(c => c.Card.Type == CardType.Copper).ToList();
 
 		defenderUser.Setup(u => u.TorturerChooseCurse(torturer, defender.PlayerState, defender.Game.Kingdom)).Returns(false);
-		defenderUser.Setup(u => u.TorturerDiscard(torturer, defender.PlayerState, defender.Game.Kingdom, 2))
+		defenderUser.Setup(u => u.TorturerDiscard(torturer, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 2))
 			.Returns(coppersToDiscard);
 		#endregion
 
@@ -117,7 +117,7 @@ public class PlayerTorturerTests : CardWithPlayerTestsBase
 
 		defenderUser.Verify(u => u.TorturerChooseCurse(torturer, defender.PlayerState, defender.Game.Kingdom), Times.Once);
 		// asked to discard exactly 2, not the whole (bigger) hand
-		defenderUser.Verify(u => u.TorturerDiscard(torturer, defender.PlayerState, defender.Game.Kingdom, 2), Times.Once);
+		defenderUser.Verify(u => u.TorturerDiscard(torturer, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 2), Times.Once);
 		#endregion
 	}
 
@@ -133,7 +133,7 @@ public class PlayerTorturerTests : CardWithPlayerTestsBase
 		var copperToDiscard = defender.PlayerState.Hand.ToList();
 
 		defenderUser.Setup(u => u.TorturerChooseCurse(torturer, defender.PlayerState, defender.Game.Kingdom)).Returns(false);
-		defenderUser.Setup(u => u.TorturerDiscard(torturer, defender.PlayerState, defender.Game.Kingdom, 1))
+		defenderUser.Setup(u => u.TorturerDiscard(torturer, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 1))
 			.Returns(copperToDiscard);
 		#endregion
 
@@ -159,7 +159,7 @@ public class PlayerTorturerTests : CardWithPlayerTestsBase
 		AssertPile([], defender.Game.Trash);
 
 		// asked to discard only 1 - the defender doesn't have two cards to give up
-		defenderUser.Verify(u => u.TorturerDiscard(torturer, defender.PlayerState, defender.Game.Kingdom, 1), Times.Once);
+		defenderUser.Verify(u => u.TorturerDiscard(torturer, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 1), Times.Once);
 		#endregion
 	}
 
@@ -197,7 +197,7 @@ public class PlayerTorturerTests : CardWithPlayerTestsBase
 		AssertPile([], defender.Game.Trash);
 
 		// nothing to discard, so the defender is never asked how many
-		defenderUser.Verify(u => u.TorturerDiscard(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<int>()), Times.Never);
+		defenderUser.Verify(u => u.TorturerDiscard(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>(), It.IsAny<int>()), Times.Never);
 		#endregion
 	}
 
@@ -210,15 +210,15 @@ public class PlayerTorturerTests : CardWithPlayerTestsBase
 		var torturerToPlay = attacker.PlayerState.Hand.First(c => c.Card.Type == CardType.Torturer);
 
 		attackerUser.Setup(u => u.ThroneRoomPlay(throneRoom, attacker.PlayerState,
-			attacker.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == torturerToPlay))).Returns(torturerToPlay);
+			attacker.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == torturerToPlay))).Returns(torturerToPlay);
 
 		defender.PlayerState.Hand = CreatePile([copper, copper, copper]);
 		var coppersInHand = defender.PlayerState.Hand.ToList();
 
 		defenderUser.Setup(u => u.TorturerChooseCurse(torturer, defender.PlayerState, defender.Game.Kingdom)).Returns(false);
-		defenderUser.Setup(u => u.TorturerDiscard(torturer, defender.PlayerState, defender.Game.Kingdom, 2))
+		defenderUser.Setup(u => u.TorturerDiscard(torturer, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 2))
 			.Returns([coppersInHand[0], coppersInHand[1]]);
-		defenderUser.Setup(u => u.TorturerDiscard(torturer, defender.PlayerState, defender.Game.Kingdom, 1))
+		defenderUser.Setup(u => u.TorturerDiscard(torturer, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 1))
 			.Returns([coppersInHand[2]]);
 		#endregion
 
@@ -246,10 +246,10 @@ public class PlayerTorturerTests : CardWithPlayerTestsBase
 		AssertPile([], defender.Game.Trash);
 
 		attackerUser.Verify(u => u.ThroneRoomPlay(throneRoom, attacker.PlayerState,
-			attacker.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			attacker.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		defenderUser.Verify(u => u.TorturerChooseCurse(torturer, defender.PlayerState, defender.Game.Kingdom), Times.Exactly(2));
-		defenderUser.Verify(u => u.TorturerDiscard(torturer, defender.PlayerState, defender.Game.Kingdom, 2), Times.Once);
-		defenderUser.Verify(u => u.TorturerDiscard(torturer, defender.PlayerState, defender.Game.Kingdom, 1), Times.Once);
+		defenderUser.Verify(u => u.TorturerDiscard(torturer, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 2), Times.Once);
+		defenderUser.Verify(u => u.TorturerDiscard(torturer, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 1), Times.Once);
 		#endregion
 	}
 }

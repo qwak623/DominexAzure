@@ -95,7 +95,7 @@ public class PlayerMiningVillageTests : CardWithPlayerTestsBase
 		var miningVillageToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.MiningVillage);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == miningVillageToPlay))).Returns(miningVillageToPlay);
+			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == miningVillageToPlay))).Returns(miningVillageToPlay);
 
 		// even if the user were asked (and said yes) on both resolutions, the guard in
 		// MiningVillage.ActionEffect should stop the second resolution from asking again -
@@ -120,7 +120,7 @@ public class PlayerMiningVillageTests : CardWithPlayerTestsBase
 		AssertPile([miningVillage], player.Game.Trash);
 
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		user.Verify(u => u.MiningVillageTrash(miningVillage, player.PlayerState, player.Game.Kingdom, miningVillageToPlay), Times.Once);
 		#endregion
 	}

@@ -34,7 +34,7 @@ public class Masquerade : Card
 			foreach (var player in playersWithCardsInHand)
 			{
 				cardsToPass[player] = player.User.MasqueradePass(
-					this, player.PlayerState, p.Game.Kingdom, player.PlayerState.Hand);
+					this, player.PlayerState, p.Game.Kingdom, player.PlayerState.Hand.ToList());
 			}
 			for (int i = 0; i < playersWithCardsInHand.Count; i++)
 			{
@@ -42,7 +42,7 @@ public class Masquerade : Card
 					.Move(cardsToPass[playersWithCardsInHand[i]]);
 			}
 		}
-		var cardToTrash = p.User.MasqueradeTrash(this, p.PlayerState, p.Game.Kingdom, p.PlayerState.Hand);
+		var cardToTrash = p.User.MasqueradeTrash(this, p.PlayerState, p.Game.Kingdom, p.PlayerState.Hand.ToList());
 		if (cardToTrash is not null)
 		{
 			p.Trash(cardToTrash);

@@ -121,7 +121,7 @@ public class PlayerBaronTests : CardWithPlayerTestsBase
 		var baronToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Baron);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == baronToPlay))).Returns(baronToPlay);
+			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == baronToPlay))).Returns(baronToPlay);
 		user.SetupSequence(u => u.BaronDiscard(baron, player.PlayerState, player.Game.Kingdom))
 			.Returns(discardFirstTime).Returns(discardSecondTime);
 		#endregion
@@ -143,7 +143,7 @@ public class PlayerBaronTests : CardWithPlayerTestsBase
 		AssertPile([], player.Game.Trash);
 
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		user.Verify(u => u.BaronDiscard(baron, player.PlayerState, player.Game.Kingdom), Times.Exactly(askedToDiscard));
 		#endregion
 	}

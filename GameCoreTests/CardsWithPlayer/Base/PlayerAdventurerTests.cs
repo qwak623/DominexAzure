@@ -133,7 +133,7 @@ public class PlayerAdventurerTests : CardWithPlayerTestsBase
 			CreatePile([silver, province, copper, province, province, gold, province, silver, adventurer, province, copper]);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Contains(adventurerToPlay)))).Returns(adventurerToPlay);
+			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Contains(adventurerToPlay)))).Returns(adventurerToPlay);
 		#endregion
 
 		#region act
@@ -154,7 +154,7 @@ public class PlayerAdventurerTests : CardWithPlayerTestsBase
 
 		// user is asked which card to play using throne room
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		#endregion
 	}
 
@@ -172,7 +172,7 @@ public class PlayerAdventurerTests : CardWithPlayerTestsBase
 			CreatePile([province, province, province, province, adventurer, province, .. Enumerable.Repeat(gold, treasureCount)]);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Contains(adventurerToPlay)))).Returns(adventurerToPlay);
+			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Contains(adventurerToPlay)))).Returns(adventurerToPlay);
 		#endregion
 
 		#region act
@@ -192,7 +192,7 @@ public class PlayerAdventurerTests : CardWithPlayerTestsBase
 
 		// user is asked which card to play using throne room
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		#endregion
 	}
 }

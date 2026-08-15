@@ -45,7 +45,7 @@ public class PlayerMilitiaTests : CardWithPlayerTestsBase
 		defender.PlayerState.Hand = CreatePile([silver, silver, silver, silver, copper]);
 		var silverToDiscard = defender.PlayerState.Hand.First(c => c.Card.Type == CardType.Silver);
 		var copperToDiscard = defender.PlayerState.Hand.First(c => c.Card.Type == CardType.Copper);
-		defenderUser.Setup(du => du.MilitiaDiscard(militia, defender.PlayerState, defender.Game.Kingdom, 2))
+		defenderUser.Setup(du => du.MilitiaDiscard(militia, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 2))
 			.Returns([silverToDiscard, copperToDiscard]);
 		#endregion
 
@@ -71,7 +71,7 @@ public class PlayerMilitiaTests : CardWithPlayerTestsBase
 		AssertPile([], defender.PlayerState.ActionsPlayed);
 		AssertPile([], defender.Game.Trash);
 
-		defenderUser.Verify(du => du.MilitiaDiscard(militia, defender.PlayerState, defender.Game.Kingdom, 2), Times.Once);
+		defenderUser.Verify(du => du.MilitiaDiscard(militia, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 2), Times.Once);
 		#endregion
 	}
 
@@ -107,7 +107,7 @@ public class PlayerMilitiaTests : CardWithPlayerTestsBase
 		AssertPile([], defender.Game.Trash);
 
 		// hand is already at 3 or fewer, so the defender is never asked to discard
-		defenderUser.Verify(du => du.MilitiaDiscard(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<int>()), Times.Never);
+		defenderUser.Verify(du => du.MilitiaDiscard(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>(), It.IsAny<int>()), Times.Never);
 		#endregion
 	}
 
@@ -118,12 +118,12 @@ public class PlayerMilitiaTests : CardWithPlayerTestsBase
 		attacker.PlayerState.Hand = CreatePile([throneRoom, militia]);
 		var militiaToPlay = attacker.PlayerState.Hand.First(c => c.Card.Type == CardType.Militia);
 		attackerUser.Setup(u => u.ThroneRoomPlay(throneRoom, attacker.PlayerState,
-			attacker.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == militiaToPlay))).Returns(militiaToPlay);
+			attacker.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == militiaToPlay))).Returns(militiaToPlay);
 
 		defender.PlayerState.Hand = CreatePile([silver, silver, silver, silver, copper]);
 		var silverToDiscard = defender.PlayerState.Hand.First(c => c.Card.Type == CardType.Silver);
 		var copperToDiscard = defender.PlayerState.Hand.First(c => c.Card.Type == CardType.Copper);
-		defenderUser.Setup(du => du.MilitiaDiscard(militia, defender.PlayerState, defender.Game.Kingdom, 2))
+		defenderUser.Setup(du => du.MilitiaDiscard(militia, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 2))
 			.Returns([silverToDiscard, copperToDiscard]);
 		#endregion
 
@@ -149,11 +149,11 @@ public class PlayerMilitiaTests : CardWithPlayerTestsBase
 		AssertPile([], defender.Game.Trash);
 
 		attackerUser.Verify(u => u.ThroneRoomPlay(throneRoom, attacker.PlayerState,
-			attacker.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			attacker.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 
 		// the attack fires once per throne-room resolution, but the defender's hand only drops
 		// to 3 after the first one, so the second attack's <=3 guard makes it a no-op
-		defenderUser.Verify(du => du.MilitiaDiscard(militia, defender.PlayerState, defender.Game.Kingdom, 2), Times.Once);
+		defenderUser.Verify(du => du.MilitiaDiscard(militia, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 2), Times.Once);
 		#endregion
 	}
 }

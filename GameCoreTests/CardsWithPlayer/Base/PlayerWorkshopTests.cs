@@ -119,7 +119,7 @@ public class PlayerWorkshopTests : CardWithPlayerTestsBase
 		var moatToGain = player.Game.Kingdom.GetPile(CardType.Moat).CardInstance;
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == workshopToPlay))).Returns(workshopToPlay);
+			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == workshopToPlay))).Returns(workshopToPlay);
 		user.SetupSequence(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
 			.Returns(villageToGain).Returns(moatToGain);
 		#endregion
@@ -138,7 +138,7 @@ public class PlayerWorkshopTests : CardWithPlayerTestsBase
 		AssertPile([], player.Game.Trash);
 
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.Price == 4 && k.OnlyTreasures == false),
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Exactly(2));
 		#endregion
@@ -153,7 +153,7 @@ public class PlayerWorkshopTests : CardWithPlayerTestsBase
 		var villageToGain = player.Game.Kingdom.GetPile(CardType.Village).CardInstance;
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == workshopToPlay))).Returns(workshopToPlay);
+			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == workshopToPlay))).Returns(workshopToPlay);
 		user.SetupSequence(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
 			.Returns(villageToGain).Returns((CardInstance)null);
 		#endregion
@@ -172,7 +172,7 @@ public class PlayerWorkshopTests : CardWithPlayerTestsBase
 		AssertPile([], player.Game.Trash);
 
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.Price == 4 && k.OnlyTreasures == false),
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Exactly(2));
 		#endregion
@@ -186,7 +186,7 @@ public class PlayerWorkshopTests : CardWithPlayerTestsBase
 		var workshopToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Workshop);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == workshopToPlay))).Returns(workshopToPlay);
+			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == workshopToPlay))).Returns(workshopToPlay);
 		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
 			.Returns((CardInstance)null);
 		#endregion
@@ -205,7 +205,7 @@ public class PlayerWorkshopTests : CardWithPlayerTestsBase
 		AssertPile([], player.Game.Trash);
 
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.Price == 4 && k.OnlyTreasures == false),
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Exactly(2));
 		#endregion

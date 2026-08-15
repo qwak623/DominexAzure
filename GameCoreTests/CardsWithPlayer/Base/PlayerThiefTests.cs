@@ -73,7 +73,7 @@ public class PlayerThiefTests : CardWithPlayerTestsBase
 		AssertPile([], defender.Game.Trash);
 
 		// the attacker is not asked to choose a treasure to trash
-		attackerUser.Verify(au => au.ThiefChoose(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<IEnumerable<CardInstance>>()), Times.Never);
+		attackerUser.Verify(au => au.ThiefChoose(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()), Times.Never);
 
 		// the attacker is not asked whether to steal anything
 		attackerUser.Verify(au => au.ThiefSteal(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<CardInstance>()), Times.Never);
@@ -112,7 +112,7 @@ public class PlayerThiefTests : CardWithPlayerTestsBase
 		AssertPile([], defender.Game.Trash);
 
 		// the attacker is not asked to choose a treasure to trash
-		attackerUser.Verify(au => au.ThiefChoose(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<IEnumerable<CardInstance>>()), Times.Never);
+		attackerUser.Verify(au => au.ThiefChoose(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()), Times.Never);
 
 		// the attacker is not asked whether to steal anything
 		attackerUser.Verify(au => au.ThiefSteal(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<CardInstance>()), Times.Never);
@@ -128,7 +128,7 @@ public class PlayerThiefTests : CardWithPlayerTestsBase
 
 		var copperToSteal = defender.PlayerState.DrawPile.First(c => c.Card.Type == CardType.Copper);
 		attackerUser.Setup(au => au.ThiefChoose(thief, attacker.PlayerState, attacker.Game.Kingdom,
-			It.Is<IEnumerable<CardInstance>>(c => c.Single() == copperToSteal))).Returns(copperToSteal);
+			It.Is<List<CardInstance>>(c => c.Single() == copperToSteal))).Returns(copperToSteal);
 		attackerUser.Setup(au => au.ThiefSteal(thief, attacker.PlayerState, attacker.Game.Kingdom, copperToSteal)).Returns(false);
 		#endregion
 
@@ -157,7 +157,7 @@ public class PlayerThiefTests : CardWithPlayerTestsBase
 
 		// the attacker is asked to choose a treasure to trash
 		attackerUser.Verify(au => au.ThiefChoose(thief, attacker.PlayerState, attacker.Game.Kingdom,
-			It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			It.IsAny<List<CardInstance>>()), Times.Once);
 
 		// the attacker is asked whether to steal the trashed card
 		attackerUser.Verify(au => au.ThiefSteal(thief, attacker.PlayerState, attacker.Game.Kingdom,
@@ -174,7 +174,7 @@ public class PlayerThiefTests : CardWithPlayerTestsBase
 
 		var goldToSteal = defender.PlayerState.DrawPile.First(c => c.Card.Type == CardType.Gold);
 		attackerUser.Setup(au => au.ThiefChoose(thief, attacker.PlayerState, attacker.Game.Kingdom,
-			It.Is<IEnumerable<CardInstance>>(c => c.Single() == goldToSteal))).Returns(goldToSteal);
+			It.Is<List<CardInstance>>(c => c.Single() == goldToSteal))).Returns(goldToSteal);
 		attackerUser.Setup(au => au.ThiefSteal(thief, attacker.PlayerState, attacker.Game.Kingdom,
 			goldToSteal)).Returns(true);
 		#endregion
@@ -206,7 +206,7 @@ public class PlayerThiefTests : CardWithPlayerTestsBase
 
 		// the attacker is asked to choose a treasure to trash
 		attackerUser.Verify(au => au.ThiefChoose(thief, attacker.PlayerState, attacker.Game.Kingdom,
-			It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			It.IsAny<List<CardInstance>>()), Times.Once);
 
 		// the attacker is asked whether to steal the trashed card
 		attackerUser.Verify(au => au.ThiefSteal(thief, attacker.PlayerState, attacker.Game.Kingdom,
@@ -224,7 +224,7 @@ public class PlayerThiefTests : CardWithPlayerTestsBase
 		var silverToSteal = defender.PlayerState.DrawPile.First(c => c.Card.Type == CardType.Silver);
 		var copperToSteal = defender.PlayerState.DrawPile.First(c => c.Card.Type == CardType.Copper);
 		attackerUser.Setup(au => au.ThiefChoose(thief, attacker.PlayerState, attacker.Game.Kingdom,
-			It.Is<IEnumerable<CardInstance>>(c => c.Count() == 2 && c.Contains(copperToSteal)
+			It.Is<List<CardInstance>>(c => c.Count() == 2 && c.Contains(copperToSteal)
 			&& c.Contains(silverToSteal)))).Returns(silverToSteal);
 		attackerUser.Setup(au => au.ThiefSteal(thief, attacker.PlayerState, attacker.Game.Kingdom,
 			silverToSteal)).Returns(false);
@@ -257,7 +257,7 @@ public class PlayerThiefTests : CardWithPlayerTestsBase
 
 		// the attacker is asked to choose a treasure to trash
 		attackerUser.Verify(au => au.ThiefChoose(thief, attacker.PlayerState, attacker.Game.Kingdom,
-			It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			It.IsAny<List<CardInstance>>()), Times.Once);
 
 		// the attacker is asked whether to steal the trashed card
 		attackerUser.Verify(au => au.ThiefSteal(thief, attacker.PlayerState, attacker.Game.Kingdom,
@@ -275,7 +275,7 @@ public class PlayerThiefTests : CardWithPlayerTestsBase
 		var goldToSteal = defender.PlayerState.DrawPile.First(c => c.Card.Type == CardType.Gold);
 		var copperToSteal = defender.PlayerState.DrawPile.First(c => c.Card.Type == CardType.Copper);
 		attackerUser.Setup(au => au.ThiefChoose(thief, attacker.PlayerState, attacker.Game.Kingdom,
-			It.Is<IEnumerable<CardInstance>>(c => c.Count() == 2 && c.Contains(copperToSteal)
+			It.Is<List<CardInstance>>(c => c.Count() == 2 && c.Contains(copperToSteal)
 			&& c.Contains(goldToSteal)))).Returns(goldToSteal);
 		attackerUser.Setup(au => au.ThiefSteal(thief, attacker.PlayerState, attacker.Game.Kingdom,
 			goldToSteal)).Returns(true);
@@ -308,7 +308,7 @@ public class PlayerThiefTests : CardWithPlayerTestsBase
 
 		// the attacker is asked to choose a treasure to trash
 		attackerUser.Verify(au => au.ThiefChoose(thief, attacker.PlayerState, attacker.Game.Kingdom,
-			It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			It.IsAny<List<CardInstance>>()), Times.Once);
 
 		// the attacker is asked whether to steal the trashed card
 		attackerUser.Verify(au => au.ThiefSteal(thief, attacker.PlayerState, attacker.Game.Kingdom,
@@ -325,12 +325,12 @@ public class PlayerThiefTests : CardWithPlayerTestsBase
 
 		var thiefToPlay = attacker.PlayerState.Hand.First(c => c.Card.Type == CardType.Thief);
 		attackerUser.Setup(u => u.ThroneRoomPlay(throneRoom, attacker.PlayerState,
-			attacker.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == thiefToPlay))).Returns(thiefToPlay);
+			attacker.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == thiefToPlay))).Returns(thiefToPlay);
 
 		var goldToSteal = defender.PlayerState.DrawPile.First(c => c.Card.Type == CardType.Gold);
 		var silverToSteal = defender.PlayerState.DrawPile.First(c => c.Card.Type == CardType.Silver);
 		attackerUser.SetupSequence(au => au.ThiefChoose(thief, attacker.PlayerState, attacker.Game.Kingdom,
-			It.IsAny<IEnumerable<CardInstance>>())).Returns(goldToSteal).Returns(silverToSteal);
+			It.IsAny<List<CardInstance>>())).Returns(goldToSteal).Returns(silverToSteal);
 		attackerUser.Setup(au => au.ThiefSteal(thief, attacker.PlayerState, attacker.Game.Kingdom,
 			goldToSteal)).Returns(true);
 		attackerUser.Setup(au => au.ThiefSteal(thief, attacker.PlayerState, attacker.Game.Kingdom,
@@ -366,11 +366,11 @@ public class PlayerThiefTests : CardWithPlayerTestsBase
 
 		// attacker was asked which card to play using throne room
 		attackerUser.Verify(u => u.ThroneRoomPlay(throneRoom, attacker.PlayerState,
-			attacker.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			attacker.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 
 		// the attacker is asked to choose a treasure to trash two times
 		attackerUser.Verify(au => au.ThiefChoose(thief, attacker.PlayerState, attacker.Game.Kingdom,
-			It.IsAny<IEnumerable<CardInstance>>()), Times.Exactly(2));
+			It.IsAny<List<CardInstance>>()), Times.Exactly(2));
 
 		// the attacker is asked whether to steal the trashed card two times
 		attackerUser.Verify(au => au.ThiefSteal(thief, attacker.PlayerState, attacker.Game.Kingdom,

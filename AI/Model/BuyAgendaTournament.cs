@@ -10,7 +10,10 @@ public static class BuyAgendaTournament
 	public static void ShowResults(this List<Tuple> agendas, IGameLogger logger)
 	{
 		foreach (var item in agendas.OrderBy(x => x.Wins))
+		{
 			logger?.Log(item.ToString());
+		}
+
 		logger?.Log("");
 	}
 
@@ -44,9 +47,14 @@ public static class BuyAgendaTournament
 						var result = task.Result;
 
 						if (result.PlayerIsWinner(0))
+						{
 							IncWins(agendas, i);
+						}
+
 						if (result.PlayerIsWinner(1))
+						{
 							IncWins(agendas, j);
+						}
 					});
 					//}
 				}
@@ -59,9 +67,9 @@ public static class BuyAgendaTournament
 
 	public class Tuple
 	{
-		public BuyAgenda Agenda;
+		public BuyAgenda? Agenda;
 		public int Wins;
-		public string Id;
+		public string? Id;
 
 		public override string ToString() => Wins + ": " + Id;
 	}

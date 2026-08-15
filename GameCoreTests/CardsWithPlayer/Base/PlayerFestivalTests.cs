@@ -54,7 +54,7 @@ public class PlayerFestivalTests : CardWithPlayerTestsBase
 		var festivalToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Festival);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == festivalToPlay))).Returns(festivalToPlay);
+			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == festivalToPlay))).Returns(festivalToPlay);
 		#endregion
 
 		#region act
@@ -72,7 +72,7 @@ public class PlayerFestivalTests : CardWithPlayerTestsBase
 
 		// user is asked which card to play using throne room
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		#endregion
 	}
 }

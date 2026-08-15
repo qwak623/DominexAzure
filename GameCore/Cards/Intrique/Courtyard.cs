@@ -30,7 +30,7 @@ public class Courtyard : Card
 		// todo maybe it shouldnt ask player to choose a card if they have no cards in hand,
 		// but for now it will just return null and do nothing
 		// also the same thning is probably in other cards
-		var card = player.User.CourtyardPutOnTop(this, player.PlayerState, player.Game.Kingdom, player.PlayerState.Hand);
+		var card = player.User.CourtyardPutOnTop(this, player.PlayerState, player.Game.Kingdom, player.PlayerState.Hand.ToList());
 		if (card is not null)
 		{
 			player.ReturnToDrawPile(card);

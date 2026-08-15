@@ -36,7 +36,7 @@ public class PlayerCoutyardTests : CardWithPlayerTestsBase
 		player.PlayerState.DrawPile = CreatePile([copper, throneRoom, courtyard]);
 		var copperToReturn = player.PlayerState.DrawPile.First(c => c.Card.Type == CardType.Copper);
 
-		user.Setup(u => u.CourtyardPutOnTop(It.IsAny<Card>(), player.PlayerState, player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()))
+		user.Setup(u => u.CourtyardPutOnTop(It.IsAny<Card>(), player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns(copperToReturn);
 		#endregion
 
@@ -53,7 +53,7 @@ public class PlayerCoutyardTests : CardWithPlayerTestsBase
 		AssertPile([courtyard], player.PlayerState.ActionsPlayed);
 		AssertPile([], player.Game.Trash);
 
-		user.Verify(u => u.CourtyardPutOnTop(courtyard, player.PlayerState, player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+		user.Verify(u => u.CourtyardPutOnTop(courtyard, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		#endregion
 	}
 
@@ -65,7 +65,7 @@ public class PlayerCoutyardTests : CardWithPlayerTestsBase
 		player.PlayerState.DrawPile = CreatePile([throneRoom, throneRoom, courtyard]);
 		var copperInHand = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Copper);
 
-		user.Setup(u => u.CourtyardPutOnTop(courtyard, player.PlayerState, player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()))
+		user.Setup(u => u.CourtyardPutOnTop(courtyard, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns(copperInHand);
 		#endregion
 
@@ -82,7 +82,7 @@ public class PlayerCoutyardTests : CardWithPlayerTestsBase
 		AssertPile([courtyard], player.PlayerState.ActionsPlayed);
 		AssertPile([], player.Game.Trash);
 
-		user.Verify(u => u.CourtyardPutOnTop(courtyard, player.PlayerState, player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+		user.Verify(u => u.CourtyardPutOnTop(courtyard, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		#endregion
 	}
 
@@ -107,7 +107,7 @@ public class PlayerCoutyardTests : CardWithPlayerTestsBase
 		AssertPile([courtyard], player.PlayerState.ActionsPlayed);
 		AssertPile([], player.Game.Trash);
 
-		user.Verify(u => u.CourtyardPutOnTop(courtyard, player.PlayerState, player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+		user.Verify(u => u.CourtyardPutOnTop(courtyard, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		#endregion
 	}
 
@@ -122,8 +122,8 @@ public class PlayerCoutyardTests : CardWithPlayerTestsBase
 		var estateInHand = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Estate);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == courtyardToPlay))).Returns(courtyardToPlay);
-		user.Setup(u => u.CourtyardPutOnTop(courtyard, player.PlayerState, player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()))
+			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == courtyardToPlay))).Returns(courtyardToPlay);
+		user.Setup(u => u.CourtyardPutOnTop(courtyard, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns(estateInHand);
 		#endregion
 
@@ -141,9 +141,9 @@ public class PlayerCoutyardTests : CardWithPlayerTestsBase
 		AssertPile([], player.Game.Trash);
 
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 
-		user.Verify(u => u.CourtyardPutOnTop(courtyard, player.PlayerState, player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Exactly(2));
+		user.Verify(u => u.CourtyardPutOnTop(courtyard, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Exactly(2));
 		#endregion
 	}
 }

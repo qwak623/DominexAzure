@@ -36,7 +36,7 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 		var mineToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Mine);
 		var copperInHand = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Copper);
 
-		user.Setup(u => u.MineTrash(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<IList<CardInstance>>()))
+		user.Setup(u => u.MineTrash(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()))
 			.Returns(copperInHand);
 
 		// selection is pulled from the wrapper itself, so this only succeeds if silver ($3)
@@ -73,7 +73,7 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 		player.PlayerState.Hand = CreatePile([mine, copper]);
 		var mineToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Mine);
 
-		user.Setup(u => u.MineTrash(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<IList<CardInstance>>()))
+		user.Setup(u => u.MineTrash(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()))
 			.Returns((CardInstance)null);
 		#endregion
 
@@ -100,7 +100,7 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 		var mineToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Mine);
 		var copperInHand = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Copper);
 
-		user.Setup(u => u.MineTrash(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<IList<CardInstance>>()))
+		user.Setup(u => u.MineTrash(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()))
 			.Returns(copperInHand);
 		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), Phase.Gain))
 			.Returns((CardInstance)null);
@@ -131,8 +131,8 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 		var silverToGain = player.Game.Kingdom.GetPile(CardType.Silver).CardInstance;
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == mineToPlay))).Returns(mineToPlay);
-		user.SetupSequence(u => u.MineTrash(mine, player.PlayerState, player.Game.Kingdom, It.IsAny<IList<CardInstance>>()))
+			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == mineToPlay))).Returns(mineToPlay);
+		user.SetupSequence(u => u.MineTrash(mine, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns(copperInHand).Returns(silverToGain);
 
 		// each resolution's selection is pulled from its own wrapper, so this only succeeds
@@ -162,14 +162,14 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 		AssertPile([copper, silver], player.Game.Trash);
 
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 
 		// second resolution's selection is the silver the first resolution just gained - it goes
 		// straight back in for a gold
 		user.Verify(u => u.MineTrash(mine, player.PlayerState, player.Game.Kingdom,
-			It.Is<IList<CardInstance>>(c => c.SequenceEqual(new List<CardInstance> { copperInHand }))), Times.Once);
+			It.Is<List<CardInstance>>(c => c.SequenceEqual(new List<CardInstance> { copperInHand }))), Times.Once);
 		user.Verify(u => u.MineTrash(mine, player.PlayerState, player.Game.Kingdom,
-			It.Is<IList<CardInstance>>(c => c.SequenceEqual(new List<CardInstance> { silverToGain }))), Times.Once);
+			It.Is<List<CardInstance>>(c => c.SequenceEqual(new List<CardInstance> { silverToGain }))), Times.Once);
 
 		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.Price == 3 && kw.OnlyTreasures),
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Once);
@@ -193,8 +193,8 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 		var silver1 = player.Game.Kingdom.GetPile(CardType.Silver).CardInstance;
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == mineToPlay))).Returns(mineToPlay);
-		user.SetupSequence(u => u.MineTrash(mine, player.PlayerState, player.Game.Kingdom, It.IsAny<IList<CardInstance>>()))
+			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == mineToPlay))).Returns(mineToPlay);
+		user.SetupSequence(u => u.MineTrash(mine, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns(copper1).Returns(copper2);
 
 		CardInstance silverToGain = null;
@@ -218,14 +218,14 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 		AssertPile([copper, copper], player.Game.Trash);
 
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 
 		// first resolution offers both starting coppers; second offers whichever wasn't trashed
 		// plus the silver the first resolution just gained
 		user.Verify(u => u.MineTrash(mine, player.PlayerState, player.Game.Kingdom,
-			It.Is<IList<CardInstance>>(c => c.SequenceEqual(new List<CardInstance> { copper1, copper2 }))), Times.Once);
+			It.Is<List<CardInstance>>(c => c.SequenceEqual(new List<CardInstance> { copper1, copper2 }))), Times.Once);
 		user.Verify(u => u.MineTrash(mine, player.PlayerState, player.Game.Kingdom,
-			It.Is<IList<CardInstance>>(c => c.SequenceEqual(new List<CardInstance> { copper2, silver1 }))), Times.Once);
+			It.Is<List<CardInstance>>(c => c.SequenceEqual(new List<CardInstance> { copper2, silver1 }))), Times.Once);
 
 		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.Price == 3 && kw.OnlyTreasures),
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Exactly(2));

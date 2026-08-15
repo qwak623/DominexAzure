@@ -98,18 +98,18 @@ public class PlayerDiplomatTests : CardWithPlayerTestsBase
 		defender.PlayerState.DrawPile = CreatePile([silver, silver]);
 		var diplomatInHand = defender.PlayerState.Hand.First(c => c.Card.Type == CardType.Diplomat);
 
-		defenderUser.Setup(u => u.PlayCard(It.Is<IEnumerable<CardInstance>>(r => r.Single() == diplomatInHand),
+		defenderUser.Setup(u => u.PlayCard(It.Is<List<CardInstance>>(r => r.Single() == diplomatInHand),
 			defender.PlayerState, defender.Game.Kingdom, Phase.Reaction, militia))
 			.Returns(diplomatInHand);
 
 		// discard three of the four coppers, keeping diplomat, one copper and the two newly-drawn silvers
-		defenderUser.Setup(u => u.DiplomatDiscard(diplomat, defender.PlayerState, defender.Game.Kingdom, 3))
-			.Returns<Card, PlayerState, Kingdom, int>((c, ps, k, count) =>
+		defenderUser.Setup(u => u.DiplomatDiscard(diplomat, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 3))
+			.Returns<Card, PlayerState, Kingdom, List<CardInstance>, int>((c, ps, k, cardSelection, count) =>
 				ps.Hand.Where(h => h.Card.Type == CardType.Copper).Take(3).ToList());
 
 		// diplomat does not block the attack - militia still forces a discard down afterward
-		defenderUser.Setup(u => u.MilitiaDiscard(militia, defender.PlayerState, defender.Game.Kingdom, 1))
-			.Returns<Card, PlayerState, Kingdom, int>((c, ps, k, count) =>
+		defenderUser.Setup(u => u.MilitiaDiscard(militia, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 1))
+			.Returns<Card, PlayerState, Kingdom, List<CardInstance>, int>((c, ps, k, cardSelection, count) =>
 				ps.Hand.Where(h => h.Card.Type == CardType.Copper).ToList());
 		#endregion
 
@@ -126,10 +126,10 @@ public class PlayerDiplomatTests : CardWithPlayerTestsBase
 		AssertPile([], defender.PlayerState.ActionsPlayed);
 		AssertPile([], defender.Game.Trash);
 
-		defenderUser.Verify(u => u.PlayCard(It.IsAny<IEnumerable<CardInstance>>(),
+		defenderUser.Verify(u => u.PlayCard(It.IsAny<List<CardInstance>>(),
 			defender.PlayerState, defender.Game.Kingdom, Phase.Reaction, militia), Times.Once);
-		defenderUser.Verify(u => u.DiplomatDiscard(diplomat, defender.PlayerState, defender.Game.Kingdom, 3), Times.Once);
-		defenderUser.Verify(u => u.MilitiaDiscard(militia, defender.PlayerState, defender.Game.Kingdom, 1), Times.Once);
+		defenderUser.Verify(u => u.DiplomatDiscard(diplomat, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 3), Times.Once);
+		defenderUser.Verify(u => u.MilitiaDiscard(militia, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 1), Times.Once);
 		#endregion
 	}
 
@@ -142,10 +142,10 @@ public class PlayerDiplomatTests : CardWithPlayerTestsBase
 		var diplomatInHand = defender.PlayerState.Hand.First(c => c.Card.Type == CardType.Diplomat);
 		var copperToDiscard = defender.PlayerState.Hand.Where(c => c.Card.Type == CardType.Copper).Take(1).ToList();
 
-		defenderUser.Setup(u => u.PlayCard(It.Is<IEnumerable<CardInstance>>(r => r.Single() == diplomatInHand),
+		defenderUser.Setup(u => u.PlayCard(It.Is<List<CardInstance>>(r => r.Single() == diplomatInHand),
 			defender.PlayerState, defender.Game.Kingdom, Phase.Reaction, militia))
 			.Returns(diplomatInHand);
-		defenderUser.Setup(u => u.MilitiaDiscard(militia, defender.PlayerState, defender.Game.Kingdom, 1))
+		defenderUser.Setup(u => u.MilitiaDiscard(militia, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 1))
 			.Returns(copperToDiscard);
 		#endregion
 
@@ -164,7 +164,7 @@ public class PlayerDiplomatTests : CardWithPlayerTestsBase
 		AssertPile([], defender.PlayerState.ActionsPlayed);
 		AssertPile([], defender.Game.Trash);
 
-		defenderUser.Verify(u => u.DiplomatDiscard(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<int>()), Times.Never);
+		defenderUser.Verify(u => u.DiplomatDiscard(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>(), It.IsAny<int>()), Times.Never);
 		#endregion
 	}
 
@@ -177,10 +177,10 @@ public class PlayerDiplomatTests : CardWithPlayerTestsBase
 		var diplomatInHand = defender.PlayerState.Hand.First(c => c.Card.Type == CardType.Diplomat);
 		var coppersToDiscard = defender.PlayerState.Hand.Where(c => c.Card.Type == CardType.Copper).Take(2).ToList();
 
-		defenderUser.Setup(u => u.PlayCard(It.Is<IEnumerable<CardInstance>>(r => r.Single() == diplomatInHand),
+		defenderUser.Setup(u => u.PlayCard(It.Is<List<CardInstance>>(r => r.Single() == diplomatInHand),
 			defender.PlayerState, defender.Game.Kingdom, Phase.Reaction, militia))
 			.Returns((CardInstance)null);
-		defenderUser.Setup(u => u.MilitiaDiscard(militia, defender.PlayerState, defender.Game.Kingdom, 2))
+		defenderUser.Setup(u => u.MilitiaDiscard(militia, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 2))
 			.Returns(coppersToDiscard);
 		#endregion
 
@@ -197,7 +197,7 @@ public class PlayerDiplomatTests : CardWithPlayerTestsBase
 		AssertPile([], defender.PlayerState.ActionsPlayed);
 		AssertPile([], defender.Game.Trash);
 
-		defenderUser.Verify(u => u.DiplomatDiscard(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<int>()), Times.Never);
+		defenderUser.Verify(u => u.DiplomatDiscard(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>(), It.IsAny<int>()), Times.Never);
 		#endregion
 	}
 }

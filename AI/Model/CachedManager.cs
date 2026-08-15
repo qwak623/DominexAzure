@@ -1,24 +1,24 @@
-﻿using AI.Provincial;
-using GameCore;
-using GameCore.Cards;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Text;
-using Utils;
+using System.Threading.Tasks;
+using AI.Provincial;
+using GameCore;
+using GameCore.Cards;
 using GameCore.Observers;
+using Utils;
 
 namespace AI.Model;
 public class CachedManager : BuyAgendaManager
 {
-	string directoryPath;
-	string prefix;
-	int subsetSize;
-	Dictionary<string, string>[] files = new Dictionary<string, string>[33];
-	object[] locks = new object[33];
+	private string directoryPath;
+	private string prefix;
+	private int subsetSize;
+	private Dictionary<string, string>[] files = new Dictionary<string, string>[33];
+	private object[] locks = new object[33];
 
 	public CachedManager(string directoryPath, int subsetSize, string prefix)
 	{
@@ -26,7 +26,9 @@ public class CachedManager : BuyAgendaManager
 		this.subsetSize = subsetSize;
 		this.prefix = prefix;
 		for (int i = 0; i < locks.Length; i++)
+		{
 			locks[i] = new object();
+		}
 	}
 
 	/// <summary>
@@ -34,7 +36,7 @@ public class CachedManager : BuyAgendaManager
 	/// </summary>
 	/// <param name="cards"></param>
 	/// <returns></returns>
-	public override BuyAgenda Load(IEnumerable<Card> cards)
+	public override BuyAgenda? Load(IEnumerable<Card> cards)
 	{
 		var id = cards.ToId();
 		int i = cards.OrderBy(p => p.Type).Select(p => (int)p.Type).First();
@@ -42,10 +44,14 @@ public class CachedManager : BuyAgendaManager
 		try
 		{
 			if (files[i] is null)
+			{
 				LoadAllAgendas(i);
+			}
 
 			lock (locks[i])
+			{
 				return BuyAgenda.FromString(files[i][id]);
+			}
 		}
 		catch (Exception)
 		{
@@ -53,7 +59,7 @@ public class CachedManager : BuyAgendaManager
 		}
 	}
 
-	void LoadAllAgendas(int i)
+	private void LoadAllAgendas(int i)
 	{
 		files[i] = new Dictionary<string, string>();
 
@@ -65,7 +71,9 @@ public class CachedManager : BuyAgendaManager
 				{
 					string line = reader.ReadLine();
 					if (!string.IsNullOrEmpty(line))
+					{
 						files[i].Add(line.Split(':')[0], line);
+					}
 				}
 			}
 		}
@@ -77,8 +85,12 @@ public class CachedManager : BuyAgendaManager
 		int i = cards.OrderBy(p => p).Select(p => (int)p.Type).First();
 
 		if (Load(cards) is null)
+		{
 			lock (locks[i])
+			{
 				File.AppendAllText($"{directoryPath}{prefix}{i}.txt", agenda.ToString(id) + Environment.NewLine);
+			}
+		}
 		else
 		{
 			var dict = new Dictionary<string, string>();
@@ -86,11 +98,18 @@ public class CachedManager : BuyAgendaManager
 			{
 				files[i] = null;
 				foreach (var line in File.ReadAllLines($"{directoryPath}{prefix}{i}.txt").Select(l => l.Split(':')))
+				{
 					dict[line[0]] = $"{line[0]}:{line[1]}";
+				}
+
 				dict[id] = agenda.ToString(id);
 				using (var writer = new StreamWriter($"{directoryPath}{prefix}{i}.txt"))
+				{
 					foreach (var a in dict.OrderBy(d => d.Key))
+					{
 						writer.WriteLine(a.Value);
+					}
+				}
 			}
 		}
 	}
@@ -102,7 +121,7 @@ public class CachedManager : BuyAgendaManager
 	/// <param name="k"></param>
 	/// <param name="logger"></param>
 	/// <returns></returns>
-	public override BuyAgenda LoadBest(List<Card> k, IGameLogger logger = null)
+	public override BuyAgenda? LoadBest(List<Card> k, IGameLogger? logger = null)
 	{
 		k = k.OrderBy(c => c.Type).ToList();
 
@@ -117,13 +136,17 @@ public class CachedManager : BuyAgendaManager
 
 			var agenda = Load(cards);
 			if (agenda is not null)
+			{
 				agendas.Add(new BuyAgendaTournament.Tuple { Agenda = agenda, Wins = 0, Id = cards.ToId() });
+			}
 		}
 		Console.WriteLine("AgendaCount " + agendas.Count);
 
 		// if there are no agendas fitting with this kingdom
 		if (agendas.Count == 0)
+		{
 			return null;
+		}
 
 		//agendas.Add(new Tuple { Agenda = new Tens(directoryPath).Load(k), Wins = 0, Cards = k });
 
@@ -201,7 +224,9 @@ public class CachedManager : BuyAgendaManager
 				try
 				{
 					if (files[i] is null)
+					{
 						LoadAllAgendas(i);
+					}
 				}
 				catch
 				{
@@ -209,7 +234,9 @@ public class CachedManager : BuyAgendaManager
 				}
 
 				foreach (var item in files[i])
+				{
 					yield return BuyAgenda.FromString(item.Value);
+				}
 			}
 		}
 

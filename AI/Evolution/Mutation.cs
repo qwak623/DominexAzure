@@ -20,7 +20,9 @@ internal class ReplaceSupplyCardMutation : Mutation
 	public override void Mutate(BuyAgenda agenda, List<Card> kingdom)
 	{
 		if (agenda.BuyMenu.Count == 0)
+		{
 			return;
+		}
 
 		int i = ThreadSafeRandom.Next(agenda.BuyMenu.Count);
 		int j = ThreadSafeRandom.Next(kingdom.Count);
@@ -36,7 +38,9 @@ internal class ModifyPurchaseCountMutation : Mutation
 	public override void Mutate(BuyAgenda agenda, List<Card> kingdom)
 	{
 		if (agenda.BuyMenu.Count == 0)
+		{
 			return;
+		}
 
 		int i = ThreadSafeRandom.Next(agenda.BuyMenu.Count);
 
@@ -60,7 +64,9 @@ internal class SwapSupplyCardsMutation : Mutation
 	public override void Mutate(BuyAgenda agenda, List<Card> kingdom)
 	{
 		if (agenda.BuyMenu.Count == 0)
+		{
 			return;
+		}
 
 		int i = ThreadSafeRandom.Next(agenda.BuyMenu.Count);
 		int j = ThreadSafeRandom.Next(agenda.BuyMenu.Count);
@@ -99,7 +105,9 @@ internal class AddCardMutation : Mutation
 	public override void Mutate(BuyAgenda agenda, List<Card> kingdom)
 	{
 		if (agenda.BuyMenu.Count == 0)
+		{
 			return;
+		}
 
 		int i = ThreadSafeRandom.Next(agenda.BuyMenu.Count);
 		int j = ThreadSafeRandom.Next(kingdom.Count);
@@ -113,7 +121,9 @@ internal class RemoveCardMutation : Mutation
 	public override void Mutate(BuyAgenda agenda, List<Card> kingdom)
 	{
 		if (agenda.BuyMenu.Count <= 1)
+		{
 			return;
+		}
 
 		int i = ThreadSafeRandom.Next(agenda.BuyMenu.Count);
 

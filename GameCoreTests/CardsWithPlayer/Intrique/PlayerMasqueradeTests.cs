@@ -47,12 +47,12 @@ public class PlayerMasqueradeTests : CardWithPlayerTestsBase
 		var copperToPass = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Copper);
 		var estateToPass = player2.PlayerState.Hand[0];
 
-		user.Setup(u => u.MasqueradePass(masquerade, It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<IEnumerable<CardInstance>>()))
+		user.Setup(u => u.MasqueradePass(masquerade, It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()))
 			.Returns(copperToPass);
-		user2.Setup(u => u.MasqueradePass(masquerade, It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<IEnumerable<CardInstance>>()))
+		user2.Setup(u => u.MasqueradePass(masquerade, It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()))
 			.Returns(estateToPass);
 
-		user.Setup(u => u.MasqueradeTrash(masquerade, player.PlayerState, player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()))
+		user.Setup(u => u.MasqueradeTrash(masquerade, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns((CardInstance)null);
 		#endregion
 
@@ -75,11 +75,11 @@ public class PlayerMasqueradeTests : CardWithPlayerTestsBase
 		AssertPile([], player2.PlayerState.DiscardPile);
 
 		user.Verify(u => u.MasqueradePass(masquerade, player.PlayerState, player.Game.Kingdom,
-			It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			It.IsAny<List<CardInstance>>()), Times.Once);
 		user2.Verify(u => u.MasqueradePass(masquerade, player2.PlayerState, player.Game.Kingdom,
-			It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			It.IsAny<List<CardInstance>>()), Times.Once);
 		user.Verify(u => u.MasqueradeTrash(masquerade, player.PlayerState, player.Game.Kingdom,
-			It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			It.IsAny<List<CardInstance>>()), Times.Once);
 		#endregion
 	}
 
@@ -94,15 +94,15 @@ public class PlayerMasqueradeTests : CardWithPlayerTestsBase
 		var copperToPass = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Copper);
 		var estateToPass = player2.PlayerState.Hand[0];
 
-		user.Setup(u => u.MasqueradePass(masquerade, It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<IEnumerable<CardInstance>>()))
+		user.Setup(u => u.MasqueradePass(masquerade, It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()))
 			.Returns(copperToPass);
-		user2.Setup(u => u.MasqueradePass(masquerade, It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<IEnumerable<CardInstance>>()))
+		user2.Setup(u => u.MasqueradePass(masquerade, It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()))
 			.Returns(estateToPass);
 
 		// targets the card just received from player2, proving the trash step sees the hand
 		// after the simultaneous pass has already happened
 		user.Setup(u => u.MasqueradeTrash(masquerade, player.PlayerState, player.Game.Kingdom,
-			It.Is<IEnumerable<CardInstance>>(c => c.Contains(estateToPass))))
+			It.Is<List<CardInstance>>(c => c.Contains(estateToPass))))
 			.Returns(estateToPass);
 		#endregion
 
@@ -135,7 +135,7 @@ public class PlayerMasqueradeTests : CardWithPlayerTestsBase
 
 		var masqueradeToPlay = player.PlayerState.Hand[0];
 
-		user.Setup(u => u.MasqueradeTrash(masquerade, player.PlayerState, player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()))
+		user.Setup(u => u.MasqueradeTrash(masquerade, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns((CardInstance)null);
 		#endregion
 
@@ -156,8 +156,8 @@ public class PlayerMasqueradeTests : CardWithPlayerTestsBase
 		AssertPile([], player2.PlayerState.DrawPile);
 		AssertPile([], player2.PlayerState.DiscardPile);
 
-		user.Verify(u => u.MasqueradePass(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<IEnumerable<CardInstance>>()), Times.Never);
-		user2.Verify(u => u.MasqueradePass(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<IEnumerable<CardInstance>>()), Times.Never);
+		user.Verify(u => u.MasqueradePass(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()), Times.Never);
+		user2.Verify(u => u.MasqueradePass(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()), Times.Never);
 		#endregion
 	}
 
@@ -178,14 +178,14 @@ public class PlayerMasqueradeTests : CardWithPlayerTestsBase
 		var silverToPass = player2.PlayerState.Hand[0];
 		var goldToPass = player3.PlayerState.Hand[0];
 
-		user.Setup(u => u.MasqueradePass(masquerade, It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<IEnumerable<CardInstance>>()))
+		user.Setup(u => u.MasqueradePass(masquerade, It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()))
 			.Returns(copperToPass);
-		user2.Setup(u => u.MasqueradePass(masquerade, It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<IEnumerable<CardInstance>>()))
+		user2.Setup(u => u.MasqueradePass(masquerade, It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()))
 			.Returns(silverToPass);
-		user3.Setup(u => u.MasqueradePass(masquerade, It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<IEnumerable<CardInstance>>()))
+		user3.Setup(u => u.MasqueradePass(masquerade, It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()))
 			.Returns(goldToPass);
 
-		user.Setup(u => u.MasqueradeTrash(masquerade, player.PlayerState, player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()))
+		user.Setup(u => u.MasqueradeTrash(masquerade, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns((CardInstance)null);
 		#endregion
 
@@ -227,12 +227,12 @@ public class PlayerMasqueradeTests : CardWithPlayerTestsBase
 		var copperToPass = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Copper);
 		var moatToPass = player2.PlayerState.Hand[0];
 
-		user.Setup(u => u.MasqueradePass(masquerade, It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<IEnumerable<CardInstance>>()))
+		user.Setup(u => u.MasqueradePass(masquerade, It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()))
 			.Returns(copperToPass);
-		user2.Setup(u => u.MasqueradePass(masquerade, It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<IEnumerable<CardInstance>>()))
+		user2.Setup(u => u.MasqueradePass(masquerade, It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()))
 			.Returns(moatToPass);
 
-		user.Setup(u => u.MasqueradeTrash(masquerade, player.PlayerState, player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()))
+		user.Setup(u => u.MasqueradeTrash(masquerade, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns((CardInstance)null);
 		#endregion
 
@@ -255,10 +255,10 @@ public class PlayerMasqueradeTests : CardWithPlayerTestsBase
 		AssertPile([], player2.PlayerState.DiscardPile);
 
 		user2.Verify(u => u.MasqueradePass(masquerade, player2.PlayerState, player.Game.Kingdom,
-			It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			It.IsAny<List<CardInstance>>()), Times.Once);
 
 		// player2 is never even asked about a reaction - masquerade never calls DealAttack
-		user2.Verify(u => u.PlayCard(It.IsAny<IEnumerable<CardInstance>>(), It.IsAny<PlayerState>(),
+		user2.Verify(u => u.PlayCard(It.IsAny<List<CardInstance>>(), It.IsAny<PlayerState>(),
 			It.IsAny<Kingdom>(), Phase.Reaction, It.IsAny<Card>()), Times.Never);
 		#endregion
 	}

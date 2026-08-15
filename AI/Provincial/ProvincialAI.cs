@@ -5,9 +5,9 @@ using GameCore.Cards;
 namespace AI.Provincial;
 public class ProvincialAI : User
 {
-	PlayerInfo playerInfo = new();
-	BuyAgenda buyAgenda;
-	string name;
+	private PlayerInfo playerInfo = new();
+	private BuyAgenda buyAgenda;
+	private string name;
 
 	public override string GetName() => name;
 
@@ -18,7 +18,7 @@ public class ProvincialAI : User
 		this.name = name;
 	}
 
-	public override CardInstance PlayCard(IEnumerable<CardInstance> cards, PlayerState ps, Kingdom k, Phase phase, Card attackCard)
+	public override CardInstance PlayCard(List<CardInstance> cards, PlayerState ps, Kingdom k, Phase phase, Card attackCard)
 	{
 		if (phase == Phase.Treasure)
 		{
@@ -42,7 +42,7 @@ public class ProvincialAI : User
 		return bestCard;
 	}
 
-	public override CardInstance SelectCardToGain(KingdomWrapper wrapper, PlayerState ps, Kingdom k, Phase phase)
+	public override CardInstance? SelectCardToGain(KingdomWrapper wrapper, PlayerState ps, Kingdom k, Phase phase)
 	{
 		var provinces = k.GetPile(CardType.Province);
 		if (buyAgenda.Provinces > provinces.Count && wrapper.GetCard(CardType.Province) is not null)
@@ -114,17 +114,17 @@ public class ProvincialAI : User
 		=> SelectCardToGain(wrapper, ps, k, phase);
 
 	#region cards base
-	public override CardInstance BureaucratPutOnTop(Card c, PlayerState ps, Kingdom k)
-		=> ps.Hand.Where(c => c.IsVictory).First();
+	public override CardInstance BureaucratPutOnTop(Card c, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
+		=> cardSelection.First();
 
-	public override List<CardInstance> CellarDiscard(Card c, PlayerState ps, Kingdom k)
-		=> ps.Hand.Where(c => c.IsVictory && !c.IsTreasure && !c.IsAction).ToList();
+	public override List<CardInstance> CellarDiscard(Card c, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
+		=> cardSelection.Where(c => c.IsVictory && !c.IsTreasure && !c.IsAction).ToList();
 
 	public override bool ChancellorDiscard(Card c, PlayerState ps, Kingdom k) => false;
 
-	public override List<CardInstance> ChapelTrash(Card c, PlayerState ps, Kingdom k)
+	public override List<CardInstance> ChapelTrash(Card c, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
 	{
-		var cards = ps.Hand;
+		var cards = cardSelection;
 
 		// always trash curse
 		var trash = cards.Where(c => c.Card.Type == CardType.Curse);
@@ -188,9 +188,9 @@ public class ProvincialAI : User
 		return false;
 	}
 
-	public override List<CardInstance> MilitiaDiscard(Card cardPlayed, PlayerState ps, Kingdom k, int discardCount)
+	public override List<CardInstance> MilitiaDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection, int discardCount)
 	{
-		var hand = ps.Hand.ToList();
+		var hand = cardSelection.ToList();
 		var discards = new List<CardInstance>();
 		while (discards.Count < discardCount)
 		{
@@ -213,14 +213,14 @@ public class ProvincialAI : User
 		return discards;
 	}
 
-	public override CardInstance MineTrash(Card card, PlayerState ps, Kingdom k, IList<CardInstance> cardSelection)
+	public override CardInstance? MineTrash(Card card, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
 	{
-		var coppers = ps.Hand.Where(a => a.Card.Type == CardType.Copper);
+		var coppers = cardSelection.Where(a => a.Card.Type == CardType.Copper);
 		if (coppers.Any())
 		{
 			return coppers.First();
 		}
-		var silvers = ps.Hand.Where(a => a.Card.Type == CardType.Silver);
+		var silvers = cardSelection.Where(a => a.Card.Type == CardType.Silver);
 		if (silvers.Any())
 		{
 			return silvers.First();
@@ -230,24 +230,24 @@ public class ProvincialAI : User
 
 	public override bool MoneylenderTrash(Card cardPlayed, PlayerState ps, Kingdom k) => true;
 
-	public override CardInstance RemodelTrash(Card c, PlayerState ps, Kingdom k)
+	public override CardInstance RemodelTrash(Card c, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
 	{
-		var trash = ps.Hand.Where(c => c.Card.Type == CardType.Curse);
+		var trash = cardSelection.Where(c => c.Card.Type == CardType.Curse);
 
 		// at the end it will transform gold to province
 		var provinces = k.GetPile(CardType.Province);
 		if (buyAgenda.Provinces > provinces.Count && provinces.Count > 0)
 		{
-			trash = trash.Concat(ps.Hand.Where(c => c.Card.Type == CardType.Gold));
+			trash = trash.Concat(cardSelection.Where(c => c.Card.Type == CardType.Gold));
 		}
 
 		if (buyAgenda.Estates <= provinces.Count)
 		{
-			trash = trash.Concat(ps.Hand.Where(c => c.Card.Type == CardType.Estate));
+			trash = trash.Concat(cardSelection.Where(c => c.Card.Type == CardType.Estate));
 		}
 
-		trash = trash.Concat(ps.Hand.Where(c => c.Card.Type == CardType.Copper));
-		trash = trash.Concat(ps.Hand.OrderBy(c => c.Card.Score(ps.Hand.Select(card => card.Card), ps, Phase.Action)));
+		trash = trash.Concat(cardSelection.Where(c => c.Card.Type == CardType.Copper));
+		trash = trash.Concat(cardSelection.OrderBy(c => c.Card.Score(cardSelection.Select(card => card.Card), ps, Phase.Action)));
 
 		return trash.FirstOrDefault();
 	}
@@ -264,12 +264,12 @@ public class ProvincialAI : User
 		}
 	}
 
-	public override CardInstance ThiefChoose(Card c, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards)
+	public override CardInstance ThiefChoose(Card c, PlayerState ps, Kingdom k, List<CardInstance> cards)
 		=> cards.OrderByDescending(c => c.Card.GetPrice(ps)).First();
 
 	public override bool ThiefSteal(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance c) => c.Card.GetPrice(ps) >= 3;
 
-	public override CardInstance ThroneRoomPlay(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards)
+	public override CardInstance ThroneRoomPlay(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
 	{
 		return (from c in cards
 				let m = cards.Max(a => a.Card.Score(ps.Hand.Select(c => c.Card), ps, Phase.Action))
@@ -281,17 +281,17 @@ public class ProvincialAI : User
 	#region cards intrique
 	public override bool BaronDiscard(Card cardPlayed, PlayerState ps, Kingdom k) => true;
 
-	public override CardInstance CourtyardPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards)
+	public override CardInstance CourtyardPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
 	{
 		throw new NotImplementedException();
 	}
 
-	public override CardInstance MasqueradePass(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards)
+	public override CardInstance MasqueradePass(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
 	{
 		throw new NotImplementedException();
 	}
 
-	public override CardInstance MasqueradeTrash(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards)
+	public override CardInstance MasqueradeTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
 	{
 		throw new NotImplementedException();
 	}
@@ -316,22 +316,22 @@ public class ProvincialAI : User
 		throw new NotImplementedException();
 	}
 
-	public override List<CardInstance> TorturerDiscard(Card cardPlayed, PlayerState ps, Kingdom k, int discardCount)
+	public override List<CardInstance> TorturerDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection, int discardCount)
 	{
 		throw new NotImplementedException();
 	}
 
-	public override List<CardInstance> TradingPostTrash(Card cardPlayed, PlayerState ps, Kingdom k)
+	public override List<CardInstance> TradingPostTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
 	{
 		throw new NotImplementedException();
 	}
 
-	public override List<CardInstance> SecretChamberDiscard(Card cardPlayed, PlayerState ps, Kingdom k)
+	public override List<CardInstance> SecretChamberDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
 	{
 		throw new NotImplementedException();
 	}
 
-	public override List<CardInstance> SecretChamberPutOnDeck(Card cardPlayed, PlayerState ps, Kingdom k, int count)
+	public override List<CardInstance> SecretChamberPutOnDeck(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection, int count)
 	{
 		throw new NotImplementedException();
 	}
@@ -341,7 +341,7 @@ public class ProvincialAI : User
 		throw new NotImplementedException();
 	}
 
-	public override List<CardInstance> DiplomatDiscard(Card cardPlayed, PlayerState ps, Kingdom k, int count)
+	public override List<CardInstance> DiplomatDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection, int count)
 	{
 		throw new NotImplementedException();
 	}

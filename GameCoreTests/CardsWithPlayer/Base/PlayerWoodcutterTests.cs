@@ -55,7 +55,7 @@ public class PlayerWoodcutterTests : CardWithPlayerTestsBase
 		var woodcutterToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Woodcutter);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == woodcutterToPlay))).Returns(woodcutterToPlay);
+			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == woodcutterToPlay))).Returns(woodcutterToPlay);
 		#endregion
 
 		#region act
@@ -72,7 +72,7 @@ public class PlayerWoodcutterTests : CardWithPlayerTestsBase
 		AssertPile([], player.Game.Trash);
 
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		#endregion
 	}
 }

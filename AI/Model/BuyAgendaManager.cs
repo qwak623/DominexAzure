@@ -1,6 +1,6 @@
-﻿using GameCore.Cards;
+﻿using System.Collections;
+using GameCore.Cards;
 using GameCore.Observers;
-using System.Collections;
 
 namespace AI.Model;
 public abstract class BuyAgendaManager : IEnumerable<BuyAgenda>
@@ -19,7 +19,7 @@ public abstract class BuyAgendaManager : IEnumerable<BuyAgenda>
 	/// <param name="cards"></param>
 	/// <param name="logger"></param>
 	/// <returns></returns>
-	public abstract BuyAgenda LoadBest(List<Card> cards, IGameLogger logger = null);
+	public abstract BuyAgenda LoadBest(List<Card> cards, IGameLogger? logger = null);
 
 	/// <summary>
 	/// Saves agenda.

@@ -43,7 +43,7 @@ public class PlayerSecretChamberTests : CardWithPlayerTestsBase
 		var secretChamberToPlay = defender.PlayerState.Hand.First(c => c.Card.Type == CardType.SecretChamber);
 		var cardsToDiscard = defender.PlayerState.Hand.Where(c => c.Card.Type != CardType.SecretChamber).ToList();
 
-		defenderUser.Setup(u => u.SecretChamberDiscard(secretChamber, defender.PlayerState, defender.Game.Kingdom))
+		defenderUser.Setup(u => u.SecretChamberDiscard(secretChamber, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns(cardsToDiscard);
 		#endregion
 
@@ -61,7 +61,7 @@ public class PlayerSecretChamberTests : CardWithPlayerTestsBase
 		AssertPile([secretChamber], defender.PlayerState.ActionsPlayed);
 		AssertPile([], defender.Game.Trash);
 
-		defenderUser.Verify(u => u.SecretChamberDiscard(secretChamber, defender.PlayerState, defender.Game.Kingdom), Times.Once);
+		defenderUser.Verify(u => u.SecretChamberDiscard(secretChamber, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		#endregion
 	}
 
@@ -72,7 +72,7 @@ public class PlayerSecretChamberTests : CardWithPlayerTestsBase
 		defender.PlayerState.Hand = CreatePile([secretChamber, copper]);
 		var secretChamberToPlay = defender.PlayerState.Hand.First(c => c.Card.Type == CardType.SecretChamber);
 
-		defenderUser.Setup(u => u.SecretChamberDiscard(secretChamber, defender.PlayerState, defender.Game.Kingdom))
+		defenderUser.Setup(u => u.SecretChamberDiscard(secretChamber, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns([]);
 		#endregion
 
@@ -100,16 +100,16 @@ public class PlayerSecretChamberTests : CardWithPlayerTestsBase
 		defender.PlayerState.DrawPile = CreatePile([silver, silver]);
 		var secretChamberInHand = defender.PlayerState.Hand.First(c => c.Card.Type == CardType.SecretChamber);
 
-		defenderUser.Setup(u => u.PlayCard(It.Is<IEnumerable<CardInstance>>(r => r.Single() == secretChamberInHand),
+		defenderUser.Setup(u => u.PlayCard(It.Is<List<CardInstance>>(r => r.Single() == secretChamberInHand),
 			defender.PlayerState, defender.Game.Kingdom, Phase.Reaction, militia))
 			.Returns(secretChamberInHand);
 
 		// put the two newly-drawn silvers back on top of the deck
-		defenderUser.Setup(u => u.SecretChamberPutOnDeck(secretChamber, defender.PlayerState, defender.Game.Kingdom, 2))
-			.Returns<Card, PlayerState, Kingdom, int>((c, ps, k, count) => ps.Hand.Where(h => h.Card.Type == CardType.Silver).ToList());
+		defenderUser.Setup(u => u.SecretChamberPutOnDeck(secretChamber, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 2))
+			.Returns<Card, PlayerState, Kingdom, List<CardInstance>, int>((c, ps, k, cardSelection, count) => ps.Hand.Where(h => h.Card.Type == CardType.Silver).ToList());
 
 		var copperToDiscard = defender.PlayerState.Hand.Where(c => c.Card.Type == CardType.Copper).Take(1).ToList();
-		defenderUser.Setup(u => u.MilitiaDiscard(militia, defender.PlayerState, defender.Game.Kingdom, 1))
+		defenderUser.Setup(u => u.MilitiaDiscard(militia, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 1))
 			.Returns(copperToDiscard);
 		#endregion
 
@@ -128,10 +128,10 @@ public class PlayerSecretChamberTests : CardWithPlayerTestsBase
 		AssertPile([], defender.PlayerState.ActionsPlayed);
 		AssertPile([], defender.Game.Trash);
 
-		defenderUser.Verify(u => u.PlayCard(It.IsAny<IEnumerable<CardInstance>>(),
+		defenderUser.Verify(u => u.PlayCard(It.IsAny<List<CardInstance>>(),
 			defender.PlayerState, defender.Game.Kingdom, Phase.Reaction, militia), Times.Once);
-		defenderUser.Verify(u => u.SecretChamberPutOnDeck(secretChamber, defender.PlayerState, defender.Game.Kingdom, 2), Times.Once);
-		defenderUser.Verify(u => u.MilitiaDiscard(militia, defender.PlayerState, defender.Game.Kingdom, 1), Times.Once);
+		defenderUser.Verify(u => u.SecretChamberPutOnDeck(secretChamber, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 2), Times.Once);
+		defenderUser.Verify(u => u.MilitiaDiscard(militia, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 1), Times.Once);
 		#endregion
 	}
 
@@ -144,10 +144,10 @@ public class PlayerSecretChamberTests : CardWithPlayerTestsBase
 		var secretChamberInHand = defender.PlayerState.Hand.First(c => c.Card.Type == CardType.SecretChamber);
 		var copperToDiscard = defender.PlayerState.Hand.Where(c => c.Card.Type == CardType.Copper).Take(1).ToList();
 
-		defenderUser.Setup(u => u.PlayCard(It.Is<IEnumerable<CardInstance>>(r => r.Single() == secretChamberInHand),
+		defenderUser.Setup(u => u.PlayCard(It.Is<List<CardInstance>>(r => r.Single() == secretChamberInHand),
 			defender.PlayerState, defender.Game.Kingdom, Phase.Reaction, militia))
 			.Returns((CardInstance)null);
-		defenderUser.Setup(u => u.MilitiaDiscard(militia, defender.PlayerState, defender.Game.Kingdom, 1))
+		defenderUser.Setup(u => u.MilitiaDiscard(militia, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 1))
 			.Returns(copperToDiscard);
 		#endregion
 
@@ -164,7 +164,7 @@ public class PlayerSecretChamberTests : CardWithPlayerTestsBase
 		AssertPile([], defender.PlayerState.ActionsPlayed);
 		AssertPile([], defender.Game.Trash);
 
-		defenderUser.Verify(u => u.SecretChamberPutOnDeck(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<int>()), Times.Never);
+		defenderUser.Verify(u => u.SecretChamberPutOnDeck(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>(), It.IsAny<int>()), Times.Never);
 		#endregion
 	}
 
@@ -177,10 +177,10 @@ public class PlayerSecretChamberTests : CardWithPlayerTestsBase
 		defender.PlayerState.Hand = CreatePile([secretChamber]);
 		var secretChamberInHand = defender.PlayerState.Hand[0];
 
-		defenderUser.Setup(u => u.PlayCard(It.Is<IEnumerable<CardInstance>>(r => r.Single() == secretChamberInHand),
+		defenderUser.Setup(u => u.PlayCard(It.Is<List<CardInstance>>(r => r.Single() == secretChamberInHand),
 			defender.PlayerState, defender.Game.Kingdom, Phase.Reaction, militia))
 			.Returns(secretChamberInHand);
-		defenderUser.Setup(u => u.SecretChamberPutOnDeck(secretChamber, defender.PlayerState, defender.Game.Kingdom, 1))
+		defenderUser.Setup(u => u.SecretChamberPutOnDeck(secretChamber, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 1))
 			.Returns([]);
 		#endregion
 
@@ -191,8 +191,8 @@ public class PlayerSecretChamberTests : CardWithPlayerTestsBase
 		#region assert
 		// the defender only has 1 card (itself) after the (empty) draw, so the engine only
 		// asks for 1 card to put back, not a hardcoded 2
-		defenderUser.Verify(u => u.SecretChamberPutOnDeck(secretChamber, defender.PlayerState, defender.Game.Kingdom, 1), Times.Once);
-		defenderUser.Verify(u => u.SecretChamberPutOnDeck(secretChamber, defender.PlayerState, defender.Game.Kingdom, 2), Times.Never);
+		defenderUser.Verify(u => u.SecretChamberPutOnDeck(secretChamber, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 1), Times.Once);
+		defenderUser.Verify(u => u.SecretChamberPutOnDeck(secretChamber, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 2), Times.Never);
 		#endregion
 	}
 }

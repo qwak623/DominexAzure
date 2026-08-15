@@ -116,7 +116,7 @@ public class PlayerConspiratorTests : CardWithPlayerTestsBase
 		var conspiratorToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Conspirator);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == conspiratorToPlay))).Returns(conspiratorToPlay);
+			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == conspiratorToPlay))).Returns(conspiratorToPlay);
 		#endregion
 
 		#region act
@@ -135,7 +135,7 @@ public class PlayerConspiratorTests : CardWithPlayerTestsBase
 		AssertPile([], player.Game.Trash);
 
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		#endregion
 	}
 
@@ -152,7 +152,7 @@ public class PlayerConspiratorTests : CardWithPlayerTestsBase
 		var conspiratorToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Conspirator);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == conspiratorToPlay))).Returns(conspiratorToPlay);
+			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == conspiratorToPlay))).Returns(conspiratorToPlay);
 		#endregion
 
 		#region act
@@ -169,7 +169,7 @@ public class PlayerConspiratorTests : CardWithPlayerTestsBase
 		AssertPile([], player.Game.Trash);
 
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		#endregion
 	}
 }

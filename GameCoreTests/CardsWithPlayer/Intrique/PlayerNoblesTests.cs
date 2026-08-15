@@ -91,7 +91,7 @@ public class PlayerNoblesTests : CardWithPlayerTestsBase
 		var noblesToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Nobles);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == noblesToPlay))).Returns(noblesToPlay);
+			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == noblesToPlay))).Returns(noblesToPlay);
 
 		// each resolution picks a different option - the first draws cards, the second takes actions
 		user.SetupSequence(u => u.NoblesChooseCards(nobles, player.PlayerState, player.Game.Kingdom))
@@ -113,7 +113,7 @@ public class PlayerNoblesTests : CardWithPlayerTestsBase
 		AssertPile([], player.Game.Trash);
 
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		user.Verify(u => u.NoblesChooseCards(nobles, player.PlayerState, player.Game.Kingdom), Times.Exactly(2));
 		#endregion
 	}

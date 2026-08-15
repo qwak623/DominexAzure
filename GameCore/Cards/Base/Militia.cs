@@ -37,7 +37,7 @@ public class Militia : Card
 			return;
 		}
 
-		var cards = defender.User.MilitiaDiscard(this, defender.PlayerState, defender.Game.Kingdom, defender.PlayerState.Hand.Count - 3);
+		var cards = defender.User.MilitiaDiscard(this, defender.PlayerState, defender.Game.Kingdom, defender.PlayerState.Hand.ToList(), defender.PlayerState.Hand.Count - 3);
 		cards.ForEach(defender.Discard);
 	}
 }

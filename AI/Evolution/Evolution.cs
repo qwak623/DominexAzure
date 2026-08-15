@@ -8,11 +8,11 @@ namespace AI.Evolution;
 
 public class Evolution
 {
-	Params par;
-	BuyAgenda[] leaders;
-	(BuyAgenda Agenda, double Fitness)[] pool;
-	BuyAgenda referenceAgenda;
-	readonly IGameLogger logger;
+	private Params par;
+	private BuyAgenda[] leaders;
+	private (BuyAgenda Agenda, double Fitness)[] pool;
+	private BuyAgenda referenceAgenda;
+	private readonly IGameLogger logger;
 
 	/// <summary>
 	/// </summary>
@@ -22,7 +22,7 @@ public class Evolution
 	///     If reference agenda is not null, best idividual will be confronted with referenceAgenda after each evaluation
 	///     and the results will be logged using logger.
 	/// </param>
-	public Evolution(Params par, IGameLogger logger = null, BuyAgenda referenceAgenda = null)
+	public Evolution(Params par, IGameLogger? logger = null, BuyAgenda? referenceAgenda = null)
 	{
 		this.par = par;
 		this.logger = logger;
@@ -54,7 +54,9 @@ public class Evolution
 			var elapsed = sw.Elapsed;
 
 			if (referenceAgenda is not null)
+			{
 				ComputeFitness(leaders[0], gen);
+			}
 			//referenceAgenda = leaders[0];
 
 			logger?.Log($"Generation {gen}: elapsed time {elapsed.TotalSeconds.ToString("0.00")}s");
@@ -67,12 +69,15 @@ public class Evolution
 	{
 		leaders = new BuyAgenda[par.LeaderCount];
 		for (int i = 0; i < leaders.Length; i++)
+		{
 			leaders[i] = BuyAgenda.CreateRandom(par.Kingdom.AddRequiredCards());
+		}
+
 		BuyAgenda.CreateRandom(par.Kingdom.AddRequiredCards());
 		pool = new (BuyAgenda, double)[par.PoolCount];
 	}
 
-	void Evaluate()
+	private void Evaluate()
 	{
 		//for (int i = 0; i < pool.Length; i++)
 		Parallel.For(0, pool.Length, new ParallelOptions { MaxDegreeOfParallelism = par.ParallelDegreeExt }, i =>
@@ -82,19 +87,24 @@ public class Evolution
 	/// <summary>
 	/// Trying to find best but not resebling agendas for new leaders using levenstein distance.
 	/// </summary>
-	void SetNewLeaders()
+	private void SetNewLeaders()
 	{
 		// comparing fitness and individual length
-		Array.Sort(pool, (a, b) => -2 * a.Fitness.CompareTo(b.Fitness) + a.Agenda.BuyMenu.Count.CompareTo(b.Agenda.BuyMenu.Count));
+		Array.Sort(pool, (a, b) => (-2 * a.Fitness.CompareTo(b.Fitness)) + a.Agenda.BuyMenu.Count.CompareTo(b.Agenda.BuyMenu.Count));
 		int j = 0;
 		for (int i = 0; i < leaders.Length;)
 		{
 			if (IsSimilarToAny(pool[j].Agenda, i))
 			{
 				if (j > pool.Length)
+				{
 					leaders[i++] = BuyAgenda.CreateRandom(par.Kingdom.AddRequiredCards());
+				}
 				else
+				{
 					j++;
+				}
+
 				continue;
 			}
 			leaders[i++] = pool[j++].Agenda;
@@ -105,11 +115,13 @@ public class Evolution
 	/// Leaders are added also to pool unchanged.
 	/// Rest is filled with mutated leaders.
 	/// </summary>
-	void GenerateNewPool()
+	private void GenerateNewPool()
 	{
 		// first leadersSize members without changes
 		for (int i = 0; i < leaders.Length; i++)
+		{
 			pool[i] = (leaders[i], 0);
+		}
 
 		// for each new member in pool
 		for (int i = leaders.Length; i < pool.Length; i++)
@@ -118,7 +130,9 @@ public class Evolution
 
 			// at least one mutations always happens
 			do
+			{
 				par.MutationSelector.SelectMutation(agenda.BuyMenu.Count).Mutate(agenda, par.Kingdom.AddRequiredCards());
+			}
 			while (ThreadSafeRandom.NextDouble() < par.Mutate);
 
 			pool[i] = (agenda, 0);
@@ -130,7 +144,7 @@ public class Evolution
 	/// </summary>
 	/// <param name="buyAgenda"></param>
 	/// <param name="generation"></param>
-	void ComputeFitness(BuyAgenda buyAgenda, int generation)
+	private void ComputeFitness(BuyAgenda buyAgenda, int generation)
 	{
 		User getFirst() => new ProvincialAI(referenceAgenda, "Referencer");
 		User getSecond() => new ProvincialAI(buyAgenda, "Leader");
@@ -143,9 +157,15 @@ public class Evolution
 			var task = game.Play();
 			var results = task.Result;
 			if (results.PlayerIsWinner(0))
+			{
 				result[0]++;
+			}
+
 			if (results.PlayerIsWinner(1))
+			{
 				result[1]++;
+			}
+
 			result[2] -= results.Compare2Players();
 		}
 
@@ -155,9 +175,15 @@ public class Evolution
 			var task = game.Play();
 			var results = task.Result;
 			if (results.PlayerIsWinner(0))
+			{
 				result[1]++;
+			}
+
 			if (results.PlayerIsWinner(1))
+			{
 				result[0]++;
+			}
+
 			result[2] += results.Compare2Players();
 		}
 
@@ -168,13 +194,19 @@ public class Evolution
 
 	}
 
-	bool IsSimilarToAny(BuyAgenda agenda, int count)
+	private bool IsSimilarToAny(BuyAgenda agenda, int count)
 	{
 		int aggDistance = 0;
 		for (int i = 0; i < count; i++)
+		{
 			aggDistance += agenda.BuyMenu.CalcLevensteinDistance(leaders[i].BuyMenu);
-		if (aggDistance > count * 1.5f - 1)
+		}
+
+		if (aggDistance > (count * 1.5f) - 1)
+		{
 			return false;
+		}
+
 		return true;
 	}
 }

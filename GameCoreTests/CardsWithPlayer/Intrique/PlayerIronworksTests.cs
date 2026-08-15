@@ -217,7 +217,7 @@ public class PlayerIronworksTests : CardWithPlayerTestsBase
 		var ironworksToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Ironworks);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == ironworksToPlay))).Returns(ironworksToPlay);
+			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == ironworksToPlay))).Returns(ironworksToPlay);
 
 		var expectedGains = new Queue<CardType>([CardType.Village, CardType.Silver]);
 		var wrappers = new List<KingdomWrapper>();
@@ -242,7 +242,7 @@ public class PlayerIronworksTests : CardWithPlayerTestsBase
 		AssertPile([ironworks, ironworks, throneRoom], player.PlayerState.ActionsPlayed);
 
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 
 		Assert.AreEqual(2, wrappers.Count);
 		Assert.IsTrue(wrappers[0].AvailableCards.Any(c => c.Card.Type == CardType.Village));

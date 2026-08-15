@@ -4,9 +4,9 @@ using Utils;
 namespace AI.Evolution;
 public class Params
 {
-	public List<Card> Kingdom;
+	public List<Card>? Kingdom;
 	internal MutationSelector MutationSelector = new MutationSelector();
-	public Evaluator Evaluator;
+	public Evaluator? Evaluator;
 	public int ParallelDegreeExt = -1, ParallelDegreeInt = -1;
 
 	public int MinGames = 50;
@@ -37,15 +37,23 @@ internal class MutationSelector
 	/// </summary>
 	/// <param name="buyMenuCount"></param>
 	/// <returns></returns>
-	public Mutation SelectMutation(int buyMenuCount)
+	public Mutation? SelectMutation(int buyMenuCount)
 	{
 		if (buyMenuCount > 20)
+		{
 			return mutations[0].Mutation;
+		}
+
 		double number = ThreadSafeRandom.NextDouble();
 
 		for (int i = 0; i < mutations.Count; number -= mutations[i++].Probability)
+		{
 			if (number < mutations[i].Probability)
+			{
 				return mutations[i].Mutation;
+			}
+		}
+
 		return null;
 	}
 }

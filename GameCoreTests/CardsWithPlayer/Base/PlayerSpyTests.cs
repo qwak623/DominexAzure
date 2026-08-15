@@ -189,7 +189,7 @@ public class PlayerSpyTests : CardWithPlayerTestsBase
 		var spyToPlay = player1.PlayerState.Hand.First(c => c.Card.Type == CardType.Spy);
 
 		user1.Setup(u => u.ThroneRoomPlay(throneRoom, player1.PlayerState,
-			player1.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == spyToPlay))).Returns(spyToPlay);
+			player1.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == spyToPlay))).Returns(spyToPlay);
 
 		user1.SetupSequence(du => du.SpyDiscard(spy, player1.PlayerState, player1.Game.Kingdom, It.IsAny<CardInstance>(), Phase.Action))
 			.Returns(discardFirstTime).Returns(discardSecondTime);

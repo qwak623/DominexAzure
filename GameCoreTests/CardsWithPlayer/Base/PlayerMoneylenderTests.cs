@@ -120,7 +120,7 @@ public class PlayerMoneylenderTests : CardWithPlayerTestsBase
 		var moneylenderToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Moneylender);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == moneylenderToPlay))).Returns(moneylenderToPlay);
+			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == moneylenderToPlay))).Returns(moneylenderToPlay);
 		user.SetupSequence(u => u.MoneylenderTrash(moneylender, player.PlayerState, player.Game.Kingdom))
 			.Returns(trashFirstTime).Returns(trashSecondTime);
 		#endregion
@@ -139,7 +139,7 @@ public class PlayerMoneylenderTests : CardWithPlayerTestsBase
 		AssertPile(Enumerable.Repeat(copper, trashCount).ToList(), player.Game.Trash);
 
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 
 		// the second resolution only asks if a copper is still left to offer - e.g. the (1, true,
 		// true, ...) case trashes the only copper on the first resolution, so Hand.Any(copper) is

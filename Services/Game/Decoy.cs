@@ -1,20 +1,20 @@
-﻿using GameCore;
+using GameCore;
 using GameCore.Cards;
 
 namespace Dominex.Services.Game;
 public class Decoy : User
 {
 	#region cards base
-	public override CardInstance BureaucratPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k)
+	public override CardInstance BureaucratPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
 	{
-		if (ps.Hand.Count == 0)
+		if (cardSelection.Count == 0)
 		{
 			throw new InvalidOperationException("No cards in hand to put on top of the deck.");
 		}
-		return ps.Hand[0];
+		return cardSelection[0];
 	}
 
-	public override List<CardInstance> CellarDiscard(Card cardPlayed, PlayerState ps, Kingdom k)
+	public override List<CardInstance> CellarDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
 	{
 		return [];
 	}
@@ -24,7 +24,7 @@ public class Decoy : User
 		return false;
 	}
 
-	public override List<CardInstance> ChapelTrash(Card cardPlayed, PlayerState ps, Kingdom k)
+	public override List<CardInstance> ChapelTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
 	{
 		return [];
 	}
@@ -36,12 +36,12 @@ public class Decoy : User
 		return false;
 	}
 
-	public override List<CardInstance> MilitiaDiscard(Card cardPlayed, PlayerState ps, Kingdom k, int discardCount)
+	public override List<CardInstance> MilitiaDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection, int discardCount)
 	{
-		return [.. ps.Hand.Take(2)];
+		return [.. cardSelection.Take(discardCount)];
 	}
 
-	public override CardInstance MineTrash(Card cardPlayed, PlayerState ps, Kingdom k, IList<CardInstance> cardSelection)
+	public override CardInstance MineTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
 	{
 		return null;
 	}
@@ -51,12 +51,12 @@ public class Decoy : User
 		return true;
 	}
 
-	public override CardInstance PlayCard(IEnumerable<CardInstance> cards, PlayerState ps, Kingdom k, Phase phase, Card attackCard = null)
+	public override CardInstance PlayCard(List<CardInstance> cards, PlayerState ps, Kingdom k, Phase phase, Card attackCard = null)
 	{
 		return null;
 	}
 
-	public override CardInstance RemodelTrash(Card cardPlayed, PlayerState ps, Kingdom k)
+	public override CardInstance RemodelTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
 	{
 		return null;
 	}
@@ -76,7 +76,7 @@ public class Decoy : User
 		return false;
 	}
 
-	public override CardInstance ThiefChoose(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards)
+	public override CardInstance ThiefChoose(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
 	{
 		return cards.First();
 	}
@@ -86,7 +86,7 @@ public class Decoy : User
 		return true;
 	}
 
-	public override CardInstance ThroneRoomPlay(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards)
+	public override CardInstance ThroneRoomPlay(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
 	{
 		return null;
 	}
@@ -94,24 +94,27 @@ public class Decoy : User
 
 	#region cards intrique
 	public override bool BaronDiscard(Card cardPlayed, PlayerState ps, Kingdom k) => true;
-	public override CardInstance CourtyardPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards)
+	public override CardInstance CourtyardPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
 		=> cards.FirstOrDefault();
-	public override CardInstance MasqueradePass(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards)
+	public override CardInstance MasqueradePass(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
 		=> cards.FirstOrDefault();
-	public override CardInstance MasqueradeTrash(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards)
+	public override CardInstance MasqueradeTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
 		=> cards.FirstOrDefault();
 	public override bool MiningVillageTrash(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance c) => false;
 	public override bool MinionDiscard(Card cardPlayed, PlayerState ps, Kingdom k) => true;
 	public override bool NoblesChooseCards(Card cardPlayed, PlayerState playerState, Kingdom kingdom) => true;
 	public override bool TorturerChooseCurse(Card cardPlayed, PlayerState ps, Kingdom k) => true;
-	public override List<CardInstance> TorturerDiscard(Card cardPlayed, PlayerState ps, Kingdom k, int discardCount)
-		=> [.. ps.Hand.Take(discardCount)];
-	public override List<CardInstance> TradingPostTrash(Card cardPlayed, PlayerState ps, Kingdom k) => [.. ps.Hand.Take(2)];
-	public override List<CardInstance> SecretChamberDiscard(Card cardPlayed, PlayerState ps, Kingdom k) => [.. ps.Hand];
-	public override List<CardInstance> SecretChamberPutOnDeck(Card cardPlayed, PlayerState ps, Kingdom k, int count)
-		=> [.. ps.Hand.Take(count)];
+	public override List<CardInstance> TorturerDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection, int discardCount)
+		=> [.. cardSelection.Take(discardCount)];
+	public override List<CardInstance> TradingPostTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
+		=> [.. cardSelection.Take(2)];
+	public override List<CardInstance> SecretChamberDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
+		=> [.. cardSelection];
+	public override List<CardInstance> SecretChamberPutOnDeck(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection, int count)
+		=> [.. cardSelection.Take(count)];
 	public override List<CardInstance> ScoutOrderCards(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards) => cards;
-	public override List<CardInstance> DiplomatDiscard(Card cardPlayed, PlayerState ps, Kingdom k, int count) => [.. ps.Hand.Take(count)];
+	public override List<CardInstance> DiplomatDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection, int count)
+		=> [.. cardSelection.Take(count)];
 	public override bool LurkerTrash(Card cardPlayed, PlayerState ps, Kingdom k) => true;
 	public override CardInstance LurkerChooseCardToTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
 		=> cards.First();

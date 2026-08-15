@@ -40,7 +40,7 @@ public class Diplomat : Card
 			//TODO reveal itself
 			player.Draw(2);
 			List<CardInstance> cardsToDiscard = player.User.DiplomatDiscard(
-				this, player.PlayerState, player.Game.Kingdom, Math.Min(3, player.PlayerState.Hand.Count));
+				this, player.PlayerState, player.Game.Kingdom, player.PlayerState.Hand.ToList(), Math.Min(3, player.PlayerState.Hand.Count));
 			player.PlayerState.DiscardPile.MoveRange(cardsToDiscard);
 		}
 		return base.Reaction(player);

@@ -107,7 +107,7 @@ public class PlayerLibraryTests : CardWithPlayerTestsBase
 		user.Setup(u => u.LibrarySkip(library, player.PlayerState, player.Game.Kingdom, adventurerShown)).Returns(false);
 		user.Setup(u => u.LibrarySkip(library, player.PlayerState, player.Game.Kingdom, libraryShown)).Returns(true);
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Contains(libraryToPlay)))).Returns(libraryToPlay);
+			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Contains(libraryToPlay)))).Returns(libraryToPlay);
 		#endregion
 
 		#region act
@@ -124,7 +124,7 @@ public class PlayerLibraryTests : CardWithPlayerTestsBase
 		AssertPile([], player.Game.Trash);
 
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 
 		// the first resolution fills the hand to exactly 7, so the second resolution's loop
 		// condition is false from the start and never shows anything
@@ -149,7 +149,7 @@ public class PlayerLibraryTests : CardWithPlayerTestsBase
 		user.SetupSequence(u => u.LibrarySkip(library, player.PlayerState, player.Game.Kingdom, throneRoomShown))
 			.Returns(true).Returns(false);
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Contains(libraryToPlay)))).Returns(libraryToPlay);
+			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Contains(libraryToPlay)))).Returns(libraryToPlay);
 		#endregion
 
 		#region act
@@ -170,7 +170,7 @@ public class PlayerLibraryTests : CardWithPlayerTestsBase
 		AssertPile([], player.Game.Trash);
 
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		user.Verify(u => u.LibrarySkip(library, player.PlayerState, player.Game.Kingdom, adventurerShown), Times.Once);
 		user.Verify(u => u.LibrarySkip(library, player.PlayerState, player.Game.Kingdom, libraryShown), Times.Exactly(2));
 		user.Verify(u => u.LibrarySkip(library, player.PlayerState, player.Game.Kingdom, throneRoomShown), Times.Exactly(2));

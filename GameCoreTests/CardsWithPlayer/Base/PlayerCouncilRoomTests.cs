@@ -106,7 +106,7 @@ public class PlayerCouncilRoomTests : CardWithPlayerTestsBase
 		var throneRoomToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == councilRoomToPlay))).Returns(councilRoomToPlay);
+			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == councilRoomToPlay))).Returns(councilRoomToPlay);
 		#endregion
 
 		#region act
@@ -146,7 +146,7 @@ public class PlayerCouncilRoomTests : CardWithPlayerTestsBase
 
 		// user is asked which card to play using throne room
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		#endregion
 	}
 }

@@ -121,7 +121,7 @@ public class Player : IPlayer
 		}
 
 		// user selects card to play, card is removed from hand and added to played cards
-		var card = User.PlayCard(ps.Hand.Where(c => c.IsAction), ps, Game.Kingdom, Phase.Action);
+		var card = User.PlayCard(ps.Hand.Where(c => c.IsAction).ToList(), ps, Game.Kingdom, Phase.Action);
 		if (card is null)
 		{
 			return null;

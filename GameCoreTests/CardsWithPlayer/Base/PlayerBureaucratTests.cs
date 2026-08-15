@@ -44,7 +44,7 @@ public class PlayerBureaucratTests : CardWithPlayerTestsBase
 		defender.PlayerState.Hand = CreatePile([province, duchy]);
 
 		var provinceInHand = defender.PlayerState.Hand.First(c => c.Card.Type == CardType.Province);
-		defenderUser.Setup(du => du.BureaucratPutOnTop(bureaucrat, defender.PlayerState, defender.Game.Kingdom)).Returns(provinceInHand);
+		defenderUser.Setup(du => du.BureaucratPutOnTop(bureaucrat, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>())).Returns(provinceInHand);
 		#endregion
 
 		#region act
@@ -72,7 +72,7 @@ public class PlayerBureaucratTests : CardWithPlayerTestsBase
 		AssertPile([], defender.Game.Trash);
 
 		// defender's user is asked to choose a victory card to put on top
-		defenderUser.Verify(du => du.BureaucratPutOnTop(bureaucrat, defender.PlayerState, defender.Game.Kingdom), Times.Once);
+		defenderUser.Verify(du => du.BureaucratPutOnTop(bureaucrat, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		#endregion
 	}
 
@@ -108,7 +108,7 @@ public class PlayerBureaucratTests : CardWithPlayerTestsBase
 		AssertPile([], defender.Game.Trash);
 
 		// defender's user is not asked to choose a victory card to put on top
-		defenderUser.Verify(du => du.BureaucratPutOnTop(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>()), Times.Never);
+		defenderUser.Verify(du => du.BureaucratPutOnTop(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()), Times.Never);
 		#endregion
 	}
 
@@ -123,14 +123,14 @@ public class PlayerBureaucratTests : CardWithPlayerTestsBase
 		attacker.PlayerState.Hand = CreatePile([throneRoom, bureaucrat]);
 		var bureaucratToPlay = attacker.PlayerState.Hand[1];
 		attackerUser.Setup(u => u.ThroneRoomPlay(throneRoom, attacker.PlayerState,
-			attacker.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == bureaucratToPlay))).Returns(bureaucratToPlay);
+			attacker.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == bureaucratToPlay))).Returns(bureaucratToPlay);
 
 		defender.PlayerState.Hand = CreatePile([.. Enumerable.Repeat(province, provinceCount), silver, bureaucrat]);
 		var provincesInHand = defender.PlayerState.Hand.Where(c => c.Card.Type == CardType.Province).ToList();
 		var firstProvince = provincesInHand.FirstOrDefault();
 		if (firstProvince != null)
 		{
-			defenderUser.SetupSequence(du => du.BureaucratPutOnTop(bureaucrat, defender.PlayerState, defender.Game.Kingdom))
+			defenderUser.SetupSequence(du => du.BureaucratPutOnTop(bureaucrat, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 				.Returns(firstProvince).Returns(provincesInHand.Last());
 		}
 		#endregion
@@ -161,10 +161,10 @@ public class PlayerBureaucratTests : CardWithPlayerTestsBase
 
 		// attacker was asked which card to play using throne room
 		attackerUser.Verify(u => u.ThroneRoomPlay(throneRoom, attacker.PlayerState,
-			attacker.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			attacker.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 
 		// defender's user is asked to choose a victory card to put on top given amount of times
-		defenderUser.Verify(du => du.BureaucratPutOnTop(bureaucrat, defender.PlayerState, defender.Game.Kingdom), Times.Exactly(provincesPutOnTop));
+		defenderUser.Verify(du => du.BureaucratPutOnTop(bureaucrat, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Exactly(provincesPutOnTop));
 		#endregion
 	}
 }

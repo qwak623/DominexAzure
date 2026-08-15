@@ -52,7 +52,7 @@ public class PlayerTradingPostTests : CardWithPlayerTestsBase
 		AssertPile([tradingPost], player.PlayerState.ActionsPlayed);
 		AssertPile([copper, estate], player.Game.Trash);
 
-		user.Verify(u => u.TradingPostTrash(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>()), Times.Never);
+		user.Verify(u => u.TradingPostTrash(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()), Times.Never);
 		#endregion
 	}
 
@@ -78,7 +78,7 @@ public class PlayerTradingPostTests : CardWithPlayerTestsBase
 		AssertPile([tradingPost], player.PlayerState.ActionsPlayed);
 		AssertPile([copper], player.Game.Trash);
 
-		user.Verify(u => u.TradingPostTrash(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>()), Times.Never);
+		user.Verify(u => u.TradingPostTrash(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()), Times.Never);
 		#endregion
 	}
 
@@ -103,7 +103,7 @@ public class PlayerTradingPostTests : CardWithPlayerTestsBase
 		AssertPile([tradingPost], player.PlayerState.ActionsPlayed);
 		AssertPile([], player.Game.Trash);
 
-		user.Verify(u => u.TradingPostTrash(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>()), Times.Never);
+		user.Verify(u => u.TradingPostTrash(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()), Times.Never);
 		#endregion
 	}
 
@@ -115,7 +115,7 @@ public class PlayerTradingPostTests : CardWithPlayerTestsBase
 		var tradingPostToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.TradingPost);
 		var coppersToTrash = player.PlayerState.Hand.Where(c => c.Card.Type == CardType.Copper).ToList();
 
-		user.Setup(u => u.TradingPostTrash(tradingPost, player.PlayerState, player.Game.Kingdom))
+		user.Setup(u => u.TradingPostTrash(tradingPost, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns(coppersToTrash);
 		#endregion
 
@@ -132,7 +132,7 @@ public class PlayerTradingPostTests : CardWithPlayerTestsBase
 		AssertPile([tradingPost], player.PlayerState.ActionsPlayed);
 		AssertPile([copper, copper], player.Game.Trash);
 
-		user.Verify(u => u.TradingPostTrash(tradingPost, player.PlayerState, player.Game.Kingdom), Times.Once);
+		user.Verify(u => u.TradingPostTrash(tradingPost, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		#endregion
 	}
 
@@ -148,8 +148,8 @@ public class PlayerTradingPostTests : CardWithPlayerTestsBase
 		var coppersInHand = player.PlayerState.Hand.Where(c => c.Card.Type == CardType.Copper).ToList();
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == tradingPostToPlay))).Returns(tradingPostToPlay);
-		user.Setup(u => u.TradingPostTrash(tradingPost, player.PlayerState, player.Game.Kingdom))
+			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == tradingPostToPlay))).Returns(tradingPostToPlay);
+		user.Setup(u => u.TradingPostTrash(tradingPost, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns([coppersInHand[0], coppersInHand[1]]);
 		#endregion
 
@@ -167,10 +167,10 @@ public class PlayerTradingPostTests : CardWithPlayerTestsBase
 		AssertPile([copper, copper, copper, silver], player.Game.Trash);
 
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		// only the first resolution needs to ask - the second's hand is small enough to
 		// auto-trash
-		user.Verify(u => u.TradingPostTrash(tradingPost, player.PlayerState, player.Game.Kingdom), Times.Once);
+		user.Verify(u => u.TradingPostTrash(tradingPost, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		#endregion
 	}
 }

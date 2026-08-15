@@ -21,7 +21,7 @@ public class SimpleManager : BuyAgendaManager
 	/// </summary>
 	/// <param name="cards"></param>
 	/// <returns></returns>
-	public override BuyAgenda Load(IEnumerable<Card> cards)
+	public override BuyAgenda? Load(IEnumerable<Card> cards)
 	{
 		var id = cards.ToId();
 		int i = (int)cards.OrderBy(c => c.Type).First().Type;
@@ -52,7 +52,7 @@ public class SimpleManager : BuyAgendaManager
 		return null;
 	}
 
-	public override BuyAgenda LoadBest(List<Card> cards, IGameLogger logger = null) => Load(cards);
+	public override BuyAgenda LoadBest(List<Card> cards, IGameLogger? logger = null) => Load(cards);
 
 	public override void Save(IEnumerable<Card> cards, BuyAgenda agenda)
 	{
@@ -60,21 +60,36 @@ public class SimpleManager : BuyAgendaManager
 		int i = cards.OrderBy(p => p.Type).Select(p => (int)p.Type).First();
 
 		if (Load(cards) is null)
+		{
 			lock (_lock)
+			{
 				using (var writer = File.AppendText($"{directoryPath}{prefix}{i}.txt"))
+				{
 					writer.WriteLine(agenda.ToString(id));
+				}
+			}
+		}
 		else
 		{
 			var dict = new Dictionary<string, string>();
 			lock (_lock)
 			{
 				if (File.Exists($"{directoryPath}{prefix}{i}.txt"))
+				{
 					foreach (var line in File.ReadAllLines($"{directoryPath}{prefix}{i}.txt").Select(l => l.Split(':')))
+					{
 						dict[line[0]] = $"{line[0]}:{line[1]}";
+					}
+				}
+
 				dict[id] = agenda.ToString(id);
 				using (var writer = new StreamWriter($"{directoryPath}{prefix}{i}.txt"))
+				{
 					foreach (var a in dict.OrderBy(d => d.Key))
+					{
 						writer.WriteLine(a.Value);
+					}
+				}
 			}
 		}
 	}
@@ -107,10 +122,20 @@ public class SimpleManager : BuyAgendaManager
 	public override IEnumerator<BuyAgenda> GetEnumerator()
 	{
 		for (int i = 8; i < 32; i++)
+		{
 			lock (_lock)
+			{
 				if (File.Exists($"{directoryPath}{prefix}{i}.txt"))
+				{
 					using (var reader = new StreamReader($"{directoryPath}{prefix}{i}.txt"))
+					{
 						while (!reader.EndOfStream)
+						{
 							yield return BuyAgenda.FromString(reader.ReadLine());
+						}
+					}
+				}
+			}
+		}
 	}
 }

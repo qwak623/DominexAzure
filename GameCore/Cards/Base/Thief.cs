@@ -37,7 +37,7 @@ public class Thief : Card
 		// show two cards
 		var cards = defender.Show(2);
 		// selecting treasures
-		var treasures = cards.Where(c => c.IsTreasure);
+		var treasures = cards.Where(c => c.IsTreasure).ToList();
 		// if there are treasure cards
 		if (treasures.Any())
 		{

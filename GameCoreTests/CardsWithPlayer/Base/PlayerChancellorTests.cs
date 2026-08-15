@@ -102,7 +102,7 @@ public class PlayerChancellorTests : CardWithPlayerTestsBase
 		var chancellorToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Chancellor);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == chancellorToPlay))).Returns(chancellorToPlay);
+			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == chancellorToPlay))).Returns(chancellorToPlay);
 		user.SetupSequence(u => u.ChancellorDiscard(chancellor, player.PlayerState, player.Game.Kingdom))
 			.Returns(discardFirstTime).Returns(discardSecondTime);
 		#endregion
@@ -123,7 +123,7 @@ public class PlayerChancellorTests : CardWithPlayerTestsBase
 
 		// user was asked which card to play using throne room
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 
 		// user is asked to choose whether to discard his draw pile
 		user.Verify(u => u.ChancellorDiscard(chancellor, player.PlayerState, player.Game.Kingdom), Times.Exactly(2));
@@ -140,7 +140,7 @@ public class PlayerChancellorTests : CardWithPlayerTestsBase
 		var chancellorToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Chancellor);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == chancellorToPlay))).Returns(chancellorToPlay);
+			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == chancellorToPlay))).Returns(chancellorToPlay);
 		user.Setup(u => u.ChancellorDiscard(chancellor, player.PlayerState, player.Game.Kingdom))
 			.Returns(false);
 		#endregion
@@ -161,7 +161,7 @@ public class PlayerChancellorTests : CardWithPlayerTestsBase
 
 		// user is asked which card to play using throne room
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 
 		// user is asked to choose whether to discard his draw pile
 		user.Verify(u => u.ChancellorDiscard(chancellor, player.PlayerState, player.Game.Kingdom), Times.Exactly(2));

@@ -60,7 +60,7 @@ public class PlayerBridgeTests : CardWithPlayerTestsBase
 		var bridgeToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Bridge);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == bridgeToPlay))).Returns(bridgeToPlay);
+			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == bridgeToPlay))).Returns(bridgeToPlay);
 		#endregion
 
 		#region act
@@ -76,7 +76,7 @@ public class PlayerBridgeTests : CardWithPlayerTestsBase
 		AssertPile([throneRoom, bridge, bridge], player.PlayerState.ActionsPlayed);
 
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		#endregion
 	}
 

@@ -59,7 +59,7 @@ public class PlayerLaboratoryTests : CardWithPlayerTestsBase
 		var laboratoryToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Laboratory);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == laboratoryToPlay))).Returns(laboratoryToPlay);
+			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == laboratoryToPlay))).Returns(laboratoryToPlay);
 		#endregion
 
 		#region act
@@ -77,7 +77,7 @@ public class PlayerLaboratoryTests : CardWithPlayerTestsBase
 
 		// user is asked which card to play using throne room
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		#endregion
 	}
 }

@@ -114,7 +114,7 @@ public class PlayerShantyTownTests : CardWithPlayerTestsBase
 		var shantyTownToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.ShantyTown);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == shantyTownToPlay))).Returns(shantyTownToPlay);
+			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == shantyTownToPlay))).Returns(shantyTownToPlay);
 		#endregion
 
 		#region act
@@ -132,7 +132,7 @@ public class PlayerShantyTownTests : CardWithPlayerTestsBase
 		AssertPile([], player.Game.Trash);
 
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
-			player.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		#endregion
 	}
 }

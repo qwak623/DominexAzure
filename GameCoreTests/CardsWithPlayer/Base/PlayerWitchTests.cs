@@ -77,7 +77,7 @@ public class PlayerWitchTests : CardWithPlayerTestsBase
 		var witchToPlay = attacker.PlayerState.Hand.First(c => c.Card.Type == CardType.Witch);
 
 		attackerUser.Setup(u => u.ThroneRoomPlay(throneRoom, attacker.PlayerState,
-			attacker.Game.Kingdom, It.Is<IEnumerable<CardInstance>>(c => c.Single() == witchToPlay))).Returns(witchToPlay);
+			attacker.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == witchToPlay))).Returns(witchToPlay);
 		#endregion
 
 		#region act
@@ -94,7 +94,7 @@ public class PlayerWitchTests : CardWithPlayerTestsBase
 		AssertPile([], attacker.Game.Trash);
 
 		attackerUser.Verify(u => u.ThroneRoomPlay(throneRoom, attacker.PlayerState,
-			attacker.Game.Kingdom, It.IsAny<IEnumerable<CardInstance>>()), Times.Once);
+			attacker.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 
 		// the attack fires once per throne-room resolution, so the defender gets two curses
 		AssertNumbers(0, 0, 0, defender);

@@ -27,7 +27,7 @@ public class Chapel : Card
 
 	protected override void ActionEffect(IPlayer player, CardInstance thisCard)
 	{
-		player.User.ChapelTrash(this, player.PlayerState, player.Game.Kingdom).ForEach(player.Trash);
+		player.User.ChapelTrash(this, player.PlayerState, player.Game.Kingdom, player.PlayerState.Hand.ToList()).ForEach(player.Trash);
 	}
 }
 

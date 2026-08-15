@@ -28,7 +28,7 @@ public class TradingPost : Card
 	{
 		List<CardInstance> cardsToTrash = player.PlayerState.Hand.Count <= 2
 			? player.PlayerState.Hand.ToList()
-			: player.User.TradingPostTrash(this, player.PlayerState, player.Game.Kingdom);
+			: player.User.TradingPostTrash(this, player.PlayerState, player.Game.Kingdom, player.PlayerState.Hand.ToList());
 		cardsToTrash.ForEach(player.Trash);
 		if (cardsToTrash.Count == 2)
 		{

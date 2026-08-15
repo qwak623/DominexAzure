@@ -1,45 +1,24 @@
-﻿using Dominex.Contracts.Game;
-using GameCore.Cards;
-using GameCore.Observers;
+using Dominex.Contracts.Game;
 using GameCore;
+using GameCore.Cards;
 using GameCore.Cards.GeneralCards;
+using GameCore.Observers;
 
 namespace Dominex.Services.Game;
-public class Human : User, IHuman
+public class Human(IPlayerStateObserver playerStateObserver, ICardMapper cardMapper, Func<ChoiceDto, Answer> callClient) : User
 {
-	private readonly IPlayerStateObserver playerStateObserver;
-	private readonly ICardMapper cardMapper;
-	private readonly Func<ChoiceDto, Answer> CallClient;
-
-	public Human(IPlayerStateObserver playerStateObserver, ICardMapper cardMapper, Func<ChoiceDto, Answer> callClient)
-	{
-		this.playerStateObserver = playerStateObserver;
-		this.cardMapper = cardMapper;
-		CallClient = callClient;
-	}
+	private readonly IPlayerStateObserver playerStateObserver = playerStateObserver;
+	private readonly ICardMapper cardMapper = cardMapper;
+	private readonly Func<ChoiceDto, Answer> CallClient = callClient;
 
 	public override IPlayerStateObserver GetPlayerStateObserver()
 	{
 		return playerStateObserver;
 	}
 
-	public override CardInstance PlayCard(IEnumerable<CardInstance> cards, PlayerState ps, Kingdom k, Phase phase, Card attackingCard = null)
-	{
-		var cardSelection = ps.Hand.Where(p => p.Card.IsAction).ToList();
-
+	public override CardInstance PlayCard(List<CardInstance> cards, PlayerState ps, Kingdom k, Phase phase, Card attackingCard = null)
 		// todo je třeba vyřešit attacking card, asi ideálně přidat do choice
-		var answer = CallClient(new ChoiceDto
-		(
-			cardPlayed: null,
-			ChoiceType.Play,
-			min: 0,
-			max: 1,
-			cards: cardSelection.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
-			operations: [OperationType.Default, OperationType.Play]
-		));
-
-		return answer.Values.Count != 0 ? cardSelection[answer.Values.Single().Index] : null;
-	}
+		=> AskForCards(null, ps, cards, ChoiceType.Play, OperationType.Play, 0, 1).SingleOrDefault();
 
 	public override string GetName() => "Todo Name";
 
@@ -47,153 +26,37 @@ public class Human : User, IHuman
 	// todo kingdom - možná by to nemuselo být tady
 
 	#region cards base
-	public override CardInstance BureaucratPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k)
-	{
-		var cardSelection = ps.Hand.Where(c => c.IsVictory).ToList();
+	public override CardInstance BureaucratPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
+		=> AskForCards(cardPlayed, ps, cardSelection, ChoiceType.BureaucratPutOnTop, OperationType.PutOnTop, 1, 1,
+			message: "Choose a Victory card to put onto your draw pile.").Single();
 
-		var answer = CallClient(new ChoiceDto
-		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
-			ChoiceType.BureaucratPutOnTop,
-			min: 1,
-			max: 1,
-			cards: cardSelection.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
-			operations: [OperationType.Default, OperationType.PutOnTop],
-			message: "Choose a Victory card to put onto your draw pile."
-		));
-
-		return cardSelection[answer.Values.Single().Index];
-	}
-
-	public override List<CardInstance> CellarDiscard(Card cardPlayed, PlayerState ps, Kingdom k)
-	{
-		var cardSelection = ps.Hand;
-
-		var answer = CallClient(new ChoiceDto
-		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
-			ChoiceType.CellarDiscard,
-			min: 0,
-			max: cardSelection.Count,
-			cards: cardSelection.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
-			operations: [OperationType.Default, OperationType.Discard],
-			message: "Discard any number of cards."
-		));
-
-		return [.. answer.Values.Select(c => cardSelection[c.Index])];
-	}
+	public override List<CardInstance> CellarDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
+		=> AskForCards(cardPlayed, ps, cardSelection, ChoiceType.CellarDiscard, OperationType.Discard, 0, cardSelection.Count,
+			message: "Discard any number of cards.");
 
 	public override bool ChancellorDiscard(Card cardPlayed, PlayerState ps, Kingdom k)
-	{
-		var answer = CallClient(new ChoiceDto
-		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
-			ChoiceType.ChancellorDiscard,
-			min: 0,
-			max: 1,
-			cards: [null], // TODO NullReferenceException
-			operations: [OperationType.Default, OperationType.Discard]
-		));
+		=> AskYesNo(cardPlayed, ps, ChoiceType.ChancellorDiscard, OperationType.Discard, [null]); // TODO NullReferenceException
 
-		return answer.Values.Count != 0;
-	}
-
-	public override List<CardInstance> ChapelTrash(Card cardPlayed, PlayerState ps, Kingdom k)
-	{
-		var cardSelection = ps.Hand;
-
-		var answer = CallClient(new ChoiceDto
-		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
-			ChoiceType.ChapelTrash,
-			min: 0,
-			max: Math.Min(ps.Hand.Count, 4), // todo můžeme zahodit kapli?
-			cards: cardSelection.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
-			operations: [OperationType.Default, OperationType.Trash]
-		));
-
-		return [.. answer.Values.Select(c => cardSelection[c.Index])];
-	}
-
+	public override List<CardInstance> ChapelTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
+		=> AskForCards(cardPlayed, ps, cardSelection, ChoiceType.ChapelTrash, OperationType.Trash, 0, Math.Min(cardSelection.Count, 4));
 
 	public override bool LibrarySkip(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance c)
-	{
-		var answer = CallClient(new ChoiceDto
-		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
-			ChoiceType.LibrarySkip,
-			min: 0,
-			max: 1,
-			cards: [cardMapper.ToCardDtoWithIndex(c, 0, ps)],
-			operations: [OperationType.Default, OperationType.Skip]
-		));
+		=> AskYesNo(cardPlayed, ps, ChoiceType.LibrarySkip, OperationType.Skip, [cardMapper.ToCardDtoWithIndex(c, 0, ps)]);
 
-		return answer.Values.Count != 0;
-	}
+	public override List<CardInstance> MilitiaDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection, int discardCount)
+		=> AskForCards(cardPlayed, ps, cardSelection, ChoiceType.MilitiaDiscard, OperationType.Discard, discardCount, discardCount);
 
-	public override List<CardInstance> MilitiaDiscard(Card cardPlayed, PlayerState ps, Kingdom k, int discardCount)
-	{
-		var cardSelection = ps.Hand;
-
-		var answer = CallClient(new ChoiceDto
-		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
-			ChoiceType.MilitiaDiscard,
-			min: discardCount,
-			max: discardCount,
-			cards: cardSelection.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
-			operations: [OperationType.Default, OperationType.Discard]
-		));
-
-		return answer.Values.Select(c => cardSelection[c.Index]).ToList();
-	}
-
-	public override CardInstance MineTrash(Card cardPlayed, PlayerState ps, Kingdom k, IList<CardInstance> cardSelection)
-	{
-		var answer = CallClient(new ChoiceDto
-		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
-			ChoiceType.MineTrash,
-			min: 0,
-			max: 1,
-			cards: cardSelection.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
-			operations: [OperationType.Default, OperationType.Trash]
-		));
-
-		return answer.Values.Count != 0 ? cardSelection[answer.Values.Single().Index] : null;
-	}
+	public override CardInstance MineTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
+		=> AskForCards(cardPlayed, ps, cardSelection, ChoiceType.MineTrash, OperationType.Trash, 0, 1).SingleOrDefault();
 
 	public override bool MoneylenderTrash(Card cardPlayed, PlayerState playerState, Kingdom kingdom)
-	{
-		var answer = CallClient(new ChoiceDto
-		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed, playerState),
-			ChoiceType.MoneylenderTrash,
-			min: 0,
-			max: 1,
-			cards: [cardMapper.ToCardDto(Copper.Get(), playerState)],
-			operations: [OperationType.Default, OperationType.Trash]
-		));
+		=> AskYesNo(cardPlayed, playerState, ChoiceType.MoneylenderTrash, OperationType.Trash,
+			[cardMapper.ToCardDto(Copper.Get(), playerState)]);
 
-		return answer.Values.Count != 0;
-	}
-
-	public override CardInstance RemodelTrash(Card cardPlayed, PlayerState ps, Kingdom k)
-	{
-		var cardSelection = ps.Hand;
-
-		var answer = CallClient(new ChoiceDto
-		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
-			type: ChoiceType.RemodelTrash, // todo nemůžeme remodelovat sám sebe
-			min: 0, // todo - neodpovida description - opravit
-			max: 1,
-			cards: cardSelection.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
-			operations: [OperationType.Default, OperationType.Trash]
-		));
-
-		return answer.Values.Count != 0 ? cardSelection[answer.Values.Single().Index] : null;
-	}
+	public override CardInstance RemodelTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
+		// todo nemůžeme remodelovat sám sebe
+		// todo min: 0 - neodpovida description - opravit
+		=> AskForCards(cardPlayed, ps, cardSelection, ChoiceType.RemodelTrash, OperationType.Trash, 0, 1).SingleOrDefault();
 
 	public override CardInstance SelectCardToGain(KingdomWrapper wrapper, PlayerState ps, Kingdom k, Phase phase)
 	{
@@ -203,295 +66,79 @@ public class Human : User, IHuman
 		// is a mandatory "gain a card" effect (Workshop, Mine, Remodel, Feast, ...), so it can
 		// only be declined when there's genuinely nothing available to gain
 		var min = phase == Phase.Buy || cardSelection.Count == 0 ? 0 : 1;
+		var type = phase == Phase.Buy ? ChoiceType.Buy : ChoiceType.Gain;
+		var op = phase == Phase.Buy ? OperationType.Buy : OperationType.Gain;
 
-		var answer = CallClient(new ChoiceDto
-		(
-			cardPlayed: null,
-			type: phase == Phase.Buy ? ChoiceType.Buy : ChoiceType.Gain,
-			min: min,
-			max: 1, // todo ps.Buys - více buyu najednou
-			cards: cardSelection.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
-			operations: [OperationType.Default, phase == Phase.Buy ? OperationType.Buy : OperationType.Gain]
-		));
-
-		return answer.Values.Count != 0 ? cardSelection[answer.Values.Single().Index] : null;
+		// todo ps.Buys - více buyu najednou
+		return AskForCards(null, ps, cardSelection, type, op, min, 1).SingleOrDefault();
 	}
 
 	// unlike SelectCardToGain, min is always 0 here - "may gain" cards (e.g. Saboteur) can be
 	// declined even when a valid target exists
 	public override CardInstance SelectOptionalCardToGain(KingdomWrapper wrapper, PlayerState ps, Kingdom k, Phase phase)
-	{
-		var cardSelection = wrapper.AvailableCards.ToList();
-
-		var answer = CallClient(new ChoiceDto
-		(
-			cardPlayed: null,
-			type: ChoiceType.Gain,
-			min: 0,
-			max: 1,
-			cards: cardSelection.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
-			operations: [OperationType.Default, OperationType.Gain]
-		));
-
-		return answer.Values.Count != 0 ? cardSelection[answer.Values.Single().Index] : null;
-	}
+		=> AskForCards(null, ps, wrapper.AvailableCards.ToList(), ChoiceType.Gain, OperationType.Gain, 0, 1).SingleOrDefault();
 
 	// todo lepší description - potřebujeme vědět, čí kartu zahazujeme
 	public override bool SpyDiscard(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance c, Phase p)
-	{
-		var answer = CallClient(new ChoiceDto
-		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
-			type: ChoiceType.SpyDiscard,
-			min: 1,
-			max: 1,
-			cards: new List<CardDto> { cardMapper.ToCardDtoWithIndex(c, 0, ps) },
-			operations: [OperationType.Discard, OperationType.PutOnTop]
-		));
+		=> AskOperations(cardPlayed, ps, ChoiceType.SpyDiscard, [cardMapper.ToCardDtoWithIndex(c, 0, ps)],
+			[OperationType.Discard, OperationType.PutOnTop], 1, 1).Single() == OperationType.Discard;
 
-		OperationType operationType = answer.Values.Single().OperationType;
-		return operationType == OperationType.Discard;
-	}
-
-	public override CardInstance ThiefChoose(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards)
-	{
-		var cardSelection = cards.ToList();
-
-		var answer = CallClient(new ChoiceDto
-		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
-			type: ChoiceType.ThiefChoose,
-			min: 1,
-			max: 1,
-			cards: cardSelection.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
-			operations: [OperationType.Default, OperationType.Choose],
-			message: "Choose an opponent's treasure to steal or trash." // todo funguje pro dva hrače, pro vice by chtělo jmeno
-		));
-
-		return cardSelection[answer.Values.Single().Index];
-	}
+	public override CardInstance ThiefChoose(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
+		// todo funguje pro dva hrače, pro vice by chtělo jmeno
+		=> AskForCards(cardPlayed, ps, cards, ChoiceType.ThiefChoose, OperationType.Choose, 1, 1,
+			message: "Choose an opponent's treasure to steal or trash.").Single();
 
 	public override bool ThiefSteal(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance c)
-	{
-		var answer = CallClient(new ChoiceDto
-		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
-			type: ChoiceType.ThiefSteal,
-			min: 1,
-			max: 1,
-			cards: [cardMapper.ToCardDtoWithIndex(c, 0, ps)],
-			operations: [OperationType.Trash, OperationType.Steal],
-			message: "Trash or steal this card."
-		));
+		=> AskOperations(cardPlayed, ps, ChoiceType.ThiefSteal, [cardMapper.ToCardDtoWithIndex(c, 0, ps)],
+			[OperationType.Trash, OperationType.Steal], 1, 1, message: "Trash or steal this card.").Single() == OperationType.Steal;
 
-		return answer.Values.Single().OperationType == OperationType.Steal;
-	}
-
-	public override CardInstance ThroneRoomPlay(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards)
-	{
-		var cardSelection = cards.ToList();
-
-		var answer = CallClient(new ChoiceDto
-		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
-			type: ChoiceType.ThroneRoomPlay,
-			min: 0,
-			max: 1,
-			cards: cardSelection.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
-			operations: [OperationType.Default, OperationType.Play]
-		));
-
-		return answer.Values.Count != 0 ? cardSelection[answer.Values.Single().Index] : null;
-	}
+	public override CardInstance ThroneRoomPlay(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
+		=> AskForCards(cardPlayed, ps, cards, ChoiceType.ThroneRoomPlay, OperationType.Play, 0, 1).SingleOrDefault();
 	#endregion cards base
 
 	#region cards intrique
 	public override bool BaronDiscard(Card cardPlayed, PlayerState ps, Kingdom kingdom)
-	{
-		var answer = CallClient(new ChoiceDto
-		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
-			ChoiceType.BaronDiscard,
-			min: 0,
-			max: 1,
-			cards: [cardMapper.ToCardDto(Estate.Get(), ps)],
-			operations: [OperationType.Default, OperationType.Discard]
-		));
+		=> AskYesNo(cardPlayed, ps, ChoiceType.BaronDiscard, OperationType.Discard, [cardMapper.ToCardDto(Estate.Get(), ps)]);
 
-		return answer.Values.Count != 0;
-	}
+	public override CardInstance CourtyardPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
+		=> AskForCards(cardPlayed, ps, cards, ChoiceType.CourtyardPutOnTop, OperationType.PutOnTop, 1, 1).SingleOrDefault();
 
-	public override CardInstance CourtyardPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards)
-	{
-		var answer = CallClient(new ChoiceDto
-		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
-			ChoiceType.CourtyardPutOnTop,
-			min: 1,
-			max: 1,
-			cards: cards.Select(c => cardMapper.ToCardDtoWithIndex(c, 0, ps)),
-			operations: [OperationType.Default, OperationType.PutOnTop]
-		));
+	public override CardInstance MasqueradePass(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
+		=> AskForCards(cardPlayed, ps, cards, ChoiceType.MasqueradePass, OperationType.Pass, 1, 1).Single();
 
-		return answer.Values.Count != 0 ? cards.ElementAt(answer.Values.Single().Index) : null;
-	}
-
-	public override CardInstance MasqueradePass(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards)
-	{
-		var answer = CallClient(new ChoiceDto
-		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
-			type: ChoiceType.MasqueradePass,
-			min: 1,
-			max: 1,
-			cards: cards.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
-			operations: [OperationType.Default, OperationType.Pass]
-		));
-
-		return cards.ElementAt(answer.Values.Single().Index);
-	}
-
-	public override CardInstance MasqueradeTrash(Card cardPlayed, PlayerState ps, Kingdom k, IEnumerable<CardInstance> cards)
-	{
-		var answer = CallClient(new ChoiceDto
-		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
-			type: ChoiceType.MasqueradeTrash,
-			min: 0,
-			max: 1,
-			cards: cards.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
-			operations: [OperationType.Default, OperationType.Trash]
-		));
-
-		return answer.Values.Count != 0 ? cards.ElementAt(answer.Values.Single().Index) : null;
-	}
+	public override CardInstance MasqueradeTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
+		=> AskForCards(cardPlayed, ps, cards, ChoiceType.MasqueradeTrash, OperationType.Trash, 0, 1).SingleOrDefault();
 
 	public override bool MiningVillageTrash(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance c)
-	{
-		var answer = CallClient(new ChoiceDto
-		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
-			type: ChoiceType.MasqueradeTrash,
-			min: 0,
-			max: 1,
-			cards: [cardMapper.ToCardDtoWithIndex(c, 0, ps)],
-			operations: [OperationType.Default, OperationType.Trash]
-		));
-
-		return answer.Values.Count != 0;
-	}
+		=> AskYesNo(cardPlayed, ps, ChoiceType.MasqueradeTrash, OperationType.Trash, [cardMapper.ToCardDtoWithIndex(c, 0, ps)]);
 
 	public override bool MinionDiscard(Card cardPlayed, PlayerState ps, Kingdom k)
-	{
-		var answer = CallClient(new ChoiceDto
-		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
-			type: ChoiceType.MinionDiscard,
-			min: 0,
-			max: 1,
-			// todo potential null reference exception
-			cards: [null],
-			// todo better options - discard or gain 2 coins
-			operations: [OperationType.Default, OperationType.Discard]
-		));
-		return answer.Values.Count != 0;
-	}
+		// todo potential null reference exception
+		// todo better options - discard or gain 2 coins
+		=> AskYesNo(cardPlayed, ps, ChoiceType.MinionDiscard, OperationType.Discard, [null]);
 
 	public override bool NoblesChooseCards(Card cardPlayed, PlayerState ps, Kingdom kingdom)
-	{
-		var answer = CallClient(new ChoiceDto
-		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
-			type: ChoiceType.MinionDiscard,
-			min: 0,
-			max: 1,
-			// todo potential null reference exception
-			cards: [null],
-			// todo better options - draw 3 cards or gain 2 actions
-			operations: [OperationType.Default, OperationType.Pass]
-		));
-		return answer.Values.Count != 0;
-	}
+		// todo potential null reference exception
+		// todo better options - draw 3 cards or gain 2 actions
+		=> AskYesNo(cardPlayed, ps, ChoiceType.MinionDiscard, OperationType.Pass, [null]);
 
 	public override bool TorturerChooseCurse(Card cardPlayed, PlayerState ps, Kingdom k)
-	{
-		var answer = CallClient(new ChoiceDto
-		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
-			type: ChoiceType.TorturerChoose,
-			min: 0,
-			max: 1,
-			// todo potential null reference exception
-			cards: [null],
-			operations: [OperationType.Gain, OperationType.Discard]
-		));
-		return answer.Values.Any(c => c.OperationType == OperationType.Gain);
-	}
+		// todo potential null reference exception
+		=> AskOperations(cardPlayed, ps, ChoiceType.TorturerChoose, [null], [OperationType.Gain, OperationType.Discard],
+			0, 1).Single() == OperationType.Discard;
 
-	public override List<CardInstance> TorturerDiscard(Card cardPlayed, PlayerState ps, Kingdom k, int discardCount)
-	{
-		var cardSelection = ps.Hand;
+	public override List<CardInstance> TorturerDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection, int discardCount)
+		=> AskForCards(cardPlayed, ps, cardSelection, ChoiceType.TorturerDiscard, OperationType.Discard, discardCount, discardCount);
 
-		var answer = CallClient(new ChoiceDto
-		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
-			ChoiceType.TorturerDiscard,
-			min: discardCount,
-			max: discardCount,
-			cards: cardSelection.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
-			operations: [OperationType.Default, OperationType.Discard]
-		));
+	public override List<CardInstance> TradingPostTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
+		=> AskForCards(cardPlayed, ps, cardSelection, ChoiceType.TradingPostTrash, OperationType.Trash, 2, 2);
 
-		return answer.Values.Select(c => cardSelection[c.Index]).ToList();
-	}
-
-	public override List<CardInstance> TradingPostTrash(Card cardPlayed, PlayerState ps, Kingdom k)
-	{
-		var cardSelection = ps.Hand;
-
-		var answer = CallClient(new ChoiceDto
-		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
-			ChoiceType.TradingPostTrash,
-			min: 2,
-			max: 2,
-			cards: cardSelection.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
-			operations: [OperationType.Default, OperationType.Trash]
-		));
-
-		return [.. answer.Values.Select(c => cardSelection[c.Index])];
-	}
-
-	public override List<CardInstance> SecretChamberDiscard(Card cardPlayed, PlayerState ps, Kingdom k)
-	{
-		var answer = CallClient(new ChoiceDto
-		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
-			ChoiceType.SecretChamberDiscard,
-			min: 0,
-			max: ps.Hand.Count,
-			cards: ps.Hand.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
-			operations: [OperationType.Default, OperationType.Discard]
-		));
-
-		return [.. answer.Values.Select(c => ps.Hand[c.Index])];
-	}
+	public override List<CardInstance> SecretChamberDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
+		=> AskForCards(cardPlayed, ps, cardSelection, ChoiceType.SecretChamberDiscard, OperationType.Discard, 0, cardSelection.Count);
 
 	// TODO any order!
-	public override List<CardInstance> SecretChamberPutOnDeck(Card cardPlayed, PlayerState ps, Kingdom k, int count)
-	{
-		var answer = CallClient(new ChoiceDto
-		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
-			ChoiceType.SecretChamberPutOnDeck,
-			min: count,
-			max: count,
-			cards: ps.Hand.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
-			operations: [OperationType.Default, OperationType.PutOnTop]
-		));
-
-		return [.. answer.Values.Select(c => ps.Hand[c.Index])];
-	}
+	public override List<CardInstance> SecretChamberPutOnDeck(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection, int count)
+		=> AskForCards(cardPlayed, ps, cardSelection, ChoiceType.SecretChamberPutOnDeck, OperationType.PutOnTop, count, count);
 
 	public override List<CardInstance> ScoutOrderCards(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
 	{
@@ -499,94 +146,88 @@ public class Human : User, IHuman
 		throw new NotImplementedException();
 	}
 
-	public override List<CardInstance> DiplomatDiscard(Card cardPlayed, PlayerState ps, Kingdom k, int count)
-	{
-		var answer = CallClient(new ChoiceDto
-		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
-			ChoiceType.DiplomatDiscard,
-			min: count,
-			max: count,
-			cards: ps.Hand.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
-			operations: [OperationType.Default, OperationType.Discard]
-		));
-
-		return [.. answer.Values.Select(c => ps.Hand[c.Index])];
-	}
+	public override List<CardInstance> DiplomatDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection, int count)
+		=> AskForCards(cardPlayed, ps, cardSelection, ChoiceType.DiplomatDiscard, OperationType.Discard, count, count);
 
 	public override bool LurkerTrash(Card cardPlayed, PlayerState ps, Kingdom k)
-	{
-		var answer = CallClient(new ChoiceDto
-		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
-			type: ChoiceType.LurkerChoose,
-			min: 1,
-			max: 1,
-			// todo potential null reference exception
-			cards: [null],
-			operations: [OperationType.Gain, OperationType.Trash]
-		));
-		return answer.Values.Any(c => c.OperationType == OperationType.Trash);
-	}
+		// todo potential null reference exception
+		=> AskOperations(cardPlayed, ps, ChoiceType.LurkerChoose, [null], [OperationType.Gain, OperationType.Trash], 1, 1, message: "Trash or gain this card.").Single() == OperationType.Trash;
 
 	public override CardInstance LurkerChooseCardToTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
-	{
-		var answer = CallClient(new ChoiceDto
-		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
-			ChoiceType.LurkerTrash,
-			min: 1,
-			max: 1,
-			cards: cards.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
-			operations: [OperationType.Default, OperationType.Trash]
-		));
-
-		return cards[answer.Values.Single().Index];
-	}
+		=> AskForCards(cardPlayed, ps, cards, ChoiceType.LurkerTrash, OperationType.Trash, 1, 1).Single();
 
 	public override CardInstance LurkerChooseCardToGain(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
-	{
-		var answer = CallClient(new ChoiceDto
-		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
-			ChoiceType.LurkerGain,
-			min: 1,
-			max: 1,
-			cards: cards.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
-			operations: [OperationType.Default, OperationType.Gain]
-		));
-
-		return cards[answer.Values.Single().Index];
-	}
+		=> AskForCards(cardPlayed, ps, cards, ChoiceType.LurkerGain, OperationType.Gain, 1, 1).Single();
 
 	public override bool MillWantsToDiscard(Card cardPlayed, PlayerState ps, Kingdom k)
+		=> AskYesNo(cardPlayed, ps, ChoiceType.MillDiscard, OperationType.Discard);
+
+	public override List<CardInstance> MillChooseCardsToDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards, int count)
+		=> AskForCards(cardPlayed, ps, cards, ChoiceType.MillDiscard, OperationType.Discard, count, count);
+	#endregion cards intrique
+
+	/// <summary>
+	/// Asks the client to pick between min and max cards out of selection. Cards not picked are
+	/// implicitly OperationType.Default; picked ones are op. Returns the picked CardInstances,
+	/// resolved back from selection by index.
+	/// </summary>
+	private List<CardInstance> AskForCards(Card cardPlayed, PlayerState ps, IReadOnlyList<CardInstance> selection,
+		ChoiceType choiceType, OperationType op, int min, int max, string message = null)
 	{
 		var answer = CallClient(new ChoiceDto
 		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
-			ChoiceType.MillDiscard,
+			cardPlayed is null ? null : cardMapper.ToCardDto(cardPlayed, ps),
+			choiceType,
+			min,
+			max,
+			selection.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
+			[OperationType.Default, op],
+			message
+		));
+
+		return [.. answer.Values.Select(c => selection[c.Index])];
+	}
+
+	/// <summary>
+	/// Asks a plain yes/no question (op vs. not doing it). cards is what's shown alongside the
+	/// question, if anything - most of these don't have a real card selection, just a single
+	/// accept/decline choice.
+	/// </summary>
+	private bool AskYesNo(Card cardPlayed, PlayerState ps, ChoiceType choiceType, OperationType op,
+		IEnumerable<CardDto> cards = null, string message = null)
+	{
+		var answer = CallClient(new ChoiceDto
+		(
+			cardPlayed is null ? null : cardMapper.ToCardDto(cardPlayed, ps),
+			choiceType,
 			min: 0,
 			max: 1,
-			cards: [],
-			operations: [OperationType.Default, OperationType.Discard]
+			cards: cards ?? [],
+			operations: [OperationType.Default, op],
+			message: message
 		));
 
 		return answer.Values.Count != 0;
 	}
 
-	public override List<CardInstance> MillChooseCardsToDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards, int count)
+	/// <summary>
+	/// Asks the client to pick one of several named operations for a single card (e.g. trash vs.
+	/// steal). Returns whether trueOp was the one picked.
+	/// </summary>
+	private List<OperationType> AskOperations(Card cardPlayed, PlayerState ps, ChoiceType choiceType, IEnumerable<CardDto> cards,
+		List<OperationType> operations, int min, int max, string message = null)
 	{
 		var answer = CallClient(new ChoiceDto
 		(
-			cardPlayed: cardMapper.ToCardDto(cardPlayed, ps),
-			ChoiceType.MillDiscard,
-			min: count,
-			max: count,
-			cards: cards.Select((c, i) => cardMapper.ToCardDtoWithIndex(c, i, ps)),
-			operations: [OperationType.Default, OperationType.Discard]
+			cardPlayed is null ? null : cardMapper.ToCardDto(cardPlayed, ps),
+			choiceType,
+			min,
+			max,
+			cards,
+			operations,
+			message
 		));
 
-		return [.. answer.Values.Select(c => cards[c.Index])];
+		return [.. answer.Values.Select(c => operations[c.Index])];
 	}
-	#endregion cards intrique
 }
