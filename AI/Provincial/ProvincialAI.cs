@@ -376,6 +376,11 @@ public class ProvincialAI : User
 		throw new NotImplementedException();
 	}
 
+	public override CardInstance ReplaceTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
+	{
+		throw new NotImplementedException();
+	}
+
 	#endregion cards intrique
 }
 

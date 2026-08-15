@@ -170,6 +170,9 @@ public class Human(IPlayerStateObserver playerStateObserver, ICardMapper cardMap
 	{
 		throw new NotImplementedException();
 	}
+
+	public override CardInstance ReplaceTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
+		=> AskForCards(cardPlayed, ps, cardSelection, ChoiceType.ReplaceTrash, OperationType.Trash, 1, 1).SingleOrDefault();
 	#endregion cards intrique
 
 	/// <summary>

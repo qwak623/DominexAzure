@@ -49,6 +49,7 @@ public interface IUser
 	bool MillWantsToDiscard(Card cardPlayed, PlayerState ps, Kingdom k);
 	List<CardInstance> MillChooseCardsToDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards, int count);
 	List<CardInstance> PatrolOrderCards(Card cardPlayed, PlayerState playerState, Kingdom kingdom, List<CardInstance> cards);
+	CardInstance ReplaceTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection);
 	#endregion cards intrique
 
 	string ToString();

@@ -37,4 +37,5 @@ public enum ChoiceType
 	LurkerTrash,
 	LurkerGain,
 	MillDiscard,
+	ReplaceTrash,
 }
