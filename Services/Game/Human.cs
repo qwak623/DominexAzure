@@ -2,13 +2,15 @@ using Dominex.Contracts.Game;
 using GameCore;
 using GameCore.Cards;
 using GameCore.Cards.GeneralCards;
+using GameCore.Cards.Intrique;
 using GameCore.Observers;
 
 namespace Dominex.Services.Game;
-public class Human(IPlayerStateObserver playerStateObserver, ICardMapper cardMapper, Func<ChoiceDto, Answer> callClient) : User
+public class Human(IPlayerStateObserver playerStateObserver, ICardMapper cardMapper, IOperationMapper operationMapper, Func<ChoiceDto, Answer> callClient) : User
 {
 	private readonly IPlayerStateObserver playerStateObserver = playerStateObserver;
 	private readonly ICardMapper cardMapper = cardMapper;
+	private readonly IOperationMapper operationMapper = operationMapper;
 	private readonly Func<ChoiceDto, Answer> CallClient = callClient;
 
 	public override IPlayerStateObserver GetPlayerStateObserver()
@@ -172,7 +174,12 @@ public class Human(IPlayerStateObserver playerStateObserver, ICardMapper cardMap
 	}
 
 	public override CardInstance ReplaceTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
-		=> AskForCards(cardPlayed, ps, cardSelection, ChoiceType.ReplaceTrash, OperationType.Trash, 1, 1).SingleOrDefault();
+		=> AskForCards(cardPlayed, ps, cardSelection, ChoiceType.ReplaceTrash, OperationType.Trash, 1, 1).Single();
+	public override CardInstance CourtierReveal(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
+		=> AskForCards(cardPlayed, ps, cards, ChoiceType.CourtierReveal, OperationType.Reveal, 1, 1).Single();
+	public override List<CourtierBenefit> CourtierChooseBenefits(Card cardPlayed, PlayerState ps, Kingdom k, int benefitCount, List<CourtierBenefit> availableBenefits)
+		=> operationMapper.ToCourtierBenefits(AskOperations(cardPlayed, ps, ChoiceType.CourtierChooseBenefits, [null],
+			operationMapper.ToOperationTypes(availableBenefits), benefitCount, benefitCount));
 	#endregion cards intrique
 
 	/// <summary>

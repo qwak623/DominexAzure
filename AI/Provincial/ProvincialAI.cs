@@ -1,6 +1,7 @@
 ﻿using AI.Model;
 using GameCore;
 using GameCore.Cards;
+using GameCore.Cards.Intrique;
 
 namespace AI.Provincial;
 public class ProvincialAI : User
@@ -377,6 +378,16 @@ public class ProvincialAI : User
 	}
 
 	public override CardInstance ReplaceTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
+	{
+		throw new NotImplementedException();
+	}
+
+	public override CardInstance CourtierReveal(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
+	{
+		throw new NotImplementedException();
+	}
+
+	public override List<CourtierBenefit> CourtierChooseBenefits(Card cardPlayed, PlayerState ps, Kingdom k, int benefitCount, List<CourtierBenefit> availableBenefits)
 	{
 		throw new NotImplementedException();
 	}

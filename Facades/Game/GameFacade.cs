@@ -28,6 +28,7 @@ public class GameFacade : IGameFacade
 	private readonly IKingdomObserver kingdomObserver;
 	private readonly IPlayerStateObserver playerStateObserver;
 	private readonly ICardMapper cardMapper;
+	private readonly IOperationMapper operationMapper;
 
 	private static GameResultsDto gameResults; // todo tohle je tady jen temporary - pak presunout jinam asi, vyresit results id apod
 
@@ -35,12 +36,14 @@ public class GameFacade : IGameFacade
 		IGameLogger gameLogger,
 		IKingdomObserver kingdomObserver,
 		IPlayerStateObserver playerStateObserver,
-		ICardMapper cardMapper)
+		ICardMapper cardMapper,
+		IOperationMapper operationMapper)
 	{
 		this.gameLogger = gameLogger;
 		this.kingdomObserver = kingdomObserver;
 		this.playerStateObserver = playerStateObserver;
 		this.cardMapper = cardMapper;
+		this.operationMapper = operationMapper;
 	}
 
 	public Task StartWithCards(IEnumerable<string> cardTypes, CancellationToken cancellationToken = default)
@@ -183,7 +186,7 @@ public class GameFacade : IGameFacade
 		{
 			kingdom = cards.GetKingdom(2, kingdomObserver);
 
-			var humanUser = new Human(playerStateObserver, cardMapper, CallClient);
+			var humanUser = new Human(playerStateObserver, cardMapper, operationMapper, CallClient);
 
 			var users = new User[] { humanUser, ai /*random*/ };
 

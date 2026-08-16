@@ -38,4 +38,6 @@ public enum ChoiceType
 	LurkerGain,
 	MillDiscard,
 	ReplaceTrash,
+	CourtierReveal,
+	CourtierChooseBenefits,
 }

@@ -1,4 +1,5 @@
 using GameCore.Cards;
+using GameCore.Cards.Intrique;
 using GameCore.Observers;
 
 namespace GameCore;
@@ -67,11 +68,13 @@ public abstract class User : IUser
 	public abstract CardInstance LurkerChooseCardToGain(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards);
 	public abstract bool MillWantsToDiscard(Card cardPlayed, PlayerState ps, Kingdom k);
 	public abstract List<CardInstance> MillChooseCardsToDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards, int count);
-	public abstract List<CardInstance> PatrolOrderCards(Card cardPlayed, PlayerState playerState, Kingdom kingdom, List<CardInstance> cards);
-	public abstract CardInstance ReplaceTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection);
+	public abstract List<CardInstance> PatrolOrderCards(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards);
+	public abstract CardInstance ReplaceTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards);
 	#endregion cards intrique
 
 	public override string ToString() => GetName();
+	public abstract CardInstance CourtierReveal(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards);
+	public abstract List<CourtierBenefit> CourtierChooseBenefits(Card cardPlayed, PlayerState ps, Kingdom k, int benefitCount, List<CourtierBenefit> availableBenefits);
 }
 
 public enum Phase { Action, Treasure, Buy, Gain, Reaction, Attack } // todo move to primitives

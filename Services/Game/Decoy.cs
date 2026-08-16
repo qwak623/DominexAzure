@@ -1,5 +1,6 @@
 using GameCore;
 using GameCore.Cards;
+using GameCore.Cards.Intrique;
 
 namespace Dominex.Services.Game;
 public class Decoy : User
@@ -125,5 +126,8 @@ public class Decoy : User
 		=> cards.Take(count).ToList();
 	public override List<CardInstance> PatrolOrderCards(Card cardPlayed, PlayerState playerState, Kingdom kingdom, List<CardInstance> cards) => cards;
 	public override CardInstance ReplaceTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection) => cardSelection.First();
+	public override CardInstance CourtierReveal(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards) => cards.First();
+	public override List<CourtierBenefit> CourtierChooseBenefits(Card cardPlayed, PlayerState ps, Kingdom k, int benefitCount, List<CourtierBenefit> availableBenefits)
+		=> availableBenefits.Take(benefitCount).ToList();
 	#endregion cards intrique
 }

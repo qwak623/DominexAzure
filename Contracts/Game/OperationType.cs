@@ -14,4 +14,8 @@ public enum OperationType
 	Gain,
 	React,
 	Pass,
+	Reveal,
+	AddCoins,
+	AddActions,
+	AddBuys
 }
