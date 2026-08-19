@@ -392,6 +392,11 @@ public class ProvincialAI : User
 		throw new NotImplementedException();
 	}
 
+	public override List<PawnBenefit> PawnChooseBenefits(Card cardPlayed, PlayerState ps, Kingdom k, int benefitCount, List<PawnBenefit> availableBenefits)
+	{
+		throw new NotImplementedException();
+	}
+
 	#endregion cards intrique
 }
 

@@ -129,5 +129,7 @@ public class Decoy : User
 	public override CardInstance CourtierReveal(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards) => cards.First();
 	public override List<CourtierBenefit> CourtierChooseBenefits(Card cardPlayed, PlayerState ps, Kingdom k, int benefitCount, List<CourtierBenefit> availableBenefits)
 		=> availableBenefits.Take(benefitCount).ToList();
+	public override List<PawnBenefit> PawnChooseBenefits(Card cardPlayed, PlayerState ps, Kingdom k, int benefitCount, List<PawnBenefit> availableBenefits)
+		=> availableBenefits.Take(benefitCount).ToList();
 	#endregion cards intrique
 }

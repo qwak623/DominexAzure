@@ -70,11 +70,12 @@ public abstract class User : IUser
 	public abstract List<CardInstance> MillChooseCardsToDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards, int count);
 	public abstract List<CardInstance> PatrolOrderCards(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards);
 	public abstract CardInstance ReplaceTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards);
+	public abstract CardInstance CourtierReveal(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards);
+	public abstract List<CourtierBenefit> CourtierChooseBenefits(Card cardPlayed, PlayerState ps, Kingdom k, int benefitCount, List<CourtierBenefit> availableBenefits);
+	public abstract List<PawnBenefit> PawnChooseBenefits(Card cardPlayed, PlayerState ps, Kingdom k, int benefitCount, List<PawnBenefit> availableBenefits);
 	#endregion cards intrique
 
 	public override string ToString() => GetName();
-	public abstract CardInstance CourtierReveal(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards);
-	public abstract List<CourtierBenefit> CourtierChooseBenefits(Card cardPlayed, PlayerState ps, Kingdom k, int benefitCount, List<CourtierBenefit> availableBenefits);
 }
 
 public enum Phase { Action, Treasure, Buy, Gain, Reaction, Attack } // todo move to primitives

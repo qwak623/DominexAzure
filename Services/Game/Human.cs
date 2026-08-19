@@ -180,6 +180,9 @@ public class Human(IPlayerStateObserver playerStateObserver, ICardMapper cardMap
 	public override List<CourtierBenefit> CourtierChooseBenefits(Card cardPlayed, PlayerState ps, Kingdom k, int benefitCount, List<CourtierBenefit> availableBenefits)
 		=> operationMapper.ToCourtierBenefits(AskOperations(cardPlayed, ps, ChoiceType.CourtierChooseBenefits, [null],
 			operationMapper.ToOperationTypes(availableBenefits), benefitCount, benefitCount));
+	public override List<PawnBenefit> PawnChooseBenefits(Card cardPlayed, PlayerState ps, Kingdom k, int benefitCount, List<PawnBenefit> availableBenefits)
+		=> operationMapper.ToPawnBenefits(AskOperations(cardPlayed, ps, ChoiceType.PawnChooseBenefits, [null],
+			operationMapper.ToOperationTypes(availableBenefits), benefitCount, benefitCount));
 	#endregion cards intrique
 
 	/// <summary>

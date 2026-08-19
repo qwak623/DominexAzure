@@ -17,5 +17,6 @@ public enum OperationType
 	Reveal,
 	AddCoins,
 	AddActions,
-	AddBuys
+	AddBuys,
+	Draw
 }
