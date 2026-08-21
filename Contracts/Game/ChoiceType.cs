@@ -43,4 +43,5 @@ public enum ChoiceType
 	PawnChooseBenefits,
 	StewardTrash,
 	StewardChooseBenefits,
+	UpgradeTrash,
 }
