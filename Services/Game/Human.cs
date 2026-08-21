@@ -183,6 +183,11 @@ public class Human(IPlayerStateObserver playerStateObserver, ICardMapper cardMap
 	public override List<PawnBenefit> PawnChooseBenefits(Card cardPlayed, PlayerState ps, Kingdom k, int benefitCount, List<PawnBenefit> availableBenefits)
 		=> operationMapper.ToPawnBenefits(AskOperations(cardPlayed, ps, ChoiceType.PawnChooseBenefits, [null],
 			operationMapper.ToOperationTypes(availableBenefits), benefitCount, benefitCount));
+	public override StewardBenefit StewardChooseBenefit(Card cardPlayed, PlayerState ps, Kingdom k, List<StewardBenefit> allBenefits)
+		=> operationMapper.ToStewardBenefits(AskOperations(cardPlayed, ps, ChoiceType.StewardChooseBenefits, [null],
+			operationMapper.ToOperationTypes(allBenefits), 1, 1)).Single();
+	public override List<CardInstance> StewardChooseCardsToTrash(Card cardPlayed, PlayerState ps, Kingdom k, int count, List<CardInstance> cardSelection)
+		=> AskForCards(cardPlayed, ps, cardSelection, ChoiceType.StewardTrash, OperationType.Trash, count, count);
 	#endregion cards intrique
 
 	/// <summary>

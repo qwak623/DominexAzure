@@ -9,4 +9,7 @@ public interface IOperationMapper
 
 	List<OperationType> ToOperationTypes(List<PawnBenefit> benefits);
 	List<PawnBenefit> ToPawnBenefits(List<OperationType> operationTypes);
+
+	List<OperationType> ToOperationTypes(List<StewardBenefit> benefits);
+	List<StewardBenefit> ToStewardBenefits(List<OperationType> operationTypes);
 }

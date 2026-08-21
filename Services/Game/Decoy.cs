@@ -131,5 +131,7 @@ public class Decoy : User
 		=> availableBenefits.Take(benefitCount).ToList();
 	public override List<PawnBenefit> PawnChooseBenefits(Card cardPlayed, PlayerState ps, Kingdom k, int benefitCount, List<PawnBenefit> availableBenefits)
 		=> availableBenefits.Take(benefitCount).ToList();
+	public override StewardBenefit StewardChooseBenefit(Card cardPlayed, PlayerState ps, Kingdom k, List<StewardBenefit> allBenefits) => allBenefits.First();
+	public override List<CardInstance> StewardChooseCardsToTrash(Card cardPlayed, PlayerState ps, Kingdom k, int count, List<CardInstance> cards) => cards.Take(count).ToList();
 	#endregion cards intrique
 }

@@ -41,4 +41,6 @@ public enum ChoiceType
 	CourtierReveal,
 	CourtierChooseBenefits,
 	PawnChooseBenefits,
+	StewardTrash,
+	StewardChooseBenefits,
 }

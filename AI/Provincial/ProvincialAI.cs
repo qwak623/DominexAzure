@@ -397,6 +397,16 @@ public class ProvincialAI : User
 		throw new NotImplementedException();
 	}
 
+	public override StewardBenefit StewardChooseBenefit(Card cardPlayed, PlayerState ps, Kingdom k, List<StewardBenefit> allBenefits)
+	{
+		throw new NotImplementedException();
+	}
+
+	public override List<CardInstance> StewardChooseCardsToTrash(Card cardPlayed, PlayerState ps, Kingdom k, int count, List<CardInstance> cards)
+	{
+		throw new NotImplementedException();
+	}
+
 	#endregion cards intrique
 }
 
