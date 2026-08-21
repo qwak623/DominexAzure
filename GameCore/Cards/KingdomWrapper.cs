@@ -6,7 +6,8 @@
 public class KingdomWrapper
 {
 	public Kingdom Kingdom;
-	public int Price { get; init; }
+	public int MinPrice { get; init; } = 0;
+	public int MaxPrice { get; init; }
 	public bool OnlyTreasures { get; init; }
 	public PlayerState PlayerState { get; init; }
 
@@ -34,6 +35,8 @@ public class KingdomWrapper
 		.Select(p => p.CardInstance);
 
 	private bool IsAvailable(KingdomPile kp) =>
-		kp.Count > 0 && kp.CardInstance.Card.GetPrice(PlayerState) <= Price
+		kp.Count > 0
+		&& kp.CardInstance.Card.GetPrice(PlayerState) >= MinPrice
+		&& kp.CardInstance.Card.GetPrice(PlayerState) <= MaxPrice
 		&& ((OnlyTreasures && kp.CardInstance.IsTreasure) || !OnlyTreasures);
 }

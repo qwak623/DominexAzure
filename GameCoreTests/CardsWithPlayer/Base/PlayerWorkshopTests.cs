@@ -51,7 +51,7 @@ public class PlayerWorkshopTests : CardWithPlayerTestsBase
 		AssertPile([workshop], player.PlayerState.ActionsPlayed);
 		AssertPile([], player.Game.Trash);
 
-		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.Price == 4 && k.OnlyTreasures == false),
+		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.MaxPrice == 4 && k.OnlyTreasures == false),
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Once);
 		#endregion
 	}
@@ -80,7 +80,7 @@ public class PlayerWorkshopTests : CardWithPlayerTestsBase
 		AssertPile([workshop], player.PlayerState.ActionsPlayed);
 		AssertPile([], player.Game.Trash);
 
-		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.Price == 4 && k.OnlyTreasures == false),
+		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.MaxPrice == 4 && k.OnlyTreasures == false),
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Once);
 		#endregion
 	}
@@ -139,7 +139,7 @@ public class PlayerWorkshopTests : CardWithPlayerTestsBase
 
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
 			player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
-		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.Price == 4 && k.OnlyTreasures == false),
+		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.MaxPrice == 4 && k.OnlyTreasures == false),
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Exactly(2));
 		#endregion
 	}
@@ -173,7 +173,7 @@ public class PlayerWorkshopTests : CardWithPlayerTestsBase
 
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
 			player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
-		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.Price == 4 && k.OnlyTreasures == false),
+		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.MaxPrice == 4 && k.OnlyTreasures == false),
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Exactly(2));
 		#endregion
 	}
@@ -206,7 +206,7 @@ public class PlayerWorkshopTests : CardWithPlayerTestsBase
 
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
 			player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
-		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.Price == 4 && k.OnlyTreasures == false),
+		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.MaxPrice == 4 && k.OnlyTreasures == false),
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Exactly(2));
 		#endregion
 	}

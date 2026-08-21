@@ -52,7 +52,7 @@ public class PlayerFeastTests : CardWithPlayerTestsBase
 		AssertPile([feast], player.Game.Trash);
 
 		// user has to select a card with price max 5 to gain
-		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.Price == 5 && k.OnlyTreasures == false),
+		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.MaxPrice == 5 && k.OnlyTreasures == false),
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Once);
 		#endregion
 	}
@@ -80,7 +80,7 @@ public class PlayerFeastTests : CardWithPlayerTestsBase
 		AssertPile([feast], player.Game.Trash);
 
 		// user has to select a card with price max 5 to gain
-		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.Price == 5 && k.OnlyTreasures == false),
+		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.MaxPrice == 5 && k.OnlyTreasures == false),
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Once);
 		#endregion
 	}
@@ -117,7 +117,7 @@ public class PlayerFeastTests : CardWithPlayerTestsBase
 		AssertPile([feast], player.Game.Trash);
 
 		// user has to select a card with price max 5 to gain
-		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.Price == 5 && k.OnlyTreasures == false),
+		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.MaxPrice == 5 && k.OnlyTreasures == false),
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Exactly(2));
 
 		// user was asked which card to play using throne room
@@ -159,7 +159,7 @@ public class PlayerFeastTests : CardWithPlayerTestsBase
 			player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 
 		// user has to select a card with price max 5 to gain - there is only one duchy
-		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.Price == 5 && k.OnlyTreasures == false),
+		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.MaxPrice == 5 && k.OnlyTreasures == false),
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Exactly(2));
 		#endregion
 	}
@@ -194,7 +194,7 @@ public class PlayerFeastTests : CardWithPlayerTestsBase
 			player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 
 		// user has to select a card with price max 5 to gain - there is none
-		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.Price == 5 && k.OnlyTreasures == false),
+		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.MaxPrice == 5 && k.OnlyTreasures == false),
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Exactly(2));
 		#endregion
 	}

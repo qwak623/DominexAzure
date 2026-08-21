@@ -76,7 +76,7 @@ public class PlayerReplaceTests : CardWithPlayerTestsBase
 
 		Assert.IsTrue(wrapper.AvailableCards.Any(c => c.Card.Type == CardType.Laboratory));
 		attackerUser.Verify(u => u.ReplaceTrash(replace, attacker.PlayerState, attacker.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
-		attackerUser.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.Price == 5 && !kw.OnlyTreasures),
+		attackerUser.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.MaxPrice == 5 && !kw.OnlyTreasures),
 			attacker.PlayerState, attacker.Game.Kingdom, Phase.Gain), Times.Once);
 		#endregion
 	}
@@ -117,7 +117,7 @@ public class PlayerReplaceTests : CardWithPlayerTestsBase
 		AssertPile([], defender.PlayerState.DiscardPile);
 
 		Assert.IsTrue(wrapper.AvailableCards.Any(c => c.Card.Type == CardType.Gold));
-		attackerUser.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.Price == 7 && !kw.OnlyTreasures),
+		attackerUser.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.MaxPrice == 7 && !kw.OnlyTreasures),
 			attacker.PlayerState, attacker.Game.Kingdom, Phase.Gain), Times.Once);
 		#endregion
 	}

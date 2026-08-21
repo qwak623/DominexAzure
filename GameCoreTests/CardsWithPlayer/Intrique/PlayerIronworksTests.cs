@@ -58,7 +58,7 @@ public class PlayerIronworksTests : CardWithPlayerTestsBase
 		AssertPile([ironworks], player.PlayerState.CardsPlayed);
 		AssertPile([ironworks], player.PlayerState.ActionsPlayed);
 
-		Assert.AreEqual(4, wrapper.Price);
+		Assert.AreEqual(4, wrapper.MaxPrice);
 		Assert.IsFalse(wrapper.OnlyTreasures);
 		Assert.IsTrue(wrapper.AvailableCards.Any(c => c.Card.Type == CardType.Village));
 		#endregion

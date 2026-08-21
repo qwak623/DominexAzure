@@ -112,7 +112,7 @@ public class PlayerBridgeTests : CardWithPlayerTestsBase
 
 		player.PlayActionCardInternal(bridgeToPlay);
 
-		user.Setup(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.Price == 1 && !kw.OnlyTreasures),
+		user.Setup(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.MaxPrice == 1 && !kw.OnlyTreasures),
 			player.PlayerState, player.Game.Kingdom, Phase.Buy)).Returns(silverToGain);
 		#endregion
 
@@ -127,7 +127,7 @@ public class PlayerBridgeTests : CardWithPlayerTestsBase
 		Assert.AreEqual(-1, player.PlayerState.Coins);
 		AssertPile([silver], player.PlayerState.DiscardPile);
 
-		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.Price == 1 && !kw.OnlyTreasures),
+		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.MaxPrice == 1 && !kw.OnlyTreasures),
 			player.PlayerState, player.Game.Kingdom, Phase.Buy), Times.Once);
 		#endregion
 	}

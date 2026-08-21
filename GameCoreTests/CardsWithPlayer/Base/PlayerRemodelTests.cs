@@ -62,7 +62,7 @@ public class PlayerRemodelTests : CardWithPlayerTestsBase
 
 		Assert.IsTrue(wrapper.AvailableCards.Any(c => c.Card.Type == CardType.Laboratory));
 		user.Verify(u => u.RemodelTrash(remodel, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
-		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.Price == 5 && !kw.OnlyTreasures),
+		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.MaxPrice == 5 && !kw.OnlyTreasures),
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Once);
 		#endregion
 	}
@@ -128,7 +128,7 @@ public class PlayerRemodelTests : CardWithPlayerTestsBase
 		user.Verify(u => u.RemodelTrash(remodel, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 
 		// max price 7 (laboratory costs 5, +2), but nothing is selected
-		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.Price == 7 && !kw.OnlyTreasures),
+		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.MaxPrice == 7 && !kw.OnlyTreasures),
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Once);
 		#endregion
 	}
@@ -181,9 +181,9 @@ public class PlayerRemodelTests : CardWithPlayerTestsBase
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
 			player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		user.Verify(u => u.RemodelTrash(remodel, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Exactly(2));
-		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.Price == 5 && !kw.OnlyTreasures),
+		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.MaxPrice == 5 && !kw.OnlyTreasures),
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Once);
-		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.Price == 6 && !kw.OnlyTreasures),
+		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.MaxPrice == 6 && !kw.OnlyTreasures),
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Once);
 
 		Assert.IsTrue(wrappers[0].AvailableCards.Any(c => c.Card.Type == CardType.Laboratory));

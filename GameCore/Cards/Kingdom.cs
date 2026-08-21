@@ -61,7 +61,7 @@ public class Kingdom : IEnumerable<KingdomPile>
 		return new KingdomWrapper
 		{
 			Kingdom = this,
-			Price = price,
+			MaxPrice = price,
 			OnlyTreasures = onlyTreasures,
 			PlayerState = ps,
 		};

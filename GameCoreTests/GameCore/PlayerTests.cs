@@ -60,7 +60,7 @@ public class PlayerTests
 
 		// coins after playing copper + the drawn silver: 1 + 2 = 3
 		var estateToGain = player.Game.Kingdom.GetPile(CardType.Estate).CardInstance;
-		user.Setup(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.Price == 3 && !k.OnlyTreasures),
+		user.Setup(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.MaxPrice == 3 && !k.OnlyTreasures),
 			player.PlayerState, game.Object.Kingdom, Phase.Buy)).Returns(estateToGain);
 		#endregion
 
@@ -98,7 +98,7 @@ public class PlayerTests
 
 		// coins from playing copper + silver: 1 + 2 = 3
 		var estateToGain = player.Game.Kingdom.GetPile(CardType.Estate).CardInstance;
-		user.Setup(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.Price == 3 && !k.OnlyTreasures),
+		user.Setup(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.MaxPrice == 3 && !k.OnlyTreasures),
 			player.PlayerState, game.Object.Kingdom, Phase.Buy)).Returns(estateToGain);
 		#endregion
 
@@ -143,7 +143,7 @@ public class PlayerTests
 
 		// coins from playing copper + the two drawn silvers: 1 + 2 + 2 + 1 (drawn copper) = 6
 		var estateToGain = player.Game.Kingdom.GetPile(CardType.Estate).CardInstance;
-		user.Setup(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.Price == 6 && !k.OnlyTreasures),
+		user.Setup(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.MaxPrice == 6 && !k.OnlyTreasures),
 			player.PlayerState, game.Object.Kingdom, Phase.Buy)).Returns(estateToGain);
 		#endregion
 
@@ -177,7 +177,7 @@ public class PlayerTests
 		player.PlayerState.Hand = CreatePile([copper]);
 		player.PlayerState.DrawPile = CreatePile([gold, copper, copper, copper, copper]);
 
-		user.Setup(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.Price == 1 && !k.OnlyTreasures),
+		user.Setup(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.MaxPrice == 1 && !k.OnlyTreasures),
 			player.PlayerState, game.Object.Kingdom, Phase.Buy)).Returns((CardInstance)null);
 		#endregion
 
@@ -345,7 +345,7 @@ public class PlayerTests
 		player.PlayerState.Buys = 1;
 		var villageToGain = player.Game.Kingdom.GetPile(CardType.Village).CardInstance;
 
-		user.Setup(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => !k.OnlyTreasures && k.Price == 5),
+		user.Setup(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => !k.OnlyTreasures && k.MaxPrice == 5),
 			player.PlayerState, game.Object.Kingdom, Phase.Buy)).Returns(villageToGain);
 		#endregion
 
@@ -390,7 +390,7 @@ public class PlayerTests
 		player.PlayerState.Coins = 4;
 		player.PlayerState.Buys = 1;
 
-		user.Setup(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => !k.OnlyTreasures && k.Price == 4),
+		user.Setup(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => !k.OnlyTreasures && k.MaxPrice == 4),
 			player.PlayerState, game.Object.Kingdom, Phase.Buy)).Returns((CardInstance)null);
 		#endregion
 

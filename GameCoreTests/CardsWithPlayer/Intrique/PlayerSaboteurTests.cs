@@ -71,7 +71,7 @@ public class PlayerSaboteurTests : CardWithPlayerTestsBase
 		AssertPile([copper], defender.PlayerState.DiscardPile);
 
 		// silver costs 3, so the replacement is capped at 3-2=1
-		Assert.AreEqual(1, wrapper.Price);
+		Assert.AreEqual(1, wrapper.MaxPrice);
 		#endregion
 	}
 
@@ -138,7 +138,7 @@ public class PlayerSaboteurTests : CardWithPlayerTestsBase
 		AssertPile([gold], attacker.Game.Trash);
 
 		// gold costs 6, so the replacement is capped at 6-2=4
-		Assert.AreEqual(4, wrapper.Price);
+		Assert.AreEqual(4, wrapper.MaxPrice);
 		Assert.IsTrue(wrapper.AvailableCards.Any(c => c.Card.Type == CardType.Silver));
 		Assert.IsFalse(wrapper.AvailableCards.Any(c => c.Card.Type == CardType.Gold));
 		#endregion

@@ -61,7 +61,7 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 		AssertPile([copper], player.Game.Trash);
 
 		Assert.IsTrue(wrapper.AvailableCards.Any(c => c.Card.Type == CardType.Silver));
-		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.Price == 3 && kw.OnlyTreasures),
+		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.MaxPrice == 3 && kw.OnlyTreasures),
 			It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), Phase.Gain), Times.Once);
 		#endregion
 	}
@@ -171,9 +171,9 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 		user.Verify(u => u.MineTrash(mine, player.PlayerState, player.Game.Kingdom,
 			It.Is<List<CardInstance>>(c => c.SequenceEqual(new List<CardInstance> { silverToGain }))), Times.Once);
 
-		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.Price == 3 && kw.OnlyTreasures),
+		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.MaxPrice == 3 && kw.OnlyTreasures),
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Once);
-		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.Price == 6 && kw.OnlyTreasures),
+		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.MaxPrice == 6 && kw.OnlyTreasures),
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Once);
 
 		Assert.IsTrue(wrappers[0].AvailableCards.Any(c => c.Card.Type == CardType.Silver));
@@ -227,7 +227,7 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 		user.Verify(u => u.MineTrash(mine, player.PlayerState, player.Game.Kingdom,
 			It.Is<List<CardInstance>>(c => c.SequenceEqual(new List<CardInstance> { copper2, silver1 }))), Times.Once);
 
-		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.Price == 3 && kw.OnlyTreasures),
+		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.MaxPrice == 3 && kw.OnlyTreasures),
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Exactly(2));
 		#endregion
 	}
