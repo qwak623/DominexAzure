@@ -190,6 +190,11 @@ public class Human(IPlayerStateObserver playerStateObserver, ICardMapper cardMap
 		=> AskForCards(cardPlayed, ps, cardSelection, ChoiceType.StewardTrash, OperationType.Trash, count, count);
 	public override CardInstance UpgradeTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
 		=> AskForCards(cardPlayed, ps, cards, ChoiceType.UpgradeTrash, OperationType.Trash, 1, 1).Single();
+
+	public override CardType WishingWellGuess(Card cardPlayed, PlayerState ps, Kingdom k, List<CardType> cardTypes)
+	{
+		throw new NotImplementedException();
+	}
 	#endregion cards intrique
 
 	/// <summary>

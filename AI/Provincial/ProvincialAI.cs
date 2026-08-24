@@ -412,6 +412,11 @@ public class ProvincialAI : User
 		throw new NotImplementedException();
 	}
 
+	public override CardType WishingWellGuess(Card cardPlayed, PlayerState ps, Kingdom k, List<CardType> cardTypes)
+	{
+		throw new NotImplementedException();
+	}
+
 	#endregion cards intrique
 }
 
