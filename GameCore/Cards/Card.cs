@@ -56,7 +56,7 @@ public abstract class Card
 
 	public virtual int GetPrice(PlayerState playerState)
 	{
-		var price = this.price - playerState.TempEffects.GeneralCostReduction;
+		var price = this.price - (playerState?.TempEffects?.GeneralCostReduction ?? 0);
 		return price < 0 ? 0 : price;
 	}
 	public int DefaultPrice => price;
@@ -220,36 +220,69 @@ public abstract class Card
 			case CardType.Sentry:
 			case CardType.Artisan:
 			case CardType.Courtyard:
+				return Intrique.Courtyard.Get();
 			case CardType.Pawn:
+				return Intrique.Pawn.Get();
 			case CardType.SecretChamber:
+				return Intrique.SecretChamber.Get();
 			case CardType.Masquerade:
+				return Intrique.Masquerade.Get();
 			case CardType.ShantyTown:
+				return Intrique.ShantyTown.Get();
 			case CardType.Steward:
+				return Intrique.Steward.Get();
 			case CardType.Swindler:
+				return Intrique.Swindler.Get();
 			case CardType.WishingWell:
+				return Intrique.WishingWell.Get();
 			case CardType.GreatHall:
+				return Intrique.GreatHall.Get();
+			case CardType.Harem:
+				return Intrique.Harem.Get();
 			case CardType.Baron:
+				return Intrique.Baron.Get();
 			case CardType.Bridge:
+				return Intrique.Bridge.Get();
 			case CardType.Conspirator:
+				return Intrique.Conspirator.Get();
 			case CardType.Ironworks:
+				return Intrique.Ironworks.Get();
 			case CardType.MiningVillage:
+				return Intrique.MiningVillage.Get();
 			case CardType.Coppersmith:
+				return Intrique.Coppersmith.Get();
 			case CardType.Scout:
+				return Intrique.Scout.Get();
 			case CardType.Duke:
+				return Intrique.Duke.Get();
 			case CardType.Minion:
+				return Intrique.Minion.Get();
 			case CardType.Torturer:
+				return Intrique.Torturer.Get();
 			case CardType.TradingPost:
+				return Intrique.TradingPost.Get();
 			case CardType.Upgrade:
+				return Intrique.Upgrade.Get();
 			case CardType.Saboteur:
+				return Intrique.Saboteur.Get();
 			case CardType.Tribute:
+				return Intrique.Tribute.Get();
 			case CardType.Nobles:
+				return Intrique.Nobles.Get();
 			case CardType.Lurker:
+				return Intrique.Lurker.Get();
 			case CardType.Diplomat:
+				return Intrique.Diplomat.Get();
 			case CardType.Mill:
+				return Intrique.Mill.Get();
 			case CardType.SecretPassage:
+				return Intrique.SecretPassage.Get();
 			case CardType.Courtier:
+				return Intrique.Courtier.Get();
 			case CardType.Patrol:
+				return Intrique.Patrol.Get();
 			case CardType.Replace:
+				return Intrique.Replace.Get();
 			default:
 				throw new NotImplementedException();
 		}

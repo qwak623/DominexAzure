@@ -1,11 +1,13 @@
 ﻿using GameCore.Cards.Base;
 using GameCore.Cards.GeneralCards;
+using GameCore.Cards.Intrique;
 
 namespace GameCore.Cards;
 public static class PresetGames
 {
-	public static List<Card> AvailableCards { get; } = new()
-	{
+	public static List<Card> AvailableCards { get; } =
+	[
+		// base cards
 		Adventurer.Get(),
 		Bureaucrat.Get(),
 		Cellar.Get(),
@@ -31,15 +33,48 @@ public static class PresetGames
 		Witch.Get(),
 		Woodcutter.Get(),
 		Workshop.Get(),
-	};
 
-	public static List<Card> VictoryAndTreasures() => new()
-	{
+		// intrique cards
+		Baron.Get(),
+		Bridge.Get(),
+		Conspirator.Get(),
+		Coppersmith.Get(),
+		Courtier.Get(),
+		Courtyard.Get(),
+		Diplomat.Get(),
+		Duke.Get(),
+		GreatHall.Get(),
+		Harem.Get(),
+		Ironworks.Get(),
+		Lurker.Get(),
+		Masquerade.Get(),
+		Mill.Get(),
+		MiningVillage.Get(),
+		Minion.Get(),
+		Nobles.Get(),
+		Patrol.Get(),
+		Pawn.Get(),
+		Replace.Get(),
+		Saboteur.Get(),
+		Scout.Get(),
+		SecretChamber.Get(),
+		ShantyTown.Get(),
+		Steward.Get(),
+		Swindler.Get(),
+		Torturer.Get(),
+		TradingPost.Get(),
+		Tribute.Get(),
+		Upgrade.Get(),
+		WishingWell.Get()
+	];
+
+	public static List<Card> VictoryAndTreasures =>
+	[
 		Copper.Get(),
 		Silver.Get(),
 		Gold.Get(),
 		Estate.Get(),
 		Duchy.Get(),
 		Province.Get()
-	};
+	];
 }

@@ -18,5 +18,6 @@ public enum OperationType
 	AddCoins,
 	AddActions,
 	AddBuys,
-	Draw
+	Draw,
+	ReturnToDraw
 }

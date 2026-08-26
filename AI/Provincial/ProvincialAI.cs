@@ -417,6 +417,11 @@ public class ProvincialAI : User
 		throw new NotImplementedException();
 	}
 
+	public override CardInstance SecretPassageChooseCard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
+	{
+		throw new NotImplementedException();
+	}
+
 	#endregion cards intrique
 }
 

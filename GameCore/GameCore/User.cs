@@ -77,6 +77,7 @@ public abstract class User : IUser
 	public abstract List<CardInstance> StewardChooseCardsToTrash(Card cardPlayed, PlayerState ps, Kingdom k, int count, List<CardInstance> cards);
 	public abstract CardInstance UpgradeTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards);
 	public abstract CardType WishingWellGuess(Card cardPlayed, PlayerState ps, Kingdom k, List<CardType> cardTypes);
+	public abstract CardInstance SecretPassageChooseCard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards);
 	#endregion cards intrique
 
 	public override string ToString() => GetName();

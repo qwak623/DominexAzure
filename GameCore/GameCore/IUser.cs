@@ -57,6 +57,7 @@ public interface IUser
 	List<CardInstance> StewardChooseCardsToTrash(Card cardPlayed, PlayerState ps, Kingdom k, int count, List<CardInstance> cards);
 	CardInstance UpgradeTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards);
 	CardType WishingWellGuess(Card cardPlayed, PlayerState ps, Kingdom k, List<CardType> cardTypes);
+	CardInstance SecretPassageChooseCard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards);
 	#endregion cards intrique
 
 	string ToString();

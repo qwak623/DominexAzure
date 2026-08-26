@@ -31,7 +31,7 @@ public static class Extensions
 
 	public static List<Card> AddRequiredCards(this IEnumerable<Card> cards)
 	{
-		return cards.Concat(PresetGames.VictoryAndTreasures())
+		return cards.Concat(PresetGames.VictoryAndTreasures)
 			.Concat(cards.Select(c => c.RequiredCards).Where(c => c is not null).Distinct()).ToList();
 	}
 
