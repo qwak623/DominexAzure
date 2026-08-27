@@ -3,21 +3,12 @@
 public class Bridge : Card
 {
 	private static Bridge bridge;
-	private Bridge() : base
-	(
-		type: CardName.Bridge,
-		price: 4,
-		addActions: 0,
-		addBuys: 1,
-		addCoins: 1,
-		drawCards: 0,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: false
-	)
+	private Bridge() : base(CardType.Action)
 	{
+		Name = CardName.Bridge;
+		DefaultPrice = 4;
+		AddBuys = 1;
+		AddCoins = 1;
 		bridge = this;
 		Description = "This turn, cards (everywhere) cost $1 less.";
 	}

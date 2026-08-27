@@ -2,21 +2,11 @@
 public class Diplomat : Card
 {
 	private static Diplomat diplomat;
-	private Diplomat() : base
-	(
-		type: CardName.Diplomat,
-		price: 4,
-		addActions: 0,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 2,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: true,
-		isAttack: false
-	)
+	private Diplomat() : base([CardType.Action, CardType.Reaction])
 	{
+		Name = CardName.Diplomat;
+		DefaultPrice = 4;
+		DrawCards = 2;
 		diplomat = this;
 		Description = $"If you have 5 or fewer cards in hand (after drawing), +2 Actions. {Environment.NewLine}" +
 			$"When another player plays an Attack card, you may first reveal this from a hand of 5 or more cards, to draw 2 cards then discard 3.";

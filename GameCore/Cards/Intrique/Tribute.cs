@@ -2,21 +2,10 @@
 public class Tribute : Card
 {
 	private static Tribute tribute;
-	private Tribute() : base
-	(
-		type: CardName.Tribute,
-		price: 5,
-		addActions: 0,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 0,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: false
-	)
+	private Tribute() : base(CardType.Action)
 	{
+		Name = CardName.Tribute;
+		DefaultPrice = 5;
 		tribute = this;
 		Description = $"The player to your left reveals then discards the top 2 cards of their deck. " +
 			$"For each differently named card revealed, if it is an…{Environment.NewLine}" +

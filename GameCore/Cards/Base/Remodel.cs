@@ -2,21 +2,10 @@
 public class Remodel : Card
 {
 	private static Remodel remodel;
-	private Remodel() : base
-	(
-		type: CardName.Remodel,
-		price: 4,
-		addActions: 0,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 0,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: false
-	)
+	private Remodel() : base(CardType.Action)
 	{
+		Name = CardName.Remodel;
+		DefaultPrice = 4;
 		remodel = this;
 		Description = "Trash a card from your hand. Gain a card costing up to $2 more than it.";
 	}

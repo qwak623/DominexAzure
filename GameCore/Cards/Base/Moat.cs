@@ -3,21 +3,11 @@
 public class Moat : Card
 {
 	private static Moat moat;
-	private Moat() : base
-	(
-		type: CardName.Moat,
-		price: 2,
-		addActions: 0,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 2,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: true,
-		isAttack: false
-	)
+	private Moat() : base([CardType.Action, CardType.Reaction])
 	{
+		Name = CardName.Moat;
+		DefaultPrice = 2;
+		DrawCards = 2;
 		moat = this;
 		Description = "When another player plays an Attack card, you may first reveal this from your hand, to be unaffected by it.";
 	}

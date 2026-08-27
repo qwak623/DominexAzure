@@ -3,21 +3,11 @@
 public class Conspirator : Card
 {
 	private static Conspirator conspirator;
-	private Conspirator() : base
-	(
-		type: CardName.Conspirator,
-		price: 4,
-		addActions: 0,
-		addBuys: 0,
-		addCoins: 2,
-		drawCards: 0,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: false
-	)
+	private Conspirator() : base(CardType.Action)
 	{
+		Name = CardName.Conspirator;
+		DefaultPrice = 4;
+		AddCoins = 2;
 		conspirator = this;
 		Description = "If you've played 3 or more Actions this turn (counting this), +1 Card and +1 Action.";
 	}

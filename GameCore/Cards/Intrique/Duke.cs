@@ -2,21 +2,10 @@
 public class Duke : Card
 {
 	private static Duke duke;
-	private Duke() : base
-	(
-		type: CardName.Duke,
-		price: 5,
-		addActions: 0,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 0,
-		isVictory: true,
-		isTreasure: false,
-		isAction: false,
-		isReaction: false,
-		isAttack: false
-	)
+	private Duke() : base(CardType.Victory)
 	{
+		Name = CardName.Duke;
+		DefaultPrice = 5;
 		duke = this;
 		Description = "Worth 1 VP per Duchy you have.";
 	}

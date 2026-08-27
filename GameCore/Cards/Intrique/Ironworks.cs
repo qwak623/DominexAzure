@@ -2,21 +2,10 @@
 public class Ironworks : Card
 {
 	private static Ironworks ironworks;
-	private Ironworks() : base
-	(
-		type: CardName.Ironworks,
-		price: 4,
-		addActions: 0,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 0,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: false
-	)
+	private Ironworks() : base(CardType.Action)
 	{
+		Name = CardName.Ironworks;
+		DefaultPrice = 4;
 		ironworks = this;
 		Description = $"Gain a card costing up to $4. If the gained card is an...{Environment.NewLine}Action card, +1 Action{Environment.NewLine}Treasure card, +$1{Environment.NewLine}Victory card, +1 Card";
 	}

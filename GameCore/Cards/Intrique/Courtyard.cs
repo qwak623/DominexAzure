@@ -3,21 +3,11 @@
 public class Courtyard : Card
 {
 	private static Courtyard courtyard;
-	private Courtyard() : base
-	(
-		type: CardName.Courtyard,
-		price: 2,
-		addActions: 0,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 3,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: false
-	)
+	private Courtyard() : base(CardType.Action)
 	{
+		Name = CardName.Courtyard;
+		DefaultPrice = 2;
+		DrawCards = 3;
 		courtyard = this;
 		Description = "Put a card from your hand onto your deck.";
 		Message = "Choose a card to put on top of your deck.";

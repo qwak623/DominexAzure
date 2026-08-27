@@ -3,21 +3,12 @@
 public class MiningVillage : Card
 {
 	private static MiningVillage miningVillage;
-	private MiningVillage() : base
-	(
-		type: CardName.MiningVillage,
-		price: 4,
-		addActions: 2,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 1,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: false
-	)
+	private MiningVillage() : base(CardType.Action)
 	{
+		Name = CardName.MiningVillage;
+		DefaultPrice = 4;
+		AddActions = 2;
+		DrawCards = 1;
 		miningVillage = this;
 		Description = $"You may trash this for +$2.";
 	}

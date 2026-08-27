@@ -3,21 +3,11 @@
 public class ShantyTown : Card
 {
 	private static ShantyTown shantyTown;
-	private ShantyTown() : base
-	(
-		type: CardName.ShantyTown,
-		price: 3,
-		addActions: 2,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 0,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: false
-	)
+	private ShantyTown() : base(CardType.Action)
 	{
+		Name = CardName.ShantyTown;
+		DefaultPrice = 3;
+		AddActions = 2;
 		shantyTown = this;
 		Description = $"Reveal your hand. If you have no Action cads in hand, +2 Card.";
 	}

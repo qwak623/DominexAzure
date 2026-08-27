@@ -3,21 +3,10 @@
 public class Coppersmith : Card
 {
 	private static Coppersmith coppersmith;
-	private Coppersmith() : base
-	(
-		type: CardName.Coppersmith,
-		price: 4,
-		addActions: 0,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 0,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: false
-	)
+	private Coppersmith() : base(CardType.Action)
 	{
+		Name = CardName.Coppersmith;
+		DefaultPrice = 4;
 		coppersmith = this;
 		Description = "Copper produces an extra $1 this turn.";
 	}

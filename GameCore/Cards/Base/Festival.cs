@@ -2,20 +2,15 @@
 public class Festival : Card
 {
 	private static Festival festival;
-	private Festival() : base
-	(
-		type: CardName.Festival,
-		price: 5,
-		addActions: 2,
-		addBuys: 1,
-		addCoins: 2,
-		drawCards: 0,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: false
-	) => festival = this;
+	private Festival() : base(CardType.Action)
+	{
+		Name = CardName.Festival;
+		DefaultPrice = 5;
+		AddActions = 2;
+		AddBuys = 1;
+		AddCoins = 2;
+		festival = this;
+	}
 
 	public static Festival Get() => festival ?? new Festival();
 }

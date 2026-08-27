@@ -5,21 +5,10 @@ namespace GameCore.Cards.Intrique;
 public class Courtier : Card
 {
 	private static Courtier courtier;
-	private Courtier() : base
-	(
-		type: CardName.Courtier,
-		price: 5,
-		addActions: 0,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 0,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: false
-	)
+	private Courtier() : base(CardType.Action)
 	{
+		Name = CardName.Courtier;
+		DefaultPrice = 5;
 		courtier = this;
 		Description = "Reveal a card from your hand. For each type it has (Action, Attack, etc.), " +
 			"choose one: +1 Action; or +1 Buy; or +$3; or gain a Gold. The choices must be different.";
@@ -47,17 +36,7 @@ public class Courtier : Card
 
 		CardInstance revealedCard = player.User.CourtierReveal(this, player.PlayerState, player.Game.Kingdom, player.PlayerState.Hand.ToList());
 
-		// TODO better way of tracking card types
-		int benefitCount = new[]
-		{
-			revealedCard.IsAction,
-			revealedCard.IsAttack,
-			revealedCard.IsTreasure,
-			revealedCard.IsVictory,
-			revealedCard.IsReaction,
-			revealedCard.Card.Name == CardName.Curse,
-		}.Count(isType => isType);
-		benefitCount = Math.Min(benefitCount, allBenefits.Count);
+		int benefitCount = Math.Min(revealedCard.Card.CardTypes.Count, allBenefits.Count);
 		if (benefitCount == 0)
 		{
 			return;

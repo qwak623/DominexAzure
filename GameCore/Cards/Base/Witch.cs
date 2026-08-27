@@ -3,21 +3,11 @@
 public class Witch : Card
 {
 	private static Witch witch;
-	private Witch() : base
-	(
-		type: CardName.Witch,
-		price: 5,
-		addActions: 0,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 2,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: true
-	)
+	private Witch() : base([CardType.Action, CardType.Attack])
 	{
+		Name = CardName.Witch;
+		DefaultPrice = 5;
+		DrawCards = 2;
 		witch = this;
 		Description = "Each other player gains a Curse.";
 	}

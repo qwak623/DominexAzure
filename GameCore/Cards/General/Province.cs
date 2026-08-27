@@ -2,16 +2,10 @@
 public class Province : Card
 {
 	private static Province province;
-	private Province() : base
-	(
-		type: CardName.Province,
-		price: 8,
-		addBuys: 0,
-		coins: 0,
-		isVictory: true,
-		isTreasure: false
-	)
+	private Province() : base(CardType.Victory)
 	{
+		Name = CardName.Province;
+		DefaultPrice = 8;
 		province = this;
 		VictoryPoints = 6;
 	}

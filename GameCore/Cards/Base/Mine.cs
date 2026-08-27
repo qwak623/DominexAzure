@@ -2,21 +2,10 @@
 public class Mine : Card
 {
 	private static Mine mine;
-	private Mine() : base
-	(
-		type: CardName.Mine,
-		price: 5,
-		addActions: 0,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 0,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: false
-	)
+	private Mine() : base(CardType.Action)
 	{
+		Name = CardName.Mine;
+		DefaultPrice = 5;
 		mine = this;
 		Description = "You may trash a Treasure card from your hand. Gain a Treasure card to your hand costing up to $3 more than it.";
 		Message = "Trash a treasure, gain a treasure to your hand costing up to $3 more.";

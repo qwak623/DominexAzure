@@ -2,21 +2,11 @@
 public class Lurker : Card
 {
 	private static Lurker lurker;
-	private Lurker() : base
-	(
-		type: CardName.Lurker,
-		price: 2,
-		addActions: 1,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 0,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: false
-	)
+	private Lurker() : base(CardType.Action)
 	{
+		Name = CardName.Lurker;
+		DefaultPrice = 2;
+		AddActions = 1;
 		lurker = this;
 		Description = "Choose one: Trash an Action card from the Supply; or gain an Action card from the trash.";
 	}

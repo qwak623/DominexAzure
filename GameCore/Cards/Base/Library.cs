@@ -4,21 +4,10 @@ namespace GameCore.Cards.Base;
 public class Library : Card
 {
 	private static Library library;
-	private Library() : base
-	(
-		type: CardName.Library,
-		price: 5,
-		addActions: 0,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 0,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: false
-	)
+	private Library() : base(CardType.Action)
 	{
+		base.Name = CardName.Library;
+		DefaultPrice = 5;
 		library = this;
 		Description = "Draw until you have 7 cards in hand, skipping any Action cards you choose to; set those aside, discarding them afterwards.";
 		Message = "You may skip any action card you choose to.";

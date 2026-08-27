@@ -3,23 +3,13 @@ public class Bureaucrat : Card
 {
 	private static Bureaucrat bureaucrat;
 
-	private Bureaucrat() : base
-	(
-		type: CardName.Bureaucrat,
-		price: 4,
-		addActions: 0,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 0,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: true
-	)
+	private Bureaucrat() : base([CardType.Action, CardType.Attack])
 	{
+		Name = CardName.Bureaucrat;
+		DefaultPrice = 4;
 		bureaucrat = this;
-		Description = "Gain a Silver onto your deck. Each other player reveals a Victory card from their hand and puts it onto their deck (or reveals a hand with no Victory cards).";
+		Description = "Gain a Silver onto your deck. " +
+			"Each other player reveals a Victory card from their hand and puts it onto their deck (or reveals a hand with no Victory cards).";
 		Message = "Return card with victory points up to draw pile, if you have any.";
 	}
 

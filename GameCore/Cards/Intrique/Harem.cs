@@ -3,16 +3,11 @@ public class Harem : Card
 {
 	// TODO Use 8 Harems/Farms for games with 2 players, 12 for games with 3 or more players.
 	private static Harem harem;
-	private Harem() : base
-	(
-		type: CardName.Harem,
-		price: 6,
-		addBuys: 0,
-		coins: 2,
-		isVictory: true,
-		isTreasure: true
-	)
+	private Harem() : base([CardType.Victory, CardType.Treasure])
 	{
+		Name = CardName.Harem;
+		DefaultPrice = 6;
+		Coins = 2;
 		harem = this;
 		VictoryPoints = 2;
 	}

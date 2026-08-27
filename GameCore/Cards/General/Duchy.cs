@@ -3,16 +3,10 @@
 public class Duchy : Card
 {
 	private static Duchy duchy;
-	private Duchy() : base
-	(
-		type: CardName.Duchy,
-		price: 5,
-		addBuys: 0,
-		coins: 0,
-		isVictory: true,
-		isTreasure: false
-	)
+	private Duchy() : base(CardType.Victory)
 	{
+		Name = CardName.Duchy;
+		DefaultPrice = 5;
 		duchy = this;
 		VictoryPoints = 3;
 	}

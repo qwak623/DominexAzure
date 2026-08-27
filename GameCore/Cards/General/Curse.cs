@@ -3,16 +3,10 @@
 public class Curse : Card
 {
 	private static Curse curse;
-	private Curse() : base
-	(
-		type: CardName.Curse,
-		price: 0,
-		addBuys: 0,
-		coins: 0,
-		isVictory: true,
-		isTreasure: false
-	)
+	private Curse() : base(CardType.Curse)
 	{
+		Name = CardName.Curse;
+		DefaultPrice = 0;
 		curse = this;
 		VictoryPoints = -1;
 	}

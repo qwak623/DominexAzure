@@ -1,28 +1,17 @@
-﻿using System.ComponentModel.DataAnnotations;
-using GameCore.GameCore;
+﻿using GameCore.GameCore;
 
 namespace GameCore.Cards.Base;
 
 public class Adventurer : Card
 {
 	private static Adventurer adventurer;
-	private Adventurer() : base
-	(
-		type: CardName.Adventurer,
-		price: 6,
-		addActions: 0,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 0,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: false
-	)
+	private Adventurer() : base(CardType.Action)
 	{
+		Name = CardName.Adventurer;
+		DefaultPrice = 6;
 		adventurer = this;
-		Description = "Reveal cards from your deck until you reveal 2 Treasure cards. Put those Treasure cards into your hand and discard the other revealed cards.";
+		Description = "Reveal cards from your deck until you reveal 2 Treasure cards. " +
+			"Put those Treasure cards into your hand and discard the other revealed cards.";
 	}
 
 	public static Adventurer Get() => adventurer ?? new Adventurer();

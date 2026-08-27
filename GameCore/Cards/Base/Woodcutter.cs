@@ -3,20 +3,14 @@
 public class Woodcutter : Card
 {
 	private static Woodcutter woodcutter;
-	private Woodcutter() : base
-	(
-		type: CardName.Woodcutter,
-		price: 3,
-		addActions: 0,
-		addBuys: 1,
-		addCoins: 2,
-		drawCards: 0,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: false
-	) => woodcutter = this;
+	private Woodcutter() : base(CardType.Action)
+	{
+		Name = CardName.Woodcutter;
+		DefaultPrice = 3;
+		AddBuys = 1;
+		AddCoins = 2;
+		woodcutter = this;
+	}
 
 	public static Woodcutter Get() => woodcutter ?? new Woodcutter();
 }

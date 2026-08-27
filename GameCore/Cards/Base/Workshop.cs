@@ -2,21 +2,10 @@
 public class Workshop : Card
 {
 	private static Workshop workshop;
-	private Workshop() : base
-	(
-		type: CardName.Workshop,
-		price: 3,
-		addActions: 0,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 0,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: false
-	)
+	private Workshop() : base(CardType.Action)
 	{
+		Name = CardName.Workshop;
+		DefaultPrice = 3;
 		workshop = this;
 		Description = "Gain a card costing up to $4.";
 	}

@@ -2,21 +2,10 @@
 public class Replace : Card
 {
 	private static Replace remodel;
-	private Replace() : base
-	(
-		type: CardName.Replace,
-		price: 5,
-		addActions: 0,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 0,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: true
-	)
+	private Replace() : base([CardType.Action, CardType.Attack])
 	{
+		Name = CardName.Replace;
+		DefaultPrice = 5;
 		remodel = this;
 		Description = "Trash a card from your hand. Gain a card costing up to $2 more than it. " +
 			"If the gained card is an Action or Treasure, put it onto your deck; if it's a Victory card, each other player gains a Curse.";

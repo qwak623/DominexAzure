@@ -2,21 +2,11 @@
 public class Masquerade : Card
 {
 	private static Masquerade masquerade;
-	private Masquerade() : base
-	(
-		type: CardName.Masquerade,
-		price: 3,
-		addActions: 0,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 2,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: false
-	)
+	private Masquerade() : base(CardType.Action)
 	{
+		Name = CardName.Masquerade;
+		DefaultPrice = 3;
+		DrawCards = 2;
 		masquerade = this;
 		Description = "Each player with any cards in hand passes one to the next such player to the left, at once. " +
 			"Then you may trash a card from your hand.";

@@ -2,21 +2,12 @@
 public class GreatHall : Card
 {
 	private static GreatHall greatHall;
-	private GreatHall() : base
-	(
-		type: CardName.GreatHall,
-		price: 3,
-		addActions: 1,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 1,
-		isVictory: true,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: false
-	)
+	private GreatHall() : base([CardType.Victory, CardType.Action])
 	{
+		Name = CardName.GreatHall;
+		DefaultPrice = 3;
+		AddActions = 1;
+		DrawCards = 1;
 		greatHall = this;
 		VictoryPoints = 1;
 	}

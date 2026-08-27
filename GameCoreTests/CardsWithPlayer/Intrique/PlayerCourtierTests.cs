@@ -97,38 +97,6 @@ public class PlayerCourtierTests : CardWithPlayerTestsBase
 	}
 
 	[TestMethod]
-	public void RevealingACurseCountsAsBothVictoryAndCurse()
-	{
-		#region arrange
-		// a curse is a victory card in this model (VictoryPoints = -1) on top of being its own
-		// type, so revealing one offers two benefit choices
-		player.PlayerState.Hand = CreatePile([courtier, curse]);
-		var courtierToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Courtier);
-		var curseInHand = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Curse);
-
-		user.Setup(u => u.CourtierReveal(courtier, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
-			.Returns(curseInHand);
-		user.Setup(u => u.CourtierChooseBenefits(courtier, player.PlayerState, player.Game.Kingdom, 2, It.IsAny<List<CourtierBenefit>>()))
-			.Returns([CourtierBenefit.Buy, CourtierBenefit.GainGold]);
-		#endregion
-
-		#region act
-		player.PlayActionCardInternal(courtierToPlay);
-		#endregion
-
-		#region assert
-		AssertNumbers(0, 0, 1, player);
-		AssertPile([curse], player.PlayerState.Hand);
-		AssertPile([], player.PlayerState.DrawPile);
-		AssertPile([gold], player.PlayerState.DiscardPile);
-		AssertPile([courtier], player.PlayerState.CardsPlayed);
-		AssertPile([courtier], player.PlayerState.ActionsPlayed);
-
-		user.Verify(u => u.CourtierChooseBenefits(courtier, player.PlayerState, player.Game.Kingdom, 2, It.IsAny<List<CourtierBenefit>>()), Times.Once);
-		#endregion
-	}
-
-	[TestMethod]
 	public void RevealingAVictoryOnlyCardOffersOneBenefitChoice()
 	{
 		#region arrange

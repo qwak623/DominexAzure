@@ -2,21 +2,11 @@
 public class Swindler : Card
 {
 	private static Swindler swindler;
-	private Swindler() : base
-	(
-		type: CardName.Swindler,
-		price: 3,
-		addActions: 0,
-		addBuys: 0,
-		addCoins: 2,
-		drawCards: 0,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: true
-	)
+	private Swindler() : base([CardType.Action, CardType.Attack])
 	{
+		Name = CardName.Swindler;
+		DefaultPrice = 3;
+		AddCoins = 2;
 		swindler = this;
 		Description = "Each other player trashes the top card of their deck and gains a card with the same cost that you choose.";
 	}

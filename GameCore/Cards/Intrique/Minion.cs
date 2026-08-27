@@ -2,21 +2,11 @@
 public class Minion : Card
 {
 	private static Minion minion;
-	private Minion() : base
-	(
-		type: CardName.Minion,
-		price: 5,
-		addActions: 1,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 0,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: true
-	)
+	private Minion() : base([CardType.Action, CardType.Attack])
 	{
+		Name = CardName.Minion;
+		DefaultPrice = 5;
+		AddActions = 1;
 		minion = this;
 		Description = "Choose one: +$2; " +
 			"or discard your hand, +4 Cards, and each other player with at least 5 cards in hand discards their hand and draws 4 cards.";

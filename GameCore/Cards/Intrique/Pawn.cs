@@ -1,25 +1,12 @@
-﻿using GameCore.GameCore;
-
-namespace GameCore.Cards.Intrique;
+﻿namespace GameCore.Cards.Intrique;
 
 public class Pawn : Card
 {
 	private static Pawn pawn;
-	private Pawn() : base
-	(
-		type: CardName.Pawn,
-		price: 2,
-		addActions: 0,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 0,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: false
-	)
+	private Pawn() : base(CardType.Action)
 	{
+		Name = CardName.Pawn;
+		DefaultPrice = 2;
 		pawn = this;
 		Description = "Choose two: +1 Card; +1 Action; +1 Buy; +$1. The choices must be different.";
 	}

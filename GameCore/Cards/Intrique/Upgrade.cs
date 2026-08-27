@@ -2,21 +2,12 @@
 public class Upgrade : Card
 {
 	private static Upgrade upgrade;
-	private Upgrade() : base
-	(
-		type: CardName.Upgrade,
-		price: 5,
-		addActions: 1,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 1,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: false
-	)
+	private Upgrade() : base(CardType.Action)
 	{
+		Name = CardName.Upgrade;
+		DefaultPrice = 5;
+		AddActions = 1;
+		DrawCards = 1;
 		upgrade = this;
 		Description = "Trash a card from your hand. Gain a card costing exactly $1 more than it.";
 	}

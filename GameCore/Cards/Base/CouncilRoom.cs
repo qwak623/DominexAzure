@@ -2,21 +2,12 @@
 public class CouncilRoom : Card
 {
 	private static CouncilRoom councilRoom;
-	private CouncilRoom() : base
-	(
-		type: CardName.CouncilRoom,
-		price: 5,
-		addActions: 0,
-		addBuys: 1,
-		addCoins: 0,
-		drawCards: 4,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: false
-	)
+	private CouncilRoom() : base(CardType.Action)
 	{
+		Name = CardName.CouncilRoom;
+		DefaultPrice = 5;
+		AddBuys = 1;
+		DrawCards = 4;
 		councilRoom = this;
 		Description = "Each other player draws a card.";
 	}

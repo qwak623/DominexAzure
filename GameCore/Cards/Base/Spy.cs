@@ -4,21 +4,12 @@ namespace GameCore.Cards.Base;
 public class Spy : Card
 {
 	private static Spy spy;
-	private Spy() : base
-	(
-		type: CardName.Spy,
-		price: 4,
-		addActions: 1,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 1,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: true
-	)
+	private Spy() : base([CardType.Action, CardType.Attack])
 	{
+		Name = CardName.Spy;
+		DefaultPrice = 4;
+		AddActions = 1;
+		DrawCards = 1;
 		spy = this;
 		Description = "Each player (including you) reveals the top card of his deck and either discards it or puts it back, your choice.";
 		Message = "You may discard card at top of the draw pile.";

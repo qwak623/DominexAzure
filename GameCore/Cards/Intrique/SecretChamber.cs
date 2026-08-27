@@ -2,21 +2,10 @@
 public class SecretChamber : Card
 {
 	private static SecretChamber secretChamber;
-	private SecretChamber() : base
-	(
-		type: CardName.SecretChamber,
-		price: 2,
-		addActions: 0,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 0,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: true,
-		isAttack: false
-	)
+	private SecretChamber() : base([CardType.Action, CardType.Reaction])
 	{
+		Name = CardName.SecretChamber;
+		DefaultPrice = 2;
 		secretChamber = this;
 		Description = $"Discard any number of cards. +$1 per card discarded.{Environment.NewLine}" +
 			$"When another player plays an Attack card, you may reveal this from your hand. " +

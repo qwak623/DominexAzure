@@ -2,21 +2,10 @@
 public class Saboteur : Card
 {
 	private static Saboteur saboteur;
-	private Saboteur() : base
-	(
-		type: CardName.Saboteur,
-		price: 5,
-		addActions: 0,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 0,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: true
-	)
+	private Saboteur() : base([CardType.Action, CardType.Attack])
 	{
+		Name = CardName.Saboteur;
+		DefaultPrice = 5;
 		saboteur = this;
 		Description = "Each other player reveals cards from the top of their deck until revealing one costing $3 or more. " +
 			"They trash that card and may gain a card costing at most $2 less than it. They discard the other revealed cards.";

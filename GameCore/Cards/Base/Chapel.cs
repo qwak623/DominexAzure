@@ -2,21 +2,10 @@
 public class Chapel : Card
 {
 	private static Chapel chapel = null;
-	private Chapel() : base
-	(
-		type: CardName.Chapel,
-		price: 2,
-		addActions: 0,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 0,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: false
-	)
+	private Chapel() : base(CardType.Action)
 	{
+		Name = CardName.Chapel;
+		DefaultPrice = 2;
 		chapel = this;
 		Description = "Trash up to 4 cards from your hand.";
 		Message = "Trash up to 4 cards from your hand.";

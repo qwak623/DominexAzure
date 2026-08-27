@@ -2,21 +2,11 @@
 public class Cellar : Card
 {
 	private static Cellar cellar;
-	private Cellar() : base
-	(
-		type: CardName.Cellar,
-		price: 2,
-		addActions: 1,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 0,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: false
-	)
+	private Cellar() : base(CardType.Action)
 	{
+		Name = CardName.Cellar;
+		DefaultPrice = 2;
+		AddActions = 1;
 		cellar = this;
 		Description = $"Discard any number of cards.{Environment.NewLine}+1 Card per card discarded.";
 		Message = "Discard any number of cards, then draw that many.";

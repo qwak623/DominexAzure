@@ -1,26 +1,14 @@
-﻿using GameCore.Cards.GeneralCards;
-using GameCore.GameCore;
+﻿using GameCore.GameCore;
 
 namespace GameCore.Cards.Base;
 
 public class Moneylender : Card
 {
 	private static Moneylender moneylender;
-	private Moneylender() : base
-	(
-		type: CardName.Moneylender,
-		price: 4,
-		addActions: 0,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 0,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: false
-	)
+	private Moneylender() : base(CardType.Action)
 	{
+		Name = CardName.Moneylender;
+		DefaultPrice = 4;
 		moneylender = this;
 		Description = "You may trash a Copper from your hand for +$3.";
 	}

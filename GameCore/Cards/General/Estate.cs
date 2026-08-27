@@ -3,16 +3,10 @@
 public class Estate : Card
 {
 	private static Estate estate;
-	private Estate() : base
-	(
-		type: CardName.Estate,
-		price: 2,
-		addBuys: 0,
-		coins: 0,
-		isVictory: true,
-		isTreasure: false
-	)
+	private Estate() : base(CardType.Victory)
 	{
+		Name = CardName.Estate;
+		DefaultPrice = 2;
 		estate = this;
 		VictoryPoints = 1;
 	}

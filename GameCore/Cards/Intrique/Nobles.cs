@@ -2,21 +2,10 @@
 public class Nobles : Card
 {
 	private static Nobles nobles;
-	private Nobles() : base
-	(
-		type: CardName.Nobles,
-		price: 6,
-		addActions: 0,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 0,
-		isVictory: true,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: false
-	)
+	private Nobles() : base([CardType.Action, CardType.Victory])
 	{
+		Name = CardName.Nobles;
+		DefaultPrice = 6;
 		nobles = this;
 		VictoryPoints = 2;
 	}

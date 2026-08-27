@@ -2,21 +2,12 @@
 public class WishingWell : Card
 {
 	private static WishingWell wishingWell;
-	private WishingWell() : base
-	(
-		type: CardName.WishingWell,
-		price: 3,
-		addActions: 1,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 1,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: false
-	)
+	private WishingWell() : base(CardType.Action)
 	{
+		Name = CardName.WishingWell;
+		DefaultPrice = 3;
+		AddActions = 1;
+		DrawCards = 1;
 		wishingWell = this;
 		Description = "Name a card, then reveal the top card of your deck. If you named it, put it into your hand.";
 	}

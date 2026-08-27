@@ -2,21 +2,10 @@
 public class TradingPost : Card
 {
 	private static TradingPost tradingPost = null;
-	private TradingPost() : base
-	(
-		type: CardName.TradingPost,
-		price: 5,
-		addActions: 0,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 0,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: false
-	)
+	private TradingPost() : base(CardType.Action)
 	{
+		Name = CardName.TradingPost;
+		DefaultPrice = 5;
 		tradingPost = this;
 		Description = "Trash 2 cards from your hand. If you did, gain a Silver to your hand.";
 	}

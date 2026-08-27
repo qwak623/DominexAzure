@@ -2,15 +2,13 @@
 public class Copper : Card
 {
 	private static Copper copper;
-	private Copper() : base
-	(
-		type: CardName.Copper,
-		price: 0,
-		addBuys: 0,
-		coins: 1,
-		isVictory: false,
-		isTreasure: true
-	) => copper = this;
+	private Copper() : base(CardType.Treasure)
+	{
+		Name = CardName.Copper;
+		DefaultPrice = 0;
+		Coins = 1;
+		copper = this;
+	}
 
 	public static Copper Get() => copper ?? new Copper();
 

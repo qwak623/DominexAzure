@@ -4,21 +4,11 @@ namespace GameCore.Cards.Base;
 public class Chancellor : Card
 {
 	private static Chancellor chancellor;
-	private Chancellor() : base
-	(
-		type: CardName.Chancellor,
-		price: 3,
-		addActions: 0,
-		addBuys: 0,
-		addCoins: 2,
-		drawCards: 0,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: false
-	)
+	private Chancellor() : base(CardType.Action)
 	{
+		Name = CardName.Chancellor;
+		DefaultPrice = 3;
+		AddCoins = 2;
 		chancellor = this;
 		Description = "You may immediately put your deck into your discard pile.";
 	}

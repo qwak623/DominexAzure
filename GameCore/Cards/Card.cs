@@ -2,21 +2,21 @@
 
 public abstract class Card
 {
+	public CardName Name { get; protected init; }
+	public int DefaultPrice { get; protected init; }
+	public int AddActions { get; protected init; }
+	public int AddBuys { get; protected init; }
+	public int AddCoins { get; protected init; }
+	public int DrawCards { get; protected init; }
+	public int Coins { get; protected init; }
 
-	protected readonly int price;
 
-	public readonly CardName Name;
-	public readonly int AddActions;
-	public readonly int AddBuys;
-	public readonly int AddCoins;
-	public readonly int DrawCards;
-	public readonly int Coins;
-
-	public readonly bool IsVictory;
-	public readonly bool IsTreasure;
-	public readonly bool IsAction;
-	public readonly bool IsReaction;
-	public readonly bool IsAttack;
+	public List<CardType> CardTypes { get; protected init; }
+	public bool IsVictory => CardTypes.Contains(CardType.Victory);
+	public bool IsTreasure => CardTypes.Contains(CardType.Treasure);
+	public bool IsAction => CardTypes.Contains(CardType.Action);
+	public bool IsReaction => CardTypes.Contains(CardType.Reaction);
+	public bool IsAttack => CardTypes.Contains(CardType.Attack);
 
 	public string Description { get; protected init; }
 
@@ -25,38 +25,21 @@ public abstract class Card
 
 	public int VictoryPoints { get; protected init; }
 
-	protected Card(CardName type, int price, int addActions, int addBuys, int addCoins, int drawCards, bool isVictory, bool isTreasure, bool isAction, bool isReaction, bool isAttack, string message = null)
+	protected Card(CardType type)
 	{
-		Name = type;
-		this.price = price;
-		AddActions = addActions;
-		AddBuys = addBuys;
-		AddCoins = addCoins;
-		DrawCards = drawCards;
-		IsVictory = isVictory;
-		IsTreasure = isTreasure;
-		IsAction = isAction;
-		IsReaction = isReaction;
-		IsAttack = isAttack;
-		Message = message;
+		CardTypes = [type];
 	}
 
-	protected Card(CardName type, int price, int addBuys, int coins, bool isVictory, bool isTreasure)
+	protected Card(List<CardType> types)
 	{
-		Name = type;
-		this.price = price;
-		AddBuys = addBuys;
-		Coins = coins;
-		IsVictory = isVictory;
-		IsTreasure = isTreasure;
+		CardTypes = types;
 	}
 
 	public virtual int GetPrice(PlayerState playerState)
 	{
-		var price = this.price - (playerState?.TempEffects?.GeneralCostReduction ?? 0);
+		var price = DefaultPrice - (playerState?.TempEffects?.GeneralCostReduction ?? 0);
 		return price < 0 ? 0 : price;
 	}
-	public int DefaultPrice => price;
 
 	/// <summary>
 	/// Special action card effect including adding actions etc.
@@ -135,154 +118,82 @@ public abstract class Card
 	public virtual Card RequiredCards => null;
 
 	/// <summary>
-	/// Returns instance of specified card type.
+	/// Returns instance of specified card name.
 	/// </summary>
 	/// <param name="cardType"></param>
 	/// <returns></returns>
 	public static Card Get(CardName cardType)
 	{
-		switch (cardType)
+		return cardType switch
 		{
-			case CardName.NotDefined:
-				return null;
-			case CardName.Copper:
-				return GeneralCards.Copper.Get();
-			case CardName.Silver:
-				return GeneralCards.Silver.Get();
-			case CardName.Gold:
-				return GeneralCards.Gold.Get();
-			case CardName.Estate:
-				return GeneralCards.Estate.Get();
-			case CardName.Duchy:
-				return GeneralCards.Duchy.Get();
-			case CardName.Province:
-				return GeneralCards.Province.Get();
-			case CardName.Curse:
-				return GeneralCards.Curse.Get();
-			case CardName.Adventurer:
-				return Base.Adventurer.Get();
-			case CardName.Bureaucrat:
-				return Base.Bureaucrat.Get();
-			case CardName.Cellar:
-				return Base.Cellar.Get();
-			case CardName.CouncilRoom:
-				return Base.CouncilRoom.Get();
-			case CardName.Feast:
-				return Base.Feast.Get();
-			case CardName.Festival:
-				return Base.Festival.Get();
-			case CardName.Gardens:
-				return Base.Gardens.Get();
-			case CardName.Chancellor:
-				return Base.Chancellor.Get();
-			case CardName.Chapel:
-				return Base.Chapel.Get();
-			case CardName.Laboratory:
-				return Base.Laboratory.Get();
-			case CardName.Library:
-				return Base.Library.Get();
-			case CardName.Market:
-				return Base.Market.Get();
-			case CardName.Militia:
-				return Base.Militia.Get();
-			case CardName.Mine:
-				return Base.Mine.Get();
-			case CardName.Moat:
-				return Base.Moat.Get();
-			case CardName.Moneylender:
-				return Base.Moneylender.Get();
-			case CardName.Remodel:
-				return Base.Remodel.Get();
-			case CardName.Smithy:
-				return Base.Smithy.Get();
-			case CardName.Spy:
-				return Base.Spy.Get();
-			case CardName.Thief:
-				return Base.Thief.Get();
-			case CardName.ThroneRoom:
-				return Base.ThroneRoom.Get();
-			case CardName.Village:
-				return Base.Village.Get();
-			case CardName.Witch:
-				return Base.Witch.Get();
-			case CardName.Woodcutter:
-				return Base.Woodcutter.Get();
-			case CardName.Workshop:
-				return Base.Workshop.Get();
-			case CardName.Harbinger:
-			case CardName.Merchant:
-			case CardName.Vassal:
-			case CardName.Poacher:
-			case CardName.Bandit:
-			case CardName.Sentry:
-			case CardName.Artisan:
-			case CardName.Courtyard:
-				return Intrique.Courtyard.Get();
-			case CardName.Pawn:
-				return Intrique.Pawn.Get();
-			case CardName.SecretChamber:
-				return Intrique.SecretChamber.Get();
-			case CardName.Masquerade:
-				return Intrique.Masquerade.Get();
-			case CardName.ShantyTown:
-				return Intrique.ShantyTown.Get();
-			case CardName.Steward:
-				return Intrique.Steward.Get();
-			case CardName.Swindler:
-				return Intrique.Swindler.Get();
-			case CardName.WishingWell:
-				return Intrique.WishingWell.Get();
-			case CardName.GreatHall:
-				return Intrique.GreatHall.Get();
-			case CardName.Harem:
-				return Intrique.Harem.Get();
-			case CardName.Baron:
-				return Intrique.Baron.Get();
-			case CardName.Bridge:
-				return Intrique.Bridge.Get();
-			case CardName.Conspirator:
-				return Intrique.Conspirator.Get();
-			case CardName.Ironworks:
-				return Intrique.Ironworks.Get();
-			case CardName.MiningVillage:
-				return Intrique.MiningVillage.Get();
-			case CardName.Coppersmith:
-				return Intrique.Coppersmith.Get();
-			case CardName.Scout:
-				return Intrique.Scout.Get();
-			case CardName.Duke:
-				return Intrique.Duke.Get();
-			case CardName.Minion:
-				return Intrique.Minion.Get();
-			case CardName.Torturer:
-				return Intrique.Torturer.Get();
-			case CardName.TradingPost:
-				return Intrique.TradingPost.Get();
-			case CardName.Upgrade:
-				return Intrique.Upgrade.Get();
-			case CardName.Saboteur:
-				return Intrique.Saboteur.Get();
-			case CardName.Tribute:
-				return Intrique.Tribute.Get();
-			case CardName.Nobles:
-				return Intrique.Nobles.Get();
-			case CardName.Lurker:
-				return Intrique.Lurker.Get();
-			case CardName.Diplomat:
-				return Intrique.Diplomat.Get();
-			case CardName.Mill:
-				return Intrique.Mill.Get();
-			case CardName.SecretPassage:
-				return Intrique.SecretPassage.Get();
-			case CardName.Courtier:
-				return Intrique.Courtier.Get();
-			case CardName.Patrol:
-				return Intrique.Patrol.Get();
-			case CardName.Replace:
-				return Intrique.Replace.Get();
-			default:
-				throw new NotImplementedException();
-		}
+			CardName.NotDefined => null,
+			CardName.Copper => GeneralCards.Copper.Get(),
+			CardName.Silver => GeneralCards.Silver.Get(),
+			CardName.Gold => GeneralCards.Gold.Get(),
+			CardName.Estate => GeneralCards.Estate.Get(),
+			CardName.Duchy => GeneralCards.Duchy.Get(),
+			CardName.Province => GeneralCards.Province.Get(),
+			CardName.Curse => GeneralCards.Curse.Get(),
+			CardName.Adventurer => Base.Adventurer.Get(),
+			CardName.Bureaucrat => Base.Bureaucrat.Get(),
+			CardName.Cellar => Base.Cellar.Get(),
+			CardName.CouncilRoom => Base.CouncilRoom.Get(),
+			CardName.Feast => Base.Feast.Get(),
+			CardName.Festival => Base.Festival.Get(),
+			CardName.Gardens => Base.Gardens.Get(),
+			CardName.Chancellor => Base.Chancellor.Get(),
+			CardName.Chapel => Base.Chapel.Get(),
+			CardName.Laboratory => Base.Laboratory.Get(),
+			CardName.Library => Base.Library.Get(),
+			CardName.Market => Base.Market.Get(),
+			CardName.Militia => Base.Militia.Get(),
+			CardName.Mine => Base.Mine.Get(),
+			CardName.Moat => Base.Moat.Get(),
+			CardName.Moneylender => Base.Moneylender.Get(),
+			CardName.Remodel => Base.Remodel.Get(),
+			CardName.Smithy => Base.Smithy.Get(),
+			CardName.Spy => Base.Spy.Get(),
+			CardName.Thief => Base.Thief.Get(),
+			CardName.ThroneRoom => Base.ThroneRoom.Get(),
+			CardName.Village => Base.Village.Get(),
+			CardName.Witch => Base.Witch.Get(),
+			CardName.Woodcutter => Base.Woodcutter.Get(),
+			CardName.Workshop => Base.Workshop.Get(),
+			CardName.Harbinger or CardName.Merchant or CardName.Vassal or CardName.Poacher or CardName.Bandit or CardName.Sentry or CardName.Artisan => throw new NotImplementedException(),
+			CardName.Courtyard => Intrique.Courtyard.Get(),
+			CardName.Pawn => Intrique.Pawn.Get(),
+			CardName.SecretChamber => Intrique.SecretChamber.Get(),
+			CardName.Masquerade => Intrique.Masquerade.Get(),
+			CardName.ShantyTown => Intrique.ShantyTown.Get(),
+			CardName.Steward => Intrique.Steward.Get(),
+			CardName.Swindler => Intrique.Swindler.Get(),
+			CardName.WishingWell => Intrique.WishingWell.Get(),
+			CardName.GreatHall => Intrique.GreatHall.Get(),
+			CardName.Harem => Intrique.Harem.Get(),
+			CardName.Baron => Intrique.Baron.Get(),
+			CardName.Bridge => Intrique.Bridge.Get(),
+			CardName.Conspirator => Intrique.Conspirator.Get(),
+			CardName.Ironworks => Intrique.Ironworks.Get(),
+			CardName.MiningVillage => Intrique.MiningVillage.Get(),
+			CardName.Coppersmith => Intrique.Coppersmith.Get(),
+			CardName.Scout => Intrique.Scout.Get(),
+			CardName.Duke => Intrique.Duke.Get(),
+			CardName.Minion => Intrique.Minion.Get(),
+			CardName.Torturer => Intrique.Torturer.Get(),
+			CardName.TradingPost => Intrique.TradingPost.Get(),
+			CardName.Upgrade => Intrique.Upgrade.Get(),
+			CardName.Saboteur => Intrique.Saboteur.Get(),
+			CardName.Tribute => Intrique.Tribute.Get(),
+			CardName.Nobles => Intrique.Nobles.Get(),
+			CardName.Lurker => Intrique.Lurker.Get(),
+			CardName.Diplomat => Intrique.Diplomat.Get(),
+			CardName.Mill => Intrique.Mill.Get(),
+			CardName.SecretPassage => Intrique.SecretPassage.Get(),
+			CardName.Courtier => Intrique.Courtier.Get(),
+			CardName.Patrol => Intrique.Patrol.Get(),
+			CardName.Replace => Intrique.Replace.Get(),
+			_ => throw new NotImplementedException(),
+		};
 	}
 
 	public override string ToString() => Name.ToDisplayName();

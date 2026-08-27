@@ -4,21 +4,10 @@ namespace GameCore.Cards.Base;
 public class Feast : Card
 {
 	private static Feast feast;
-	private Feast() : base
-	(
-		type: CardName.Feast,
-		price: 4,
-		addActions: 0,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 0,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: false
-	)
+	private Feast() : base(CardType.Action)
 	{
+		Name = CardName.Feast;
+		DefaultPrice = 4;
 		feast = this;
 		Description = "Trash this card. Gain a card costing up to $5.";
 	}

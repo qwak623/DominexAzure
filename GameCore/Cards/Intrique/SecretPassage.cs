@@ -3,21 +3,12 @@
 public class SecretPassage : Card
 {
 	private static SecretPassage secretPassage;
-	private SecretPassage() : base
-	(
-		type: CardName.SecretPassage,
-		price: 4,
-		addActions: 1,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 2,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: false
-	)
+	private SecretPassage() : base(CardType.Action)
 	{
+		Name = CardName.SecretPassage;
+		DefaultPrice = 4;
+		AddActions = 1;
+		DrawCards = 2;
 		secretPassage = this;
 		Description = $"Take a card from your hand and put it anywhere in your deck.";
 	}

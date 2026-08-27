@@ -6,21 +6,12 @@ namespace GameCore.Cards.Intrique;
 public class Mill : Card
 {
 	private static Mill mill;
-	private Mill() : base
-	(
-		type: CardName.Mill,
-		price: 4,
-		addActions: 1,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 1,
-		isVictory: true,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: false
-	)
+	private Mill() : base([CardType.Action, CardType.Victory])
 	{
+		Name = CardName.Mill;
+		DefaultPrice = 4;
+		AddActions = 1;
+		DrawCards = 1;
 		mill = this;
 		VictoryPoints = 1;
 		Description = "You may discard 2 cards. If you do, +$2";

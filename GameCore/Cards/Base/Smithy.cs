@@ -2,20 +2,13 @@
 public class Smithy : Card
 {
 	private static Smithy smithy;
-	private Smithy() : base
-	(
-		type: CardName.Smithy,
-		price: 4,
-		addActions: 0,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 3,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: false
-	) => smithy = this;
+	private Smithy() : base(CardType.Action)
+	{
+		Name = CardName.Smithy;
+		DefaultPrice = 4;
+		DrawCards = 3;
+		smithy = this;
+	}
 
 	public static Smithy Get() => smithy ?? new Smithy();
 }

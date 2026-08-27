@@ -5,21 +5,11 @@ namespace GameCore.Cards.Intrique;
 public class Baron : Card
 {
 	private static Baron baron;
-	private Baron() : base
-	(
-		type: CardName.Baron,
-		price: 4,
-		addActions: 0,
-		addBuys: 1,
-		addCoins: 0,
-		drawCards: 0,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: false
-	)
+	private Baron() : base(CardType.Action)
 	{
+		Name = CardName.Baron;
+		DefaultPrice = 4;
+		AddBuys = 1;
 		baron = this;
 		Description = "You may discard an Estate for +$4. If you don't, gain an Estate.";
 	}

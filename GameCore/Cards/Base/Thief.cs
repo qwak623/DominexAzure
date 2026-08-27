@@ -4,21 +4,10 @@ namespace GameCore.Cards.Base;
 public class Thief : Card
 {
 	private static Thief thief;
-	private Thief() : base
-	(
-		type: CardName.Thief,
-		price: 4,
-		addActions: 0,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 0,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: true
-	)
+	private Thief() : base([CardType.Action, CardType.Attack])
 	{
+		Name = CardName.Thief;
+		DefaultPrice = 4;
 		thief = this;
 		Description = $"Each other player reveals the top 2 cards of his deck.{Environment.NewLine}If they revealed any Treasure cards, they trash one of them that you choose. You may gain any or all of these trashed cards. They discard the other revealed cards.";
 		Message = "Choose treasure to steal or trash.";

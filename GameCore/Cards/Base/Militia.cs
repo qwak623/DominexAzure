@@ -2,21 +2,11 @@
 public class Militia : Card
 {
 	private static Militia militia;
-	private Militia() : base
-	(
-		type: CardName.Militia,
-		price: 4,
-		addActions: 0,
-		addBuys: 0,
-		addCoins: 2,
-		drawCards: 0,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: true
-	)
+	private Militia() : base([CardType.Action, CardType.Attack])
 	{
+		Name = CardName.Militia;
+		DefaultPrice = 4;
+		AddCoins = 2;
 		militia = this;
 		Description = "Each other player discards down to 3 cards in hand.";
 		Message = "You have to discard down to 3 cards in your hand.";

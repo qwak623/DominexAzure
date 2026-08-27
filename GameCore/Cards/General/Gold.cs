@@ -2,15 +2,13 @@
 public class Gold : Card
 {
 	private static Gold gold;
-	private Gold() : base
-	(
-		type: CardName.Gold,
-		price: 6,
-		addBuys: 0,
-		coins: 3,
-		isVictory: false,
-		isTreasure: true
-	) => gold = this;
+	private Gold() : base(CardType.Treasure)
+	{
+		Name = CardName.Gold;
+		DefaultPrice = 6;
+		Coins = 3;
+		gold = this;
+	}
 
 	public static Gold Get() => gold ?? new Gold();
 }

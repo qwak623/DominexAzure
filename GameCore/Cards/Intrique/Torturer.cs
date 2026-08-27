@@ -2,21 +2,11 @@
 public class Torturer : Card
 {
 	private static Torturer torturer;
-	private Torturer() : base
-	(
-		type: CardName.Torturer,
-		price: 5,
-		addActions: 0,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 3,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: true
-	)
+	private Torturer() : base([CardType.Action, CardType.Attack])
 	{
+		Name = CardName.Torturer;
+		DefaultPrice = 5;
+		DrawCards = 3;
 		torturer = this;
 		Description = "Each other player either discards 2 cards or gains a Curse to their hand, their choice. (They may pick an option they can't do.)";
 	}

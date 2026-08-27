@@ -3,21 +3,10 @@
 public class Steward : Card
 {
 	private static Steward steward;
-	private Steward() : base
-	(
-		type: CardName.Steward,
-		price: 3,
-		addActions: 0,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 0,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: false
-	)
+	private Steward() : base(CardType.Action)
 	{
+		Name = CardName.Steward;
+		DefaultPrice = 3;
 		steward = this;
 		Description = "Choose one: +2 Cards; or +$2; or trash 2 cards from your hand.";
 	}

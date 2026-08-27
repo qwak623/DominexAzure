@@ -2,21 +2,10 @@
 public class ThroneRoom : Card
 {
 	private static ThroneRoom throneRoom;
-	private ThroneRoom() : base
-	(
-		type: CardName.ThroneRoom,
-		price: 4,
-		addActions: 0,
-		addBuys: 0,
-		addCoins: 0,
-		drawCards: 0,
-		isVictory: false,
-		isTreasure: false,
-		isAction: true,
-		isReaction: false,
-		isAttack: false
-	)
+	private ThroneRoom() : base(CardType.Action)
 	{
+		Name = CardName.ThroneRoom;
+		DefaultPrice = 4;
 		throneRoom = this;
 		Description = "You may play an Action card from your hand twice.";
 		Message = "You may play an Action card from your hand twice.";
@@ -26,12 +15,12 @@ public class ThroneRoom : Card
 
 	protected override void ActionEffect(IPlayer player, CardInstance thisCard)
 	{
-		var cardInstance = player.User
-			.ThroneRoomPlay(this, player.PlayerState, player.Game.Kingdom, player.PlayerState.Hand.Where(c => c.IsAction).ToList());
-		if (cardInstance is null)
+		var actionCards = player.PlayerState.Hand.Where(c => c.IsAction);
+		if (!actionCards.Any())
 		{
 			return;
 		}
+		var cardInstance = player.User.ThroneRoomPlay(this, player.PlayerState, player.Game.Kingdom, actionCards.ToList());
 
 		player.PlayerState.CardsPlayed.Move(cardInstance);
 		var card = cardInstance.Card;
