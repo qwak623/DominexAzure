@@ -4,8 +4,7 @@ public class Province : Card
 	private static Province province;
 	private Province() : base
 	(
-		name: "Province",
-		type: CardType.Province,
+		type: CardName.Province,
 		price: 8,
 		addBuys: 0,
 		coins: 0,

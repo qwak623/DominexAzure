@@ -4,8 +4,7 @@ public class Minion : Card
 	private static Minion minion;
 	private Minion() : base
 	(
-		name: "Minion",
-		type: CardType.Minion,
+		type: CardName.Minion,
 		price: 5,
 		addActions: 1,
 		addBuys: 0,

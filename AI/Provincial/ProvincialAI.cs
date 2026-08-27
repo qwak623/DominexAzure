@@ -30,7 +30,7 @@ public class ProvincialAI : User
 		CardInstance bestCard = null;
 		foreach (var c in cards)
 		{
-			var neco = Data.GetPriorityList()[(int)c.Card.Type];
+			var neco = Data.GetPriorityList()[(int)c.Card.Name];
 
 			float score = c.Card.Score(cards.Select(c => c.Card), ps, phase);
 			if (score >= maxScore)
@@ -45,20 +45,20 @@ public class ProvincialAI : User
 
 	public override CardInstance? SelectCardToGain(KingdomWrapper wrapper, PlayerState ps, Kingdom k, Phase phase)
 	{
-		var provinces = k.GetPile(CardType.Province);
-		if (buyAgenda.Provinces > provinces.Count && wrapper.GetCard(CardType.Province) is not null)
+		var provinces = k.GetPile(CardName.Province);
+		if (buyAgenda.Provinces > provinces.Count && wrapper.GetCard(CardName.Province) is not null)
 		{
-			return k.GetPile(CardType.Province).CardInstance;
+			return k.GetPile(CardName.Province).CardInstance;
 		}
 
-		if (buyAgenda.Duchies > provinces.Count && wrapper.GetCard(CardType.Duchy) is not null)
+		if (buyAgenda.Duchies > provinces.Count && wrapper.GetCard(CardName.Duchy) is not null)
 		{
-			return k.GetPile(CardType.Duchy).CardInstance;
+			return k.GetPile(CardName.Duchy).CardInstance;
 		}
 
-		if (buyAgenda.Estates > provinces.Count && wrapper.GetCard(CardType.Estate) is not null)
+		if (buyAgenda.Estates > provinces.Count && wrapper.GetCard(CardName.Estate) is not null)
 		{
-			return k.GetPile(CardType.Estate).CardInstance;
+			return k.GetPile(CardName.Estate).CardInstance;
 		}
 
 		for (int i = 0; i < buyAgenda.BuyMenu.Count; i++)
@@ -91,15 +91,15 @@ public class ProvincialAI : User
 				playerInfo.TreasureTotal += card.Coins;
 			}
 
-			switch (card.Type)
+			switch (card.Name)
 			{
-				case CardType.Moneylender:
+				case CardName.Moneylender:
 					playerInfo.TreasureTotal -= 1;
 					break;
-				case CardType.Bureaucrat:
+				case CardName.Bureaucrat:
 					playerInfo.TreasureTotal += 2;
 					break;
-				case CardType.Mine:
+				case CardName.Mine:
 					playerInfo.TreasureTotal += 1;
 					break;
 			}
@@ -128,15 +128,15 @@ public class ProvincialAI : User
 		var cards = cardSelection;
 
 		// always trash curse
-		var trash = cards.Where(c => c.Card.Type == CardType.Curse);
+		var trash = cards.Where(c => c.Card.Name == CardName.Curse);
 
 		var neco = trash.ToString();
 
 		// in the beginning trash estate as well
-		var provinces = k.GetPile(CardType.Province);
+		var provinces = k.GetPile(CardName.Province);
 		if (buyAgenda.Estates <= provinces.Count)
 		{
-			trash = trash.Concat(cards.Where(c => c.Card.Type == CardType.Estate));
+			trash = trash.Concat(cards.Where(c => c.Card.Name == CardName.Estate));
 		}
 
 		if (trash.Count() >= 4)
@@ -151,7 +151,7 @@ public class ProvincialAI : User
 
 		if (playerInfo.TreasureTotal > 3)
 		{
-			var coppers = cards.Where(c => c.Card.Type == CardType.Copper).Take(coins - price);
+			var coppers = cards.Where(c => c.Card.Name == CardName.Copper).Take(coins - price);
 			trash = trash.Concat(coppers);
 			// player info update
 			playerInfo.TreasureTotal -= coppers.Count();
@@ -216,12 +216,12 @@ public class ProvincialAI : User
 
 	public override CardInstance? MineTrash(Card card, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
 	{
-		var coppers = cardSelection.Where(a => a.Card.Type == CardType.Copper);
+		var coppers = cardSelection.Where(a => a.Card.Name == CardName.Copper);
 		if (coppers.Any())
 		{
 			return coppers.First();
 		}
-		var silvers = cardSelection.Where(a => a.Card.Type == CardType.Silver);
+		var silvers = cardSelection.Where(a => a.Card.Name == CardName.Silver);
 		if (silvers.Any())
 		{
 			return silvers.First();
@@ -233,21 +233,21 @@ public class ProvincialAI : User
 
 	public override CardInstance RemodelTrash(Card c, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
 	{
-		var trash = cardSelection.Where(c => c.Card.Type == CardType.Curse);
+		var trash = cardSelection.Where(c => c.Card.Name == CardName.Curse);
 
 		// at the end it will transform gold to province
-		var provinces = k.GetPile(CardType.Province);
+		var provinces = k.GetPile(CardName.Province);
 		if (buyAgenda.Provinces > provinces.Count && provinces.Count > 0)
 		{
-			trash = trash.Concat(cardSelection.Where(c => c.Card.Type == CardType.Gold));
+			trash = trash.Concat(cardSelection.Where(c => c.Card.Name == CardName.Gold));
 		}
 
 		if (buyAgenda.Estates <= provinces.Count)
 		{
-			trash = trash.Concat(cardSelection.Where(c => c.Card.Type == CardType.Estate));
+			trash = trash.Concat(cardSelection.Where(c => c.Card.Name == CardName.Estate));
 		}
 
-		trash = trash.Concat(cardSelection.Where(c => c.Card.Type == CardType.Copper));
+		trash = trash.Concat(cardSelection.Where(c => c.Card.Name == CardName.Copper));
 		trash = trash.Concat(cardSelection.OrderBy(c => c.Card.Score(cardSelection.Select(card => card.Card), ps, Phase.Action)));
 
 		return trash.FirstOrDefault();
@@ -257,11 +257,11 @@ public class ProvincialAI : User
 	{
 		if (p == Phase.Attack)
 		{
-			return !(c.IsVictory || c.Card.Type == CardType.Copper);
+			return !(c.IsVictory || c.Card.Name == CardName.Copper);
 		}
 		else // if (p == Phase.Action)
 		{
-			return (c.IsVictory || c.Card.Type == CardType.Copper);
+			return (c.IsVictory || c.Card.Name == CardName.Copper);
 		}
 	}
 
@@ -412,7 +412,7 @@ public class ProvincialAI : User
 		throw new NotImplementedException();
 	}
 
-	public override CardType WishingWellGuess(Card cardPlayed, PlayerState ps, Kingdom k, List<CardType> cardTypes)
+	public override CardName WishingWellGuess(Card cardPlayed, PlayerState ps, Kingdom k, List<CardName> cardTypes)
 	{
 		throw new NotImplementedException();
 	}

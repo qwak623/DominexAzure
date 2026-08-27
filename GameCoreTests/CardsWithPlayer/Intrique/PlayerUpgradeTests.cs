@@ -42,7 +42,7 @@ public class PlayerUpgradeTests : CardWithPlayerTestsBase
 		KingdomWrapper wrapper = null;
 		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
 			.Callback<KingdomWrapper, PlayerState, Kingdom, Phase>((kw, ps, k, p) => wrapper = kw)
-			.Returns(() => wrapper.GetCard(CardType.Smithy));
+			.Returns(() => wrapper.GetCard(CardName.Smithy));
 		#endregion
 
 		#region act

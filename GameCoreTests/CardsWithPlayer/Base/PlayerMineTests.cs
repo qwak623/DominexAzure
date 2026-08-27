@@ -33,8 +33,8 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		player.PlayerState.Hand = CreatePile([mine, copper]);
-		var mineToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Mine);
-		var copperInHand = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Copper);
+		var mineToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Mine);
+		var copperInHand = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Copper);
 
 		user.Setup(u => u.MineTrash(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()))
 			.Returns(copperInHand);
@@ -44,7 +44,7 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 		KingdomWrapper wrapper = null;
 		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), Phase.Gain))
 			.Callback<KingdomWrapper, PlayerState, Kingdom, Phase>((kw, ps, k, p) => wrapper = kw)
-			.Returns(() => wrapper.GetCard(CardType.Silver));
+			.Returns(() => wrapper.GetCard(CardName.Silver));
 		#endregion
 
 		#region act
@@ -60,7 +60,7 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 		AssertPile([mine], player.PlayerState.ActionsPlayed);
 		AssertPile([copper], player.Game.Trash);
 
-		Assert.IsTrue(wrapper.AvailableCards.Any(c => c.Card.Type == CardType.Silver));
+		Assert.IsTrue(wrapper.AvailableCards.Any(c => c.Card.Name == CardName.Silver));
 		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.MaxPrice == 3 && kw.OnlyTreasures),
 			It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), Phase.Gain), Times.Once);
 		#endregion
@@ -71,7 +71,7 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		player.PlayerState.Hand = CreatePile([mine, copper]);
-		var mineToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Mine);
+		var mineToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Mine);
 
 		user.Setup(u => u.MineTrash(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()))
 			.Returns((CardInstance)null);
@@ -97,8 +97,8 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		player.PlayerState.Hand = CreatePile([mine, copper]);
-		var mineToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Mine);
-		var copperInHand = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Copper);
+		var mineToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Mine);
+		var copperInHand = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Copper);
 
 		user.Setup(u => u.MineTrash(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()))
 			.Returns(copperInHand);
@@ -126,9 +126,9 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		player.PlayerState.Hand = CreatePile([mine, throneRoom, copper]);
-		var mineToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Mine);
-		var copperInHand = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Copper);
-		var silverToGain = player.Game.Kingdom.GetPile(CardType.Silver).CardInstance;
+		var mineToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Mine);
+		var copperInHand = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Copper);
+		var silverToGain = player.Game.Kingdom.GetPile(CardName.Silver).CardInstance;
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
 			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == mineToPlay))).Returns(mineToPlay);
@@ -138,7 +138,7 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 		// each resolution's selection is pulled from its own wrapper, so this only succeeds
 		// if silver ($3) and gold ($6) genuinely pass the wrapper's own availability check
 		// at their respective computed thresholds
-		var expectedGains = new Queue<CardType>([CardType.Silver, CardType.Gold]);
+		var expectedGains = new Queue<CardName>([CardName.Silver, CardName.Gold]);
 		var wrappers = new List<KingdomWrapper>();
 		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
 			.Returns<KingdomWrapper, PlayerState, Kingdom, Phase>((kw, ps, k, p) =>
@@ -149,7 +149,7 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Name == CardName.ThroneRoom));
 		#endregion
 
 		#region assert
@@ -176,8 +176,8 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.MaxPrice == 6 && kw.OnlyTreasures),
 			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Once);
 
-		Assert.IsTrue(wrappers[0].AvailableCards.Any(c => c.Card.Type == CardType.Silver));
-		Assert.IsTrue(wrappers[1].AvailableCards.Any(c => c.Card.Type == CardType.Gold));
+		Assert.IsTrue(wrappers[0].AvailableCards.Any(c => c.Card.Name == CardName.Silver));
+		Assert.IsTrue(wrappers[1].AvailableCards.Any(c => c.Card.Name == CardName.Gold));
 		#endregion
 	}
 
@@ -186,11 +186,11 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		player.PlayerState.Hand = CreatePile([mine, throneRoom, copper, copper]);
-		var mineToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Mine);
-		var coppersInHand = player.PlayerState.Hand.Where(c => c.Card.Type == CardType.Copper).ToList();
+		var mineToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Mine);
+		var coppersInHand = player.PlayerState.Hand.Where(c => c.Card.Name == CardName.Copper).ToList();
 		var copper1 = coppersInHand[0];
 		var copper2 = coppersInHand[1];
-		var silver1 = player.Game.Kingdom.GetPile(CardType.Silver).CardInstance;
+		var silver1 = player.Game.Kingdom.GetPile(CardName.Silver).CardInstance;
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
 			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == mineToPlay))).Returns(mineToPlay);
@@ -200,12 +200,12 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 		CardInstance silverToGain = null;
 		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
 			.Callback<KingdomWrapper, PlayerState, Kingdom, Phase>((kw, ps, k, p) =>
-				silverToGain = kw.AvailableCards.First(c => c.Card.Type == CardType.Silver))
+				silverToGain = kw.AvailableCards.First(c => c.Card.Name == CardName.Silver))
 			.Returns(() => silverToGain);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Name == CardName.ThroneRoom));
 		#endregion
 
 		#region assert

@@ -56,14 +56,14 @@ public class PlayerMarketTests : CardWithPlayerTestsBase
 		#region arrange
 		player.PlayerState.Hand = CreatePile([throneRoom, market]);
 		player.PlayerState.DrawPile = CreatePile([copper, copper]);
-		var marketToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Market);
+		var marketToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Market);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
 			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == marketToPlay))).Returns(marketToPlay);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Name == CardName.ThroneRoom));
 		#endregion
 
 		#region assert

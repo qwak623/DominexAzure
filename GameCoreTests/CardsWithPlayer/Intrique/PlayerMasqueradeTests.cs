@@ -43,8 +43,8 @@ public class PlayerMasqueradeTests : CardWithPlayerTestsBase
 		player.PlayerState.DrawPile = CreatePile([silver, gold]);
 		player2.PlayerState.Hand = CreatePile([estate]);
 
-		var masqueradeToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Masquerade);
-		var copperToPass = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Copper);
+		var masqueradeToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Masquerade);
+		var copperToPass = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Copper);
 		var estateToPass = player2.PlayerState.Hand[0];
 
 		user.Setup(u => u.MasqueradePass(masquerade, It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()))
@@ -90,8 +90,8 @@ public class PlayerMasqueradeTests : CardWithPlayerTestsBase
 		player.PlayerState.Hand = CreatePile([masquerade, copper]);
 		player2.PlayerState.Hand = CreatePile([estate]);
 
-		var masqueradeToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Masquerade);
-		var copperToPass = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Copper);
+		var masqueradeToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Masquerade);
+		var copperToPass = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Copper);
 		var estateToPass = player2.PlayerState.Hand[0];
 
 		user.Setup(u => u.MasqueradePass(masquerade, It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()))
@@ -173,8 +173,8 @@ public class PlayerMasqueradeTests : CardWithPlayerTestsBase
 		player2.PlayerState.Hand = CreatePile([silver]);
 		player3.PlayerState.Hand = CreatePile([gold]);
 
-		var masqueradeToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Masquerade);
-		var copperToPass = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Copper);
+		var masqueradeToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Masquerade);
+		var copperToPass = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Copper);
 		var silverToPass = player2.PlayerState.Hand[0];
 		var goldToPass = player3.PlayerState.Hand[0];
 
@@ -223,8 +223,8 @@ public class PlayerMasqueradeTests : CardWithPlayerTestsBase
 		player.PlayerState.DrawPile = CreatePile([silver, gold]);
 		player2.PlayerState.Hand = CreatePile([moat]);
 
-		var masqueradeToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Masquerade);
-		var copperToPass = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Copper);
+		var masqueradeToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Masquerade);
+		var copperToPass = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Copper);
 		var moatToPass = player2.PlayerState.Hand[0];
 
 		user.Setup(u => u.MasqueradePass(masquerade, It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()))

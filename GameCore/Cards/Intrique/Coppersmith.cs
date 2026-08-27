@@ -5,8 +5,7 @@ public class Coppersmith : Card
 	private static Coppersmith coppersmith;
 	private Coppersmith() : base
 	(
-		name: "Coppersmith",
-		type: CardType.Coppersmith,
+		type: CardName.Coppersmith,
 		price: 4,
 		addActions: 0,
 		addBuys: 0,

@@ -4,8 +4,7 @@ public class Militia : Card
 	private static Militia militia;
 	private Militia() : base
 	(
-		name: "Militia",
-		type: CardType.Militia,
+		type: CardName.Militia,
 		price: 4,
 		addActions: 0,
 		addBuys: 0,

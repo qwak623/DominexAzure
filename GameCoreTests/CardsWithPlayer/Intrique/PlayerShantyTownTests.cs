@@ -36,7 +36,7 @@ public class PlayerShantyTownTests : CardWithPlayerTestsBase
 		#region arrange
 		player.PlayerState.Hand = CreatePile([shantyTown, copper, estate]);
 		player.PlayerState.DrawPile = CreatePile([silver, silver]);
-		var shantyTownToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.ShantyTown);
+		var shantyTownToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.ShantyTown);
 		#endregion
 
 		#region act
@@ -84,7 +84,7 @@ public class PlayerShantyTownTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		player.PlayerState.Hand = CreatePile([shantyTown, village, copper]);
-		var shantyTownToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.ShantyTown);
+		var shantyTownToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.ShantyTown);
 		#endregion
 
 		#region act
@@ -111,14 +111,14 @@ public class PlayerShantyTownTests : CardWithPlayerTestsBase
 		// correctly not draw again
 		player.PlayerState.Hand = CreatePile([throneRoom, shantyTown, copper]);
 		player.PlayerState.DrawPile = CreatePile([village, silver]);
-		var shantyTownToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.ShantyTown);
+		var shantyTownToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.ShantyTown);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
 			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == shantyTownToPlay))).Returns(shantyTownToPlay);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Name == CardName.ThroneRoom));
 		#endregion
 
 		#region assert

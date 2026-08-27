@@ -33,7 +33,7 @@ public class PlayerLurkerTests : CardWithPlayerTestsBase
 		#region arrange
 		player.PlayerState.Hand = CreatePile([lurker]);
 		var lurkerToPlay = player.PlayerState.Hand[0];
-		var villageInSupply = player.Game.Kingdom.GetPile(CardType.Village).CardInstance;
+		var villageInSupply = player.Game.Kingdom.GetPile(CardName.Village).CardInstance;
 
 		user.Setup(u => u.LurkerTrash(lurker, player.PlayerState, player.Game.Kingdom)).Returns(true);
 		user.Setup(u => u.LurkerChooseCardToTrash(lurker, player.PlayerState, player.Game.Kingdom,
@@ -56,7 +56,7 @@ public class PlayerLurkerTests : CardWithPlayerTestsBase
 		AssertPile([village], player.Game.Trash);
 
 		// the village pile in the kingdom actually lost a copy
-		Assert.AreEqual(9, player.Game.Kingdom.GetPile(CardType.Village).Count);
+		Assert.AreEqual(9, player.Game.Kingdom.GetPile(CardName.Village).Count);
 
 		user.Verify(u => u.LurkerChooseCardToGain(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()), Times.Never);
 		#endregion

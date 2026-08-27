@@ -12,7 +12,7 @@ namespace AI.Evolution
 		/// <param name="a"></param>
 		/// <param name="b"></param>
 		/// <returns></returns>
-		public static int CalcLevensteinDistance(this List<(CardType Card, int Number)> a, List<(CardType Card, int Number)> b)
+		public static int CalcLevensteinDistance(this List<(CardName Card, int Number)> a, List<(CardName Card, int Number)> b)
 		{
 			if (a.Count == 0)
 			{

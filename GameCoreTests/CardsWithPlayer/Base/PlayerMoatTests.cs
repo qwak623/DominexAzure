@@ -64,14 +64,14 @@ public class PlayerMoatTests : CardWithPlayerTestsBase
 		#region arrange
 		defender.PlayerState.Hand = CreatePile([throneRoom, moat]);
 		defender.PlayerState.DrawPile = CreatePile([copper, copper, copper, copper]);
-		var moatToPlay = defender.PlayerState.Hand.First(c => c.Card.Type == CardType.Moat);
+		var moatToPlay = defender.PlayerState.Hand.First(c => c.Card.Name == CardName.Moat);
 
 		defenderUser.Setup(u => u.ThroneRoomPlay(throneRoom, defender.PlayerState,
 			defender.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == moatToPlay))).Returns(moatToPlay);
 		#endregion
 
 		#region act
-		defender.PlayActionCardInternal(defender.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
+		defender.PlayActionCardInternal(defender.PlayerState.Hand.First(c => c.Card.Name == CardName.ThroneRoom));
 		#endregion
 
 		#region assert
@@ -94,7 +94,7 @@ public class PlayerMoatTests : CardWithPlayerTestsBase
 		#region arrange
 		defender.PlayerState.Actions = 0;
 		defender.PlayerState.Hand = CreatePile([copper, copper, moat, copper, copper]);
-		var moatInHand = defender.PlayerState.Hand.First(c => c.Card.Type == CardType.Moat);
+		var moatInHand = defender.PlayerState.Hand.First(c => c.Card.Name == CardName.Moat);
 
 		defenderUser.Setup(u => u.PlayCard(It.Is<List<CardInstance>>(r => r.Single() == moatInHand),
 			defender.PlayerState, defender.Game.Kingdom, Phase.Reaction, militia))
@@ -131,8 +131,8 @@ public class PlayerMoatTests : CardWithPlayerTestsBase
 		#region arrange
 		defender.PlayerState.Actions = 0;
 		defender.PlayerState.Hand = CreatePile([copper, copper, moat, copper, copper]);
-		var moatInHand = defender.PlayerState.Hand.First(c => c.Card.Type == CardType.Moat);
-		var coppersToDiscard = defender.PlayerState.Hand.Where(c => c.Card.Type == CardType.Copper).Take(2).ToList();
+		var moatInHand = defender.PlayerState.Hand.First(c => c.Card.Name == CardName.Moat);
+		var coppersToDiscard = defender.PlayerState.Hand.Where(c => c.Card.Name == CardName.Copper).Take(2).ToList();
 
 		defenderUser.Setup(u => u.PlayCard(It.Is<List<CardInstance>>(r => r.Single() == moatInHand),
 			defender.PlayerState, defender.Game.Kingdom, Phase.Reaction, militia))

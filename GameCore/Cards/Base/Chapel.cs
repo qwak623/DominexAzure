@@ -4,8 +4,7 @@ public class Chapel : Card
 	private static Chapel chapel = null;
 	private Chapel() : base
 	(
-		name: "Chapel",
-		type: CardType.Chapel,
+		type: CardName.Chapel,
 		price: 2,
 		addActions: 0,
 		addBuys: 0,

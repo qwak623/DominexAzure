@@ -4,8 +4,7 @@ public class Lurker : Card
 	private static Lurker lurker;
 	private Lurker() : base
 	(
-		name: "Lurker",
-		type: CardType.Lurker,
+		type: CardName.Lurker,
 		price: 2,
 		addActions: 1,
 		addBuys: 0,

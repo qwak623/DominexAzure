@@ -6,8 +6,7 @@ public class Chancellor : Card
 	private static Chancellor chancellor;
 	private Chancellor() : base
 	(
-		name: "Chancellor",
-		type: CardType.Chancellor,
+		type: CardName.Chancellor,
 		price: 3,
 		addActions: 0,
 		addBuys: 0,

@@ -95,7 +95,7 @@ public class PlayerFeastTests : CardWithPlayerTestsBase
 
 		var duchyToGain = new CardInstance(duchy, new Pile(), 10);
 		var duchyToGain2 = new CardInstance(duchy, new Pile(), 11);
-		var feastToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Feast);
+		var feastToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Feast);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
 			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == feastToPlay))).Returns(feastToPlay);
@@ -104,7 +104,7 @@ public class PlayerFeastTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Name == CardName.ThroneRoom));
 		#endregion
 
 		#region assert
@@ -133,7 +133,7 @@ public class PlayerFeastTests : CardWithPlayerTestsBase
 		player.PlayerState.Hand = CreatePile([throneRoom, feast]);
 
 		var duchyToGain = new CardInstance(duchy, new Pile(), 10);
-		var feastToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Feast);
+		var feastToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Feast);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
 			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == feastToPlay))).Returns(feastToPlay);
@@ -142,7 +142,7 @@ public class PlayerFeastTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Name == CardName.ThroneRoom));
 		#endregion
 
 		#region assert
@@ -169,7 +169,7 @@ public class PlayerFeastTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		player.PlayerState.Hand = CreatePile([throneRoom, feast]);
-		var feastToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Feast);
+		var feastToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Feast);
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
 			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == feastToPlay))).Returns(feastToPlay);
 		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
@@ -177,7 +177,7 @@ public class PlayerFeastTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Name == CardName.ThroneRoom));
 		#endregion
 
 		#region assert

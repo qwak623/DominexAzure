@@ -16,7 +16,7 @@ public class KingdomWrapper
 	/// </summary>
 	/// <param name="type"></param>
 	/// <returns></returns>
-	public CardInstance GetCard(CardType type)
+	public CardInstance GetCard(CardName type)
 	{
 		var pile = Kingdom.GetPile(type);
 		if (pile is not null && IsAvailable(pile))

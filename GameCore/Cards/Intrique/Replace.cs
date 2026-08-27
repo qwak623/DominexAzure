@@ -4,8 +4,7 @@ public class Replace : Card
 	private static Replace remodel;
 	private Replace() : base
 	(
-		name: "Replace",
-		type: CardType.Replace,
+		type: CardName.Replace,
 		price: 5,
 		addActions: 0,
 		addBuys: 0,
@@ -55,5 +54,5 @@ public class Replace : Card
 		}
 	}
 
-	public override void Attack(IPlayer defender, IPlayer attacker) => defender.Gain(CardType.Curse);
+	public override void Attack(IPlayer defender, IPlayer attacker) => defender.Gain(CardName.Curse);
 }

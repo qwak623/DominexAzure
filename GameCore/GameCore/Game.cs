@@ -128,5 +128,5 @@ public class Game : IGame
 		}
 	}
 
-	private bool IsGameEnd() => Kingdom.GetPile(CardType.Province).Empty || Kingdom.EmptyKingdomPilesCount >= 3;
+	private bool IsGameEnd() => Kingdom.GetPile(CardName.Province).Empty || Kingdom.EmptyKingdomPilesCount >= 3;
 }

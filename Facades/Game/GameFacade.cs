@@ -51,7 +51,7 @@ public class GameFacade : IGameFacade
 		List<Card> cards = cardTypes
 			.Select(c =>
 			{
-				if (!Enum.TryParse<CardType>(c, out var cardType))
+				if (!Enum.TryParse<CardName>(c, out var cardType))
 				{
 					throw new ArgumentException($"{c} is not a valid type of card.");
 				}

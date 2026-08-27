@@ -4,8 +4,7 @@ public class Diplomat : Card
 	private static Diplomat diplomat;
 	private Diplomat() : base
 	(
-		name: "Diplomat",
-		type: CardType.Diplomat,
+		type: CardName.Diplomat,
 		price: 4,
 		addActions: 0,
 		addBuys: 0,

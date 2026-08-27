@@ -126,7 +126,7 @@ public class PlayerThiefTests : CardWithPlayerTestsBase
 		attacker.PlayerState.Hand = CreatePile([thief]);
 		defender.PlayerState.DrawPile = CreatePile([copper, province]);
 
-		var copperToSteal = defender.PlayerState.DrawPile.First(c => c.Card.Type == CardType.Copper);
+		var copperToSteal = defender.PlayerState.DrawPile.First(c => c.Card.Name == CardName.Copper);
 		attackerUser.Setup(au => au.ThiefChoose(thief, attacker.PlayerState, attacker.Game.Kingdom,
 			It.Is<List<CardInstance>>(c => c.Single() == copperToSteal))).Returns(copperToSteal);
 		attackerUser.Setup(au => au.ThiefSteal(thief, attacker.PlayerState, attacker.Game.Kingdom, copperToSteal)).Returns(false);
@@ -172,7 +172,7 @@ public class PlayerThiefTests : CardWithPlayerTestsBase
 		attacker.PlayerState.Hand = CreatePile([thief]);
 		defender.PlayerState.DrawPile = CreatePile([province, gold]);
 
-		var goldToSteal = defender.PlayerState.DrawPile.First(c => c.Card.Type == CardType.Gold);
+		var goldToSteal = defender.PlayerState.DrawPile.First(c => c.Card.Name == CardName.Gold);
 		attackerUser.Setup(au => au.ThiefChoose(thief, attacker.PlayerState, attacker.Game.Kingdom,
 			It.Is<List<CardInstance>>(c => c.Single() == goldToSteal))).Returns(goldToSteal);
 		attackerUser.Setup(au => au.ThiefSteal(thief, attacker.PlayerState, attacker.Game.Kingdom,
@@ -221,8 +221,8 @@ public class PlayerThiefTests : CardWithPlayerTestsBase
 		attacker.PlayerState.Hand = CreatePile([thief]);
 		defender.PlayerState.DrawPile = CreatePile([copper, silver]);
 
-		var silverToSteal = defender.PlayerState.DrawPile.First(c => c.Card.Type == CardType.Silver);
-		var copperToSteal = defender.PlayerState.DrawPile.First(c => c.Card.Type == CardType.Copper);
+		var silverToSteal = defender.PlayerState.DrawPile.First(c => c.Card.Name == CardName.Silver);
+		var copperToSteal = defender.PlayerState.DrawPile.First(c => c.Card.Name == CardName.Copper);
 		attackerUser.Setup(au => au.ThiefChoose(thief, attacker.PlayerState, attacker.Game.Kingdom,
 			It.Is<List<CardInstance>>(c => c.Count() == 2 && c.Contains(copperToSteal)
 			&& c.Contains(silverToSteal)))).Returns(silverToSteal);
@@ -272,8 +272,8 @@ public class PlayerThiefTests : CardWithPlayerTestsBase
 		attacker.PlayerState.Hand = CreatePile([thief]);
 		defender.PlayerState.DrawPile = CreatePile([gold, copper]);
 
-		var goldToSteal = defender.PlayerState.DrawPile.First(c => c.Card.Type == CardType.Gold);
-		var copperToSteal = defender.PlayerState.DrawPile.First(c => c.Card.Type == CardType.Copper);
+		var goldToSteal = defender.PlayerState.DrawPile.First(c => c.Card.Name == CardName.Gold);
+		var copperToSteal = defender.PlayerState.DrawPile.First(c => c.Card.Name == CardName.Copper);
 		attackerUser.Setup(au => au.ThiefChoose(thief, attacker.PlayerState, attacker.Game.Kingdom,
 			It.Is<List<CardInstance>>(c => c.Count() == 2 && c.Contains(copperToSteal)
 			&& c.Contains(goldToSteal)))).Returns(goldToSteal);
@@ -323,12 +323,12 @@ public class PlayerThiefTests : CardWithPlayerTestsBase
 		attacker.PlayerState.Hand = CreatePile([throneRoom, thief]);
 		defender.PlayerState.DrawPile = CreatePile([silver, copper, copper, gold]);
 
-		var thiefToPlay = attacker.PlayerState.Hand.First(c => c.Card.Type == CardType.Thief);
+		var thiefToPlay = attacker.PlayerState.Hand.First(c => c.Card.Name == CardName.Thief);
 		attackerUser.Setup(u => u.ThroneRoomPlay(throneRoom, attacker.PlayerState,
 			attacker.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == thiefToPlay))).Returns(thiefToPlay);
 
-		var goldToSteal = defender.PlayerState.DrawPile.First(c => c.Card.Type == CardType.Gold);
-		var silverToSteal = defender.PlayerState.DrawPile.First(c => c.Card.Type == CardType.Silver);
+		var goldToSteal = defender.PlayerState.DrawPile.First(c => c.Card.Name == CardName.Gold);
+		var silverToSteal = defender.PlayerState.DrawPile.First(c => c.Card.Name == CardName.Silver);
 		attackerUser.SetupSequence(au => au.ThiefChoose(thief, attacker.PlayerState, attacker.Game.Kingdom,
 			It.IsAny<List<CardInstance>>())).Returns(goldToSteal).Returns(silverToSteal);
 		attackerUser.Setup(au => au.ThiefSteal(thief, attacker.PlayerState, attacker.Game.Kingdom,

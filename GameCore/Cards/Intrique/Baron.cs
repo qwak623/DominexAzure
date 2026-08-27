@@ -7,8 +7,7 @@ public class Baron : Card
 	private static Baron baron;
 	private Baron() : base
 	(
-		name: "Baron",
-		type: CardType.Baron,
+		type: CardName.Baron,
 		price: 4,
 		addActions: 0,
 		addBuys: 1,
@@ -29,17 +28,17 @@ public class Baron : Card
 
 	protected override void ActionEffect(IPlayer player, CardInstance thisCard)
 	{
-		if (player.PlayerState.Hand.Any(c => c.Card.Type == CardType.Estate)
+		if (player.PlayerState.Hand.Any(c => c.Card.Name == CardName.Estate)
 			&& player.User.BaronDiscard(this, player.PlayerState, player.Game.Kingdom))
 		{
 			player.Game.Logger?.Log(new GameLog { PlayerId = player.Name, Message = $"{player.Name} discards Estate and gains 4$" });
-			player.Discard(player.PlayerState.Hand.First(c => c.Card.Type == CardType.Estate));
+			player.Discard(player.PlayerState.Hand.First(c => c.Card.Name == CardName.Estate));
 			player.PlayerState.Coins += 4;
 		}
 		else
 		{
 			player.Game.Logger?.Log(new GameLog { PlayerId = player.Name, Message = $"{player.Name} gains Estate" });
-			player.Gain(CardType.Estate);
+			player.Gain(CardName.Estate);
 		}
 	}
 }

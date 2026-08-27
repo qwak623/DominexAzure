@@ -74,14 +74,14 @@ public class PlayerWitchTests : CardWithPlayerTestsBase
 		#region arrange
 		attacker.PlayerState.Hand = CreatePile([throneRoom, witch]);
 		attacker.PlayerState.DrawPile = CreatePile([silver, silver, curse, silver]);
-		var witchToPlay = attacker.PlayerState.Hand.First(c => c.Card.Type == CardType.Witch);
+		var witchToPlay = attacker.PlayerState.Hand.First(c => c.Card.Name == CardName.Witch);
 
 		attackerUser.Setup(u => u.ThroneRoomPlay(throneRoom, attacker.PlayerState,
 			attacker.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == witchToPlay))).Returns(witchToPlay);
 		#endregion
 
 		#region act
-		attacker.PlayActionCardInternal(attacker.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
+		attacker.PlayActionCardInternal(attacker.PlayerState.Hand.First(c => c.Card.Name == CardName.ThroneRoom));
 		#endregion
 
 		#region assert

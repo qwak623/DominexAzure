@@ -26,7 +26,7 @@ public class CardInstance
 	public bool IsAction => Card.IsAction;
 	public bool IsReaction => Card.IsReaction;
 	public bool IsAttack => Card.IsAttack;
-	public string Name => Card.Name;
+	public string Name => Card.Name.ToDisplayName();
 
 
 	public bool Equals(CardInstance other) => Id == other.Id;

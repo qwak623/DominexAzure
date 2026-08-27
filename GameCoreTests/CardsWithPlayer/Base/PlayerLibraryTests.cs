@@ -35,7 +35,7 @@ public class PlayerLibraryTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		player.PlayerState.Hand = CreatePile([copper, copper, library, adventurer, silver, silver, gold, province]);
-		var libraryToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Library);
+		var libraryToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Library);
 		#endregion
 
 		#region act
@@ -62,9 +62,9 @@ public class PlayerLibraryTests : CardWithPlayerTestsBase
 		#region arrange
 		player.PlayerState.Hand = CreatePile([adventurer, copper, silver, library]);
 		player.PlayerState.DrawPile = CreatePile([library, adventurer, copper]);
-		var libraryToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Library);
-		var adventurerShown = player.PlayerState.DrawPile.First(c => c.Card.Type == CardType.Adventurer);
-		var libraryShown = player.PlayerState.DrawPile.First(c => c.Card.Type == CardType.Library);
+		var libraryToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Library);
+		var adventurerShown = player.PlayerState.DrawPile.First(c => c.Card.Name == CardName.Adventurer);
+		var libraryShown = player.PlayerState.DrawPile.First(c => c.Card.Name == CardName.Library);
 
 		user.Setup(u => u.LibrarySkip(library, player.PlayerState, player.Game.Kingdom, adventurerShown)).Returns(false);
 		user.Setup(u => u.LibrarySkip(library, player.PlayerState, player.Game.Kingdom, libraryShown)).Returns(true);
@@ -100,9 +100,9 @@ public class PlayerLibraryTests : CardWithPlayerTestsBase
 		#region arrange
 		player.PlayerState.Hand = CreatePile([adventurer, copper, silver, library, throneRoom]);
 		player.PlayerState.DrawPile = CreatePile([copper, silver, library, adventurer, copper]);
-		var libraryToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Library);
-		var adventurerShown = player.PlayerState.DrawPile.First(c => c.Card.Type == CardType.Adventurer);
-		var libraryShown = player.PlayerState.DrawPile.First(c => c.Card.Type == CardType.Library);
+		var libraryToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Library);
+		var adventurerShown = player.PlayerState.DrawPile.First(c => c.Card.Name == CardName.Adventurer);
+		var libraryShown = player.PlayerState.DrawPile.First(c => c.Card.Name == CardName.Library);
 
 		user.Setup(u => u.LibrarySkip(library, player.PlayerState, player.Game.Kingdom, adventurerShown)).Returns(false);
 		user.Setup(u => u.LibrarySkip(library, player.PlayerState, player.Game.Kingdom, libraryShown)).Returns(true);
@@ -111,7 +111,7 @@ public class PlayerLibraryTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Name == CardName.ThroneRoom));
 		#endregion
 
 		#region assert
@@ -139,10 +139,10 @@ public class PlayerLibraryTests : CardWithPlayerTestsBase
 		#region arrange
 		player.PlayerState.Hand = CreatePile([adventurer, copper, silver, library, throneRoom]);
 		player.PlayerState.DrawPile = CreatePile([copper, throneRoom, library, adventurer]);
-		var libraryToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Library);
-		var adventurerShown = player.PlayerState.DrawPile.First(c => c.Card.Type == CardType.Adventurer);
-		var libraryShown = player.PlayerState.DrawPile.First(c => c.Card.Type == CardType.Library);
-		var throneRoomShown = player.PlayerState.DrawPile.First(c => c.Card.Type == CardType.ThroneRoom);
+		var libraryToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Library);
+		var adventurerShown = player.PlayerState.DrawPile.First(c => c.Card.Name == CardName.Adventurer);
+		var libraryShown = player.PlayerState.DrawPile.First(c => c.Card.Name == CardName.Library);
+		var throneRoomShown = player.PlayerState.DrawPile.First(c => c.Card.Name == CardName.ThroneRoom);
 
 		user.Setup(u => u.LibrarySkip(library, player.PlayerState, player.Game.Kingdom, adventurerShown)).Returns(false);
 		user.Setup(u => u.LibrarySkip(library, player.PlayerState, player.Game.Kingdom, libraryShown)).Returns(true);
@@ -153,7 +153,7 @@ public class PlayerLibraryTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Name == CardName.ThroneRoom));
 		#endregion
 
 		#region assert

@@ -4,8 +4,7 @@ public class ThroneRoom : Card
 	private static ThroneRoom throneRoom;
 	private ThroneRoom() : base
 	(
-		name: "Throne Room",
-		type: CardType.ThroneRoom,
+		type: CardName.ThroneRoom,
 		price: 4,
 		addActions: 0,
 		addBuys: 0,

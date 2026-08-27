@@ -8,8 +8,7 @@ public class Moneylender : Card
 	private static Moneylender moneylender;
 	private Moneylender() : base
 	(
-		name: "Moneylender",
-		type: CardType.Moneylender,
+		type: CardName.Moneylender,
 		price: 4,
 		addActions: 0,
 		addBuys: 0,
@@ -30,11 +29,11 @@ public class Moneylender : Card
 
 	protected override void ActionEffect(IPlayer player, CardInstance thisCard)
 	{
-		if (player.PlayerState.Hand.Any(c => c.Card.Type == CardType.Copper)
+		if (player.PlayerState.Hand.Any(c => c.Card.Name == CardName.Copper)
 			&& player.User.MoneylenderTrash(this, player.PlayerState, player.Game.Kingdom))
 		{
 			player.Game.Logger?.Log(new GameLog { PlayerId = player.Name, Message = $"{player.Name} trashes Copper and gains 3$" });
-			player.Trash(player.PlayerState.Hand.First(c => c.Card.Type == CardType.Copper));
+			player.Trash(player.PlayerState.Hand.First(c => c.Card.Name == CardName.Copper));
 			player.PlayerState.Coins += 3;
 		}
 	}

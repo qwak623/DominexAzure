@@ -4,8 +4,7 @@ public class Tribute : Card
 	private static Tribute tribute;
 	private Tribute() : base
 	(
-		name: "Tribute",
-		type: CardType.Tribute,
+		type: CardName.Tribute,
 		price: 5,
 		addActions: 0,
 		addBuys: 0,

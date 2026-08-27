@@ -88,7 +88,7 @@ public class PlayerNoblesTests : CardWithPlayerTestsBase
 		#region arrange
 		player.PlayerState.Hand = CreatePile([throneRoom, nobles]);
 		player.PlayerState.DrawPile = CreatePile([copper, copper, copper]);
-		var noblesToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Nobles);
+		var noblesToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Nobles);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
 			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == noblesToPlay))).Returns(noblesToPlay);
@@ -99,7 +99,7 @@ public class PlayerNoblesTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Name == CardName.ThroneRoom));
 		#endregion
 
 		#region assert

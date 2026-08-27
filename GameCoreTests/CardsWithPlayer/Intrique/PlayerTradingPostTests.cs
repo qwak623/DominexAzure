@@ -34,7 +34,7 @@ public class PlayerTradingPostTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		player.PlayerState.Hand = CreatePile([tradingPost, copper, estate]);
-		var tradingPostToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.TradingPost);
+		var tradingPostToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.TradingPost);
 		#endregion
 
 		#region act
@@ -61,7 +61,7 @@ public class PlayerTradingPostTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		player.PlayerState.Hand = CreatePile([tradingPost, copper]);
-		var tradingPostToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.TradingPost);
+		var tradingPostToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.TradingPost);
 		#endregion
 
 		#region act
@@ -112,8 +112,8 @@ public class PlayerTradingPostTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		player.PlayerState.Hand = CreatePile([tradingPost, copper, copper, estate]);
-		var tradingPostToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.TradingPost);
-		var coppersToTrash = player.PlayerState.Hand.Where(c => c.Card.Type == CardType.Copper).ToList();
+		var tradingPostToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.TradingPost);
+		var coppersToTrash = player.PlayerState.Hand.Where(c => c.Card.Name == CardName.Copper).ToList();
 
 		user.Setup(u => u.TradingPostTrash(tradingPost, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns(coppersToTrash);
@@ -144,8 +144,8 @@ public class PlayerTradingPostTests : CardWithPlayerTestsBase
 		// silver to hand leaves exactly 2 cards, so the second resolution auto-trashes both
 		// (including the silver just gained) without asking, and gains yet another silver
 		player.PlayerState.Hand = CreatePile([throneRoom, tradingPost, copper, copper, copper]);
-		var tradingPostToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.TradingPost);
-		var coppersInHand = player.PlayerState.Hand.Where(c => c.Card.Type == CardType.Copper).ToList();
+		var tradingPostToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.TradingPost);
+		var coppersInHand = player.PlayerState.Hand.Where(c => c.Card.Name == CardName.Copper).ToList();
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
 			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == tradingPostToPlay))).Returns(tradingPostToPlay);
@@ -154,7 +154,7 @@ public class PlayerTradingPostTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Name == CardName.ThroneRoom));
 		#endregion
 
 		#region assert

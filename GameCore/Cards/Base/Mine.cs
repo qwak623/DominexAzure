@@ -4,8 +4,7 @@ public class Mine : Card
 	private static Mine mine;
 	private Mine() : base
 	(
-		name: "Mine",
-		type: CardType.Mine,
+		type: CardName.Mine,
 		price: 5,
 		addActions: 0,
 		addBuys: 0,

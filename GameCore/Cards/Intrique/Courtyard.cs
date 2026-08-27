@@ -5,8 +5,7 @@ public class Courtyard : Card
 	private static Courtyard courtyard;
 	private Courtyard() : base
 	(
-		name: "Courtyard",
-		type: CardType.Courtyard,
+		type: CardName.Courtyard,
 		price: 2,
 		addActions: 0,
 		addBuys: 0,

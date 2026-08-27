@@ -5,8 +5,7 @@ public class Witch : Card
 	private static Witch witch;
 	private Witch() : base
 	(
-		name: "Witch",
-		type: CardType.Witch,
+		type: CardName.Witch,
 		price: 5,
 		addActions: 0,
 		addBuys: 0,
@@ -32,5 +31,5 @@ public class Witch : Card
 		TriggerAttacks(player);
 	}
 
-	public override void Attack(IPlayer defender, IPlayer attacker) => defender.Gain(CardType.Curse);
+	public override void Attack(IPlayer defender, IPlayer attacker) => defender.Gain(CardName.Curse);
 }

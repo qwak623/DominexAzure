@@ -16,7 +16,7 @@ namespace AI.Provincial
 		//static string path = $"..{sep}..{sep}..{sep}AI{sep}priority.txt";
 		private static string path = BuyAgenda.DirectoryPath + BuyAgenda.sep + ".." + BuyAgenda.sep + "priority.txt";
 
-		// list is indexed by CardType
+		// list is indexed by Name
 		// priority list is computed only once
 		public static float[] GetPriorityList()
 		{
@@ -37,7 +37,7 @@ namespace AI.Provincial
 			}
 		}
 
-		// list is indexed by CardType
+		// list is indexed by Name
 		private static float[] getPriorityList()
 		{
 			var list = new List<string>();
@@ -50,11 +50,11 @@ namespace AI.Provincial
 				}
 			}
 
-			var array = new float[Enum.GetNames(typeof(CardType)).Length];
+			var array = new float[Enum.GetNames(typeof(CardName)).Length];
 
 			for (int i = 0; i < list.Count; i++)
 			{
-				if (Enum.TryParse(list[i], out CardType type))
+				if (Enum.TryParse(list[i], out CardName type))
 				{
 					array[(int)type] = (list.Count - i) * 2;
 				}

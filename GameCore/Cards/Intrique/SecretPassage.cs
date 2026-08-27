@@ -5,8 +5,7 @@ public class SecretPassage : Card
 	private static SecretPassage secretPassage;
 	private SecretPassage() : base
 	(
-		name: "Secret Passage",
-		type: CardType.SecretPassage,
+		type: CardName.SecretPassage,
 		price: 4,
 		addActions: 1,
 		addBuys: 0,

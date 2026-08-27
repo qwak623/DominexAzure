@@ -4,8 +4,7 @@ public class Workshop : Card
 	private static Workshop workshop;
 	private Workshop() : base
 	(
-		name: "Workshop",
-		type: CardType.Workshop,
+		type: CardName.Workshop,
 		price: 3,
 		addActions: 0,
 		addBuys: 0,

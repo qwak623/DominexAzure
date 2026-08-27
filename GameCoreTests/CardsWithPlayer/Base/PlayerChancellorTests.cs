@@ -36,7 +36,7 @@ public class PlayerChancellorTests : CardWithPlayerTestsBase
 		player.PlayerState.Hand = CreatePile([chancellor, copper]);
 		player.PlayerState.DiscardPile = CreatePile([copper]);
 		player.PlayerState.DrawPile = CreatePile([silver, silver]);
-		var chancellorToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Chancellor);
+		var chancellorToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Chancellor);
 		#endregion
 
 		#region act
@@ -67,7 +67,7 @@ public class PlayerChancellorTests : CardWithPlayerTestsBase
 		player.PlayerState.Hand = CreatePile([chancellor, copper]);
 		player.PlayerState.DiscardPile = CreatePile([copper]);
 		player.PlayerState.DrawPile = CreatePile([silver, silver]);
-		var chancellorToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Chancellor);
+		var chancellorToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Chancellor);
 		#endregion
 
 		#region act
@@ -99,7 +99,7 @@ public class PlayerChancellorTests : CardWithPlayerTestsBase
 		player.PlayerState.Hand = CreatePile([throneRoom, chancellor, copper]);
 		player.PlayerState.DiscardPile = CreatePile([copper]);
 		player.PlayerState.DrawPile = CreatePile([silver, silver]);
-		var chancellorToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Chancellor);
+		var chancellorToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Chancellor);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
 			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == chancellorToPlay))).Returns(chancellorToPlay);
@@ -108,7 +108,7 @@ public class PlayerChancellorTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Name == CardName.ThroneRoom));
 		#endregion
 
 		#region assert
@@ -137,7 +137,7 @@ public class PlayerChancellorTests : CardWithPlayerTestsBase
 		player.PlayerState.Hand = CreatePile([throneRoom, chancellor, copper]);
 		player.PlayerState.DiscardPile = CreatePile([copper]);
 		player.PlayerState.DrawPile = CreatePile([silver, silver]);
-		var chancellorToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Chancellor);
+		var chancellorToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Chancellor);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
 			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == chancellorToPlay))).Returns(chancellorToPlay);
@@ -146,7 +146,7 @@ public class PlayerChancellorTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Name == CardName.ThroneRoom));
 		#endregion
 
 		#region assert

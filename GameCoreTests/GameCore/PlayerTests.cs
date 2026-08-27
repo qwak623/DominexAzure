@@ -52,14 +52,14 @@ public class PlayerTests
 		// cards are exactly drawCount, so the end-of-turn draw takes the whole pile.
 		player.PlayerState.Hand = CreatePile([village, copper]);
 		player.PlayerState.DrawPile = CreatePile([gold, copper, copper, copper, copper, silver]);
-		var villageToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Village);
+		var villageToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Village);
 
 		user.Setup(u => u.PlayCard(
 			It.Is<List<CardInstance>>(c => c.Single() == villageToPlay),
 			player.PlayerState, game.Object.Kingdom, Phase.Action, null)).Returns(villageToPlay);
 
 		// coins after playing copper + the drawn silver: 1 + 2 = 3
-		var estateToGain = player.Game.Kingdom.GetPile(CardType.Estate).CardInstance;
+		var estateToGain = player.Game.Kingdom.GetPile(CardName.Estate).CardInstance;
 		user.Setup(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.MaxPrice == 3 && !k.OnlyTreasures),
 			player.PlayerState, game.Object.Kingdom, Phase.Buy)).Returns(estateToGain);
 		#endregion
@@ -97,7 +97,7 @@ public class PlayerTests
 		player.PlayerState.DrawPile = CreatePile([gold, copper, copper, copper, copper]);
 
 		// coins from playing copper + silver: 1 + 2 = 3
-		var estateToGain = player.Game.Kingdom.GetPile(CardType.Estate).CardInstance;
+		var estateToGain = player.Game.Kingdom.GetPile(CardName.Estate).CardInstance;
 		user.Setup(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.MaxPrice == 3 && !k.OnlyTreasures),
 			player.PlayerState, game.Object.Kingdom, Phase.Buy)).Returns(estateToGain);
 		#endregion
@@ -131,8 +131,8 @@ public class PlayerTests
 		// moat (+0 Actions, +2 Cards) - the action phase should loop twice, not just once
 		player.PlayerState.Hand = CreatePile([village, moat, copper]);
 		player.PlayerState.DrawPile = CreatePile([gold, copper, copper, copper, copper, copper, silver, silver]);
-		var villageToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Village);
-		var moatToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Moat);
+		var villageToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Village);
+		var moatToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Moat);
 
 		user.Setup(u => u.PlayCard(
 			It.Is<List<CardInstance>>(c => c.Count() == 2 && c.Contains(villageToPlay) && c.Contains(moatToPlay)),
@@ -142,7 +142,7 @@ public class PlayerTests
 			player.PlayerState, game.Object.Kingdom, Phase.Action, null)).Returns(moatToPlay);
 
 		// coins from playing copper + the two drawn silvers: 1 + 2 + 2 + 1 (drawn copper) = 6
-		var estateToGain = player.Game.Kingdom.GetPile(CardType.Estate).CardInstance;
+		var estateToGain = player.Game.Kingdom.GetPile(CardName.Estate).CardInstance;
 		user.Setup(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.MaxPrice == 6 && !k.OnlyTreasures),
 			player.PlayerState, game.Object.Kingdom, Phase.Buy)).Returns(estateToGain);
 		#endregion
@@ -343,7 +343,7 @@ public class PlayerTests
 		#region arrange
 		player.PlayerState.Coins = 5;
 		player.PlayerState.Buys = 1;
-		var villageToGain = player.Game.Kingdom.GetPile(CardType.Village).CardInstance;
+		var villageToGain = player.Game.Kingdom.GetPile(CardName.Village).CardInstance;
 
 		user.Setup(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => !k.OnlyTreasures && k.MaxPrice == 5),
 			player.PlayerState, game.Object.Kingdom, Phase.Buy)).Returns(villageToGain);
@@ -531,7 +531,7 @@ public class PlayerTests
 		#region act
 		for (int i = 0; i < 12; i++)
 		{
-			player.Gain(CardType.Village);
+			player.Gain(CardName.Village);
 		}
 		#endregion
 
@@ -547,7 +547,7 @@ public class PlayerTests
 		#region act
 		for (int i = 0; i < 12; i++)
 		{
-			player.GainToHand(CardType.Village);
+			player.GainToHand(CardName.Village);
 		}
 		#endregion
 
@@ -563,7 +563,7 @@ public class PlayerTests
 		#region act
 		for (int i = 0; i < 12; i++)
 		{
-			player.GainToDrawPile(CardType.Village);
+			player.GainToDrawPile(CardName.Village);
 		}
 		#endregion
 

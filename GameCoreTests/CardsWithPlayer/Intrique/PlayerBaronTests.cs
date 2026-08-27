@@ -32,7 +32,7 @@ public class PlayerBaronTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		player.PlayerState.Hand = CreatePile([baron, estate]);
-		var baronToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Baron);
+		var baronToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Baron);
 		user.Setup(u => u.BaronDiscard(baron, player.PlayerState, player.Game.Kingdom)).Returns(true);
 		#endregion
 
@@ -58,7 +58,7 @@ public class PlayerBaronTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		player.PlayerState.Hand = CreatePile([baron, estate]);
-		var baronToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Baron);
+		var baronToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Baron);
 		user.Setup(u => u.BaronDiscard(baron, player.PlayerState, player.Game.Kingdom)).Returns(false);
 		#endregion
 
@@ -118,7 +118,7 @@ public class PlayerBaronTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		player.PlayerState.Hand = CreatePile([throneRoom, baron, .. Enumerable.Repeat(estate, estatesInHand)]);
-		var baronToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Baron);
+		var baronToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Baron);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
 			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == baronToPlay))).Returns(baronToPlay);
@@ -127,7 +127,7 @@ public class PlayerBaronTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Name == CardName.ThroneRoom));
 		#endregion
 
 		#region assert

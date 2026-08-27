@@ -4,8 +4,7 @@ public class Saboteur : Card
 	private static Saboteur saboteur;
 	private Saboteur() : base
 	(
-		name: "Saboteur",
-		type: CardType.Saboteur,
+		type: CardName.Saboteur,
 		price: 5,
 		addActions: 0,
 		addBuys: 0,

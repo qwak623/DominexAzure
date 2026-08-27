@@ -193,7 +193,7 @@ public class Human(IPlayerStateObserver playerStateObserver, ICardMapper cardMap
 	public override CardInstance SecretPassageChooseCard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
 		=> AskForCards(cardPlayed, ps, cards, ChoiceType.SecretPassageChooseCard, OperationType.ReturnToDraw, 1, 1).Single();
 
-	public override CardType WishingWellGuess(Card cardPlayed, PlayerState ps, Kingdom k, List<CardType> cardTypes)
+	public override CardName WishingWellGuess(Card cardPlayed, PlayerState ps, Kingdom k, List<CardName> cardTypes)
 	{
 		throw new NotImplementedException();
 	}

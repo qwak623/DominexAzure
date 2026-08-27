@@ -4,8 +4,7 @@ public class Torturer : Card
 	private static Torturer torturer;
 	private Torturer() : base
 	(
-		name: "Torturer",
-		type: CardType.Torturer,
+		type: CardName.Torturer,
 		price: 5,
 		addActions: 0,
 		addBuys: 0,
@@ -35,7 +34,7 @@ public class Torturer : Card
 	{
 		if (defender.User.TorturerChooseCurse(this, defender.PlayerState, defender.Game.Kingdom))
 		{
-			defender.GainToHand(CardType.Curse);
+			defender.GainToHand(CardName.Curse);
 		}
 		else if (defender.PlayerState.Hand.Count != 0)
 		{

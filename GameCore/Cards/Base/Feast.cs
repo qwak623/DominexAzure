@@ -6,8 +6,7 @@ public class Feast : Card
 	private static Feast feast;
 	private Feast() : base
 	(
-		name: "Feast",
-		type: CardType.Feast,
+		type: CardName.Feast,
 		price: 4,
 		addActions: 0,
 		addBuys: 0,
@@ -29,7 +28,7 @@ public class Feast : Card
 	protected override void ActionEffect(IPlayer player, CardInstance thisCard)
 	{
 		player.Trash(thisCard);
-		player.Game.Logger?.Log(new GameLog { PlayerId = Name, Message = $"{player.Name} trashes {Name}" });
+		player.Game.Logger?.Log(new GameLog { PlayerId = player.Name, Message = $"{player.Name} trashes {Name.ToDisplayName()}" });
 		var card = player.User.SelectCardToGain(player.Game.Kingdom.GetWrapper(player.PlayerState, 5), player.PlayerState, player.Game.Kingdom, Phase.Gain);
 		if (card is not null)
 		{

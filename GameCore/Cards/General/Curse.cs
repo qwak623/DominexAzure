@@ -5,8 +5,7 @@ public class Curse : Card
 	private static Curse curse;
 	private Curse() : base
 	(
-		name: "Curse",
-		type: CardType.Curse,
+		type: CardName.Curse,
 		price: 0,
 		addBuys: 0,
 		coins: 0,

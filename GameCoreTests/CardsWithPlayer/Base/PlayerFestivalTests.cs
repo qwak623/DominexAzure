@@ -51,14 +51,14 @@ public class PlayerFestivalTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		player.PlayerState.Hand = CreatePile([throneRoom, festival]);
-		var festivalToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Festival);
+		var festivalToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Festival);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
 			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == festivalToPlay))).Returns(festivalToPlay);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Name == CardName.ThroneRoom));
 		#endregion
 
 		#region assert

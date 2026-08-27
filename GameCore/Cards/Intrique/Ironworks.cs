@@ -4,8 +4,7 @@ public class Ironworks : Card
 	private static Ironworks ironworks;
 	private Ironworks() : base
 	(
-		name: "Ironworks",
-		type: CardType.Ironworks,
+		type: CardName.Ironworks,
 		price: 4,
 		addActions: 0,
 		addBuys: 0,

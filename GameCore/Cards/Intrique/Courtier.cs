@@ -7,8 +7,7 @@ public class Courtier : Card
 	private static Courtier courtier;
 	private Courtier() : base
 	(
-		name: "Courtier",
-		type: CardType.Courtier,
+		type: CardName.Courtier,
 		price: 5,
 		addActions: 0,
 		addBuys: 0,
@@ -35,7 +34,7 @@ public class Courtier : Card
 		[CourtierBenefit.Action] = p => p.PlayerState.Actions++,
 		[CourtierBenefit.Buy] = p => p.PlayerState.Buys++,
 		[CourtierBenefit.Coins] = p => p.PlayerState.Coins += 3,
-		[CourtierBenefit.GainGold] = p => p.Gain(CardType.Gold),
+		[CourtierBenefit.GainGold] = p => p.Gain(CardName.Gold),
 	};
 
 	protected override void ActionEffect(IPlayer player, CardInstance thisCard)
@@ -56,7 +55,7 @@ public class Courtier : Card
 			revealedCard.IsTreasure,
 			revealedCard.IsVictory,
 			revealedCard.IsReaction,
-			revealedCard.Card.Type == CardType.Curse,
+			revealedCard.Card.Name == CardName.Curse,
 		}.Count(isType => isType);
 		benefitCount = Math.Min(benefitCount, allBenefits.Count);
 		if (benefitCount == 0)

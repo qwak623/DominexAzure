@@ -5,8 +5,7 @@ public class Moat : Card
 	private static Moat moat;
 	private Moat() : base
 	(
-		name: "Moat",
-		type: CardType.Moat,
+		type: CardName.Moat,
 		price: 2,
 		addActions: 0,
 		addBuys: 0,

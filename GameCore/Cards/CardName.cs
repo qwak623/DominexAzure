@@ -1,9 +1,9 @@
 ﻿namespace GameCore.Cards;
-public enum CardType
+public enum CardName
 {
 	NotDefined = 0,
 
-	// general 
+	// general
 	Copper = 1,
 	Silver = 2,
 	Gold = 3,

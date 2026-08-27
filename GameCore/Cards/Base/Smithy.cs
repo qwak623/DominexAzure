@@ -4,8 +4,7 @@ public class Smithy : Card
 	private static Smithy smithy;
 	private Smithy() : base
 	(
-		name: "Smithy",
-		type: CardType.Smithy,
+		type: CardName.Smithy,
 		price: 4,
 		addActions: 0,
 		addBuys: 0,

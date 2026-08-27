@@ -5,8 +5,7 @@ public class Steward : Card
 	private static Steward steward;
 	private Steward() : base
 	(
-		name: "Steward",
-		type: CardType.Steward,
+		type: CardName.Steward,
 		price: 3,
 		addActions: 0,
 		addBuys: 0,

@@ -45,7 +45,7 @@ public class PlayerSwindlerTests : CardWithPlayerTestsBase
 		// bottom to top: copper stays, silver ($3) is on top and gets trashed
 		defender.PlayerState.DrawPile = CreatePile([copper, silver]);
 
-		var gainedSilver = game.Object.Kingdom.GetPile(CardType.Silver).CardInstance;
+		var gainedSilver = game.Object.Kingdom.GetPile(CardName.Silver).CardInstance;
 		attackerUser.Setup(u => u.SelectCardToGain(
 			It.Is<KingdomWrapper>(kw => kw.MinPrice == 3 && kw.MaxPrice == 3 && kw.Kingdom == defender.Game.Kingdom),
 			defender.PlayerState, defender.Game.Kingdom, Phase.Action)).Returns(gainedSilver);

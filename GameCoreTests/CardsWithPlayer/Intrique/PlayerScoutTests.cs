@@ -164,7 +164,7 @@ public class PlayerScoutTests : CardWithPlayerTestsBase
 		// they were originally revealed in
 		user.Setup(u => u.ScoutOrderCards(scout, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns<Card, PlayerState, Kingdom, List<CardInstance>>((c, ps, k, cards) =>
-				[cards.Single(x => x.Card.Type == CardType.Silver), cards.Single(x => x.Card.Type == CardType.Copper)]);
+				[cards.Single(x => x.Card.Name == CardName.Silver), cards.Single(x => x.Card.Name == CardName.Copper)]);
 		#endregion
 
 		#region act

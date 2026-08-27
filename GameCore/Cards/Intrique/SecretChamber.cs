@@ -4,8 +4,7 @@ public class SecretChamber : Card
 	private static SecretChamber secretChamber;
 	private SecretChamber() : base
 	(
-		name: "Secret Chamber",
-		type: CardType.SecretChamber,
+		type: CardName.SecretChamber,
 		price: 2,
 		addActions: 0,
 		addBuys: 0,

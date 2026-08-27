@@ -35,7 +35,7 @@ public class GameSetupFacade : IGameSetupFacade
 		return presetKingdoms.Select(k => new PresetKingdomDto
 		{
 			Name = k.Name,
-			Cards = cardMapper.ToCardDto(k.Cards.Select(c => Card.Get(Enum.Parse<CardType>(c)))).ToList(),
+			Cards = cardMapper.ToCardDto(k.Cards.Select(c => Card.Get(Enum.Parse<CardName>(c)))).ToList(),
 		}).ToList();
 	}
 

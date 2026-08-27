@@ -31,7 +31,7 @@ public class PlayerMoneylenderTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		player.PlayerState.Hand = CreatePile([moneylender, copper]);
-		var moneylenderToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Moneylender);
+		var moneylenderToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Moneylender);
 		user.Setup(u => u.MoneylenderTrash(moneylender, player.PlayerState, player.Game.Kingdom)).Returns(true);
 		#endregion
 
@@ -57,7 +57,7 @@ public class PlayerMoneylenderTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		player.PlayerState.Hand = CreatePile([moneylender, copper]);
-		var moneylenderToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Moneylender);
+		var moneylenderToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Moneylender);
 		user.Setup(u => u.MoneylenderTrash(moneylender, player.PlayerState, player.Game.Kingdom)).Returns(false);
 		#endregion
 
@@ -117,7 +117,7 @@ public class PlayerMoneylenderTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		player.PlayerState.Hand = CreatePile([throneRoom, moneylender, .. Enumerable.Repeat(copper, coppersInHand)]);
-		var moneylenderToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Moneylender);
+		var moneylenderToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Moneylender);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
 			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == moneylenderToPlay))).Returns(moneylenderToPlay);
@@ -126,7 +126,7 @@ public class PlayerMoneylenderTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Name == CardName.ThroneRoom));
 		#endregion
 
 		#region assert

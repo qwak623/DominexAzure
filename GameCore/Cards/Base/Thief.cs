@@ -6,8 +6,7 @@ public class Thief : Card
 	private static Thief thief;
 	private Thief() : base
 	(
-		name: "Thief",
-		type: CardType.Thief,
+		type: CardName.Thief,
 		price: 4,
 		addActions: 0,
 		addBuys: 0,

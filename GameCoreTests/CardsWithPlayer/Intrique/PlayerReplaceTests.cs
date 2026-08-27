@@ -42,8 +42,8 @@ public class PlayerReplaceTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		attacker.PlayerState.Hand = CreatePile([replace, silver]);
-		var replaceToPlay = attacker.PlayerState.Hand.First(c => c.Card.Type == CardType.Replace);
-		var silverInHand = attacker.PlayerState.Hand.First(c => c.Card.Type == CardType.Silver);
+		var replaceToPlay = attacker.PlayerState.Hand.First(c => c.Card.Name == CardName.Replace);
+		var silverInHand = attacker.PlayerState.Hand.First(c => c.Card.Name == CardName.Silver);
 
 		attackerUser.Setup(u => u.ReplaceTrash(replace, attacker.PlayerState, attacker.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns(silverInHand);
@@ -53,7 +53,7 @@ public class PlayerReplaceTests : CardWithPlayerTestsBase
 		KingdomWrapper wrapper = null;
 		attackerUser.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), attacker.PlayerState, attacker.Game.Kingdom, Phase.Gain))
 			.Callback<KingdomWrapper, PlayerState, Kingdom, Phase>((kw, ps, k, p) => wrapper = kw)
-			.Returns(() => wrapper.GetCard(CardType.Laboratory));
+			.Returns(() => wrapper.GetCard(CardName.Laboratory));
 		#endregion
 
 		#region act
@@ -74,7 +74,7 @@ public class PlayerReplaceTests : CardWithPlayerTestsBase
 		AssertPile([], defender.PlayerState.DrawPile);
 		AssertPile([], defender.PlayerState.DiscardPile);
 
-		Assert.IsTrue(wrapper.AvailableCards.Any(c => c.Card.Type == CardType.Laboratory));
+		Assert.IsTrue(wrapper.AvailableCards.Any(c => c.Card.Name == CardName.Laboratory));
 		attackerUser.Verify(u => u.ReplaceTrash(replace, attacker.PlayerState, attacker.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		attackerUser.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.MaxPrice == 5 && !kw.OnlyTreasures),
 			attacker.PlayerState, attacker.Game.Kingdom, Phase.Gain), Times.Once);
@@ -86,8 +86,8 @@ public class PlayerReplaceTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		attacker.PlayerState.Hand = CreatePile([replace, laboratory]);
-		var replaceToPlay = attacker.PlayerState.Hand.First(c => c.Card.Type == CardType.Replace);
-		var laboratoryInHand = attacker.PlayerState.Hand.First(c => c.Card.Type == CardType.Laboratory);
+		var replaceToPlay = attacker.PlayerState.Hand.First(c => c.Card.Name == CardName.Replace);
+		var laboratoryInHand = attacker.PlayerState.Hand.First(c => c.Card.Name == CardName.Laboratory);
 
 		attackerUser.Setup(u => u.ReplaceTrash(replace, attacker.PlayerState, attacker.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns(laboratoryInHand);
@@ -95,7 +95,7 @@ public class PlayerReplaceTests : CardWithPlayerTestsBase
 		KingdomWrapper wrapper = null;
 		attackerUser.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), attacker.PlayerState, attacker.Game.Kingdom, Phase.Gain))
 			.Callback<KingdomWrapper, PlayerState, Kingdom, Phase>((kw, ps, k, p) => wrapper = kw)
-			.Returns(() => wrapper.GetCard(CardType.Gold));
+			.Returns(() => wrapper.GetCard(CardName.Gold));
 		#endregion
 
 		#region act
@@ -116,7 +116,7 @@ public class PlayerReplaceTests : CardWithPlayerTestsBase
 		AssertPile([], defender.PlayerState.DrawPile);
 		AssertPile([], defender.PlayerState.DiscardPile);
 
-		Assert.IsTrue(wrapper.AvailableCards.Any(c => c.Card.Type == CardType.Gold));
+		Assert.IsTrue(wrapper.AvailableCards.Any(c => c.Card.Name == CardName.Gold));
 		attackerUser.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.MaxPrice == 7 && !kw.OnlyTreasures),
 			attacker.PlayerState, attacker.Game.Kingdom, Phase.Gain), Times.Once);
 		#endregion
@@ -127,13 +127,13 @@ public class PlayerReplaceTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		attacker.PlayerState.Hand = CreatePile([replace, silver]);
-		var replaceToPlay = attacker.PlayerState.Hand.First(c => c.Card.Type == CardType.Replace);
-		var silverInHand = attacker.PlayerState.Hand.First(c => c.Card.Type == CardType.Silver);
+		var replaceToPlay = attacker.PlayerState.Hand.First(c => c.Card.Name == CardName.Replace);
+		var silverInHand = attacker.PlayerState.Hand.First(c => c.Card.Name == CardName.Silver);
 
 		attackerUser.Setup(u => u.ReplaceTrash(replace, attacker.PlayerState, attacker.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns(silverInHand);
 		attackerUser.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), attacker.PlayerState, attacker.Game.Kingdom, Phase.Gain))
-			.Returns<KingdomWrapper, PlayerState, Kingdom, Phase>((kw, ps, k, p) => kw.GetCard(CardType.Duchy));
+			.Returns<KingdomWrapper, PlayerState, Kingdom, Phase>((kw, ps, k, p) => kw.GetCard(CardName.Duchy));
 		#endregion
 
 		#region act
@@ -163,8 +163,8 @@ public class PlayerReplaceTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		attacker.PlayerState.Hand = CreatePile([replace, silver]);
-		var replaceToPlay = attacker.PlayerState.Hand.First(c => c.Card.Type == CardType.Replace);
-		var silverInHand = attacker.PlayerState.Hand.First(c => c.Card.Type == CardType.Silver);
+		var replaceToPlay = attacker.PlayerState.Hand.First(c => c.Card.Name == CardName.Replace);
+		var silverInHand = attacker.PlayerState.Hand.First(c => c.Card.Name == CardName.Silver);
 
 		attackerUser.Setup(u => u.ReplaceTrash(replace, attacker.PlayerState, attacker.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns(silverInHand);

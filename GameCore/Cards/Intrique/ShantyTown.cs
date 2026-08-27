@@ -5,8 +5,7 @@ public class ShantyTown : Card
 	private static ShantyTown shantyTown;
 	private ShantyTown() : base
 	(
-		name: "Shanty Town",
-		type: CardType.ShantyTown,
+		type: CardName.ShantyTown,
 		price: 3,
 		addActions: 2,
 		addBuys: 0,

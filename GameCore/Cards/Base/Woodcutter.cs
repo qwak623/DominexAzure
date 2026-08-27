@@ -5,8 +5,7 @@ public class Woodcutter : Card
 	private static Woodcutter woodcutter;
 	private Woodcutter() : base
 	(
-		name: "Woodcutter",
-		type: CardType.Woodcutter,
+		type: CardName.Woodcutter,
 		price: 3,
 		addActions: 0,
 		addBuys: 1,

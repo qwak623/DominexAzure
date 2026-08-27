@@ -5,8 +5,7 @@ public class Harem : Card
 	private static Harem harem;
 	private Harem() : base
 	(
-		name: "Harem",
-		type: CardType.Harem,
+		type: CardName.Harem,
 		price: 6,
 		addBuys: 0,
 		coins: 2,

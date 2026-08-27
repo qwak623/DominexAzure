@@ -63,7 +63,7 @@ public class PlayerPatrolTests : CardWithPlayerTestsBase
 		// only the two non-victory, non-curse cards are left to order once the rest are pulled
 		// into hand
 		user.Verify(u => u.PatrolOrderCards(patrol, player.PlayerState, player.Game.Kingdom,
-			It.Is<List<CardInstance>>(c => c.Count == 2 && c.All(x => !x.IsVictory && x.Card.Type != CardType.Curse))), Times.Once);
+			It.Is<List<CardInstance>>(c => c.Count == 2 && c.All(x => !x.IsVictory && x.Card.Name != CardName.Curse))), Times.Once);
 		#endregion
 	}
 
@@ -172,7 +172,7 @@ public class PlayerPatrolTests : CardWithPlayerTestsBase
 		// they were originally revealed in
 		user.Setup(u => u.PatrolOrderCards(patrol, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns<Card, PlayerState, Kingdom, List<CardInstance>>((c, ps, k, cards) =>
-				[cards.Single(x => x.Card.Type == CardType.Silver), cards.Single(x => x.Card.Type == CardType.Copper)]);
+				[cards.Single(x => x.Card.Name == CardName.Silver), cards.Single(x => x.Card.Name == CardName.Copper)]);
 		#endregion
 
 		#region act

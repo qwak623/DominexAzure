@@ -4,8 +4,7 @@ public class CouncilRoom : Card
 	private static CouncilRoom councilRoom;
 	private CouncilRoom() : base
 	(
-		name: "Council Room",
-		type: CardType.CouncilRoom,
+		type: CardName.CouncilRoom,
 		price: 5,
 		addActions: 0,
 		addBuys: 1,

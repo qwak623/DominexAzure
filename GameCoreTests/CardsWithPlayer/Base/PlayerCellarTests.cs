@@ -33,7 +33,7 @@ public class PlayerCellarTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		player.PlayerState.Hand = CreatePile([silver, silver, cellar, copper, silver]);
-		var cellarToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Cellar);
+		var cellarToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Cellar);
 
 		user.Setup(u => u.CellarDiscard(cellar, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns([]);
@@ -64,10 +64,10 @@ public class PlayerCellarTests : CardWithPlayerTestsBase
 		#region arrange
 		player.PlayerState.DrawPile = CreatePile([gold]);
 		player.PlayerState.Hand = CreatePile([silver, silver, cellar, copper, silver]);
-		var cellarToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Cellar);
+		var cellarToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Cellar);
 
 		user.Setup(u => u.CellarDiscard(cellar, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
-			.Returns([player.PlayerState.Hand.First(c => c.Card.Type == CardType.Copper)]);
+			.Returns([player.PlayerState.Hand.First(c => c.Card.Name == CardName.Copper)]);
 		#endregion
 
 		#region act
@@ -96,7 +96,7 @@ public class PlayerCellarTests : CardWithPlayerTestsBase
 		#region arrange
 		player.PlayerState.DrawPile = CreatePile([gold, gold, gold, gold]);
 		player.PlayerState.Hand = CreatePile([silver, copper, cellar, copper, cellar]);
-		var cellarToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Cellar);
+		var cellarToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Cellar);
 
 		user.Setup(u => u.CellarDiscard(cellar, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns([.. player.PlayerState.Hand.Where(c => c != cellarToPlay)]);
@@ -127,10 +127,10 @@ public class PlayerCellarTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		player.PlayerState.Hand = CreatePile([silver, copper, cellar, copper, cellar]);
-		var cellarToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Cellar);
+		var cellarToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Cellar);
 
 		user.Setup(u => u.CellarDiscard(cellar, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
-			.Returns([player.PlayerState.Hand.First(c => c.Card.Type == CardType.Copper)]);
+			.Returns([player.PlayerState.Hand.First(c => c.Card.Name == CardName.Copper)]);
 		#endregion
 
 		#region act
@@ -160,13 +160,13 @@ public class PlayerCellarTests : CardWithPlayerTestsBase
 		#region arrange
 		player.PlayerState.Hand = CreatePile([copper, copper, silver, cellar, throneRoom]);
 		player.PlayerState.DrawPile = CreatePile([gold, gold, copper]);
-		var throneRoomToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom);
-		var cellarToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Cellar);
+		var throneRoomToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.ThroneRoom);
+		var cellarToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Cellar);
 		user.SetupSequence(u => u.CellarDiscard(cellar, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
-			.Returns([.. player.PlayerState.Hand.Where(c => c.Card.Type == CardType.Copper)])
+			.Returns([.. player.PlayerState.Hand.Where(c => c.Card.Name == CardName.Copper)])
 			// evaluated lazily: the copper the second resolution discards is the one the first
 			// resolution just drew back into hand, which doesn't exist yet at arrange time
-			.Returns(() => [player.PlayerState.Hand.First(c => c.Card.Type == CardType.Copper)]);
+			.Returns(() => [player.PlayerState.Hand.First(c => c.Card.Name == CardName.Copper)]);
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
 			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Contains(cellarToPlay)))).Returns(cellarToPlay);
 		#endregion

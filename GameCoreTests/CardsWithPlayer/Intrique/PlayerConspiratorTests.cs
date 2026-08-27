@@ -113,14 +113,14 @@ public class PlayerConspiratorTests : CardWithPlayerTestsBase
 		#region arrange
 		player.PlayerState.Hand = CreatePile([throneRoom, conspirator]);
 		player.PlayerState.DrawPile = CreatePile([copper, copper]);
-		var conspiratorToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Conspirator);
+		var conspiratorToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Conspirator);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
 			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == conspiratorToPlay))).Returns(conspiratorToPlay);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Name == CardName.ThroneRoom));
 		#endregion
 
 		#region assert
@@ -149,14 +149,14 @@ public class PlayerConspiratorTests : CardWithPlayerTestsBase
 		player.PlayerState.ActionsPlayed = [conspirator];
 		player.PlayerState.Hand = CreatePile([throneRoom, conspirator]);
 		player.PlayerState.DrawPile = CreatePile([copper, copper]);
-		var conspiratorToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Conspirator);
+		var conspiratorToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Conspirator);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
 			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == conspiratorToPlay))).Returns(conspiratorToPlay);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Name == CardName.ThroneRoom));
 		#endregion
 
 		#region assert

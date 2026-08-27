@@ -5,8 +5,7 @@ public class Bridge : Card
 	private static Bridge bridge;
 	private Bridge() : base
 	(
-		name: "Bridge",
-		type: CardType.Bridge,
+		type: CardName.Bridge,
 		price: 4,
 		addActions: 0,
 		addBuys: 1,

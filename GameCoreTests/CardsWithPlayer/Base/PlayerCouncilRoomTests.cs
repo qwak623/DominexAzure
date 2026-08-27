@@ -52,7 +52,7 @@ public class PlayerCouncilRoomTests : CardWithPlayerTestsBase
 		player.PlayerState.DrawPile = CreatePile([copper, silver, silver, councilRoom]);
 		player2.PlayerState.DrawPile = CreatePile([copper]);
 		player3.PlayerState.DrawPile = CreatePile([silver]);
-		var councilRoomToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.CouncilRoom);
+		var councilRoomToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.CouncilRoom);
 
 		#endregion
 
@@ -102,8 +102,8 @@ public class PlayerCouncilRoomTests : CardWithPlayerTestsBase
 		player2.PlayerState.DrawPile = CreatePile([copper, silver]);
 		player3.PlayerState.DrawPile = CreatePile([silver]);
 		player4.PlayerState.DrawPile = CreatePile([]);
-		var councilRoomToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.CouncilRoom);
-		var throneRoomToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom);
+		var councilRoomToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.CouncilRoom);
+		var throneRoomToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.ThroneRoom);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
 			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == councilRoomToPlay))).Returns(councilRoomToPlay);

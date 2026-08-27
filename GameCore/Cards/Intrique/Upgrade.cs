@@ -4,8 +4,7 @@ public class Upgrade : Card
 	private static Upgrade upgrade;
 	private Upgrade() : base
 	(
-		name: "Upgrade",
-		type: CardType.Upgrade,
+		type: CardName.Upgrade,
 		price: 5,
 		addActions: 1,
 		addBuys: 0,

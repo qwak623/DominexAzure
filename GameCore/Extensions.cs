@@ -35,11 +35,11 @@ public static class Extensions
 			.Concat(cards.Select(c => c.RequiredCards).Where(c => c is not null).Distinct()).ToList();
 	}
 
-	public static bool Contains(this IEnumerable<Card> cards, CardType type)
+	public static bool Contains(this IEnumerable<Card> cards, CardName type)
 	{
 		foreach (var card in cards)
 		{
-			if (card.Type == type)
+			if (card.Name == type)
 			{
 				return true;
 			}
@@ -52,7 +52,7 @@ public static class Extensions
 	{
 		try
 		{
-			return id.Split('_').Select(a => Card.Get((CardType)int.Parse(a))).ToList();
+			return id.Split('_').Select(a => Card.Get((CardName)int.Parse(a))).ToList();
 		}
 		catch
 		{
@@ -62,6 +62,6 @@ public static class Extensions
 
 	public static string ToId(this IEnumerable<Card> cardList)
 	{
-		return cardList.OrderBy(p => p.Type).Select(p => ((int)p.Type).ToString()).Aggregate((a, b) => a + "_" + b);
+		return cardList.OrderBy(p => p.Name).Select(p => ((int)p.Name).ToString()).Aggregate((a, b) => a + "_" + b);
 	}
 }

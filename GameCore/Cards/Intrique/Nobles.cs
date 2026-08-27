@@ -4,8 +4,7 @@ public class Nobles : Card
 	private static Nobles nobles;
 	private Nobles() : base
 	(
-		name: "Nobles",
-		type: CardType.Nobles,
+		type: CardName.Nobles,
 		price: 6,
 		addActions: 0,
 		addBuys: 0,

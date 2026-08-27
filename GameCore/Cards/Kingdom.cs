@@ -10,7 +10,7 @@ public class Kingdom : IEnumerable<KingdomPile>
 {
 	public int EmptyKingdomPilesCount => kingdomPiles.Count(p => p.Empty);
 	private List<KingdomPile> kingdomPiles;
-	private Dictionary<CardType, int> cardTypeToIndex = new Dictionary<CardType, int>();
+	private Dictionary<CardName, int> cardTypeToIndex = new Dictionary<CardName, int>();
 	private int nextCardInstanceId = 0;
 
 	public Kingdom(List<Card> cards, int playerCount, IKingdomObserver kingdomObserver = null)
@@ -19,7 +19,7 @@ public class Kingdom : IEnumerable<KingdomPile>
 			.Select(card =>
 			{
 				int count = 10;
-				if (card.Type == CardType.Curse)
+				if (card.Name == CardName.Curse)
 				{
 					count = (playerCount - 1) * 10;
 				}
@@ -27,15 +27,15 @@ public class Kingdom : IEnumerable<KingdomPile>
 				{
 					count = playerCount == 2 ? 8 : 12;
 				}
-				else if (card.Type == CardType.Copper)
+				else if (card.Name == CardName.Copper)
 				{
 					count = 60;
 				}
-				else if (card.Type == CardType.Silver)
+				else if (card.Name == CardName.Silver)
 				{
 					count = 40;
 				}
-				else if (card.Type == CardType.Gold)
+				else if (card.Name == CardName.Gold)
 				{
 					count = 30;
 				}
@@ -72,7 +72,7 @@ public class Kingdom : IEnumerable<KingdomPile>
 	/// </summary>
 	/// <param name="type"></param>
 	/// <returns></returns>
-	public KingdomPile GetPile(CardType type)
+	public KingdomPile GetPile(CardName type)
 	{
 		if (cardTypeToIndex.TryGetValue(type, out int index))
 		{

@@ -4,8 +4,7 @@ public class TradingPost : Card
 	private static TradingPost tradingPost = null;
 	private TradingPost() : base
 	(
-		name: "TradingPost",
-		type: CardType.TradingPost,
+		type: CardName.TradingPost,
 		price: 5,
 		addActions: 0,
 		addBuys: 0,
@@ -32,7 +31,7 @@ public class TradingPost : Card
 		cardsToTrash.ForEach(player.Trash);
 		if (cardsToTrash.Count == 2)
 		{
-			player.GainToHand(CardType.Silver);
+			player.GainToHand(CardName.Silver);
 		}
 	}
 }

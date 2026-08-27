@@ -32,7 +32,7 @@ public class PlayerWorkshopTests : CardWithPlayerTestsBase
 		#region arrange
 		player.PlayerState.Hand = CreatePile([workshop]);
 		var workshopToPlay = player.PlayerState.Hand[0];
-		var villageToGain = player.Game.Kingdom.GetPile(CardType.Village).CardInstance;
+		var villageToGain = player.Game.Kingdom.GetPile(CardName.Village).CardInstance;
 
 		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
 			.Returns(villageToGain);
@@ -104,8 +104,8 @@ public class PlayerWorkshopTests : CardWithPlayerTestsBase
 
 		#region assert
 		// silver ($3) is within workshop's cap, duchy ($5) is not
-		Assert.IsTrue(availableCards.Any(c => c.Card.Type == CardType.Silver));
-		Assert.IsFalse(availableCards.Any(c => c.Card.Type == CardType.Duchy));
+		Assert.IsTrue(availableCards.Any(c => c.Card.Name == CardName.Silver));
+		Assert.IsFalse(availableCards.Any(c => c.Card.Name == CardName.Duchy));
 		#endregion
 	}
 
@@ -114,9 +114,9 @@ public class PlayerWorkshopTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		player.PlayerState.Hand = CreatePile([throneRoom, workshop]);
-		var workshopToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Workshop);
-		var villageToGain = player.Game.Kingdom.GetPile(CardType.Village).CardInstance;
-		var moatToGain = player.Game.Kingdom.GetPile(CardType.Moat).CardInstance;
+		var workshopToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Workshop);
+		var villageToGain = player.Game.Kingdom.GetPile(CardName.Village).CardInstance;
+		var moatToGain = player.Game.Kingdom.GetPile(CardName.Moat).CardInstance;
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
 			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == workshopToPlay))).Returns(workshopToPlay);
@@ -125,7 +125,7 @@ public class PlayerWorkshopTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Name == CardName.ThroneRoom));
 		#endregion
 
 		#region assert
@@ -149,8 +149,8 @@ public class PlayerWorkshopTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		player.PlayerState.Hand = CreatePile([throneRoom, workshop]);
-		var workshopToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Workshop);
-		var villageToGain = player.Game.Kingdom.GetPile(CardType.Village).CardInstance;
+		var workshopToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Workshop);
+		var villageToGain = player.Game.Kingdom.GetPile(CardName.Village).CardInstance;
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
 			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == workshopToPlay))).Returns(workshopToPlay);
@@ -159,7 +159,7 @@ public class PlayerWorkshopTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Name == CardName.ThroneRoom));
 		#endregion
 
 		#region assert
@@ -183,7 +183,7 @@ public class PlayerWorkshopTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		player.PlayerState.Hand = CreatePile([throneRoom, workshop]);
-		var workshopToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Workshop);
+		var workshopToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Workshop);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
 			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == workshopToPlay))).Returns(workshopToPlay);
@@ -192,7 +192,7 @@ public class PlayerWorkshopTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Name == CardName.ThroneRoom));
 		#endregion
 
 		#region assert

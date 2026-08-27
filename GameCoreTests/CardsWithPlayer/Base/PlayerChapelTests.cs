@@ -32,7 +32,7 @@ public class PlayerChapelTests : CardWithPlayerTestsBase
 	public void DontTrashAnything()
 	{
 		#region arrange
-		var chapelToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Chapel);
+		var chapelToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Chapel);
 		user.Setup(u => u.ChapelTrash(chapel, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>())).Returns([]);
 		#endregion
 
@@ -58,8 +58,8 @@ public class PlayerChapelTests : CardWithPlayerTestsBase
 	public void TrashOneCard()
 	{
 		#region arrange
-		var chapelToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Chapel);
-		var copperToTrash = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Copper);
+		var chapelToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Chapel);
+		var copperToTrash = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Copper);
 		user.Setup(u => u.ChapelTrash(chapel, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>())).Returns([copperToTrash]);
 		#endregion
 
@@ -85,9 +85,9 @@ public class PlayerChapelTests : CardWithPlayerTestsBase
 	public void TrashFourCards()
 	{
 		#region arrange
-		var chapelToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Chapel);
+		var chapelToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Chapel);
 		user.Setup(u => u.ChapelTrash(chapel, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
-			.Returns([.. player.PlayerState.Hand.Where(c => c.Card.Type != CardType.Chapel)]);
+			.Returns([.. player.PlayerState.Hand.Where(c => c.Card.Name != CardName.Chapel)]);
 		#endregion
 
 		#region act
@@ -113,9 +113,9 @@ public class PlayerChapelTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		player.PlayerState.Hand = CreatePile([chapel, throneRoom, copper, copper, silver, silver, copper, copper]);
-		var chapelToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Chapel);
-		var coppers = player.PlayerState.Hand.Where(c => c.Card.Type == CardType.Copper).ToList();
-		var silvers = player.PlayerState.Hand.Where(c => c.Card.Type == CardType.Silver).ToList();
+		var chapelToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Chapel);
+		var coppers = player.PlayerState.Hand.Where(c => c.Card.Name == CardName.Copper).ToList();
+		var silvers = player.PlayerState.Hand.Where(c => c.Card.Name == CardName.Silver).ToList();
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
 			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == chapelToPlay))).Returns(chapelToPlay);
@@ -125,7 +125,7 @@ public class PlayerChapelTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Name == CardName.ThroneRoom));
 		#endregion
 
 		#region assert

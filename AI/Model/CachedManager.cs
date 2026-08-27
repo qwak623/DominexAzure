@@ -39,7 +39,7 @@ public class CachedManager : BuyAgendaManager
 	public override BuyAgenda? Load(IEnumerable<Card> cards)
 	{
 		var id = cards.ToId();
-		int i = cards.OrderBy(p => p.Type).Select(p => (int)p.Type).First();
+		int i = cards.OrderBy(p => p.Name).Select(p => (int)p.Name).First();
 
 		try
 		{
@@ -82,7 +82,7 @@ public class CachedManager : BuyAgendaManager
 	public override void Save(IEnumerable<Card> cards, BuyAgenda agenda)
 	{
 		string id = cards.ToId();
-		int i = cards.OrderBy(p => p).Select(p => (int)p.Type).First();
+		int i = cards.OrderBy(p => p).Select(p => (int)p.Name).First();
 
 		if (Load(cards) is null)
 		{
@@ -123,16 +123,16 @@ public class CachedManager : BuyAgendaManager
 	/// <returns></returns>
 	public override BuyAgenda? LoadBest(List<Card> k, IGameLogger? logger = null)
 	{
-		k = k.OrderBy(c => c.Type).ToList();
+		k = k.OrderBy(c => c.Name).ToList();
 
 		// loading all fives
 		var sw = new Stopwatch();
 		sw.Start();
 
 		var agendas = new List<BuyAgendaTournament.Tuple>();
-		foreach (var five in new Subsets(k.Where(c => c.Type > CardType.Curse).Select(c => (int)c.Type).ToList(), subsetSize))
+		foreach (var five in new Subsets(k.Where(c => c.Name > CardName.Curse).Select(c => (int)c.Name).ToList(), subsetSize))
 		{
-			var cards = five.Select(i => Card.Get((CardType)i)).ToList();
+			var cards = five.Select(i => Card.Get((CardName)i)).ToList();
 
 			var agenda = Load(cards);
 			if (agenda is not null)

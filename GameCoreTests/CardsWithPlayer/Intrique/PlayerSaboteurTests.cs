@@ -49,7 +49,7 @@ public class PlayerSaboteurTests : CardWithPlayerTestsBase
 		KingdomWrapper wrapper = null;
 		defenderUser.Setup(u => u.SelectOptionalCardToGain(It.IsAny<KingdomWrapper>(), defender.PlayerState, defender.Game.Kingdom, Phase.Attack))
 			.Callback<KingdomWrapper, PlayerState, Kingdom, Phase>((kw, ps, k, p) => wrapper = kw)
-			.Returns(() => wrapper.GetCard(CardType.Copper));
+			.Returns(() => wrapper.GetCard(CardName.Copper));
 		#endregion
 
 		#region act
@@ -124,7 +124,7 @@ public class PlayerSaboteurTests : CardWithPlayerTestsBase
 		KingdomWrapper wrapper = null;
 		defenderUser.Setup(u => u.SelectOptionalCardToGain(It.IsAny<KingdomWrapper>(), defender.PlayerState, defender.Game.Kingdom, Phase.Attack))
 			.Callback<KingdomWrapper, PlayerState, Kingdom, Phase>((kw, ps, k, p) => wrapper = kw)
-			.Returns(() => wrapper.GetCard(CardType.Silver));
+			.Returns(() => wrapper.GetCard(CardName.Silver));
 		#endregion
 
 		#region act
@@ -139,8 +139,8 @@ public class PlayerSaboteurTests : CardWithPlayerTestsBase
 
 		// gold costs 6, so the replacement is capped at 6-2=4
 		Assert.AreEqual(4, wrapper.MaxPrice);
-		Assert.IsTrue(wrapper.AvailableCards.Any(c => c.Card.Type == CardType.Silver));
-		Assert.IsFalse(wrapper.AvailableCards.Any(c => c.Card.Type == CardType.Gold));
+		Assert.IsTrue(wrapper.AvailableCards.Any(c => c.Card.Name == CardName.Silver));
+		Assert.IsFalse(wrapper.AvailableCards.Any(c => c.Card.Name == CardName.Gold));
 		#endregion
 	}
 

@@ -7,8 +7,7 @@ public class Pawn : Card
 	private static Pawn pawn;
 	private Pawn() : base
 	(
-		name: "Pawn",
-		type: CardType.Pawn,
+		type: CardName.Pawn,
 		price: 2,
 		addActions: 0,
 		addBuys: 0,

@@ -57,11 +57,11 @@ public class PlayerSpyTests : CardWithPlayerTestsBase
 		player3.PlayerState.DrawPile = CreatePile([province]);
 
 		user1.SetupSequence(au => au.SpyDiscard(spy, player1.PlayerState, player1.Game.Kingdom,
-			It.Is<CardInstance>(c => c.Card.Type == CardType.Province), Phase.Action))
+			It.Is<CardInstance>(c => c.Card.Name == CardName.Province), Phase.Action))
 			.Returns(true);
 
 		user1.SetupSequence(au => au.SpyDiscard(spy, player1.PlayerState, player1.Game.Kingdom,
-			It.Is<CardInstance>(c => c.Card.Type == CardType.Province), Phase.Attack))
+			It.Is<CardInstance>(c => c.Card.Name == CardName.Province), Phase.Attack))
 			.Returns(true).Returns(false);
 		#endregion
 
@@ -103,9 +103,9 @@ public class PlayerSpyTests : CardWithPlayerTestsBase
 		AssertPile([], player4.PlayerState.ActionsPlayed);
 
 		user1.Verify(au => au.SpyDiscard(spy, player1.PlayerState, player1.Game.Kingdom,
-			It.Is<CardInstance>(c => c.Card.Type == CardType.Province), Phase.Action), Times.Once);
+			It.Is<CardInstance>(c => c.Card.Name == CardName.Province), Phase.Action), Times.Once);
 		user1.Verify(au => au.SpyDiscard(spy, player1.PlayerState, player1.Game.Kingdom,
-			It.Is<CardInstance>(c => c.Card.Type == CardType.Province), Phase.Attack), Times.Exactly(2));
+			It.Is<CardInstance>(c => c.Card.Name == CardName.Province), Phase.Attack), Times.Exactly(2));
 		#endregion
 	}
 
@@ -121,11 +121,11 @@ public class PlayerSpyTests : CardWithPlayerTestsBase
 		player4.PlayerState.DrawPile = CreatePile([province]);
 
 		user1.SetupSequence(au => au.SpyDiscard(spy, player1.PlayerState, player1.Game.Kingdom,
-			It.Is<CardInstance>(c => c.Card.Type == CardType.Silver), Phase.Action))
+			It.Is<CardInstance>(c => c.Card.Name == CardName.Silver), Phase.Action))
 			.Returns(false);
 
 		user1.SetupSequence(au => au.SpyDiscard(spy, player1.PlayerState, player1.Game.Kingdom,
-			It.Is<CardInstance>(c => c.Card.Type == CardType.Province), Phase.Attack))
+			It.Is<CardInstance>(c => c.Card.Name == CardName.Province), Phase.Attack))
 			.Returns(false).Returns(true);
 		#endregion
 
@@ -167,9 +167,9 @@ public class PlayerSpyTests : CardWithPlayerTestsBase
 		AssertPile([], player4.PlayerState.ActionsPlayed);
 
 		user1.Verify(au => au.SpyDiscard(spy, player1.PlayerState, player1.Game.Kingdom,
-			It.Is<CardInstance>(c => c.Card.Type == CardType.Silver), Phase.Action), Times.Once);
+			It.Is<CardInstance>(c => c.Card.Name == CardName.Silver), Phase.Action), Times.Once);
 		user1.Verify(au => au.SpyDiscard(spy, player1.PlayerState, player1.Game.Kingdom,
-			It.Is<CardInstance>(c => c.Card.Type == CardType.Province), Phase.Attack), Times.Exactly(2));
+			It.Is<CardInstance>(c => c.Card.Name == CardName.Province), Phase.Attack), Times.Exactly(2));
 		#endregion
 	}
 
@@ -186,7 +186,7 @@ public class PlayerSpyTests : CardWithPlayerTestsBase
 		player2.PlayerState.DrawPile = CreatePile([province, silver]);
 		player3.PlayerState.DrawPile = CreatePile([province]);
 		player4.PlayerState.DrawPile = CreatePile([]);
-		var spyToPlay = player1.PlayerState.Hand.First(c => c.Card.Type == CardType.Spy);
+		var spyToPlay = player1.PlayerState.Hand.First(c => c.Card.Name == CardName.Spy);
 
 		user1.Setup(u => u.ThroneRoomPlay(throneRoom, player1.PlayerState,
 			player1.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == spyToPlay))).Returns(spyToPlay);
@@ -198,7 +198,7 @@ public class PlayerSpyTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region act
-		player1.PlayActionCardInternal(player1.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
+		player1.PlayActionCardInternal(player1.PlayerState.Hand.First(c => c.Card.Name == CardName.ThroneRoom));
 		#endregion
 
 		#region assert

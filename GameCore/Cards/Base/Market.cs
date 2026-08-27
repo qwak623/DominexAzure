@@ -4,8 +4,7 @@ public class Market : Card
 	private static Market market;
 	private Market() : base
 	(
-		name: "Market",
-		type: CardType.Market,
+		type: CardName.Market,
 		price: 5,
 		addActions: 1,
 		addBuys: 1,

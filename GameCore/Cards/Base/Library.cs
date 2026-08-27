@@ -6,8 +6,7 @@ public class Library : Card
 	private static Library library;
 	private Library() : base
 	(
-		name: "Library",
-		type: CardType.Library,
+		type: CardName.Library,
 		price: 5,
 		addActions: 0,
 		addBuys: 0,
@@ -46,7 +45,7 @@ public class Library : Card
 			}
 			else
 			{
-				player.Game.Logger?.Log(new GameLog { PlayerId = Name, Message = $"{Name} draws {card.Name}" });
+				player.Game.Logger?.Log(new GameLog { PlayerId = player.Name, Message = $"{player.Name} draws {card.Card.Name.ToDisplayName()}" });
 				player.PlayerState.Hand.Move(card);
 			}
 		}

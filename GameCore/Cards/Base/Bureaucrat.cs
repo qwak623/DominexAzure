@@ -5,8 +5,7 @@ public class Bureaucrat : Card
 
 	private Bureaucrat() : base
 	(
-		name: "Bureaucrat",
-		type: CardType.Bureaucrat,
+		type: CardName.Bureaucrat,
 		price: 4,
 		addActions: 0,
 		addBuys: 0,
@@ -28,7 +27,7 @@ public class Bureaucrat : Card
 
 	protected override void ActionEffect(IPlayer player, CardInstance thisCard)
 	{
-		player.GainToDrawPile(CardType.Silver);
+		player.GainToDrawPile(CardName.Silver);
 		TriggerAttacks(player);
 	}
 

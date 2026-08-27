@@ -4,8 +4,7 @@ public class Cellar : Card
 	private static Cellar cellar;
 	private Cellar() : base
 	(
-		name: "Cellar",
-		type: CardType.Cellar,
+		type: CardName.Cellar,
 		price: 2,
 		addActions: 1,
 		addBuys: 0,

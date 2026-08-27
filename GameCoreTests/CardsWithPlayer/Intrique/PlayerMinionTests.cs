@@ -42,7 +42,7 @@ public class PlayerMinionTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		attacker.PlayerState.Hand = CreatePile([minion, copper]);
-		var minionToPlay = attacker.PlayerState.Hand.First(c => c.Card.Type == CardType.Minion);
+		var minionToPlay = attacker.PlayerState.Hand.First(c => c.Card.Name == CardName.Minion);
 
 		defender.PlayerState.Hand = CreatePile([silver, silver, silver, silver, silver]);
 
@@ -81,7 +81,7 @@ public class PlayerMinionTests : CardWithPlayerTestsBase
 		#region arrange
 		attacker.PlayerState.Hand = CreatePile([minion, copper]);
 		attacker.PlayerState.DrawPile = CreatePile([silver, silver, silver, silver]);
-		var minionToPlay = attacker.PlayerState.Hand.First(c => c.Card.Type == CardType.Minion);
+		var minionToPlay = attacker.PlayerState.Hand.First(c => c.Card.Name == CardName.Minion);
 
 		defender.PlayerState.Hand = CreatePile([silver, silver, silver, silver, silver]);
 		defender.PlayerState.DrawPile = CreatePile([copper, copper, copper, copper]);
@@ -122,7 +122,7 @@ public class PlayerMinionTests : CardWithPlayerTestsBase
 		#region arrange
 		attacker.PlayerState.Hand = CreatePile([minion, copper]);
 		attacker.PlayerState.DrawPile = CreatePile([silver, silver, silver, silver]);
-		var minionToPlay = attacker.PlayerState.Hand.First(c => c.Card.Type == CardType.Minion);
+		var minionToPlay = attacker.PlayerState.Hand.First(c => c.Card.Name == CardName.Minion);
 
 		defender.PlayerState.Hand = CreatePile([silver, silver, silver, silver]);
 
@@ -159,7 +159,7 @@ public class PlayerMinionTests : CardWithPlayerTestsBase
 		#region arrange
 		attacker.PlayerState.Hand = CreatePile([throneRoom, minion]);
 		attacker.PlayerState.DrawPile = CreatePile([silver, silver, silver, silver]);
-		var minionToPlay = attacker.PlayerState.Hand.First(c => c.Card.Type == CardType.Minion);
+		var minionToPlay = attacker.PlayerState.Hand.First(c => c.Card.Name == CardName.Minion);
 
 		attackerUser.Setup(u => u.ThroneRoomPlay(throneRoom, attacker.PlayerState,
 			attacker.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == minionToPlay))).Returns(minionToPlay);
@@ -174,7 +174,7 @@ public class PlayerMinionTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region act
-		attacker.PlayActionCardInternal(attacker.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
+		attacker.PlayActionCardInternal(attacker.PlayerState.Hand.First(c => c.Card.Name == CardName.ThroneRoom));
 		#endregion
 
 		#region assert

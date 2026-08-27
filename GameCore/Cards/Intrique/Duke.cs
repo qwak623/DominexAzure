@@ -4,8 +4,7 @@ public class Duke : Card
 	private static Duke duke;
 	private Duke() : base
 	(
-		name: "Duke",
-		type: CardType.Duke,
+		type: CardName.Duke,
 		price: 5,
 		addActions: 0,
 		addBuys: 0,
@@ -24,5 +23,5 @@ public class Duke : Card
 
 	public static Duke Get() => duke ?? new Duke();
 
-	public override int CountPoints(IPlayer player) => player.PlayerState.DiscardPile.Count(c => c.Card.Type == CardType.Duchy);
+	public override int CountPoints(IPlayer player) => player.PlayerState.DiscardPile.Count(c => c.Card.Name == CardName.Duchy);
 }

@@ -11,7 +11,7 @@ public abstract class BuyAgendaManager : IEnumerable<BuyAgenda>
 	/// <param name="cards"></param>
 	/// <returns></returns>
 	public abstract BuyAgenda Load(IEnumerable<Card> cards);
-	public BuyAgenda Load(IEnumerable<int> cards) => Load(cards.Select(c => Card.Get((CardType)c)));
+	public BuyAgenda Load(IEnumerable<int> cards) => Load(cards.Select(c => Card.Get((CardName)c)));
 
 	/// <summary>
 	/// Finds best agenda on specified kingdom. SimpleManager just redirects call to Load method.
@@ -27,7 +27,7 @@ public abstract class BuyAgendaManager : IEnumerable<BuyAgenda>
 	/// <param name="cards"></param>
 	/// <param name="agenda"></param>
 	public abstract void Save(IEnumerable<Card> cards, BuyAgenda agenda);
-	public void Save(IEnumerable<int> cards, BuyAgenda agenda) => Save(cards.Select(c => Card.Get((CardType)c)), agenda);
+	public void Save(IEnumerable<int> cards, BuyAgenda agenda) => Save(cards.Select(c => Card.Get((CardName)c)), agenda);
 
 	public abstract IEnumerator<BuyAgenda> GetEnumerator();
 

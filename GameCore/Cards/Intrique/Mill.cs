@@ -8,8 +8,7 @@ public class Mill : Card
 	private static Mill mill;
 	private Mill() : base
 	(
-		name: "Mill",
-		type: CardType.Mill,
+		type: CardName.Mill,
 		price: 4,
 		addActions: 1,
 		addBuys: 0,

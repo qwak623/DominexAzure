@@ -4,8 +4,7 @@ public class GreatHall : Card
 	private static GreatHall greatHall;
 	private GreatHall() : base
 	(
-		name: "Great Hall",
-		type: CardType.GreatHall,
+		type: CardName.GreatHall,
 		price: 3,
 		addActions: 1,
 		addBuys: 0,

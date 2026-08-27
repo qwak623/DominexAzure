@@ -5,8 +5,7 @@ public class Estate : Card
 	private static Estate estate;
 	private Estate() : base
 	(
-		name: "Estate",
-		type: CardType.Estate,
+		type: CardName.Estate,
 		price: 2,
 		addBuys: 0,
 		coins: 0,

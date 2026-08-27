@@ -56,14 +56,14 @@ public class PlayerLaboratoryTests : CardWithPlayerTestsBase
 		#region arrange
 		player.PlayerState.Hand = CreatePile([throneRoom, laboratory]);
 		player.PlayerState.DrawPile = CreatePile([copper, copper, copper, copper]);
-		var laboratoryToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Laboratory);
+		var laboratoryToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Laboratory);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
 			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == laboratoryToPlay))).Returns(laboratoryToPlay);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Name == CardName.ThroneRoom));
 		#endregion
 
 		#region assert

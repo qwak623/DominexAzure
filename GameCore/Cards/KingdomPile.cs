@@ -7,7 +7,7 @@ public class KingdomPile
 
 	public int Count => pile.Count;
 	public bool Empty => pile.Count == 0;
-	public CardType Type { get; init; }
+	public CardName Type { get; init; }
 	public string Name { get; init; }
 	public Card CardToDisplay => pile.Count != 0 ? CardInstance.Card : last.Card;
 	public CardInstance CardInstance => pile.Count != 0 ? pile[^1] : null;
@@ -17,8 +17,8 @@ public class KingdomPile
 		pile = new Pile(card, count, kingdom);
 
 		last = pile[0];
-		Type = card.Type;
-		Name = card.Name;
+		Type = card.Name;
+		Name = card.Name.ToDisplayName();
 	}
 
 	// TODO this needs a player parameter to get the correct price (bridge, etc.)

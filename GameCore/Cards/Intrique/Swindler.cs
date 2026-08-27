@@ -4,8 +4,7 @@ public class Swindler : Card
 	private static Swindler swindler;
 	private Swindler() : base
 	(
-		name: "Swindler",
-		type: CardType.Swindler,
+		type: CardName.Swindler,
 		price: 3,
 		addActions: 0,
 		addBuys: 0,

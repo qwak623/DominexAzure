@@ -56,14 +56,14 @@ public class PlayerSmithyTests : CardWithPlayerTestsBase
 		#region arrange
 		player.PlayerState.Hand = CreatePile([throneRoom, smithy]);
 		player.PlayerState.DrawPile = CreatePile([copper, copper, copper, copper, copper, copper]);
-		var smithyToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Smithy);
+		var smithyToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Smithy);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
 			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == smithyToPlay))).Returns(smithyToPlay);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Name == CardName.ThroneRoom));
 		#endregion
 
 		#region assert

@@ -52,14 +52,14 @@ public class PlayerWoodcutterTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		player.PlayerState.Hand = CreatePile([throneRoom, woodcutter]);
-		var woodcutterToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Woodcutter);
+		var woodcutterToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Woodcutter);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
 			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == woodcutterToPlay))).Returns(woodcutterToPlay);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Name == CardName.ThroneRoom));
 		#endregion
 
 		#region assert

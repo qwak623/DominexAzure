@@ -19,10 +19,10 @@ public interface IPlayer
 	void FinalCleanup();
 	// TODO nebude tohle zbytečné?
 	int GetVictoryPoints();
-	void Gain(CardType type);
+	void Gain(CardName type);
 	void Gain(CardInstance card);
-	void GainToDrawPile(CardType type);
-	void GainToHand(CardType type);
+	void GainToDrawPile(CardName type);
+	void GainToHand(CardName type);
 	void GainToHand(CardInstance card);
 	void Notify();
 	CardInstance PlayActionCard();

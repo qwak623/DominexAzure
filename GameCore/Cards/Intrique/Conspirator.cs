@@ -5,8 +5,7 @@ public class Conspirator : Card
 	private static Conspirator conspirator;
 	private Conspirator() : base
 	(
-		name: "Conspirator",
-		type: CardType.Conspirator,
+		type: CardName.Conspirator,
 		price: 4,
 		addActions: 0,
 		addBuys: 0,

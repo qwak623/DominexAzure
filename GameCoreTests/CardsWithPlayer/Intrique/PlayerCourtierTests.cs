@@ -36,8 +36,8 @@ public class PlayerCourtierTests : CardWithPlayerTestsBase
 		#region arrange
 		// copper is a treasure and nothing else, so there's exactly one type to choose a benefit for
 		player.PlayerState.Hand = CreatePile([courtier, copper]);
-		var courtierToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Courtier);
-		var copperInHand = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Copper);
+		var courtierToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Courtier);
+		var copperInHand = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Copper);
 
 		user.Setup(u => u.CourtierReveal(courtier, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns(copperInHand);
@@ -70,8 +70,8 @@ public class PlayerCourtierTests : CardWithPlayerTestsBase
 		#region arrange
 		// witch is both an Action and an Attack, so two distinct benefits must be chosen
 		player.PlayerState.Hand = CreatePile([courtier, witch]);
-		var courtierToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Courtier);
-		var witchInHand = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Witch);
+		var courtierToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Courtier);
+		var witchInHand = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Witch);
 
 		user.Setup(u => u.CourtierReveal(courtier, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns(witchInHand);
@@ -103,8 +103,8 @@ public class PlayerCourtierTests : CardWithPlayerTestsBase
 		// a curse is a victory card in this model (VictoryPoints = -1) on top of being its own
 		// type, so revealing one offers two benefit choices
 		player.PlayerState.Hand = CreatePile([courtier, curse]);
-		var courtierToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Courtier);
-		var curseInHand = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Curse);
+		var courtierToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Courtier);
+		var curseInHand = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Curse);
 
 		user.Setup(u => u.CourtierReveal(courtier, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns(curseInHand);
@@ -133,8 +133,8 @@ public class PlayerCourtierTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		player.PlayerState.Hand = CreatePile([courtier, duchy]);
-		var courtierToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Courtier);
-		var duchyInHand = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Duchy);
+		var courtierToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Courtier);
+		var duchyInHand = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Duchy);
 
 		user.Setup(u => u.CourtierReveal(courtier, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns(duchyInHand);

@@ -5,8 +5,7 @@ public class MiningVillage : Card
 	private static MiningVillage miningVillage;
 	private MiningVillage() : base
 	(
-		name: "Mining Village",
-		type: CardType.MiningVillage,
+		type: CardName.MiningVillage,
 		price: 4,
 		addActions: 2,
 		addBuys: 0,

@@ -11,7 +11,7 @@ public class BuyAgenda
 	private BuyAgenda(string id) => Id = id;
 
 	public string Id { get; set; }
-	public List<(CardType Card, int Number)> BuyMenu { get; set; } = new List<(CardType, int)>();
+	public List<(CardName Card, int Number)> BuyMenu { get; set; } = new List<(CardName, int)>();
 	public int Provinces { get; set; }
 	public int Duchies { get; set; }
 	public int Estates { get; set; }
@@ -34,7 +34,7 @@ public class BuyAgenda
 
 			foreach (var item in agendaArray[3].Split(',').Select(i => i.Split()))
 			{
-				Enum.TryParse(item[0], out CardType type);
+				Enum.TryParse(item[0], out CardName type);
 				agenda.BuyMenu.Add((type, int.Parse(item[2])));
 			}
 
@@ -71,13 +71,13 @@ public class BuyAgenda
 	/// <returns></returns>
 	public static BuyAgenda CreateRandom(List<Card> k)
 	{
-		string id = k.Where(c => c.Type > CardType.Curse).OrderBy(c => c.Type).Select(c => ((int)c.Type).ToString()).Aggregate((a, b) => a + "_" + b);
+		string id = k.Where(c => c.Name > CardName.Curse).OrderBy(c => c.Name).Select(c => ((int)c.Name).ToString()).Aggregate((a, b) => a + "_" + b);
 		var agenda = new BuyAgenda(id);
 
-		var randomKingdom = k.Where(c => c.Type != CardType.Curse || c.Type != CardType.Copper)
+		var randomKingdom = k.Where(c => c.Name != CardName.Curse || c.Name != CardName.Copper)
 			.OrderBy(c => ThreadSafeRandom.Next())
 			.Take(9)
-			.Select(c => (c.Type, ThreadSafeRandom.Next(10) + 1));
+			.Select(c => (c.Name, ThreadSafeRandom.Next(10) + 1));
 
 		int i = 0;
 		foreach (var item in randomKingdom)
@@ -85,12 +85,12 @@ public class BuyAgenda
 			agenda.BuyMenu.Add(item);
 			if (i == 2)
 			{
-				agenda.BuyMenu.Add((CardType.Gold, 99));
+				agenda.BuyMenu.Add((CardName.Gold, 99));
 			}
 
 			if (i == 7)
 			{
-				agenda.BuyMenu.Add((CardType.Silver, 10));
+				agenda.BuyMenu.Add((CardName.Silver, 10));
 			}
 
 			i++;

@@ -12,11 +12,11 @@ public class CardMapper : ICardMapper
 	{
 		return new CardDto
 		{
-			Name = card.Name,
-			Type = card.Type.ToString(),
+			Name = card.Name.ToDisplayName(),
+			Type = card.Name.ToString(),
 			Description = card.Description,
 			Message = card.Message,
-			Price = ps == null ? card.GetPrice(ps) : card.DefaultPrice,
+			Price = card.GetPrice(ps),
 			AddActions = card.AddActions,
 			AddBuys = card.AddBuys,
 			AddCoins = card.AddCoins,

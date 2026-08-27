@@ -57,14 +57,14 @@ public class PlayerBridgeTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		player.PlayerState.Hand = CreatePile([throneRoom, bridge]);
-		var bridgeToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Bridge);
+		var bridgeToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Bridge);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
 			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == bridgeToPlay))).Returns(bridgeToPlay);
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Name == CardName.ThroneRoom));
 		#endregion
 
 		#region assert
@@ -108,7 +108,7 @@ public class PlayerBridgeTests : CardWithPlayerTestsBase
 		#region arrange
 		player.PlayerState.Hand = CreatePile([bridge]);
 		var bridgeToPlay = player.PlayerState.Hand[0];
-		var silverToGain = player.Game.Kingdom.GetPile(CardType.Silver).CardInstance;
+		var silverToGain = player.Game.Kingdom.GetPile(CardName.Silver).CardInstance;
 
 		player.PlayActionCardInternal(bridgeToPlay);
 
@@ -137,8 +137,8 @@ public class PlayerBridgeTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		player.PlayerState.Hand = CreatePile([bridge, workshop]);
-		var bridgeToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Bridge);
-		var workshopToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Workshop);
+		var bridgeToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Bridge);
+		var workshopToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Workshop);
 
 		player.PlayActionCardInternal(bridgeToPlay);
 
@@ -148,7 +148,7 @@ public class PlayerBridgeTests : CardWithPlayerTestsBase
 		KingdomWrapper wrapper = null;
 		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
 			.Callback<KingdomWrapper, PlayerState, Kingdom, Phase>((kw, ps, k, p) => wrapper = kw)
-			.Returns(() => wrapper.GetCard(CardType.Duchy));
+			.Returns(() => wrapper.GetCard(CardName.Duchy));
 		#endregion
 
 		#region act
@@ -156,7 +156,7 @@ public class PlayerBridgeTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region assert
-		Assert.IsTrue(wrapper.AvailableCards.Any(c => c.Card.Type == CardType.Duchy));
+		Assert.IsTrue(wrapper.AvailableCards.Any(c => c.Card.Name == CardName.Duchy));
 		AssertPile([duchy], player.PlayerState.DiscardPile);
 		#endregion
 	}

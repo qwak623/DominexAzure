@@ -91,9 +91,9 @@ public class PlayerStewardTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		player.PlayerState.Hand = CreatePile([steward, silver, estate, copper]);
-		var stewardToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Steward);
-		var silverInHand = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Silver);
-		var estateInHand = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Estate);
+		var stewardToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Steward);
+		var silverInHand = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Silver);
+		var estateInHand = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Estate);
 
 		user.Setup(u => u.StewardChooseBenefit(steward, player.PlayerState, player.Game.Kingdom, It.IsAny<List<StewardBenefit>>()))
 			.Returns(StewardBenefit.Trash);
@@ -124,8 +124,8 @@ public class PlayerStewardTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		player.PlayerState.Hand = CreatePile([steward, silver]);
-		var stewardToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Steward);
-		var silverInHand = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Silver);
+		var stewardToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Steward);
+		var silverInHand = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Silver);
 
 		user.Setup(u => u.StewardChooseBenefit(steward, player.PlayerState, player.Game.Kingdom, It.IsAny<List<StewardBenefit>>()))
 			.Returns(StewardBenefit.Trash);

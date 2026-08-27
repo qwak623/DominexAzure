@@ -40,8 +40,8 @@ public class PlayerSecretChamberTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		defender.PlayerState.Hand = CreatePile([secretChamber, copper, silver]);
-		var secretChamberToPlay = defender.PlayerState.Hand.First(c => c.Card.Type == CardType.SecretChamber);
-		var cardsToDiscard = defender.PlayerState.Hand.Where(c => c.Card.Type != CardType.SecretChamber).ToList();
+		var secretChamberToPlay = defender.PlayerState.Hand.First(c => c.Card.Name == CardName.SecretChamber);
+		var cardsToDiscard = defender.PlayerState.Hand.Where(c => c.Card.Name != CardName.SecretChamber).ToList();
 
 		defenderUser.Setup(u => u.SecretChamberDiscard(secretChamber, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns(cardsToDiscard);
@@ -70,7 +70,7 @@ public class PlayerSecretChamberTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		defender.PlayerState.Hand = CreatePile([secretChamber, copper]);
-		var secretChamberToPlay = defender.PlayerState.Hand.First(c => c.Card.Type == CardType.SecretChamber);
+		var secretChamberToPlay = defender.PlayerState.Hand.First(c => c.Card.Name == CardName.SecretChamber);
 
 		defenderUser.Setup(u => u.SecretChamberDiscard(secretChamber, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns([]);
@@ -98,7 +98,7 @@ public class PlayerSecretChamberTests : CardWithPlayerTestsBase
 		defender.PlayerState.Actions = 0;
 		defender.PlayerState.Hand = CreatePile([secretChamber, copper, copper, copper]);
 		defender.PlayerState.DrawPile = CreatePile([silver, silver]);
-		var secretChamberInHand = defender.PlayerState.Hand.First(c => c.Card.Type == CardType.SecretChamber);
+		var secretChamberInHand = defender.PlayerState.Hand.First(c => c.Card.Name == CardName.SecretChamber);
 
 		defenderUser.Setup(u => u.PlayCard(It.Is<List<CardInstance>>(r => r.Single() == secretChamberInHand),
 			defender.PlayerState, defender.Game.Kingdom, Phase.Reaction, militia))
@@ -106,9 +106,9 @@ public class PlayerSecretChamberTests : CardWithPlayerTestsBase
 
 		// put the two newly-drawn silvers back on top of the deck
 		defenderUser.Setup(u => u.SecretChamberPutOnDeck(secretChamber, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 2))
-			.Returns<Card, PlayerState, Kingdom, List<CardInstance>, int>((c, ps, k, cardSelection, count) => ps.Hand.Where(h => h.Card.Type == CardType.Silver).ToList());
+			.Returns<Card, PlayerState, Kingdom, List<CardInstance>, int>((c, ps, k, cardSelection, count) => ps.Hand.Where(h => h.Card.Name == CardName.Silver).ToList());
 
-		var copperToDiscard = defender.PlayerState.Hand.Where(c => c.Card.Type == CardType.Copper).Take(1).ToList();
+		var copperToDiscard = defender.PlayerState.Hand.Where(c => c.Card.Name == CardName.Copper).Take(1).ToList();
 		defenderUser.Setup(u => u.MilitiaDiscard(militia, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 1))
 			.Returns(copperToDiscard);
 		#endregion
@@ -141,8 +141,8 @@ public class PlayerSecretChamberTests : CardWithPlayerTestsBase
 		#region arrange
 		defender.PlayerState.Actions = 0;
 		defender.PlayerState.Hand = CreatePile([secretChamber, copper, copper, copper]);
-		var secretChamberInHand = defender.PlayerState.Hand.First(c => c.Card.Type == CardType.SecretChamber);
-		var copperToDiscard = defender.PlayerState.Hand.Where(c => c.Card.Type == CardType.Copper).Take(1).ToList();
+		var secretChamberInHand = defender.PlayerState.Hand.First(c => c.Card.Name == CardName.SecretChamber);
+		var copperToDiscard = defender.PlayerState.Hand.Where(c => c.Card.Name == CardName.Copper).Take(1).ToList();
 
 		defenderUser.Setup(u => u.PlayCard(It.Is<List<CardInstance>>(r => r.Single() == secretChamberInHand),
 			defender.PlayerState, defender.Game.Kingdom, Phase.Reaction, militia))

@@ -34,7 +34,7 @@ public class PlayerCoutyardTests : CardWithPlayerTestsBase
 		#region arrange
 		player.PlayerState.Hand = CreatePile([courtyard]);
 		player.PlayerState.DrawPile = CreatePile([copper, throneRoom, courtyard]);
-		var copperToReturn = player.PlayerState.DrawPile.First(c => c.Card.Type == CardType.Copper);
+		var copperToReturn = player.PlayerState.DrawPile.First(c => c.Card.Name == CardName.Copper);
 
 		user.Setup(u => u.CourtyardPutOnTop(It.IsAny<Card>(), player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns(copperToReturn);
@@ -63,7 +63,7 @@ public class PlayerCoutyardTests : CardWithPlayerTestsBase
 		#region arrange
 		player.PlayerState.Hand = CreatePile([courtyard, copper]);
 		player.PlayerState.DrawPile = CreatePile([throneRoom, throneRoom, courtyard]);
-		var copperInHand = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Copper);
+		var copperInHand = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Copper);
 
 		user.Setup(u => u.CourtyardPutOnTop(courtyard, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns(copperInHand);
@@ -117,9 +117,9 @@ public class PlayerCoutyardTests : CardWithPlayerTestsBase
 		#region arrange
 		player.PlayerState.Hand = CreatePile([throneRoom, courtyard, estate]);
 		player.PlayerState.DrawPile = CreatePile([.. Enumerable.Repeat(copper, 6)]);
-		var courtyardToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Courtyard);
-		var copperToDraw = player.PlayerState.DrawPile.First(c => c.Card.Type == CardType.Copper);
-		var estateInHand = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Estate);
+		var courtyardToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Courtyard);
+		var copperToDraw = player.PlayerState.DrawPile.First(c => c.Card.Name == CardName.Copper);
+		var estateInHand = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Estate);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
 			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == courtyardToPlay))).Returns(courtyardToPlay);
@@ -128,7 +128,7 @@ public class PlayerCoutyardTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Name == CardName.ThroneRoom));
 		#endregion
 
 		#region assert

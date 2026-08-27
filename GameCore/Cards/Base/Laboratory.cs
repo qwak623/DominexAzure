@@ -4,8 +4,7 @@ public class Laboratory : Card
 	private static Laboratory laboratory;
 	private Laboratory() : base
 	(
-		name: "Laboratory",
-		type: CardType.Laboratory,
+		type: CardName.Laboratory,
 		price: 5,
 		addActions: 1,
 		addBuys: 0,

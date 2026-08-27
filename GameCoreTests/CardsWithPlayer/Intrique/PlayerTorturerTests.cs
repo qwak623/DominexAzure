@@ -87,7 +87,7 @@ public class PlayerTorturerTests : CardWithPlayerTestsBase
 		var torturerToPlay = attacker.PlayerState.Hand[0];
 
 		defender.PlayerState.Hand = CreatePile([copper, copper, silver]);
-		var coppersToDiscard = defender.PlayerState.Hand.Where(c => c.Card.Type == CardType.Copper).ToList();
+		var coppersToDiscard = defender.PlayerState.Hand.Where(c => c.Card.Name == CardName.Copper).ToList();
 
 		defenderUser.Setup(u => u.TorturerChooseCurse(torturer, defender.PlayerState, defender.Game.Kingdom)).Returns(false);
 		defenderUser.Setup(u => u.TorturerDiscard(torturer, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 2))
@@ -207,7 +207,7 @@ public class PlayerTorturerTests : CardWithPlayerTestsBase
 		#region arrange
 		attacker.PlayerState.Hand = CreatePile([throneRoom, torturer]);
 		attacker.PlayerState.DrawPile = CreatePile([silver, silver, silver, silver, silver, silver]);
-		var torturerToPlay = attacker.PlayerState.Hand.First(c => c.Card.Type == CardType.Torturer);
+		var torturerToPlay = attacker.PlayerState.Hand.First(c => c.Card.Name == CardName.Torturer);
 
 		attackerUser.Setup(u => u.ThroneRoomPlay(throneRoom, attacker.PlayerState,
 			attacker.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == torturerToPlay))).Returns(torturerToPlay);
@@ -223,7 +223,7 @@ public class PlayerTorturerTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region act
-		attacker.PlayActionCardInternal(attacker.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
+		attacker.PlayActionCardInternal(attacker.PlayerState.Hand.First(c => c.Card.Name == CardName.ThroneRoom));
 		#endregion
 
 		#region assert

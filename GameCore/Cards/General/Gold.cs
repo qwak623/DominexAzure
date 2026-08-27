@@ -4,8 +4,7 @@ public class Gold : Card
 	private static Gold gold;
 	private Gold() : base
 	(
-		name: "Gold",
-		type: CardType.Gold,
+		type: CardName.Gold,
 		price: 6,
 		addBuys: 0,
 		coins: 3,

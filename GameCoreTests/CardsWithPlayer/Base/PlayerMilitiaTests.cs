@@ -43,8 +43,8 @@ public class PlayerMilitiaTests : CardWithPlayerTestsBase
 		var militiaToPlay = attacker.PlayerState.Hand[0];
 
 		defender.PlayerState.Hand = CreatePile([silver, silver, silver, silver, copper]);
-		var silverToDiscard = defender.PlayerState.Hand.First(c => c.Card.Type == CardType.Silver);
-		var copperToDiscard = defender.PlayerState.Hand.First(c => c.Card.Type == CardType.Copper);
+		var silverToDiscard = defender.PlayerState.Hand.First(c => c.Card.Name == CardName.Silver);
+		var copperToDiscard = defender.PlayerState.Hand.First(c => c.Card.Name == CardName.Copper);
 		defenderUser.Setup(du => du.MilitiaDiscard(militia, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 2))
 			.Returns([silverToDiscard, copperToDiscard]);
 		#endregion
@@ -116,19 +116,19 @@ public class PlayerMilitiaTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		attacker.PlayerState.Hand = CreatePile([throneRoom, militia]);
-		var militiaToPlay = attacker.PlayerState.Hand.First(c => c.Card.Type == CardType.Militia);
+		var militiaToPlay = attacker.PlayerState.Hand.First(c => c.Card.Name == CardName.Militia);
 		attackerUser.Setup(u => u.ThroneRoomPlay(throneRoom, attacker.PlayerState,
 			attacker.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == militiaToPlay))).Returns(militiaToPlay);
 
 		defender.PlayerState.Hand = CreatePile([silver, silver, silver, silver, copper]);
-		var silverToDiscard = defender.PlayerState.Hand.First(c => c.Card.Type == CardType.Silver);
-		var copperToDiscard = defender.PlayerState.Hand.First(c => c.Card.Type == CardType.Copper);
+		var silverToDiscard = defender.PlayerState.Hand.First(c => c.Card.Name == CardName.Silver);
+		var copperToDiscard = defender.PlayerState.Hand.First(c => c.Card.Name == CardName.Copper);
 		defenderUser.Setup(du => du.MilitiaDiscard(militia, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 2))
 			.Returns([silverToDiscard, copperToDiscard]);
 		#endregion
 
 		#region act
-		attacker.PlayActionCardInternal(attacker.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
+		attacker.PlayActionCardInternal(attacker.PlayerState.Hand.First(c => c.Card.Name == CardName.ThroneRoom));
 		#endregion
 
 		#region assert

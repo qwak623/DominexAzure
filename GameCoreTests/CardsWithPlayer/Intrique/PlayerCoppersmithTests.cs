@@ -58,7 +58,7 @@ public class PlayerCoppersmithTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		player.PlayerState.Hand = CreatePile([coppersmith, copper]);
-		var coppersmithToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Coppersmith);
+		var coppersmithToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Coppersmith);
 		#endregion
 
 		#region act
@@ -85,7 +85,7 @@ public class PlayerCoppersmithTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		player.PlayerState.Hand = CreatePile([coppersmith, coppersmith, copper]);
-		var coppersmithsToPlay = player.PlayerState.Hand.Where(c => c.Card.Type == CardType.Coppersmith).ToList();
+		var coppersmithsToPlay = player.PlayerState.Hand.Where(c => c.Card.Name == CardName.Coppersmith).ToList();
 		#endregion
 
 		#region act
@@ -114,7 +114,7 @@ public class PlayerCoppersmithTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		player.PlayerState.Hand = CreatePile([coppersmith, silver, gold]);
-		var coppersmithToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Coppersmith);
+		var coppersmithToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Coppersmith);
 		#endregion
 
 		#region act

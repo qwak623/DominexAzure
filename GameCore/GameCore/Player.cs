@@ -138,7 +138,7 @@ public class Player : IPlayer
 	/// <param name="card">Card to play.</param>
 	internal void PlayActionCardInternal(CardInstance cardInstance)
 	{
-		Game.Logger?.Log(new GameLog { PlayerId = Name, Message = $"{Name} plays {cardInstance.Card.Name}." });
+		Game.Logger?.Log(new GameLog { PlayerId = Name, Message = $"{Name} plays {cardInstance.Card.Name.ToDisplayName()}." });
 
 		ps.CardsPlayed.Move(cardInstance);
 		ps.ActionsPlayed.Add(cardInstance.Card);
@@ -261,8 +261,8 @@ public class Player : IPlayer
 	/// <summary>
 	/// Gains card to the discard pile if possible.
 	/// </summary>
-	/// <param name="type">Type of card to gain</param>
-	public void Gain(CardType type)
+	/// <param name="type">Name of card to gain</param>
+	public void Gain(CardName type)
 	{
 		var card = GetCardToGain(type);
 		if (card is null)
@@ -277,8 +277,8 @@ public class Player : IPlayer
 	/// <summary>
 	/// Gains card to the hand if possible.
 	/// </summary>
-	/// <param name="type">Type of card to gain</param>
-	public void GainToHand(CardType type)
+	/// <param name="type">Name of card to gain</param>
+	public void GainToHand(CardName type)
 	{
 		var card = GetCardToGain(type);
 		if (card is null)
@@ -300,8 +300,8 @@ public class Player : IPlayer
 	/// <summary>
 	/// Gains card to the draw pile if possible.
 	/// </summary>
-	/// <param name="type">Type of card to gain.</param>
-	public void GainToDrawPile(CardType type)
+	/// <param name="type">Name of card to gain.</param>
+	public void GainToDrawPile(CardName type)
 	{
 		var card = GetCardToGain(type);
 		if (card is null)
@@ -394,9 +394,9 @@ public class Player : IPlayer
 	/// <summary>
 	/// Returns card from the kingdom if possible.
 	/// </summary>
-	/// <param name="type">Type of card to gain</param>
+	/// <param name="type">Name of card to gain</param>
 	/// <returns>Card of the given type from the kingdom</returns>
-	private CardInstance GetCardToGain(CardType type)
+	private CardInstance GetCardToGain(CardName type)
 	{
 		var kingdomPile = Game.Kingdom.GetPile(type);
 		return kingdomPile.CardInstance;
@@ -408,15 +408,15 @@ public class Player : IPlayer
 		// Adds 3 estates and 7 coppers to the draw pile
 		for (int i = 0; i < 2; i++)
 		{
-			GainToDrawPile(Cards.GeneralCards.Estate.Get().Type);
+			GainToDrawPile(Cards.GeneralCards.Estate.Get().Name);
 		}
 		for (int i = 0; i < 7; i++)
 		{
-			GainToDrawPile(Cards.GeneralCards.Copper.Get().Type);
+			GainToDrawPile(Cards.GeneralCards.Copper.Get().Name);
 		}
 		for (int i = 0; i < 1; i++)
 		{
-			GainToDrawPile(Cards.GeneralCards.Estate.Get().Type);
+			GainToDrawPile(Cards.GeneralCards.Estate.Get().Name);
 		}
 	}
 

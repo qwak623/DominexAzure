@@ -4,8 +4,7 @@ public class Gardens : Card
 	private static Gardens gardens;
 	private Gardens() : base
 	(
-		name: "Gardens",
-		type: CardType.Gardens,
+		type: CardName.Gardens,
 		price: 4,
 		addActions: 0,
 		addBuys: 0,

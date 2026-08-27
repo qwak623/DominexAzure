@@ -4,8 +4,7 @@ public class Remodel : Card
 	private static Remodel remodel;
 	private Remodel() : base
 	(
-		name: "Remodel",
-		type: CardType.Remodel,
+		type: CardName.Remodel,
 		price: 4,
 		addActions: 0,
 		addBuys: 0,
@@ -40,7 +39,7 @@ public class Remodel : Card
 			p.Game.Kingdom.GetWrapper(p.PlayerState, oldCard.Card.GetPrice(p.PlayerState) + 2), p.PlayerState, p.Game.Kingdom, Phase.Gain);
 		if (newCard is not null)
 		{
-			p.Gain(newCard.Card.Type);
+			p.Gain(newCard.Card.Name);
 		}
 	}
 }

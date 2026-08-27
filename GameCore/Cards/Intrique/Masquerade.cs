@@ -4,8 +4,7 @@ public class Masquerade : Card
 	private static Masquerade masquerade;
 	private Masquerade() : base
 	(
-		name: "Masquerade",
-		type: CardType.Masquerade,
+		type: CardName.Masquerade,
 		price: 3,
 		addActions: 0,
 		addBuys: 0,

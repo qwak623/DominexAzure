@@ -4,8 +4,7 @@ public class Festival : Card
 	private static Festival festival;
 	private Festival() : base
 	(
-		name: "Festival",
-		type: CardType.Festival,
+		type: CardName.Festival,
 		price: 5,
 		addActions: 2,
 		addBuys: 1,

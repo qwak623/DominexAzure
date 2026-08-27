@@ -24,7 +24,7 @@ public class SimpleManager : BuyAgendaManager
 	public override BuyAgenda? Load(IEnumerable<Card> cards)
 	{
 		var id = cards.ToId();
-		int i = (int)cards.OrderBy(c => c.Type).First().Type;
+		int i = (int)cards.OrderBy(c => c.Name).First().Name;
 
 		lock (_lock)
 		{
@@ -57,7 +57,7 @@ public class SimpleManager : BuyAgendaManager
 	public override void Save(IEnumerable<Card> cards, BuyAgenda agenda)
 	{
 		var id = cards.ToId();
-		int i = cards.OrderBy(p => p.Type).Select(p => (int)p.Type).First();
+		int i = cards.OrderBy(p => p.Name).Select(p => (int)p.Name).First();
 
 		if (Load(cards) is null)
 		{

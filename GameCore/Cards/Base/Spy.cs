@@ -6,8 +6,7 @@ public class Spy : Card
 	private static Spy spy;
 	private Spy() : base
 	(
-		name: "Spy",
-		type: CardType.Spy,
+		type: CardName.Spy,
 		price: 4,
 		addActions: 1,
 		addBuys: 0,

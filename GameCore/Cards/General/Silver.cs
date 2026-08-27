@@ -4,8 +4,7 @@ public class Silver : Card
 	private static Silver silver;
 	private Silver() : base
 	(
-		name: "Silver",
-		type: CardType.Silver,
+		type: CardName.Silver,
 		price: 3,
 		addBuys: 0,
 		coins: 2,

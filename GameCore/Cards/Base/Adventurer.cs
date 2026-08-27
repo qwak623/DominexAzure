@@ -8,8 +8,7 @@ public class Adventurer : Card
 	private static Adventurer adventurer;
 	private Adventurer() : base
 	(
-		name: "Adventurer",
-		type: CardType.Adventurer,
+		type: CardName.Adventurer,
 		price: 6,
 		addActions: 0,
 		addBuys: 0,
@@ -43,7 +42,7 @@ public class Adventurer : Card
 
 			if (card.IsTreasure)
 			{
-				player.Game.Logger?.Log(new GameLog { PlayerId = Name, Message = $"{Name} draws {card.Name}" });
+				player.Game.Logger?.Log(new GameLog { PlayerId = player.Name, Message = $"{player.Name} draws {card.Card.Name.ToDisplayName()}" });
 				player.PlayerState.Hand.Move(card);
 				treasuresDrawn++;
 			}

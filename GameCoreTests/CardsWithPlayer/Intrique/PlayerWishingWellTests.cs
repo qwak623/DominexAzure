@@ -37,8 +37,8 @@ public class PlayerWishingWellTests : CardWithPlayerTestsBase
 		player.PlayerState.DrawPile = CreatePile([duchy, copper]);
 		var wishingWellToPlay = player.PlayerState.Hand[0];
 
-		user.Setup(u => u.WishingWellGuess(wishingWell, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardType>>()))
-			.Returns(CardType.Duchy);
+		user.Setup(u => u.WishingWellGuess(wishingWell, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardName>>()))
+			.Returns(CardName.Duchy);
 		#endregion
 
 		#region act
@@ -56,7 +56,7 @@ public class PlayerWishingWellTests : CardWithPlayerTestsBase
 
 		// the guess is offered against every possible card type, not just this kingdom's own cards
 		user.Verify(u => u.WishingWellGuess(wishingWell, player.PlayerState, player.Game.Kingdom,
-			It.Is<List<CardType>>(types => types.Contains(CardType.Duchy) && types.Count == Enum.GetValues<CardType>().Length)), Times.Once);
+			It.Is<List<CardName>>(types => types.Contains(CardName.Duchy) && types.Count == Enum.GetValues<CardName>().Length)), Times.Once);
 		#endregion
 	}
 
@@ -68,8 +68,8 @@ public class PlayerWishingWellTests : CardWithPlayerTestsBase
 		player.PlayerState.DrawPile = CreatePile([duchy, copper]);
 		var wishingWellToPlay = player.PlayerState.Hand[0];
 
-		user.Setup(u => u.WishingWellGuess(wishingWell, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardType>>()))
-			.Returns(CardType.Gold);
+		user.Setup(u => u.WishingWellGuess(wishingWell, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardName>>()))
+			.Returns(CardName.Gold);
 		#endregion
 
 		#region act
@@ -93,8 +93,8 @@ public class PlayerWishingWellTests : CardWithPlayerTestsBase
 		player.PlayerState.DrawPile = CreatePile([copper]);
 		var wishingWellToPlay = player.PlayerState.Hand[0];
 
-		user.Setup(u => u.WishingWellGuess(wishingWell, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardType>>()))
-			.Returns(CardType.Gold);
+		user.Setup(u => u.WishingWellGuess(wishingWell, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardName>>()))
+			.Returns(CardName.Gold);
 		#endregion
 
 		#region act
@@ -108,7 +108,7 @@ public class PlayerWishingWellTests : CardWithPlayerTestsBase
 		AssertPile([], player.PlayerState.DiscardPile);
 
 		// naming happens before the reveal, so it's still asked for even with nothing left to show
-		user.Verify(u => u.WishingWellGuess(wishingWell, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardType>>()), Times.Once);
+		user.Verify(u => u.WishingWellGuess(wishingWell, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardName>>()), Times.Once);
 		#endregion
 	}
 }

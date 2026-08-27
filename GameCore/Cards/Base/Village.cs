@@ -4,8 +4,7 @@ public class Village : Card
 	private static Village village;
 	private Village() : base
 	(
-		name: "Village",
-		type: CardType.Village,
+		type: CardName.Village,
 		price: 3,
 		addActions: 2,
 		addBuys: 0,

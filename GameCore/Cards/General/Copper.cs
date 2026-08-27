@@ -4,8 +4,7 @@ public class Copper : Card
 	private static Copper copper;
 	private Copper() : base
 	(
-		name: "Copper",
-		type: CardType.Copper,
+		type: CardName.Copper,
 		price: 0,
 		addBuys: 0,
 		coins: 1,

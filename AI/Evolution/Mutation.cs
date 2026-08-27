@@ -28,7 +28,7 @@ internal class ReplaceSupplyCardMutation : Mutation
 		int j = ThreadSafeRandom.Next(kingdom.Count);
 
 		var tuple = agenda.BuyMenu[i];
-		tuple.Card = kingdom[j].Type;
+		tuple.Card = kingdom[j].Name;
 		agenda.BuyMenu[i] = tuple;
 	}
 }
@@ -112,7 +112,7 @@ internal class AddCardMutation : Mutation
 		int i = ThreadSafeRandom.Next(agenda.BuyMenu.Count);
 		int j = ThreadSafeRandom.Next(kingdom.Count);
 
-		agenda.BuyMenu.Insert(i, (kingdom[j].Type, ThreadSafeRandom.Next(9) + 1));
+		agenda.BuyMenu.Insert(i, (kingdom[j].Name, ThreadSafeRandom.Next(9) + 1));
 	}
 }
 

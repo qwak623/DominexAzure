@@ -5,8 +5,7 @@ public class Duchy : Card
 	private static Duchy duchy;
 	private Duchy() : base
 	(
-		name: "Duchy",
-		type: CardType.Duchy,
+		type: CardName.Duchy,
 		price: 5,
 		addBuys: 0,
 		coins: 0,

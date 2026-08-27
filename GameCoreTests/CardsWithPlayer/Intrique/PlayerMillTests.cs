@@ -34,12 +34,12 @@ public class PlayerMillTests : CardWithPlayerTestsBase
 		#region arrange
 		player.PlayerState.Hand = CreatePile([mill, copper, silver, estate]);
 		player.PlayerState.DrawPile = CreatePile([gold]);
-		var millToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Mill);
+		var millToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Mill);
 
 		user.Setup(u => u.MillWantsToDiscard(mill, player.PlayerState, player.Game.Kingdom)).Returns(true);
 		user.Setup(u => u.MillChooseCardsToDiscard(mill, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>(), 2))
 			.Returns<Card, PlayerState, Kingdom, List<CardInstance>, int>((c, ps, k, cards, count) =>
-				cards.Where(x => x.Card.Type == CardType.Copper || x.Card.Type == CardType.Silver).ToList());
+				cards.Where(x => x.Card.Name == CardName.Copper || x.Card.Name == CardName.Silver).ToList());
 		#endregion
 
 		#region act
@@ -66,7 +66,7 @@ public class PlayerMillTests : CardWithPlayerTestsBase
 		#region arrange
 		player.PlayerState.Hand = CreatePile([mill, copper, silver]);
 		player.PlayerState.DrawPile = CreatePile([gold]);
-		var millToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Mill);
+		var millToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Mill);
 
 		user.Setup(u => u.MillWantsToDiscard(mill, player.PlayerState, player.Game.Kingdom)).Returns(false);
 		#endregion
@@ -122,7 +122,7 @@ public class PlayerMillTests : CardWithPlayerTestsBase
 		// only one card is left in hand after mill's own draw - the player can still choose
 		// to discard it, they just don't get the $2 bonus since it isn't a full pair
 		player.PlayerState.Hand = CreatePile([mill, copper]);
-		var millToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Mill);
+		var millToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Mill);
 
 		user.Setup(u => u.MillWantsToDiscard(mill, player.PlayerState, player.Game.Kingdom)).Returns(true);
 		user.Setup(u => u.MillChooseCardsToDiscard(mill, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>(), 1))

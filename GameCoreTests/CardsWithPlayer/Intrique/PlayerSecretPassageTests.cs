@@ -35,10 +35,10 @@ public class PlayerSecretPassageTests : CardWithPlayerTestsBase
 		// bottom to top: both get drawn off by the +2 Cards effect before the chosen-card
 		// selection runs
 		player.PlayerState.DrawPile = CreatePile([silver, copper]);
-		var secretPassageToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.SecretPassage);
+		var secretPassageToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.SecretPassage);
 
 		user.Setup(u => u.SecretPassageChooseCard(secretPassage, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
-			.Returns<Card, PlayerState, Kingdom, List<CardInstance>>((c, ps, k, cards) => cards.Single(x => x.Card.Type == CardType.Estate));
+			.Returns<Card, PlayerState, Kingdom, List<CardInstance>>((c, ps, k, cards) => cards.Single(x => x.Card.Name == CardName.Estate));
 		#endregion
 
 		#region act

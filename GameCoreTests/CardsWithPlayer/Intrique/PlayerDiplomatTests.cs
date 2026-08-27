@@ -45,7 +45,7 @@ public class PlayerDiplomatTests : CardWithPlayerTestsBase
 		#region arrange
 		player.PlayerState.Hand = CreatePile([diplomat, copper, copper]);
 		player.PlayerState.DrawPile = CreatePile([silver, silver]);
-		var diplomatToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Diplomat);
+		var diplomatToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Diplomat);
 		#endregion
 
 		#region act
@@ -70,7 +70,7 @@ public class PlayerDiplomatTests : CardWithPlayerTestsBase
 		#region arrange
 		player.PlayerState.Hand = CreatePile([diplomat, copper, copper, copper, copper, copper]);
 		player.PlayerState.DrawPile = CreatePile([silver, silver]);
-		var diplomatToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.Diplomat);
+		var diplomatToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Diplomat);
 		#endregion
 
 		#region act
@@ -96,7 +96,7 @@ public class PlayerDiplomatTests : CardWithPlayerTestsBase
 		defender.PlayerState.Actions = 0;
 		defender.PlayerState.Hand = CreatePile([diplomat, copper, copper, copper, copper]);
 		defender.PlayerState.DrawPile = CreatePile([silver, silver]);
-		var diplomatInHand = defender.PlayerState.Hand.First(c => c.Card.Type == CardType.Diplomat);
+		var diplomatInHand = defender.PlayerState.Hand.First(c => c.Card.Name == CardName.Diplomat);
 
 		defenderUser.Setup(u => u.PlayCard(It.Is<List<CardInstance>>(r => r.Single() == diplomatInHand),
 			defender.PlayerState, defender.Game.Kingdom, Phase.Reaction, militia))
@@ -105,12 +105,12 @@ public class PlayerDiplomatTests : CardWithPlayerTestsBase
 		// discard three of the four coppers, keeping diplomat, one copper and the two newly-drawn silvers
 		defenderUser.Setup(u => u.DiplomatDiscard(diplomat, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 3))
 			.Returns<Card, PlayerState, Kingdom, List<CardInstance>, int>((c, ps, k, cardSelection, count) =>
-				ps.Hand.Where(h => h.Card.Type == CardType.Copper).Take(3).ToList());
+				ps.Hand.Where(h => h.Card.Name == CardName.Copper).Take(3).ToList());
 
 		// diplomat does not block the attack - militia still forces a discard down afterward
 		defenderUser.Setup(u => u.MilitiaDiscard(militia, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 1))
 			.Returns<Card, PlayerState, Kingdom, List<CardInstance>, int>((c, ps, k, cardSelection, count) =>
-				ps.Hand.Where(h => h.Card.Type == CardType.Copper).ToList());
+				ps.Hand.Where(h => h.Card.Name == CardName.Copper).ToList());
 		#endregion
 
 		#region act
@@ -139,8 +139,8 @@ public class PlayerDiplomatTests : CardWithPlayerTestsBase
 		#region arrange
 		defender.PlayerState.Actions = 0;
 		defender.PlayerState.Hand = CreatePile([diplomat, copper, copper, copper]);
-		var diplomatInHand = defender.PlayerState.Hand.First(c => c.Card.Type == CardType.Diplomat);
-		var copperToDiscard = defender.PlayerState.Hand.Where(c => c.Card.Type == CardType.Copper).Take(1).ToList();
+		var diplomatInHand = defender.PlayerState.Hand.First(c => c.Card.Name == CardName.Diplomat);
+		var copperToDiscard = defender.PlayerState.Hand.Where(c => c.Card.Name == CardName.Copper).Take(1).ToList();
 
 		defenderUser.Setup(u => u.PlayCard(It.Is<List<CardInstance>>(r => r.Single() == diplomatInHand),
 			defender.PlayerState, defender.Game.Kingdom, Phase.Reaction, militia))
@@ -174,8 +174,8 @@ public class PlayerDiplomatTests : CardWithPlayerTestsBase
 		#region arrange
 		defender.PlayerState.Actions = 0;
 		defender.PlayerState.Hand = CreatePile([diplomat, copper, copper, copper, copper]);
-		var diplomatInHand = defender.PlayerState.Hand.First(c => c.Card.Type == CardType.Diplomat);
-		var coppersToDiscard = defender.PlayerState.Hand.Where(c => c.Card.Type == CardType.Copper).Take(2).ToList();
+		var diplomatInHand = defender.PlayerState.Hand.First(c => c.Card.Name == CardName.Diplomat);
+		var coppersToDiscard = defender.PlayerState.Hand.Where(c => c.Card.Name == CardName.Copper).Take(2).ToList();
 
 		defenderUser.Setup(u => u.PlayCard(It.Is<List<CardInstance>>(r => r.Single() == diplomatInHand),
 			defender.PlayerState, defender.Game.Kingdom, Phase.Reaction, militia))

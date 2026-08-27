@@ -43,7 +43,7 @@ public class PlayerBureaucratTests : CardWithPlayerTestsBase
 		attacker.PlayerState.Hand = CreatePile([bureaucrat]);
 		defender.PlayerState.Hand = CreatePile([province, duchy]);
 
-		var provinceInHand = defender.PlayerState.Hand.First(c => c.Card.Type == CardType.Province);
+		var provinceInHand = defender.PlayerState.Hand.First(c => c.Card.Name == CardName.Province);
 		defenderUser.Setup(du => du.BureaucratPutOnTop(bureaucrat, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>())).Returns(provinceInHand);
 		#endregion
 
@@ -126,7 +126,7 @@ public class PlayerBureaucratTests : CardWithPlayerTestsBase
 			attacker.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == bureaucratToPlay))).Returns(bureaucratToPlay);
 
 		defender.PlayerState.Hand = CreatePile([.. Enumerable.Repeat(province, provinceCount), silver, bureaucrat]);
-		var provincesInHand = defender.PlayerState.Hand.Where(c => c.Card.Type == CardType.Province).ToList();
+		var provincesInHand = defender.PlayerState.Hand.Where(c => c.Card.Name == CardName.Province).ToList();
 		var firstProvince = provincesInHand.FirstOrDefault();
 		if (firstProvince != null)
 		{

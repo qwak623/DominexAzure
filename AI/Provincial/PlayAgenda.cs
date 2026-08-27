@@ -16,49 +16,49 @@ internal static class PlayAgenda
 		switch (phase)
 		{
 			case Phase.Action:
-				if (card.Type == CardType.Chapel)
+				if (card.Name == CardName.Chapel)
 				{
-					return result + (hand.Where(c => c.Type == CardType.Curse).Count() * 3) + Data.GetPriorityList()[(int)card.Type];
+					return result + (hand.Where(c => c.Name == CardName.Curse).Count() * 3) + Data.GetPriorityList()[(int)card.Name];
 				}
 
-				if (card.Type == CardType.Library)
+				if (card.Name == CardName.Library)
 				{
 					return result + -1.5f + (3 * (7 - ps.Hand.Count));
 				}
 
-				if (card.Type == CardType.Remodel)
+				if (card.Name == CardName.Remodel)
 				{
-					return result + ((hand.Any(c => c.Type == CardType.Curse) ? 1 : 0) * 3) + Data.GetPriorityList()[(int)card.Type];
+					return result + ((hand.Any(c => c.Name == CardName.Curse) ? 1 : 0) * 3) + Data.GetPriorityList()[(int)card.Name];
 				}
 
-				if (card.Type == CardType.Moneylender && ps.Hand.Any(c => c.Card.Type == CardType.Copper))
-				{
-					return -1;
-				}
-
-				if (card.Type == CardType.Mine && !(ps.Hand.Any(c => c.Card.Type == CardType.Copper) || ps.Hand.Any(c => c.Card.Type == CardType.Silver)))
+				if (card.Name == CardName.Moneylender && ps.Hand.Any(c => c.Card.Name == CardName.Copper))
 				{
 					return -1;
 				}
 
-				return Data.GetPriorityList()[(int)card.Type];
+				if (card.Name == CardName.Mine && !(ps.Hand.Any(c => c.Card.Name == CardName.Copper) || ps.Hand.Any(c => c.Card.Name == CardName.Silver)))
+				{
+					return -1;
+				}
+
+				return Data.GetPriorityList()[(int)card.Name];
 			case Phase.Attack:
-				if (card.Type == CardType.Gold)
+				if (card.Name == CardName.Gold)
 				{
 					return 100;
 				}
 
-				if (card.Type == CardType.Silver)
+				if (card.Name == CardName.Silver)
 				{
 					return 50;
 				}
 
-				if (card.Type == CardType.Library)
+				if (card.Name == CardName.Library)
 				{
 					return 49;
 				}
 
-				if (card.Type == CardType.Copper)
+				if (card.Name == CardName.Copper)
 				{
 					return 15;
 				}

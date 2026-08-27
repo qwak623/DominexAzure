@@ -4,8 +4,7 @@ public class Scout : Card
 	private static Scout scout = null;
 	private Scout() : base
 	(
-		name: "Scout",
-		type: CardType.Scout,
+		type: CardName.Scout,
 		price: 4,
 		addActions: 1,
 		addBuys: 0,

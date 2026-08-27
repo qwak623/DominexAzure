@@ -92,7 +92,7 @@ public class PlayerMiningVillageTests : CardWithPlayerTestsBase
 		#region arrange
 		player.PlayerState.Hand = CreatePile([throneRoom, miningVillage]);
 		player.PlayerState.DrawPile = CreatePile([copper, silver]);
-		var miningVillageToPlay = player.PlayerState.Hand.First(c => c.Card.Type == CardType.MiningVillage);
+		var miningVillageToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.MiningVillage);
 
 		user.Setup(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
 			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == miningVillageToPlay))).Returns(miningVillageToPlay);
@@ -105,7 +105,7 @@ public class PlayerMiningVillageTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region act
-		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Type == CardType.ThroneRoom));
+		player.PlayActionCardInternal(player.PlayerState.Hand.First(c => c.Card.Name == CardName.ThroneRoom));
 		#endregion
 
 		#region assert
