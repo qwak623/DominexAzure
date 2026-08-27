@@ -1,4 +1,4 @@
-﻿using AI.Model;
+using AI.Model;
 using GameCore;
 using GameCore.Cards;
 using GameCore.Cards.Intrique;
@@ -282,7 +282,37 @@ public class ProvincialAI : User
 	#region cards intrique
 	public override bool BaronDiscard(Card cardPlayed, PlayerState ps, Kingdom k) => true;
 
+	public override List<CourtierBenefit> CourtierChooseBenefits(Card cardPlayed, PlayerState ps, Kingdom k, int benefitCount, List<CourtierBenefit> availableBenefits)
+	{
+		throw new NotImplementedException();
+	}
+
+	public override CardInstance CourtierReveal(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
+	{
+		throw new NotImplementedException();
+	}
+
 	public override CardInstance CourtyardPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
+	{
+		throw new NotImplementedException();
+	}
+
+	public override List<CardInstance> DiplomatDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection, int count)
+	{
+		throw new NotImplementedException();
+	}
+
+	public override CardInstance LurkerChooseCardToGain(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
+	{
+		throw new NotImplementedException();
+	}
+
+	public override CardInstance LurkerChooseCardToTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
+	{
+		throw new NotImplementedException();
+	}
+
+	public override bool LurkerTrash(Card cardPlayed, PlayerState ps, Kingdom k)
 	{
 		throw new NotImplementedException();
 	}
@@ -297,7 +327,12 @@ public class ProvincialAI : User
 		throw new NotImplementedException();
 	}
 
-	public override bool MinionDiscard(Card cardPlayed, PlayerState ps, Kingdom k)
+	public override List<CardInstance> MillChooseCardsToDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards, int count)
+	{
+		throw new NotImplementedException();
+	}
+
+	public override bool MillWantsToDiscard(Card cardPlayed, PlayerState ps, Kingdom k)
 	{
 		throw new NotImplementedException();
 	}
@@ -307,7 +342,57 @@ public class ProvincialAI : User
 		throw new NotImplementedException();
 	}
 
+	public override bool MinionDiscard(Card cardPlayed, PlayerState ps, Kingdom k)
+	{
+		throw new NotImplementedException();
+	}
+
 	public override bool NoblesChooseCards(Card cardPlayed, PlayerState playerState, Kingdom kingdom)
+	{
+		throw new NotImplementedException();
+	}
+
+	public override List<CardInstance> PatrolOrderCards(Card cardPlayed, PlayerState playerState, Kingdom kingdom, List<CardInstance> cards)
+	{
+		throw new NotImplementedException();
+	}
+
+	public override List<PawnBenefit> PawnChooseBenefits(Card cardPlayed, PlayerState ps, Kingdom k, int benefitCount, List<PawnBenefit> availableBenefits)
+	{
+		throw new NotImplementedException();
+	}
+
+	public override CardInstance ReplaceTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
+	{
+		throw new NotImplementedException();
+	}
+
+	public override List<CardInstance> ScoutOrderCards(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
+	{
+		throw new NotImplementedException();
+	}
+
+	public override List<CardInstance> SecretChamberDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
+	{
+		throw new NotImplementedException();
+	}
+
+	public override List<CardInstance> SecretChamberPutOnDeck(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection, int count)
+	{
+		throw new NotImplementedException();
+	}
+
+	public override CardInstance SecretPassageChooseCard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
+	{
+		throw new NotImplementedException();
+	}
+
+	public override StewardBenefit StewardChooseBenefit(Card cardPlayed, PlayerState ps, Kingdom k, List<StewardBenefit> allBenefits)
+	{
+		throw new NotImplementedException();
+	}
+
+	public override List<CardInstance> StewardChooseCardsToTrash(Card cardPlayed, PlayerState ps, Kingdom k, int count, List<CardInstance> cards)
 	{
 		throw new NotImplementedException();
 	}
@@ -327,86 +412,6 @@ public class ProvincialAI : User
 		throw new NotImplementedException();
 	}
 
-	public override List<CardInstance> SecretChamberDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
-	{
-		throw new NotImplementedException();
-	}
-
-	public override List<CardInstance> SecretChamberPutOnDeck(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection, int count)
-	{
-		throw new NotImplementedException();
-	}
-
-	public override List<CardInstance> ScoutOrderCards(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
-	{
-		throw new NotImplementedException();
-	}
-
-	public override List<CardInstance> DiplomatDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection, int count)
-	{
-		throw new NotImplementedException();
-	}
-
-	public override bool LurkerTrash(Card cardPlayed, PlayerState ps, Kingdom k)
-	{
-		throw new NotImplementedException();
-	}
-
-	public override CardInstance LurkerChooseCardToTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
-	{
-		throw new NotImplementedException();
-	}
-
-	public override CardInstance LurkerChooseCardToGain(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
-	{
-		throw new NotImplementedException();
-	}
-
-	public override bool MillWantsToDiscard(Card cardPlayed, PlayerState ps, Kingdom k)
-	{
-		throw new NotImplementedException();
-	}
-
-	public override List<CardInstance> MillChooseCardsToDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards, int count)
-	{
-		throw new NotImplementedException();
-	}
-
-	public override List<CardInstance> PatrolOrderCards(Card cardPlayed, PlayerState playerState, Kingdom kingdom, List<CardInstance> cards)
-	{
-		throw new NotImplementedException();
-	}
-
-	public override CardInstance ReplaceTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
-	{
-		throw new NotImplementedException();
-	}
-
-	public override CardInstance CourtierReveal(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
-	{
-		throw new NotImplementedException();
-	}
-
-	public override List<CourtierBenefit> CourtierChooseBenefits(Card cardPlayed, PlayerState ps, Kingdom k, int benefitCount, List<CourtierBenefit> availableBenefits)
-	{
-		throw new NotImplementedException();
-	}
-
-	public override List<PawnBenefit> PawnChooseBenefits(Card cardPlayed, PlayerState ps, Kingdom k, int benefitCount, List<PawnBenefit> availableBenefits)
-	{
-		throw new NotImplementedException();
-	}
-
-	public override StewardBenefit StewardChooseBenefit(Card cardPlayed, PlayerState ps, Kingdom k, List<StewardBenefit> allBenefits)
-	{
-		throw new NotImplementedException();
-	}
-
-	public override List<CardInstance> StewardChooseCardsToTrash(Card cardPlayed, PlayerState ps, Kingdom k, int count, List<CardInstance> cards)
-	{
-		throw new NotImplementedException();
-	}
-
 	public override CardInstance UpgradeTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
 	{
 		throw new NotImplementedException();
@@ -417,11 +422,5 @@ public class ProvincialAI : User
 		throw new NotImplementedException();
 	}
 
-	public override CardInstance SecretPassageChooseCard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
-	{
-		throw new NotImplementedException();
-	}
-
 	#endregion cards intrique
 }
-

@@ -13,6 +13,8 @@ public class Human(IPlayerStateObserver playerStateObserver, ICardMapper cardMap
 	private readonly IOperationMapper operationMapper = operationMapper;
 	private readonly Func<ChoiceDto, Answer> CallClient = callClient;
 
+	public override string GetName() => "Todo Name";
+
 	public override IPlayerStateObserver GetPlayerStateObserver()
 	{
 		return playerStateObserver;
@@ -22,7 +24,25 @@ public class Human(IPlayerStateObserver playerStateObserver, ICardMapper cardMap
 		// todo je třeba vyřešit attacking card, asi ideálně přidat do choice
 		=> AskForCards(null, ps, cards, ChoiceType.Play, OperationType.Play, 0, 1).SingleOrDefault();
 
-	public override string GetName() => "Todo Name";
+	public override CardInstance SelectCardToGain(KingdomWrapper wrapper, PlayerState ps, Kingdom k, Phase phase)
+	{
+		var cardSelection = wrapper.AvailableCards.ToList();
+
+		// buying is always optional (a buy can go unspent); every other caller of this method
+		// is a mandatory "gain a card" effect (Workshop, Mine, Remodel, Feast, ...), so it can
+		// only be declined when there's genuinely nothing available to gain
+		var min = phase == Phase.Buy || cardSelection.Count == 0 ? 0 : 1;
+		var type = phase == Phase.Buy ? ChoiceType.Buy : ChoiceType.Gain;
+		var op = phase == Phase.Buy ? OperationType.Buy : OperationType.Gain;
+
+		// todo ps.Buys - více buyu najednou
+		return AskForCards(null, ps, cardSelection, type, op, min, 1).SingleOrDefault();
+	}
+
+	// unlike SelectCardToGain, min is always 0 here - "may gain" cards (e.g. Saboteur) can be
+	// declined even when a valid target exists
+	public override CardInstance SelectOptionalCardToGain(KingdomWrapper wrapper, PlayerState ps, Kingdom k, Phase phase)
+		=> AskForCards(null, ps, wrapper.AvailableCards.ToList(), ChoiceType.Gain, OperationType.Gain, 0, 1).SingleOrDefault();
 
 	// todo ps - možná by mělo být jen card selection
 	// todo kingdom - možná by to nemuselo být tady
@@ -60,26 +80,6 @@ public class Human(IPlayerStateObserver playerStateObserver, ICardMapper cardMap
 		// todo min: 0 - neodpovida description - opravit
 		=> AskForCards(cardPlayed, ps, cardSelection, ChoiceType.RemodelTrash, OperationType.Trash, 0, 1).SingleOrDefault();
 
-	public override CardInstance SelectCardToGain(KingdomWrapper wrapper, PlayerState ps, Kingdom k, Phase phase)
-	{
-		var cardSelection = wrapper.AvailableCards.ToList();
-
-		// buying is always optional (a buy can go unspent); every other caller of this method
-		// is a mandatory "gain a card" effect (Workshop, Mine, Remodel, Feast, ...), so it can
-		// only be declined when there's genuinely nothing available to gain
-		var min = phase == Phase.Buy || cardSelection.Count == 0 ? 0 : 1;
-		var type = phase == Phase.Buy ? ChoiceType.Buy : ChoiceType.Gain;
-		var op = phase == Phase.Buy ? OperationType.Buy : OperationType.Gain;
-
-		// todo ps.Buys - více buyu najednou
-		return AskForCards(null, ps, cardSelection, type, op, min, 1).SingleOrDefault();
-	}
-
-	// unlike SelectCardToGain, min is always 0 here - "may gain" cards (e.g. Saboteur) can be
-	// declined even when a valid target exists
-	public override CardInstance SelectOptionalCardToGain(KingdomWrapper wrapper, PlayerState ps, Kingdom k, Phase phase)
-		=> AskForCards(null, ps, wrapper.AvailableCards.ToList(), ChoiceType.Gain, OperationType.Gain, 0, 1).SingleOrDefault();
-
 	// todo lepší description - potřebujeme vědět, čí kartu zahazujeme
 	public override bool SpyDiscard(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance c, Phase p)
 		=> AskOperations(cardPlayed, ps, ChoiceType.SpyDiscard, [cardMapper.ToCardDtoWithIndex(c, 0, ps)],
@@ -102,14 +102,40 @@ public class Human(IPlayerStateObserver playerStateObserver, ICardMapper cardMap
 	public override bool BaronDiscard(Card cardPlayed, PlayerState ps, Kingdom kingdom)
 		=> AskYesNo(cardPlayed, ps, ChoiceType.BaronDiscard, OperationType.Discard, [cardMapper.ToCardDto(Estate.Get(), ps)]);
 
+	public override List<CourtierBenefit> CourtierChooseBenefits(Card cardPlayed, PlayerState ps, Kingdom k, int benefitCount, List<CourtierBenefit> availableBenefits)
+		=> operationMapper.ToCourtierBenefits(AskOperations(cardPlayed, ps, ChoiceType.CourtierChooseBenefits, [null],
+			operationMapper.ToOperationTypes(availableBenefits), benefitCount, benefitCount));
+
+	public override CardInstance CourtierReveal(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
+		=> AskForCards(cardPlayed, ps, cards, ChoiceType.CourtierReveal, OperationType.Reveal, 1, 1).Single();
+
 	public override CardInstance CourtyardPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
 		=> AskForCards(cardPlayed, ps, cards, ChoiceType.CourtyardPutOnTop, OperationType.PutOnTop, 1, 1).SingleOrDefault();
+
+	public override List<CardInstance> DiplomatDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection, int count)
+		=> AskForCards(cardPlayed, ps, cardSelection, ChoiceType.DiplomatDiscard, OperationType.Discard, count, count);
+
+	public override CardInstance LurkerChooseCardToGain(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
+		=> AskForCards(cardPlayed, ps, cards, ChoiceType.LurkerGain, OperationType.Gain, 1, 1).Single();
+
+	public override CardInstance LurkerChooseCardToTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
+		=> AskForCards(cardPlayed, ps, cards, ChoiceType.LurkerTrash, OperationType.Trash, 1, 1).Single();
+
+	public override bool LurkerTrash(Card cardPlayed, PlayerState ps, Kingdom k)
+		// todo potential null reference exception
+		=> AskOperations(cardPlayed, ps, ChoiceType.LurkerChoose, [null], [OperationType.Gain, OperationType.Trash], 1, 1, message: "Trash or gain this card.").Single() == OperationType.Trash;
 
 	public override CardInstance MasqueradePass(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
 		=> AskForCards(cardPlayed, ps, cards, ChoiceType.MasqueradePass, OperationType.Pass, 1, 1).Single();
 
 	public override CardInstance MasqueradeTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
 		=> AskForCards(cardPlayed, ps, cards, ChoiceType.MasqueradeTrash, OperationType.Trash, 0, 1).SingleOrDefault();
+
+	public override List<CardInstance> MillChooseCardsToDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards, int count)
+		=> AskForCards(cardPlayed, ps, cards, ChoiceType.MillDiscard, OperationType.Discard, count, count);
+
+	public override bool MillWantsToDiscard(Card cardPlayed, PlayerState ps, Kingdom k)
+		=> AskYesNo(cardPlayed, ps, ChoiceType.MillDiscard, OperationType.Discard);
 
 	public override bool MiningVillageTrash(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance c)
 		=> AskYesNo(cardPlayed, ps, ChoiceType.MasqueradeTrash, OperationType.Trash, [cardMapper.ToCardDtoWithIndex(c, 0, ps)]);
@@ -124,6 +150,41 @@ public class Human(IPlayerStateObserver playerStateObserver, ICardMapper cardMap
 		// todo better options - draw 3 cards or gain 2 actions
 		=> AskYesNo(cardPlayed, ps, ChoiceType.MinionDiscard, OperationType.Pass, [null]);
 
+	public override List<CardInstance> PatrolOrderCards(Card cardPlayed, PlayerState playerState, Kingdom kingdom, List<CardInstance> cards)
+	{
+		throw new NotImplementedException();
+	}
+
+	public override List<PawnBenefit> PawnChooseBenefits(Card cardPlayed, PlayerState ps, Kingdom k, int benefitCount, List<PawnBenefit> availableBenefits)
+		=> operationMapper.ToPawnBenefits(AskOperations(cardPlayed, ps, ChoiceType.PawnChooseBenefits, [null],
+			operationMapper.ToOperationTypes(availableBenefits), benefitCount, benefitCount));
+
+	public override CardInstance ReplaceTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
+		=> AskForCards(cardPlayed, ps, cardSelection, ChoiceType.ReplaceTrash, OperationType.Trash, 1, 1).Single();
+
+	public override List<CardInstance> ScoutOrderCards(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
+	{
+		// TODO any order!
+		throw new NotImplementedException();
+	}
+
+	public override List<CardInstance> SecretChamberDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
+		=> AskForCards(cardPlayed, ps, cardSelection, ChoiceType.SecretChamberDiscard, OperationType.Discard, 0, cardSelection.Count);
+
+	// TODO any order!
+	public override List<CardInstance> SecretChamberPutOnDeck(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection, int count)
+		=> AskForCards(cardPlayed, ps, cardSelection, ChoiceType.SecretChamberPutOnDeck, OperationType.PutOnTop, count, count);
+
+	public override CardInstance SecretPassageChooseCard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
+		=> AskForCards(cardPlayed, ps, cards, ChoiceType.SecretPassageChooseCard, OperationType.ReturnToDraw, 1, 1).Single();
+
+	public override StewardBenefit StewardChooseBenefit(Card cardPlayed, PlayerState ps, Kingdom k, List<StewardBenefit> allBenefits)
+		=> operationMapper.ToStewardBenefits(AskOperations(cardPlayed, ps, ChoiceType.StewardChooseBenefits, [null],
+			operationMapper.ToOperationTypes(allBenefits), 1, 1)).Single();
+
+	public override List<CardInstance> StewardChooseCardsToTrash(Card cardPlayed, PlayerState ps, Kingdom k, int count, List<CardInstance> cardSelection)
+		=> AskForCards(cardPlayed, ps, cardSelection, ChoiceType.StewardTrash, OperationType.Trash, count, count);
+
 	public override bool TorturerChooseCurse(Card cardPlayed, PlayerState ps, Kingdom k)
 		// todo potential null reference exception
 		=> AskOperations(cardPlayed, ps, ChoiceType.TorturerChoose, [null], [OperationType.Gain, OperationType.Discard],
@@ -135,63 +196,8 @@ public class Human(IPlayerStateObserver playerStateObserver, ICardMapper cardMap
 	public override List<CardInstance> TradingPostTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
 		=> AskForCards(cardPlayed, ps, cardSelection, ChoiceType.TradingPostTrash, OperationType.Trash, 2, 2);
 
-	public override List<CardInstance> SecretChamberDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
-		=> AskForCards(cardPlayed, ps, cardSelection, ChoiceType.SecretChamberDiscard, OperationType.Discard, 0, cardSelection.Count);
-
-	// TODO any order!
-	public override List<CardInstance> SecretChamberPutOnDeck(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection, int count)
-		=> AskForCards(cardPlayed, ps, cardSelection, ChoiceType.SecretChamberPutOnDeck, OperationType.PutOnTop, count, count);
-
-	public override List<CardInstance> ScoutOrderCards(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
-	{
-		// TODO any order!
-		throw new NotImplementedException();
-	}
-
-	public override List<CardInstance> DiplomatDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection, int count)
-		=> AskForCards(cardPlayed, ps, cardSelection, ChoiceType.DiplomatDiscard, OperationType.Discard, count, count);
-
-	public override bool LurkerTrash(Card cardPlayed, PlayerState ps, Kingdom k)
-		// todo potential null reference exception
-		=> AskOperations(cardPlayed, ps, ChoiceType.LurkerChoose, [null], [OperationType.Gain, OperationType.Trash], 1, 1, message: "Trash or gain this card.").Single() == OperationType.Trash;
-
-	public override CardInstance LurkerChooseCardToTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
-		=> AskForCards(cardPlayed, ps, cards, ChoiceType.LurkerTrash, OperationType.Trash, 1, 1).Single();
-
-	public override CardInstance LurkerChooseCardToGain(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
-		=> AskForCards(cardPlayed, ps, cards, ChoiceType.LurkerGain, OperationType.Gain, 1, 1).Single();
-
-	public override bool MillWantsToDiscard(Card cardPlayed, PlayerState ps, Kingdom k)
-		=> AskYesNo(cardPlayed, ps, ChoiceType.MillDiscard, OperationType.Discard);
-
-	public override List<CardInstance> MillChooseCardsToDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards, int count)
-		=> AskForCards(cardPlayed, ps, cards, ChoiceType.MillDiscard, OperationType.Discard, count, count);
-
-
-	public override List<CardInstance> PatrolOrderCards(Card cardPlayed, PlayerState playerState, Kingdom kingdom, List<CardInstance> cards)
-	{
-		throw new NotImplementedException();
-	}
-
-	public override CardInstance ReplaceTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
-		=> AskForCards(cardPlayed, ps, cardSelection, ChoiceType.ReplaceTrash, OperationType.Trash, 1, 1).Single();
-	public override CardInstance CourtierReveal(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
-		=> AskForCards(cardPlayed, ps, cards, ChoiceType.CourtierReveal, OperationType.Reveal, 1, 1).Single();
-	public override List<CourtierBenefit> CourtierChooseBenefits(Card cardPlayed, PlayerState ps, Kingdom k, int benefitCount, List<CourtierBenefit> availableBenefits)
-		=> operationMapper.ToCourtierBenefits(AskOperations(cardPlayed, ps, ChoiceType.CourtierChooseBenefits, [null],
-			operationMapper.ToOperationTypes(availableBenefits), benefitCount, benefitCount));
-	public override List<PawnBenefit> PawnChooseBenefits(Card cardPlayed, PlayerState ps, Kingdom k, int benefitCount, List<PawnBenefit> availableBenefits)
-		=> operationMapper.ToPawnBenefits(AskOperations(cardPlayed, ps, ChoiceType.PawnChooseBenefits, [null],
-			operationMapper.ToOperationTypes(availableBenefits), benefitCount, benefitCount));
-	public override StewardBenefit StewardChooseBenefit(Card cardPlayed, PlayerState ps, Kingdom k, List<StewardBenefit> allBenefits)
-		=> operationMapper.ToStewardBenefits(AskOperations(cardPlayed, ps, ChoiceType.StewardChooseBenefits, [null],
-			operationMapper.ToOperationTypes(allBenefits), 1, 1)).Single();
-	public override List<CardInstance> StewardChooseCardsToTrash(Card cardPlayed, PlayerState ps, Kingdom k, int count, List<CardInstance> cardSelection)
-		=> AskForCards(cardPlayed, ps, cardSelection, ChoiceType.StewardTrash, OperationType.Trash, count, count);
 	public override CardInstance UpgradeTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
 		=> AskForCards(cardPlayed, ps, cards, ChoiceType.UpgradeTrash, OperationType.Trash, 1, 1).Single();
-	public override CardInstance SecretPassageChooseCard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
-		=> AskForCards(cardPlayed, ps, cards, ChoiceType.SecretPassageChooseCard, OperationType.ReturnToDraw, 1, 1).Single();
 
 	public override CardName WishingWellGuess(Card cardPlayed, PlayerState ps, Kingdom k, List<CardName> cardTypes)
 	{
