@@ -10,6 +10,8 @@ public class Copper : Card
 		copper = this;
 	}
 
+	public override int GetCountInKingdomPile(int playerCount) => 60;
+
 	public static Copper Get() => copper ?? new Copper();
 
 	protected override void TreasureEffect(IPlayer player)

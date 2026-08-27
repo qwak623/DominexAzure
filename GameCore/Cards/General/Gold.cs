@@ -10,5 +10,7 @@ public class Gold : Card
 		gold = this;
 	}
 
+	public override int GetCountInKingdomPile(int playerCount) => 30;
+
 	public static Gold Get() => gold ?? new Gold();
 }

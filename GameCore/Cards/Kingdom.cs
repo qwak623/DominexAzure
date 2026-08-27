@@ -16,31 +16,7 @@ public class Kingdom : IEnumerable<KingdomPile>
 	public Kingdom(List<Card> cards, int playerCount, IKingdomObserver kingdomObserver = null)
 	{
 		kingdomPiles = cards.AddRequiredCards()
-			.Select(card =>
-			{
-				int count = 10;
-				if (card.Name == CardName.Curse)
-				{
-					count = (playerCount - 1) * 10;
-				}
-				else if (card.IsVictory)
-				{
-					count = playerCount == 2 ? 8 : 12;
-				}
-				else if (card.Name == CardName.Copper)
-				{
-					count = 60;
-				}
-				else if (card.Name == CardName.Silver)
-				{
-					count = 40;
-				}
-				else if (card.Name == CardName.Gold)
-				{
-					count = 30;
-				}
-				return new KingdomPile(this, card, count);
-			})
+			.Select(card => new KingdomPile(this, card, card.GetCountInKingdomPile(playerCount)))
 			.ToList();
 
 		for (int i = 0; i < kingdomPiles.Count; i++)

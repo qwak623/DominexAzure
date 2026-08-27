@@ -9,6 +9,7 @@ public abstract class Card
 	public int AddCoins { get; protected init; }
 	public int DrawCards { get; protected init; }
 	public int Coins { get; protected init; }
+	public int VictoryPoints { get; protected init; }
 
 
 	public List<CardType> CardTypes { get; protected init; }
@@ -23,7 +24,6 @@ public abstract class Card
 	// TODO je to trochu divné, asi by to chtělo dát jinam a rozdělit podle funkce
 	public string Message { get; protected init; }
 
-	public int VictoryPoints { get; protected init; }
 
 	protected Card(CardType type)
 	{
@@ -39,6 +39,15 @@ public abstract class Card
 	{
 		var price = DefaultPrice - (playerState?.TempEffects?.GeneralCostReduction ?? 0);
 		return price < 0 ? 0 : price;
+	}
+
+	public virtual int GetCountInKingdomPile(int playerCount)
+	{
+		if (IsVictory)
+		{
+			return (playerCount == 2) ? 8 : 12;
+		}
+		return 10;
 	}
 
 	/// <summary>

@@ -10,5 +10,7 @@ public class Silver : Card
 		silver = this;
 	}
 
+	public override int GetCountInKingdomPile(int playerCount) => 40;
+
 	public static Silver Get() => silver ?? new Silver();
 }

@@ -10,5 +10,17 @@ public class Province : Card
 		VictoryPoints = 6;
 	}
 
+	public override int GetCountInKingdomPile(int playerCount)
+	{
+		return playerCount switch
+		{
+			2 => 8,
+			3 or 4 => 12,
+			5 => 15,
+			6 => 18,
+			_ => throw new InvalidOperationException()
+		};
+	}
+
 	public static Province Get() => province ?? new Province();
 }

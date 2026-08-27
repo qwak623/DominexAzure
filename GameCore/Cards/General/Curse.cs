@@ -11,5 +11,7 @@ public class Curse : Card
 		VictoryPoints = -1;
 	}
 
+	public override int GetCountInKingdomPile(int playerCount) => (playerCount - 1) * 10;
+
 	public static Curse Get() => curse ?? new Curse();
 }
