@@ -61,6 +61,8 @@ public class Human(IPlayerStateObserver playerStateObserver, ICardMapper cardMap
 	public override List<CardInstance> CellarDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
 		=> AskForCards(cardPlayed, ps, cardSelection, ChoiceType.CellarDiscard, OperationType.Discard, 0, cardSelection.Count,
 			message: "Discard any number of cards.");
+	public override CardInstance HarbingerPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
+		=> AskForCards(cardPlayed, ps, cardSelection, ChoiceType.HarbingerPutOnTop, OperationType.PutOnTop, 0, 1).FirstOrDefault();
 
 	public override bool ChancellorDiscard(Card cardPlayed, PlayerState ps, Kingdom k)
 		=> AskYesNo(cardPlayed, ps, ChoiceType.ChancellorDiscard, OperationType.Discard, [null]); // TODO NullReferenceException

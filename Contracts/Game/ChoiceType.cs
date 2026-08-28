@@ -47,4 +47,5 @@ public enum ChoiceType
 	SecretPassageChooseCard,
 	BanditTrash,
 	ArtisanPutOnTop,
+	HarbingerPutOnTop,
 }

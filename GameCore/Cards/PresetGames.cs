@@ -17,6 +17,7 @@ public static class PresetGames
 		Feast.Get(),
 		Festival.Get(),
 		Gardens.Get(),
+		Harbinger.Get(),
 		Chancellor.Get(),
 		Chapel.Get(),
 		Laboratory.Get(),

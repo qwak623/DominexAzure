@@ -27,6 +27,7 @@ public abstract class User : IUser
 	public abstract CardInstance BanditTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards);
 	public abstract CardInstance BureaucratPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection);
 	public abstract List<CardInstance> CellarDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection);
+	public abstract CardInstance HarbingerPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection);
 	public abstract bool ChancellorDiscard(Card cardPlayed, PlayerState ps, Kingdom k);
 	public abstract List<CardInstance> ChapelTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection);
 	public abstract bool LibrarySkip(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance c);

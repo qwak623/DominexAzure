@@ -125,6 +125,9 @@ public class ProvincialAI : User
 	public override List<CardInstance> CellarDiscard(Card c, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
 		=> cardSelection.Where(c => c.IsVictory && !c.IsTreasure && !c.IsAction).ToList();
 
+	public override CardInstance HarbingerPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
+		=> cardSelection.First();
+
 	public override bool ChancellorDiscard(Card c, PlayerState ps, Kingdom k) => false;
 
 	public override List<CardInstance> ChapelTrash(Card c, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)

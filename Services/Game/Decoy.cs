@@ -39,6 +39,8 @@ public class Decoy : User
 		return [];
 	}
 
+	public override CardInstance HarbingerPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection) => null;
+
 	public override bool ChancellorDiscard(Card cardPlayed, PlayerState ps, Kingdom k)
 	{
 		return false;

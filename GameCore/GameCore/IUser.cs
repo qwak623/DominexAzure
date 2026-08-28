@@ -18,6 +18,7 @@ public interface IUser
 	CardInstance BanditTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards);
 	CardInstance BureaucratPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection);
 	List<CardInstance> CellarDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection);
+	CardInstance HarbingerPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection);
 	bool ChancellorDiscard(Card cardPlayed, PlayerState ps, Kingdom k);
 	List<CardInstance> ChapelTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection);
 	bool LibrarySkip(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance c);
