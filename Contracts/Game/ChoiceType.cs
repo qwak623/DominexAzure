@@ -51,4 +51,5 @@ public enum ChoiceType
 	PoacherDiscard,
 	SentryTrash,
 	SentryDiscard,
+	VassalPlay,
 }

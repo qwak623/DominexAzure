@@ -65,13 +65,13 @@ public class Human(IPlayerStateObserver playerStateObserver, ICardMapper cardMap
 		=> AskForCards(cardPlayed, ps, cardSelection, ChoiceType.HarbingerPutOnTop, OperationType.PutOnTop, 0, 1).FirstOrDefault();
 
 	public override bool ChancellorDiscard(Card cardPlayed, PlayerState ps, Kingdom k)
-		=> AskYesNo(cardPlayed, ps, ChoiceType.ChancellorDiscard, OperationType.Discard, [null]); // TODO NullReferenceException
+		=> AskYesNo(cardPlayed, ps, ChoiceType.ChancellorDiscard, OperationType.Discard);
 
 	public override List<CardInstance> ChapelTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
 		=> AskForCards(cardPlayed, ps, cardSelection, ChoiceType.ChapelTrash, OperationType.Trash, 0, Math.Min(cardSelection.Count, 4));
 
 	public override bool LibrarySkip(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance c)
-		=> AskYesNo(cardPlayed, ps, ChoiceType.LibrarySkip, OperationType.Skip, [cardMapper.ToCardDtoWithIndex(c, 0, ps)]);
+		=> AskYesNo(cardPlayed, ps, ChoiceType.LibrarySkip, OperationType.Skip, cardMapper.ToCardDtoWithIndex(c, 0, ps));
 
 	public override List<CardInstance> MilitiaDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection, int discardCount)
 		=> AskForCards(cardPlayed, ps, cardSelection, ChoiceType.MilitiaDiscard, OperationType.Discard, discardCount, discardCount);
@@ -81,7 +81,7 @@ public class Human(IPlayerStateObserver playerStateObserver, ICardMapper cardMap
 
 	public override bool MoneylenderTrash(Card cardPlayed, PlayerState playerState, Kingdom kingdom)
 		=> AskYesNo(cardPlayed, playerState, ChoiceType.MoneylenderTrash, OperationType.Trash,
-			[cardMapper.ToCardDto(Copper.Get(), playerState)]);
+			cardMapper.ToCardDto(Copper.Get(), playerState));
 
 	public override List<CardInstance> PoacherDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection, int discardCount)
 		=> AskForCards(cardPlayed, ps, cardSelection, ChoiceType.PoacherDiscard, OperationType.Discard, discardCount, discardCount);
@@ -119,11 +119,14 @@ public class Human(IPlayerStateObserver playerStateObserver, ICardMapper cardMap
 
 	public override CardInstance ThroneRoomPlay(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
 		=> AskForCards(cardPlayed, ps, cards, ChoiceType.ThroneRoomPlay, OperationType.Play, 0, 1).SingleOrDefault();
+
+	public override bool VassalPlay(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance card)
+		=> AskYesNo(cardPlayed, ps, ChoiceType.VassalPlay, OperationType.Play, cardMapper.ToCardDtoWithIndex(card, 0, ps));
 	#endregion cards base
 
 	#region cards intrique
 	public override bool BaronDiscard(Card cardPlayed, PlayerState ps, Kingdom kingdom)
-		=> AskYesNo(cardPlayed, ps, ChoiceType.BaronDiscard, OperationType.Discard, [cardMapper.ToCardDto(Estate.Get(), ps)]);
+		=> AskYesNo(cardPlayed, ps, ChoiceType.BaronDiscard, OperationType.Discard, cardMapper.ToCardDto(Estate.Get(), ps));
 
 	public override List<CourtierBenefit> CourtierChooseBenefits(Card cardPlayed, PlayerState ps, Kingdom k, int benefitCount, List<CourtierBenefit> availableBenefits)
 		=> operationMapper.ToCourtierBenefits(AskOperations(cardPlayed, ps, ChoiceType.CourtierChooseBenefits, [null],
@@ -161,17 +164,17 @@ public class Human(IPlayerStateObserver playerStateObserver, ICardMapper cardMap
 		=> AskYesNo(cardPlayed, ps, ChoiceType.MillDiscard, OperationType.Discard);
 
 	public override bool MiningVillageTrash(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance c)
-		=> AskYesNo(cardPlayed, ps, ChoiceType.MasqueradeTrash, OperationType.Trash, [cardMapper.ToCardDtoWithIndex(c, 0, ps)]);
+		=> AskYesNo(cardPlayed, ps, ChoiceType.MasqueradeTrash, OperationType.Trash, cardMapper.ToCardDtoWithIndex(c, 0, ps));
 
 	public override bool MinionDiscard(Card cardPlayed, PlayerState ps, Kingdom k)
 		// todo potential null reference exception
 		// todo better options - discard or gain 2 coins
-		=> AskYesNo(cardPlayed, ps, ChoiceType.MinionDiscard, OperationType.Discard, [null]);
+		=> AskYesNo(cardPlayed, ps, ChoiceType.MinionDiscard, OperationType.Discard);
 
 	public override bool NoblesChooseCards(Card cardPlayed, PlayerState ps, Kingdom kingdom)
 		// todo potential null reference exception
 		// todo better options - draw 3 cards or gain 2 actions
-		=> AskYesNo(cardPlayed, ps, ChoiceType.MinionDiscard, OperationType.Pass, [null]);
+		=> AskYesNo(cardPlayed, ps, ChoiceType.MinionDiscard, OperationType.Pass);
 
 	public override List<CardInstance> PatrolOrderCards(Card cardPlayed, PlayerState playerState, Kingdom kingdom, List<CardInstance> cards)
 	{
@@ -255,8 +258,7 @@ public class Human(IPlayerStateObserver playerStateObserver, ICardMapper cardMap
 	/// question, if anything - most of these don't have a real card selection, just a single
 	/// accept/decline choice.
 	/// </summary>
-	private bool AskYesNo(Card cardPlayed, PlayerState ps, ChoiceType choiceType, OperationType op,
-		IEnumerable<CardDto> cards = null, string message = null)
+	private bool AskYesNo(Card cardPlayed, PlayerState ps, ChoiceType choiceType, OperationType op, CardDto cardDto = null, string message = null)
 	{
 		var answer = CallClient(new ChoiceDto
 		(
@@ -264,7 +266,7 @@ public class Human(IPlayerStateObserver playerStateObserver, ICardMapper cardMap
 			choiceType,
 			min: 0,
 			max: 1,
-			cards: cards ?? [],
+			cards: cardDto == null ? [] : [cardDto],
 			operations: [OperationType.Default, op],
 			message: message
 		));

@@ -296,6 +296,7 @@ public class ProvincialAI : User
 				where m == c.Card.Score(ps.Hand.Select(a => a.Card), ps, Phase.Action)
 				select c).FirstOrDefault();
 	}
+	public override bool VassalPlay(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance card) => true;
 	#endregion cards base
 
 	#region cards intrique

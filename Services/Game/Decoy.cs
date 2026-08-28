@@ -113,6 +113,7 @@ public class Decoy : User
 	{
 		return null;
 	}
+	public override bool VassalPlay(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance card) => true;
 	#endregion cards base
 
 	#region cards intrique

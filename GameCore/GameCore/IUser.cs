@@ -1,5 +1,4 @@
 using GameCore.Cards;
-using GameCore.Cards.Base;
 using GameCore.Cards.Intrique;
 using GameCore.Observers;
 
@@ -34,6 +33,7 @@ public interface IUser
 	CardInstance ThiefChoose(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards);
 	bool ThiefSteal(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance c);
 	CardInstance ThroneRoomPlay(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards);
+	bool VassalPlay(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance card);
 	#endregion cards base
 
 	#region cards intrique

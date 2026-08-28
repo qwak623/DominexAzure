@@ -35,6 +35,7 @@ public static class PresetGames
 		Spy.Get(),
 		Thief.Get(),
 		ThroneRoom.Get(),
+		Vassal.Get(),
 		Village.Get(),
 		Witch.Get(),
 		Woodcutter.Get(),

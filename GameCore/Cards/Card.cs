@@ -173,7 +173,7 @@ public abstract class Card
 			CardName.Harbinger => Base.Harbinger.Get(),
 			CardName.Merchant => Base.Merchant.Get(),
 			CardName.Poacher => Base.Poacher.Get(),
-			CardName.Vassal => throw new NotImplementedException(),
+			CardName.Vassal => Base.Vassal.Get(),
 			CardName.Courtyard => Intrique.Courtyard.Get(),
 			CardName.Pawn => Intrique.Pawn.Get(),
 			CardName.Sentry => Base.Sentry.Get(),

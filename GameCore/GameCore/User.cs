@@ -43,6 +43,7 @@ public abstract class User : IUser
 	public abstract CardInstance ThiefChoose(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards);
 	public abstract bool ThiefSteal(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance c);
 	public abstract CardInstance ThroneRoomPlay(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards);
+	public abstract bool VassalPlay(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance card);
 	#endregion cards base
 
 	#region cards intrique
