@@ -45,4 +45,6 @@ public enum ChoiceType
 	StewardChooseBenefits,
 	UpgradeTrash,
 	SecretPassageChooseCard,
+	BanditTrash,
+	ArtisanPutOnTop,
 }

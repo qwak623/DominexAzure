@@ -48,8 +48,11 @@ public class Human(IPlayerStateObserver playerStateObserver, ICardMapper cardMap
 	// todo kingdom - možná by to nemuselo být tady
 
 	#region cards base
-	public override CardInstance CourtyardPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
-	=> AskForCards(cardPlayed, ps, cards, ChoiceType.CourtyardPutOnTop, OperationType.PutOnTop, 1, 1).Single();
+	public override CardInstance ArtisanPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
+		=> AskForCards(cardPlayed, ps, cards, ChoiceType.ArtisanPutOnTop, OperationType.PutOnTop, 1, 1).Single();
+
+	public override CardInstance BanditTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
+		=> AskForCards(cardPlayed, ps, cards, ChoiceType.BanditTrash, OperationType.Trash, 1, 1).Single();
 
 	public override CardInstance BureaucratPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
 		=> AskForCards(cardPlayed, ps, cardSelection, ChoiceType.BureaucratPutOnTop, OperationType.PutOnTop, 1, 1,

@@ -9,6 +9,8 @@ public static class PresetGames
 	[
 		// base cards
 		Adventurer.Get(),
+		Artisan.Get(),
+		Bandit.Get(),
 		Bureaucrat.Get(),
 		Cellar.Get(),
 		CouncilRoom.Get(),
