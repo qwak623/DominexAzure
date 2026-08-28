@@ -23,6 +23,7 @@ public abstract class User : IUser
 	public virtual void SetCanCelationTokenSource(CancellationTokenSource tokenSource) { }
 
 	#region cards base
+	public abstract CardInstance ArtisanPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards);
 	public abstract CardInstance BureaucratPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection);
 	public abstract List<CardInstance> CellarDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection);
 	public abstract bool ChancellorDiscard(Card cardPlayed, PlayerState ps, Kingdom k);

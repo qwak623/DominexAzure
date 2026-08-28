@@ -115,6 +115,8 @@ public class ProvincialAI : User
 		=> SelectCardToGain(wrapper, ps, k, phase);
 
 	#region cards base
+	public override CardInstance ArtisanPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards) => cards.First();
+
 	public override CardInstance BureaucratPutOnTop(Card c, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
 		=> cardSelection.First();
 

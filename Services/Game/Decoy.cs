@@ -23,6 +23,7 @@ public class Decoy : User
 	}
 
 	#region cards base
+	public override CardInstance ArtisanPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards) => cards.First();
 	public override CardInstance BureaucratPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
 	{
 		if (cardSelection.Count == 0)

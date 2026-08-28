@@ -1,4 +1,5 @@
 using GameCore.Cards;
+using GameCore.Cards.Base;
 using GameCore.Cards.Intrique;
 using GameCore.Observers;
 
@@ -13,6 +14,7 @@ public interface IUser
 	void SetCanCelationTokenSource(CancellationTokenSource tokenSource);
 
 	#region cards base
+	CardInstance ArtisanPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards);
 	CardInstance BureaucratPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection);
 	List<CardInstance> CellarDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection);
 	bool ChancellorDiscard(Card cardPlayed, PlayerState ps, Kingdom k);
