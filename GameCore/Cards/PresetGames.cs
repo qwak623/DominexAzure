@@ -23,6 +23,7 @@ public static class PresetGames
 		Laboratory.Get(),
 		Library.Get(),
 		Market.Get(),
+		Merchant.Get(),
 		Militia.Get(),
 		Mine.Get(),
 		Moat.Get(),

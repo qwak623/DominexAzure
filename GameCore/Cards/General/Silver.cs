@@ -12,5 +12,11 @@ public class Silver : Card
 
 	public override int GetCountInKingdomPile(int playerCount) => 40;
 
+	protected override void TreasureEffect(IPlayer player)
+	{
+		player.PlayerState.Coins += player.PlayerState.TempEffects.FirstSilverValueIncrease;
+		player.PlayerState.TempEffects.ClearFirstSilverValue();
+	}
+
 	public static Silver Get() => silver ?? new Silver();
 }
