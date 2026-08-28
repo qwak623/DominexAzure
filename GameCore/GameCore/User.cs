@@ -34,6 +34,7 @@ public abstract class User : IUser
 	public abstract List<CardInstance> MilitiaDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection, int discardCount);
 	public abstract CardInstance MineTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection);
 	public abstract bool MoneylenderTrash(Card cardPlayed, PlayerState ps, Kingdom k);
+	public abstract List<CardInstance> PoacherDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection, int discardCount);
 	public abstract CardInstance RemodelTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection);
 	public abstract bool SpyDiscard(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance c, Phase p);
 	public abstract CardInstance ThiefChoose(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards);

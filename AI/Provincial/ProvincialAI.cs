@@ -238,6 +238,9 @@ public class ProvincialAI : User
 
 	public override bool MoneylenderTrash(Card cardPlayed, PlayerState ps, Kingdom k) => true;
 
+	public override List<CardInstance> PoacherDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection, int discardCount)
+		=> cardSelection.Take(discardCount).ToList();
+
 	public override CardInstance RemodelTrash(Card c, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
 	{
 		var trash = cardSelection.Where(c => c.Card.Name == CardName.Curse);

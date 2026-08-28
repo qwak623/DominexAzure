@@ -83,6 +83,9 @@ public class Human(IPlayerStateObserver playerStateObserver, ICardMapper cardMap
 		=> AskYesNo(cardPlayed, playerState, ChoiceType.MoneylenderTrash, OperationType.Trash,
 			[cardMapper.ToCardDto(Copper.Get(), playerState)]);
 
+	public override List<CardInstance> PoacherDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection, int discardCount)
+		=> AskForCards(cardPlayed, ps, cardSelection, ChoiceType.PoacherDiscard, OperationType.Discard, discardCount, discardCount);
+
 	public override CardInstance RemodelTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
 		// todo nemůžeme remodelovat sám sebe
 		// todo min: 0 - neodpovida description - opravit

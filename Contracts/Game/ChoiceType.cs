@@ -48,4 +48,5 @@ public enum ChoiceType
 	BanditTrash,
 	ArtisanPutOnTop,
 	HarbingerPutOnTop,
+	PoacherDiscard,
 }

@@ -28,6 +28,7 @@ public static class PresetGames
 		Mine.Get(),
 		Moat.Get(),
 		Moneylender.Get(),
+		Poacher.Get(),
 		Remodel.Get(),
 		Smithy.Get(),
 		Spy.Get(),

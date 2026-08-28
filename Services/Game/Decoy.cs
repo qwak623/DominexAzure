@@ -71,6 +71,12 @@ public class Decoy : User
 		return true;
 	}
 
+	public override List<CardInstance> PoacherDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection, int discardCount)
+	{
+		return cardSelection.Take(discardCount).ToList();
+	}
+
+
 	public override CardInstance RemodelTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cardSelection)
 	{
 		return null;
