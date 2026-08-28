@@ -82,6 +82,18 @@ public class Decoy : User
 		return null;
 	}
 
+	public override List<CardInstance> SentryDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
+	{
+		return [];
+	}
+
+	public override List<CardInstance> SentryOrderCards(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards) => cards;
+
+	public override List<CardInstance> SentryTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
+	{
+		return [];
+	}
+
 	public override bool SpyDiscard(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance c, Phase p)
 	{
 		return false;

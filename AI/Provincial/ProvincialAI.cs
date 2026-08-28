@@ -263,6 +263,15 @@ public class ProvincialAI : User
 		return trash.FirstOrDefault();
 	}
 
+	public override List<CardInstance> SentryDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
+		=> [];
+
+	public override List<CardInstance> SentryOrderCards(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
+		=> cards;
+
+	public override List<CardInstance> SentryTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
+		=> cards.Where(c => c.Card.Name == CardName.Curse).ToList();
+
 	public override bool SpyDiscard(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance c, Phase p)
 	{
 		if (p == Phase.Attack)

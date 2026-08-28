@@ -30,6 +30,7 @@ public static class PresetGames
 		Moneylender.Get(),
 		Poacher.Get(),
 		Remodel.Get(),
+		Sentry.Get(),
 		Smithy.Get(),
 		Spy.Get(),
 		Thief.Get(),

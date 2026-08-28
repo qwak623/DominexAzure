@@ -49,4 +49,6 @@ public enum ChoiceType
 	ArtisanPutOnTop,
 	HarbingerPutOnTop,
 	PoacherDiscard,
+	SentryTrash,
+	SentryDiscard,
 }

@@ -91,6 +91,18 @@ public class Human(IPlayerStateObserver playerStateObserver, ICardMapper cardMap
 		// todo min: 0 - neodpovida description - opravit
 		=> AskForCards(cardPlayed, ps, cardSelection, ChoiceType.RemodelTrash, OperationType.Trash, 0, 1).SingleOrDefault();
 
+	public override List<CardInstance> SentryDiscard(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
+		=> AskForCards(cardPlayed, ps, cards, ChoiceType.SentryDiscard, OperationType.Discard, 0, cards.Count);
+
+	public override List<CardInstance> SentryOrderCards(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
+	{
+		// TODO any order!
+		throw new NotImplementedException();
+	}
+
+	public override List<CardInstance> SentryTrash(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
+		=> AskForCards(cardPlayed, ps, cards, ChoiceType.SentryTrash, OperationType.Trash, 0, cards.Count);
+
 	// todo lepší description - potřebujeme vědět, čí kartu zahazujeme
 	public override bool SpyDiscard(Card cardPlayed, PlayerState ps, Kingdom k, CardInstance c, Phase p)
 		=> AskOperations(cardPlayed, ps, ChoiceType.SpyDiscard, [cardMapper.ToCardDtoWithIndex(c, 0, ps)],
