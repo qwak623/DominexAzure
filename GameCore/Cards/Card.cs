@@ -207,6 +207,8 @@ public abstract class Card
 			CardName.Courtier => Intrique.Courtier.Get(),
 			CardName.Patrol => Intrique.Patrol.Get(),
 			CardName.Replace => Intrique.Replace.Get(),
+			CardName.Colony => Prosperity.Colony.Get(),
+			CardName.Platinum => Prosperity.Platinum.Get(),
 			_ => throw new NotImplementedException(),
 		};
 	}

@@ -46,9 +46,9 @@ public class GameFacade : IGameFacade
 		this.operationMapper = operationMapper;
 	}
 
-	public Task StartWithCards(IEnumerable<string> cardTypes, CancellationToken cancellationToken = default)
+	public Task StartWithCards(StartWithCardsRequest request, CancellationToken cancellationToken = default)
 	{
-		List<Card> cards = cardTypes
+		List<Card> cards = request.CardTypes
 			.Select(c =>
 			{
 				if (!Enum.TryParse<CardName>(c, out var cardType))
@@ -60,7 +60,7 @@ public class GameFacade : IGameFacade
 
 		var randomAI = new Decoy();
 
-		return Start(cards, randomAI);
+		return Start(cards, randomAI, request.AddColonyAndPlatinum);
 	}
 
 	public async Task<ChoiceDto> JoinGame(/*Dto<Guid> gameId, */Dto<int> playerId, CancellationToken cancellationToken = default)
@@ -178,13 +178,13 @@ public class GameFacade : IGameFacade
 		}
 	}
 
-	private async Task Start(List<Card> cards, User ai)
+	private async Task Start(List<Card> cards, User ai, bool addColonyAndPlatinum = false)
 	{
 		await Task.Yield();
 
 		if (Game is null)
 		{
-			kingdom = cards.GetKingdom(2, kingdomObserver);
+			kingdom = cards.GetKingdom(2, addColonyAndPlatinum, kingdomObserver);
 
 			var humanUser = new Human(playerStateObserver, cardMapper, operationMapper, CallClient);
 

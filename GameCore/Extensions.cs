@@ -23,16 +23,21 @@ public static class Extensions
 	/// <param name="cards"></param>
 	/// <param name="players"></param>
 	/// <returns></returns>
-	public static Kingdom GetKingdom(this List<Card> cards, int players, IKingdomObserver kingdomObserver = null)
+	public static Kingdom GetKingdom(this List<Card> cards, int players, bool addColonyAndPlatinum = false, IKingdomObserver kingdomObserver = null)
 	{
 		// this should be correct, since list of cards wont change at this point
-		return new Kingdom(cards, players, kingdomObserver);
+		return new Kingdom(cards, players, addColonyAndPlatinum, kingdomObserver);
 	}
 
-	public static List<Card> AddRequiredCards(this IEnumerable<Card> cards)
+	public static List<Card> AddRequiredCards(this IEnumerable<Card> cards, bool addPlatinumAndColony = false)
 	{
-		return cards.Concat(PresetGames.VictoryAndTreasures)
-			.Concat(cards.Select(c => c.RequiredCards).Where(c => c is not null).Distinct()).ToList();
+		var result = cards.Concat(PresetGames.VictoryAndTreasures)
+			.Concat(cards.Select(c => c.RequiredCards).Where(c => c is not null).Distinct());
+		if (addPlatinumAndColony)
+		{
+			result = result.Concat([Cards.Prosperity.Platinum.Get(), Cards.Prosperity.Colony.Get()]);
+		}
+		return result.ToList();
 	}
 
 	public static bool Contains(this IEnumerable<Card> cards, CardName type)

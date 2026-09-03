@@ -20,7 +20,11 @@ public partial class SinglePlayerMenu
 
 	private async Task ClickStart()
 	{
-		await GameFacade.StartWithCards(State.SelectedCards.Select(c => c.Type));
+		await GameFacade.StartWithCards(new StartWithCardsRequest
+		{
+			CardTypes = State.SelectedCards.Select(c => c.Type).ToList(),
+			AddColonyAndPlatinum = State.AddColonyAndPlatinum,
+		});
 
 		Navigation.NavigateTo(AppRoutes.Game.GamePage);
 	}

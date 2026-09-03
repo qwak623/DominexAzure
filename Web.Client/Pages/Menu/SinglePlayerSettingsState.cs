@@ -12,6 +12,8 @@ public class SinglePlayerSettingsState
 	public ImmutableList<CardDto> SelectedCards => allCards.Where(c => c.Selected).Select(c => c.Card).ToImmutableList();
 	public ImmutableList<CardDto> AllCards => allCards.Select(c => c.Card).ToImmutableList();
 
+	public bool AddColonyAndPlatinum { get; set; } = false;
+
 	public event Action OnChange;
 	public void NotifyChanged() => OnChange?.Invoke();
 

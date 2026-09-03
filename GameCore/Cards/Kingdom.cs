@@ -13,9 +13,9 @@ public class Kingdom : IEnumerable<KingdomPile>
 	private readonly Dictionary<CardName, int> cardTypeToIndex = [];
 	private int nextCardInstanceId = 0;
 
-	public Kingdom(List<Card> cards, int playerCount, IKingdomObserver kingdomObserver = null)
+	public Kingdom(List<Card> cards, int playerCount, bool addColonyAndPlatinum = false, IKingdomObserver kingdomObserver = null)
 	{
-		kingdomPiles = cards.AddRequiredCards()
+		kingdomPiles = cards.AddRequiredCards(addColonyAndPlatinum)
 			.Select(card => new KingdomPile(this, card, card.GetCountInKingdomPile(playerCount)))
 			.ToList();
 
