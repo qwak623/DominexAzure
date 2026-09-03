@@ -7,9 +7,11 @@ public interface IUser
 {
 	string GetName();
 	IPlayerStateObserver GetPlayerStateObserver();
-	CardInstance PlayCard(List<CardInstance> cards, PlayerState ps, Kingdom k, Phase phase, Card card = null);
-	CardInstance SelectCardToGain(KingdomWrapper wrapper, PlayerState ps, Kingdom k, Phase phase);
-	CardInstance SelectOptionalCardToGain(KingdomWrapper wrapper, PlayerState ps, Kingdom k, Phase phase);
+	CardInstance PlayActionCard(PlayerState ps, Kingdom k, List<CardInstance> cards);
+	CardInstance PlayReactionCard(Card attackingCard, PlayerState ps, Kingdom k, List<CardInstance> cards);
+	CardInstance SelectCardToBuy(PlayerState ps, Kingdom k, List<CardInstance> cards);
+	CardInstance SelectCardToGain(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards);
+	CardInstance SelectOptionalCardToGain(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards);
 	void SetCanCelationTokenSource(CancellationTokenSource tokenSource);
 
 	#region cards base

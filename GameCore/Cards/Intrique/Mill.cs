@@ -26,7 +26,7 @@ public class Mill : Card
 		}
 
 		List<CardInstance> cardsToDiscard = player.User.MillChooseCardsToDiscard(this, player.PlayerState, player.Game.Kingdom,
-			player.PlayerState.Hand.ToList(), Math.Min(2, player.PlayerState.Hand.Count));
+			player.PlayerState.Hand.ToList(), 2);
 		cardsToDiscard.ForEach(player.Discard);
 		if (cardsToDiscard.Count == 2)
 		{

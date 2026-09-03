@@ -39,12 +39,12 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 		user.Setup(u => u.MineTrash(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()))
 			.Returns(copperInHand);
 
-		// selection is pulled from the wrapper itself, so this only succeeds if silver ($3)
-		// genuinely passes the wrapper's own availability check at the computed threshold
-		KingdomWrapper wrapper = null;
-		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), Phase.Gain))
-			.Callback<KingdomWrapper, PlayerState, Kingdom, Phase>((kw, ps, k, p) => wrapper = kw)
-			.Returns(() => wrapper.GetCard(CardName.Silver));
+		// selection is pulled from the candidate list itself, so this only succeeds if silver
+		// ($3) genuinely passes the computed price threshold
+		List<CardInstance> availableCards = null;
+		user.Setup(u => u.SelectCardToGain(mine, It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()))
+			.Callback<Card, PlayerState, Kingdom, List<CardInstance>>((c, ps, k, cards) => availableCards = cards)
+			.Returns(() => availableCards.SingleOrDefault(c => c.Card.Name == CardName.Silver));
 		#endregion
 
 		#region act
@@ -60,9 +60,9 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 		AssertPile([mine], player.PlayerState.ActionsPlayed);
 		AssertPile([copper], player.Game.Trash);
 
-		Assert.IsTrue(wrapper.AvailableCards.Any(c => c.Card.Name == CardName.Silver));
-		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.MaxPrice == 3 && kw.OnlyTreasures),
-			It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), Phase.Gain), Times.Once);
+		Assert.IsTrue(availableCards.Any(c => c.Card.Name == CardName.Silver));
+		user.Verify(u => u.SelectCardToGain(mine, It.IsAny<PlayerState>(), It.IsAny<Kingdom>(),
+			It.Is<List<CardInstance>>(c => c.All(x => x.Card.IsTreasure && x.Card.GetPrice(player.PlayerState) <= 3))), Times.Once);
 		#endregion
 	}
 
@@ -102,8 +102,8 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 
 		user.Setup(u => u.MineTrash(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()))
 			.Returns(copperInHand);
-		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), Phase.Gain))
-			.Returns((CardInstance)null);
+		// no treasure is available to gain
+		EmptyKingdom();
 		#endregion
 
 		#region act
@@ -118,6 +118,9 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 		AssertPile([mine], player.PlayerState.CardsPlayed);
 		AssertPile([mine], player.PlayerState.ActionsPlayed);
 		AssertPile([copper], player.Game.Trash);
+
+		user.Verify(u => u.SelectCardToGain(It.IsAny<Card>(), It.IsAny<PlayerState>(),
+			It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()), Times.Never);
 		#endregion
 	}
 
@@ -135,16 +138,17 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 		user.SetupSequence(u => u.MineTrash(mine, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns(copperInHand).Returns(silverToGain);
 
-		// each resolution's selection is pulled from its own wrapper, so this only succeeds
-		// if silver ($3) and gold ($6) genuinely pass the wrapper's own availability check
-		// at their respective computed thresholds
+		// each resolution's selection is pulled from its own candidate list, so this only
+		// succeeds if silver ($3) and gold ($6) genuinely pass their respective computed
+		// price thresholds
 		var expectedGains = new Queue<CardName>([CardName.Silver, CardName.Gold]);
-		var wrappers = new List<KingdomWrapper>();
-		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
-			.Returns<KingdomWrapper, PlayerState, Kingdom, Phase>((kw, ps, k, p) =>
+		var seenCandidates = new List<List<CardInstance>>();
+		user.Setup(u => u.SelectCardToGain(mine, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
+			.Returns<Card, PlayerState, Kingdom, List<CardInstance>>((c, ps, k, cards) =>
 			{
-				wrappers.Add(kw);
-				return kw.GetCard(expectedGains.Dequeue());
+				seenCandidates.Add(cards);
+				var name = expectedGains.Dequeue();
+				return cards.SingleOrDefault(x => x.Card.Name == name);
 			});
 		#endregion
 
@@ -171,13 +175,13 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 		user.Verify(u => u.MineTrash(mine, player.PlayerState, player.Game.Kingdom,
 			It.Is<List<CardInstance>>(c => c.SequenceEqual(new List<CardInstance> { silverToGain }))), Times.Once);
 
-		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.MaxPrice == 3 && kw.OnlyTreasures),
-			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Once);
-		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.MaxPrice == 6 && kw.OnlyTreasures),
-			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Once);
+		user.Verify(u => u.SelectCardToGain(mine, player.PlayerState, player.Game.Kingdom,
+			It.Is<List<CardInstance>>(c => c.All(x => x.Card.IsTreasure) && c.Max(x => x.Card.GetPrice(player.PlayerState)) == 3)), Times.Once);
+		user.Verify(u => u.SelectCardToGain(mine, player.PlayerState, player.Game.Kingdom,
+			It.Is<List<CardInstance>>(c => c.All(x => x.Card.IsTreasure) && c.Max(x => x.Card.GetPrice(player.PlayerState)) == 6)), Times.Once);
 
-		Assert.IsTrue(wrappers[0].AvailableCards.Any(c => c.Card.Name == CardName.Silver));
-		Assert.IsTrue(wrappers[1].AvailableCards.Any(c => c.Card.Name == CardName.Gold));
+		Assert.IsTrue(seenCandidates[0].Any(c => c.Card.Name == CardName.Silver));
+		Assert.IsTrue(seenCandidates[1].Any(c => c.Card.Name == CardName.Gold));
 		#endregion
 	}
 
@@ -198,9 +202,9 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 			.Returns(copper1).Returns(copper2);
 
 		CardInstance silverToGain = null;
-		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
-			.Callback<KingdomWrapper, PlayerState, Kingdom, Phase>((kw, ps, k, p) =>
-				silverToGain = kw.AvailableCards.First(c => c.Card.Name == CardName.Silver))
+		user.Setup(u => u.SelectCardToGain(mine, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
+			.Callback<Card, PlayerState, Kingdom, List<CardInstance>>((c, ps, k, cards) =>
+				silverToGain = cards.First(x => x.Card.Name == CardName.Silver))
 			.Returns(() => silverToGain);
 		#endregion
 
@@ -227,8 +231,8 @@ public class PlayerMineTests : CardWithPlayerTestsBase
 		user.Verify(u => u.MineTrash(mine, player.PlayerState, player.Game.Kingdom,
 			It.Is<List<CardInstance>>(c => c.SequenceEqual(new List<CardInstance> { copper2, silver1 }))), Times.Once);
 
-		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.MaxPrice == 3 && kw.OnlyTreasures),
-			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Exactly(2));
+		user.Verify(u => u.SelectCardToGain(mine, player.PlayerState, player.Game.Kingdom,
+			It.Is<List<CardInstance>>(c => c.All(x => x.Card.IsTreasure && x.Card.GetPrice(player.PlayerState) <= 3))), Times.Exactly(2));
 		#endregion
 	}
 }

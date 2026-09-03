@@ -28,12 +28,10 @@ public class Swindler : Card
 
 		defender.Trash(cardToTrash);
 		var price = cardToTrash.Card.GetPrice(defender.PlayerState);
-		var cardToGain = attacker.User.SelectCardToGain(
-			new KingdomWrapper() { Kingdom = defender.Game.Kingdom, MinPrice = price, MaxPrice = price, PlayerState = defender.PlayerState },
-			defender.PlayerState, defender.Game.Kingdom, Phase.Action);
-		if (cardToGain != null)
-		{
-			defender.Gain(cardToGain);
-		}
+		var availableCards = new KingdomWrapper()
+		{ Kingdom = defender.Game.Kingdom, MinPrice = price, MaxPrice = price, PlayerState = defender.PlayerState }
+			.AvailableCards.ToList();
+		var cardToGain = attacker.User.SelectCardToGain(this, defender.PlayerState, defender.Game.Kingdom, availableCards);
+		defender.Gain(cardToGain);
 	}
 }

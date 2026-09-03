@@ -18,22 +18,16 @@ public class Lurker : Card
 		if (player.User.LurkerTrash(this, player.PlayerState, player.Game.Kingdom))
 		{
 			var cardSelection = player.Game.Kingdom.Where(c => !c.Empty && c.CardInstance.IsAction).Select(c => c.CardInstance).ToList();
-			if (cardSelection.Count != 0)
-			{
-				CardInstance cardToTrash = player.User.LurkerChooseCardToTrash(this, player.PlayerState, player.Game.Kingdom,
-					player.Game.Kingdom.Where(c => !c.Empty && c.CardInstance.IsAction).Select(c => c.CardInstance).ToList());
-				player.Trash(cardToTrash);
-			}
+			CardInstance cardToTrash = player.User.LurkerChooseCardToTrash(this, player.PlayerState, player.Game.Kingdom,
+				player.Game.Kingdom.Where(c => !c.Empty && c.CardInstance.IsAction).Select(c => c.CardInstance).ToList());
+			player.Trash(cardToTrash);
 		}
 		else
 		{
 			var cardSelection = player.Game.Trash.Where(c => c.IsAction).ToList();
-			if (cardSelection.Count != 0)
-			{
-				CardInstance cardToGain = player.User.LurkerChooseCardToGain(
-					this, player.PlayerState, player.Game.Kingdom, player.Game.Trash.Where(c => c.IsAction).ToList());
-				player.Gain(cardToGain);
-			}
+			CardInstance cardToGain = player.User.LurkerChooseCardToGain(
+				this, player.PlayerState, player.Game.Kingdom, player.Game.Trash.Where(c => c.IsAction).ToList());
+			player.Gain(cardToGain);
 		}
 	}
 }

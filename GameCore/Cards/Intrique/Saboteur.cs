@@ -36,12 +36,9 @@ public class Saboteur : Card
 				defender.Trash(card);
 				var maxGainPrice = card.Card.GetPrice(defender.PlayerState) - 2;
 
-				var cardToGain = defender.User.SelectOptionalCardToGain(defender.Game.Kingdom.GetWrapper(defender.PlayerState, maxGainPrice),
-					defender.PlayerState, defender.Game.Kingdom, Phase.Attack);
-				if (cardToGain != null)
-				{
-					defender.Gain(cardToGain);
-				}
+				var availableCards = defender.Game.Kingdom.GetWrapper(defender.PlayerState, maxGainPrice).AvailableCards.ToList();
+				var cardToGain = defender.User.SelectOptionalCardToGain(this, defender.PlayerState, defender.Game.Kingdom, availableCards);
+				defender.Gain(cardToGain);
 				break;
 			}
 			else

@@ -17,16 +17,15 @@ public class Replace : Card
 
 	protected override void ActionEffect(IPlayer player, CardInstance thisCard)
 	{
-		if (player.PlayerState.Hand.Count == 0)
+		var oldCard = player.User.ReplaceTrash(this, player.PlayerState, player.Game.Kingdom, player.PlayerState.Hand.ToList());
+		if (oldCard is null)
 		{
 			return;
 		}
-		var oldCard = player.User.ReplaceTrash(this, player.PlayerState, player.Game.Kingdom, player.PlayerState.Hand.ToList());
 		player.Trash(oldCard);
 
-		var newCard = player.User.SelectCardToGain(
-			player.Game.Kingdom.GetWrapper(player.PlayerState, oldCard.Card.GetPrice(player.PlayerState) + 2),
-			player.PlayerState, player.Game.Kingdom, Phase.Gain);
+		var availableCards = player.Game.Kingdom.GetWrapper(player.PlayerState, oldCard.Card.GetPrice(player.PlayerState) + 2).AvailableCards.ToList();
+		var newCard = player.User.SelectCardToGain(this, player.PlayerState, player.Game.Kingdom, availableCards);
 		if (newCard is null)
 		{
 			return;

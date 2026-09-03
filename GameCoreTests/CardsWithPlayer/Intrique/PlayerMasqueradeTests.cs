@@ -77,7 +77,7 @@ public class PlayerMasqueradeTests : CardWithPlayerTestsBase
 		user.Verify(u => u.MasqueradePass(masquerade, player.PlayerState, player.Game.Kingdom,
 			It.IsAny<List<CardInstance>>()), Times.Once);
 		user2.Verify(u => u.MasqueradePass(masquerade, player2.PlayerState, player.Game.Kingdom,
-			It.IsAny<List<CardInstance>>()), Times.Once);
+			It.IsAny<List<CardInstance>>()), Times.Never);
 		user.Verify(u => u.MasqueradeTrash(masquerade, player.PlayerState, player.Game.Kingdom,
 			It.IsAny<List<CardInstance>>()), Times.Once);
 		#endregion
@@ -255,11 +255,11 @@ public class PlayerMasqueradeTests : CardWithPlayerTestsBase
 		AssertPile([], player2.PlayerState.DiscardPile);
 
 		user2.Verify(u => u.MasqueradePass(masquerade, player2.PlayerState, player.Game.Kingdom,
-			It.IsAny<List<CardInstance>>()), Times.Once);
+			It.IsAny<List<CardInstance>>()), Times.Never);
 
 		// player2 is never even asked about a reaction - masquerade never calls DealAttack
-		user2.Verify(u => u.PlayCard(It.IsAny<List<CardInstance>>(), It.IsAny<PlayerState>(),
-			It.IsAny<Kingdom>(), Phase.Reaction, It.IsAny<Card>()), Times.Never);
+		user2.Verify(u => u.PlayReactionCard(It.IsAny<Card>(), It.IsAny<PlayerState>(),
+			It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()), Times.Never);
 		#endregion
 	}
 

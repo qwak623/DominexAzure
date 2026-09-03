@@ -5,7 +5,7 @@ using GameCore.Observers;
 namespace GameCore;
 public class Game : IGame
 {
-	private User[] users;
+	private readonly IUser[] users;
 	public List<IPlayer> Players { get; set; }
 	public Kingdom Kingdom { get; set; }
 	public Pile Trash { get; set; }
@@ -21,16 +21,16 @@ public class Game : IGame
 	/// <param name="kingdom">Kingdom has to be unique instance for each game.</param>
 	/// <param name="logger"></param>
 	/// <param name="tokenSource"></param>
-	public Game(User[] users, Kingdom kingdom, IGameLogger logger = null, CancellationTokenSource tokenSource = null)
+	public Game(IUser[] users, Kingdom kingdom, IGameLogger logger = null, CancellationTokenSource tokenSource = null)
 	{
-		foreach (var user in users)
+		this.users = [.. users.Select(u => new UserProxy(u))];
+		foreach (var user in this.users)
 		{
 			user.SetCanCelationTokenSource(tokenSource);
 		}
 
 		this.Logger = logger;
 		Kingdom = kingdom;
-		this.users = users;
 		Trash = new Pile();
 	}
 

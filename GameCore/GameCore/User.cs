@@ -13,14 +13,13 @@ public abstract class User : IUser
 	public abstract string GetName();
 
 	public virtual IPlayerStateObserver GetPlayerStateObserver() => null;
-
-	public abstract CardInstance PlayCard(List<CardInstance> cards, PlayerState ps, Kingdom k, Phase phase, Card card = null);
-
-	public abstract CardInstance SelectCardToGain(KingdomWrapper wrapper, PlayerState ps, Kingdom k, Phase phase);
-
-	public abstract CardInstance SelectOptionalCardToGain(KingdomWrapper wrapper, PlayerState ps, Kingdom k, Phase phase);
-
 	public virtual void SetCanCelationTokenSource(CancellationTokenSource tokenSource) { }
+
+	public abstract CardInstance PlayActionCard(PlayerState ps, Kingdom k, List<CardInstance> cards);
+	public abstract CardInstance PlayReactionCard(Card attackingCard, PlayerState ps, Kingdom k, List<CardInstance> cards);
+	public abstract CardInstance SelectCardToBuy(PlayerState ps, Kingdom k, List<CardInstance> cards);
+	public abstract CardInstance SelectCardToGain(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards);
+	public abstract CardInstance SelectOptionalCardToGain(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards);
 
 	#region cards base
 	public abstract CardInstance ArtisanPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards);

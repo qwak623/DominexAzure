@@ -25,11 +25,6 @@ public class Bureaucrat : Card
 	{
 		// TODO REVEAL hand with no victory cards
 		var victoryCards = def.PlayerState.Hand.Where(c => c.IsVictory).ToList();
-		if (victoryCards.Count == 0)
-		{
-			return;
-		}
-
 		var card = def.User.BureaucratPutOnTop(this, def.PlayerState, def.Game.Kingdom, victoryCards);
 		def.ReturnToDrawPile(card);
 	}

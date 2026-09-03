@@ -9,7 +9,10 @@ public class Thief : Card
 		Name = CardName.Thief;
 		DefaultPrice = 4;
 		thief = this;
-		Description = $"Each other player reveals the top 2 cards of his deck.{Environment.NewLine}If they revealed any Treasure cards, they trash one of them that you choose. You may gain any or all of these trashed cards. They discard the other revealed cards.";
+		Description = $"Each other player reveals the top 2 cards of his deck.{Environment.NewLine}" +
+			$"If they revealed any Treasure cards, they trash one of them that you choose. " +
+			$"You may gain any or all of these trashed cards. " +
+			$"They discard the other revealed cards.";
 		Message = "Choose treasure to steal or trash.";
 	}
 
@@ -27,7 +30,7 @@ public class Thief : Card
 		// selecting treasures
 		var treasures = cards.Where(c => c.IsTreasure).ToList();
 		// if there are treasure cards
-		if (treasures.Any())
+		if (treasures.Count != 0)
 		{
 			// TODO sjednotit thief choose a thief steal
 			// attacker has to pick one
@@ -49,16 +52,13 @@ public class Thief : Card
 
 			// the other one is discarded (if there is one)
 			var otherCard = cards.SingleOrDefault();
-			if (otherCard != null)
-			{
-				attacker.Game.Logger?.Log(new GameLog { PlayerId = defender.Name, Message = $"{defender.Name} discards {otherCard.Name}" });
-				defender.Discard(otherCard);
-			}
+			defender.Discard(otherCard);
+			attacker.Game.Logger?.Log(new GameLog { PlayerId = defender.Name, Message = $"{defender.Name} discards {otherCard.Name}" });
 		}
 		else
 		{
 			attacker.Game.Logger?.Log(new GameLog { PlayerId = defender.Name, Message = $"{defender.Name} discards all shown cards." });
-			defender.PlayerState.DiscardPile.MoveAll(cards);
+			cards.ToList().ForEach(defender.Discard);
 		}
 	}
 }

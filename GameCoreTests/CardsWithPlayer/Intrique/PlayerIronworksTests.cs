@@ -38,12 +38,12 @@ public class PlayerIronworksTests : CardWithPlayerTestsBase
 		player.PlayerState.Hand = CreatePile([ironworks]);
 		var ironworksToPlay = player.PlayerState.Hand[0];
 
-		// selection is pulled from the wrapper itself, so this only succeeds if village
-		// genuinely passes the wrapper's own availability check
-		KingdomWrapper wrapper = null;
-		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
-			.Callback<KingdomWrapper, PlayerState, Kingdom, Phase>((kw, ps, k, p) => wrapper = kw)
-			.Returns(() => wrapper.GetCard(CardName.Village));
+		// selection is pulled from the candidate list itself, so this only succeeds if village
+		// genuinely passes the computed availability check
+		List<CardInstance> availableCards = null;
+		user.Setup(u => u.SelectCardToGain(ironworks, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
+			.Callback<Card, PlayerState, Kingdom, List<CardInstance>>((c, ps, k, cards) => availableCards = cards)
+			.Returns(() => availableCards.SingleOrDefault(c => c.Card.Name == CardName.Village));
 		#endregion
 
 		#region act
@@ -58,9 +58,8 @@ public class PlayerIronworksTests : CardWithPlayerTestsBase
 		AssertPile([ironworks], player.PlayerState.CardsPlayed);
 		AssertPile([ironworks], player.PlayerState.ActionsPlayed);
 
-		Assert.AreEqual(4, wrapper.MaxPrice);
-		Assert.IsFalse(wrapper.OnlyTreasures);
-		Assert.IsTrue(wrapper.AvailableCards.Any(c => c.Card.Name == CardName.Village));
+		Assert.AreEqual(4, availableCards.Max(c => c.Card.GetPrice(player.PlayerState)));
+		Assert.IsTrue(availableCards.Any(c => c.Card.Name == CardName.Village));
 		#endregion
 	}
 
@@ -71,10 +70,10 @@ public class PlayerIronworksTests : CardWithPlayerTestsBase
 		player.PlayerState.Hand = CreatePile([ironworks]);
 		var ironworksToPlay = player.PlayerState.Hand[0];
 
-		KingdomWrapper wrapper = null;
-		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
-			.Callback<KingdomWrapper, PlayerState, Kingdom, Phase>((kw, ps, k, p) => wrapper = kw)
-			.Returns(() => wrapper.GetCard(CardName.Silver));
+		List<CardInstance> availableCards = null;
+		user.Setup(u => u.SelectCardToGain(ironworks, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
+			.Callback<Card, PlayerState, Kingdom, List<CardInstance>>((c, ps, k, cards) => availableCards = cards)
+			.Returns(() => availableCards.SingleOrDefault(c => c.Card.Name == CardName.Silver));
 		#endregion
 
 		#region act
@@ -88,7 +87,7 @@ public class PlayerIronworksTests : CardWithPlayerTestsBase
 		AssertPile([ironworks], player.PlayerState.CardsPlayed);
 		AssertPile([ironworks], player.PlayerState.ActionsPlayed);
 
-		Assert.IsTrue(wrapper.AvailableCards.Any(c => c.Card.Name == CardName.Silver));
+		Assert.IsTrue(availableCards.Any(c => c.Card.Name == CardName.Silver));
 		#endregion
 	}
 
@@ -100,10 +99,10 @@ public class PlayerIronworksTests : CardWithPlayerTestsBase
 		player.PlayerState.DrawPile = CreatePile([silver]);
 		var ironworksToPlay = player.PlayerState.Hand[0];
 
-		KingdomWrapper wrapper = null;
-		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
-			.Callback<KingdomWrapper, PlayerState, Kingdom, Phase>((kw, ps, k, p) => wrapper = kw)
-			.Returns(() => wrapper.GetCard(CardName.Estate));
+		List<CardInstance> availableCards = null;
+		user.Setup(u => u.SelectCardToGain(ironworks, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
+			.Callback<Card, PlayerState, Kingdom, List<CardInstance>>((c, ps, k, cards) => availableCards = cards)
+			.Returns(() => availableCards.SingleOrDefault(c => c.Card.Name == CardName.Estate));
 		#endregion
 
 		#region act
@@ -119,7 +118,7 @@ public class PlayerIronworksTests : CardWithPlayerTestsBase
 		AssertPile([ironworks], player.PlayerState.CardsPlayed);
 		AssertPile([ironworks], player.PlayerState.ActionsPlayed);
 
-		Assert.IsTrue(wrapper.AvailableCards.Any(c => c.Card.Name == CardName.Estate));
+		Assert.IsTrue(availableCards.Any(c => c.Card.Name == CardName.Estate));
 		#endregion
 	}
 
@@ -135,10 +134,10 @@ public class PlayerIronworksTests : CardWithPlayerTestsBase
 		player.PlayerState.TempEffects.ReduceCost(2);
 		var ironworksToPlay = player.PlayerState.Hand[0];
 
-		KingdomWrapper wrapper = null;
-		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
-			.Callback<KingdomWrapper, PlayerState, Kingdom, Phase>((kw, ps, k, p) => wrapper = kw)
-			.Returns(() => wrapper.GetCard(CardName.Harem));
+		List<CardInstance> availableCards = null;
+		user.Setup(u => u.SelectCardToGain(ironworks, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
+			.Callback<Card, PlayerState, Kingdom, List<CardInstance>>((c, ps, k, cards) => availableCards = cards)
+			.Returns(() => availableCards.SingleOrDefault(c => c.Card.Name == CardName.Harem));
 		#endregion
 
 		#region act
@@ -154,7 +153,7 @@ public class PlayerIronworksTests : CardWithPlayerTestsBase
 		AssertPile([ironworks], player.PlayerState.CardsPlayed);
 		AssertPile([ironworks], player.PlayerState.ActionsPlayed);
 
-		Assert.IsTrue(wrapper.AvailableCards.Any(c => c.Card.Name == CardName.Harem));
+		Assert.IsTrue(availableCards.Any(c => c.Card.Name == CardName.Harem));
 		#endregion
 	}
 
@@ -165,8 +164,7 @@ public class PlayerIronworksTests : CardWithPlayerTestsBase
 		player.PlayerState.Hand = CreatePile([ironworks]);
 		var ironworksToPlay = player.PlayerState.Hand[0];
 
-		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
-			.Returns((CardInstance)null);
+		EmptyKingdom();
 		#endregion
 
 		#region act
@@ -180,6 +178,9 @@ public class PlayerIronworksTests : CardWithPlayerTestsBase
 		AssertPile([], player.PlayerState.DiscardPile);
 		AssertPile([ironworks], player.PlayerState.CardsPlayed);
 		AssertPile([ironworks], player.PlayerState.ActionsPlayed);
+
+		user.Verify(u => u.SelectCardToGain(It.IsAny<Card>(), It.IsAny<PlayerState>(),
+			It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()), Times.Never);
 		#endregion
 	}
 
@@ -191,9 +192,9 @@ public class PlayerIronworksTests : CardWithPlayerTestsBase
 		var ironworksToPlay = player.PlayerState.Hand[0];
 
 		List<CardInstance> availableCards = null;
-		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
-			.Callback<KingdomWrapper, PlayerState, Kingdom, Phase>((kw, ps, k, p) => availableCards = kw.AvailableCards.ToList())
-			.Returns((CardInstance)null);
+		user.Setup(u => u.SelectCardToGain(ironworks, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
+			.Callback<Card, PlayerState, Kingdom, List<CardInstance>>((c, ps, k, cards) => availableCards = cards)
+			.Returns(() => availableCards.SingleOrDefault(c => c.Card.Name == CardName.Estate));
 		#endregion
 
 		#region act
@@ -202,10 +203,12 @@ public class PlayerIronworksTests : CardWithPlayerTestsBase
 
 		#region assert
 		// village ($3) and silver ($3) are within ironworks' cap, harem ($6) and duchy ($5) are not
-		Assert.IsTrue(availableCards.Any(c => c.Card.Name == CardName.Village));
-		Assert.IsTrue(availableCards.Any(c => c.Card.Name == CardName.Silver));
-		Assert.IsFalse(availableCards.Any(c => c.Card.Name == CardName.Harem));
-		Assert.IsFalse(availableCards.Any(c => c.Card.Name == CardName.Duchy));
+		user.Verify(u => u.SelectCardToGain(ironworks, player.PlayerState, player.Game.Kingdom,
+			It.Is<List<CardInstance>>(c => c.All(x => x.Card.GetPrice(player.PlayerState) <= 4) &&
+				c.Any(x => x.Card.Name == CardName.Village) &&
+				c.Any(x => x.Card.Name == CardName.Silver) &&
+				!c.Any(x => x.Card.Name == CardName.Harem) &&
+				!c.Any(x => x.Card.Name == CardName.Duchy))), Times.Once);
 		#endregion
 	}
 
@@ -220,12 +223,13 @@ public class PlayerIronworksTests : CardWithPlayerTestsBase
 			player.Game.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == ironworksToPlay))).Returns(ironworksToPlay);
 
 		var expectedGains = new Queue<CardName>([CardName.Village, CardName.Silver]);
-		var wrappers = new List<KingdomWrapper>();
-		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
-			.Returns<KingdomWrapper, PlayerState, Kingdom, Phase>((kw, ps, k, p) =>
+		var seenCandidates = new List<List<CardInstance>>();
+		user.Setup(u => u.SelectCardToGain(ironworks, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
+			.Returns<Card, PlayerState, Kingdom, List<CardInstance>>((c, ps, k, cards) =>
 			{
-				wrappers.Add(kw);
-				return kw.GetCard(expectedGains.Dequeue());
+				seenCandidates.Add(cards);
+				var name = expectedGains.Dequeue();
+				return cards.SingleOrDefault(x => x.Card.Name == name);
 			});
 		#endregion
 
@@ -244,9 +248,9 @@ public class PlayerIronworksTests : CardWithPlayerTestsBase
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
 			player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 
-		Assert.AreEqual(2, wrappers.Count);
-		Assert.IsTrue(wrappers[0].AvailableCards.Any(c => c.Card.Name == CardName.Village));
-		Assert.IsTrue(wrappers[1].AvailableCards.Any(c => c.Card.Name == CardName.Silver));
+		Assert.AreEqual(2, seenCandidates.Count);
+		Assert.IsTrue(seenCandidates[0].Any(c => c.Card.Name == CardName.Village));
+		Assert.IsTrue(seenCandidates[1].Any(c => c.Card.Name == CardName.Silver));
 		#endregion
 	}
 }

@@ -16,11 +16,11 @@ public class ThroneRoom : Card
 	protected override void ActionEffect(IPlayer player, CardInstance thisCard)
 	{
 		var actionCards = player.PlayerState.Hand.Where(c => c.IsAction);
-		if (!actionCards.Any())
+		var cardInstance = player.User.ThroneRoomPlay(this, player.PlayerState, player.Game.Kingdom, actionCards.ToList());
+		if (cardInstance is null)
 		{
 			return;
 		}
-		var cardInstance = player.User.ThroneRoomPlay(this, player.PlayerState, player.Game.Kingdom, actionCards.ToList());
 
 		player.PlayerState.CardsPlayed.Move(cardInstance);
 		var card = cardInstance.Card;

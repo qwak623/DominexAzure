@@ -2,6 +2,7 @@
 using GameCore.Cards.Base;
 using GameCore.Cards.GeneralCards;
 using GameCore.CardWithPlayer.Tests;
+using GameCore.GameCore;
 using Moq;
 
 namespace GameCore.CardsWithPlayer.Base.Tests;
@@ -113,11 +114,11 @@ public class PlayerBureaucratTests : CardWithPlayerTestsBase
 	}
 
 	[TestMethod]
-	[DataRow(0, 0)]
-	[DataRow(1, 1)]
-	[DataRow(2, 2)]
-	[DataRow(3, 2)]
-	public void ThroneRoomPlay(int provinceCount, int provincesPutOnTop)
+	[DataRow(0, 0, 0)]
+	[DataRow(1, 1, 0)]
+	[DataRow(2, 2, 1)]
+	[DataRow(3, 2, 2)]
+	public void ThroneRoomPlay(int provinceCount, int provincesPutOnTop, int userDecisions)
 	{
 		#region arrange
 		attacker.PlayerState.Hand = CreatePile([throneRoom, bureaucrat]);
@@ -164,7 +165,7 @@ public class PlayerBureaucratTests : CardWithPlayerTestsBase
 			attacker.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 
 		// defender's user is asked to choose a victory card to put on top given amount of times
-		defenderUser.Verify(du => du.BureaucratPutOnTop(bureaucrat, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Exactly(provincesPutOnTop));
+		defenderUser.Verify(du => du.BureaucratPutOnTop(bureaucrat, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Exactly(userDecisions));
 		#endregion
 	}
 }

@@ -9,7 +9,7 @@ public class ShantyTown : Card
 		DefaultPrice = 3;
 		AddActions = 2;
 		shantyTown = this;
-		Description = $"Reveal your hand. If you have no Action cads in hand, +2 Card.";
+		Description = $"Reveal your hand. If you have no Action cards in hand, +2 Card.";
 	}
 
 	public static ShantyTown Get() => shantyTown ?? new ShantyTown();

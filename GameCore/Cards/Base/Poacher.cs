@@ -17,14 +17,9 @@ public class Poacher : Card
 
 	protected override void ActionEffect(IPlayer player, CardInstance thisCard)
 	{
-		int discardCount = Math.Min(player.Game.Kingdom.Count(kp => kp.Empty), player.PlayerState.Hand.Count);
-		if (discardCount > 0)
-		{
-			var selectedCards = (discardCount >= player.PlayerState.Hand.Count)
-				? player.PlayerState.Hand.ToList()
-				: player.User.PoacherDiscard(this, player.PlayerState, player.Game.Kingdom, player.PlayerState.Hand.ToList(), discardCount);
-			selectedCards.ForEach(player.Discard);
-		}
+		int discardCount = player.Game.Kingdom.Count(kp => kp.Empty);
+		var selectedCards = player.User.PoacherDiscard(this, player.PlayerState, player.Game.Kingdom, player.PlayerState.Hand.ToList(), discardCount);
+		selectedCards.ForEach(player.Discard);
 	}
 }
 

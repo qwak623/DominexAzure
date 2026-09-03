@@ -19,20 +19,15 @@ public class ProvincialAI : User
 		this.name = name;
 	}
 
-	public override CardInstance PlayCard(List<CardInstance> cards, PlayerState ps, Kingdom k, Phase phase, Card attackCard)
+	public override CardInstance? PlayActionCard(PlayerState ps, Kingdom k, List<CardInstance> cards)
 	{
-		if (phase == Phase.Treasure)
-		{
-			return cards.FirstOrDefault(c => c.Card.IsTreasure);
-		}
-
 		float maxScore = 0;
-		CardInstance bestCard = null;
+		CardInstance? bestCard = null;
 		foreach (var c in cards)
 		{
 			var neco = Data.GetPriorityList()[(int)c.Card.Name];
 
-			float score = c.Card.Score(cards.Select(c => c.Card), ps, phase);
+			float score = c.Card.Score(cards.Select(c => c.Card), ps, Phase.Action);
 			if (score >= maxScore)
 			{
 				maxScore = score;
@@ -43,20 +38,42 @@ public class ProvincialAI : User
 		return bestCard;
 	}
 
-	public override CardInstance? SelectCardToGain(KingdomWrapper wrapper, PlayerState ps, Kingdom k, Phase phase)
+	public override CardInstance? PlayReactionCard(Card attackingCard, PlayerState ps, Kingdom k, List<CardInstance> cards)
+	{
+		float maxScore = 0;
+		CardInstance? bestCard = null;
+		foreach (var c in cards)
+		{
+			var neco = Data.GetPriorityList()[(int)c.Card.Name];
+
+			float score = c.Card.Score(cards.Select(c => c.Card), ps, Phase.Reaction);
+			if (score >= maxScore)
+			{
+				maxScore = score;
+				bestCard = c;
+			}
+		}
+
+		return bestCard;
+	}
+
+	public override CardInstance? SelectCardToBuy(PlayerState ps, Kingdom k, List<CardInstance> availableCards)
+		=> SelectCardToGain(null, ps, k, availableCards);
+
+	public override CardInstance? SelectCardToGain(Card? cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> availableCards)
 	{
 		var provinces = k.GetPile(CardName.Province);
-		if (buyAgenda.Provinces > provinces.Count && wrapper.GetCard(CardName.Province) is not null)
+		if (buyAgenda.Provinces > provinces.Count && availableCards.Any(c => c.Card.Name == CardName.Province))
 		{
 			return k.GetPile(CardName.Province).CardInstance;
 		}
 
-		if (buyAgenda.Duchies > provinces.Count && wrapper.GetCard(CardName.Duchy) is not null)
+		if (buyAgenda.Duchies > provinces.Count && availableCards.Any(c => c.Card.Name == CardName.Duchy))
 		{
 			return k.GetPile(CardName.Duchy).CardInstance;
 		}
 
-		if (buyAgenda.Estates > provinces.Count && wrapper.GetCard(CardName.Estate) is not null)
+		if (buyAgenda.Estates > provinces.Count && availableCards.Any(c => c.Card.Name == CardName.Estate))
 		{
 			return k.GetPile(CardName.Estate).CardInstance;
 		}
@@ -69,7 +86,7 @@ public class ProvincialAI : User
 				continue;
 			}
 
-			var cardInstance = wrapper.GetCard(tuple.Card);
+			var cardInstance = availableCards.First(c => c.Card.Name == tuple.Card);
 			if (cardInstance is null)
 			{
 				continue;
@@ -111,8 +128,8 @@ public class ProvincialAI : User
 
 	// the buy heuristic above already declines (returns null) when nothing on the agenda is
 	// available, so it doubles as a reasonable "is this worth gaining" check for optional gains
-	public override CardInstance SelectOptionalCardToGain(KingdomWrapper wrapper, PlayerState ps, Kingdom k, Phase phase)
-		=> SelectCardToGain(wrapper, ps, k, phase);
+	public override CardInstance? SelectOptionalCardToGain(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> availableCards)
+		=> SelectCardToGain(cardPlayed, ps, k, availableCards);
 
 	#region cards base
 	public override CardInstance ArtisanPutOnTop(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards) => cards.First();
@@ -153,7 +170,7 @@ public class ProvincialAI : User
 
 		// trash only unnecesary coppers
 		int coins = cards.Select(c => c.Card.Coins).Sum() + ps.Coins;
-		var card = SelectCardToGain(k.GetWrapper(ps, coins), ps, k, Phase.Buy);
+		var card = SelectCardToBuy(ps, k, k.GetWrapper(ps, coins).AvailableCards.ToList());
 		int price = card is null ? 0 : card.Card.GetPrice(ps);
 
 		if (playerInfo.TreasureTotal > 3)

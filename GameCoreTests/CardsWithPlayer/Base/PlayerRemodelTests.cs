@@ -39,12 +39,12 @@ public class PlayerRemodelTests : CardWithPlayerTestsBase
 		user.Setup(u => u.RemodelTrash(remodel, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns(silverInHand);
 
-		// selection is pulled from the wrapper itself, so this only succeeds if laboratory
-		// ($5) genuinely passes the wrapper's own availability check at the computed threshold
-		KingdomWrapper wrapper = null;
-		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
-			.Callback<KingdomWrapper, PlayerState, Kingdom, Phase>((kw, ps, k, p) => wrapper = kw)
-			.Returns(() => wrapper.GetCard(CardName.Laboratory));
+		// selection is pulled from the candidate list itself, so this only succeeds if
+		// laboratory ($5) genuinely passes the computed price threshold
+		List<CardInstance> availableCards = null;
+		user.Setup(u => u.SelectCardToGain(remodel, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
+			.Callback<Card, PlayerState, Kingdom, List<CardInstance>>((c, ps, k, cards) => availableCards = cards)
+			.Returns(() => availableCards.SingleOrDefault(c => c.Card.Name == CardName.Laboratory));
 		#endregion
 
 		#region act
@@ -60,10 +60,10 @@ public class PlayerRemodelTests : CardWithPlayerTestsBase
 		AssertPile([remodel], player.PlayerState.ActionsPlayed);
 		AssertPile([silver], player.Game.Trash);
 
-		Assert.IsTrue(wrapper.AvailableCards.Any(c => c.Card.Name == CardName.Laboratory));
+		Assert.IsTrue(availableCards.Any(c => c.Card.Name == CardName.Laboratory));
 		user.Verify(u => u.RemodelTrash(remodel, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
-		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.MaxPrice == 5 && !kw.OnlyTreasures),
-			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Once);
+		user.Verify(u => u.SelectCardToGain(remodel, player.PlayerState, player.Game.Kingdom,
+			It.Is<List<CardInstance>>(c => c.All(x => x.Card.GetPrice(player.PlayerState) <= 5))), Times.Once);
 		#endregion
 	}
 
@@ -71,7 +71,7 @@ public class PlayerRemodelTests : CardWithPlayerTestsBase
 	public void DontTrashAnything()
 	{
 		#region arrange
-		player.PlayerState.Hand = CreatePile([remodel, silver, laboratory]);
+		player.PlayerState.Hand = CreatePile([remodel]);
 		var remodelToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Remodel);
 
 		user.Setup(u => u.RemodelTrash(remodel, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>())).Returns((CardInstance)null);
@@ -83,18 +83,18 @@ public class PlayerRemodelTests : CardWithPlayerTestsBase
 
 		#region assert
 		AssertNumbers(0, 0, 0, player);
-		AssertPile([silver, laboratory], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.Hand);
 		AssertPile([], player.PlayerState.DrawPile);
 		AssertPile([], player.PlayerState.DiscardPile);
 		AssertPile([remodel], player.PlayerState.CardsPlayed);
 		AssertPile([remodel], player.PlayerState.ActionsPlayed);
 		AssertPile([], player.Game.Trash);
 
-		user.Verify(u => u.RemodelTrash(remodel, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
+		user.Verify(u => u.RemodelTrash(remodel, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Never);
 
 		// nothing was trashed, so the user is never asked to choose anything to gain
-		user.Verify(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(),
-			It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<Phase>()), Times.Never);
+		user.Verify(u => u.SelectCardToGain(It.IsAny<Card>(),
+			It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()), Times.Never);
 		#endregion
 	}
 
@@ -108,8 +108,8 @@ public class PlayerRemodelTests : CardWithPlayerTestsBase
 
 		user.Setup(u => u.RemodelTrash(remodel, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns(laboratoryInHand);
-		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
-			.Returns((CardInstance)null);
+		// nothing in the supply to gain
+		EmptyKingdom();
 		#endregion
 
 		#region act
@@ -127,9 +127,9 @@ public class PlayerRemodelTests : CardWithPlayerTestsBase
 
 		user.Verify(u => u.RemodelTrash(remodel, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 
-		// max price 7 (laboratory costs 5, +2), but nothing is selected
-		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.MaxPrice == 7 && !kw.OnlyTreasures),
-			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Once);
+		// the supply is empty, so the user is never asked which card to gain
+		user.Verify(u => u.SelectCardToGain(It.IsAny<Card>(), It.IsAny<PlayerState>(),
+			It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()), Times.Never);
 		#endregion
 	}
 
@@ -149,16 +149,17 @@ public class PlayerRemodelTests : CardWithPlayerTestsBase
 		user.SetupSequence(u => u.RemodelTrash(remodel, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns(silverInHand).Returns(throneRoomFodder);
 
-		// each resolution's selection is pulled from its own wrapper, so this only succeeds
-		// if laboratory ($5) and gold ($6) genuinely pass the wrapper's own availability
-		// check at their respective computed thresholds
+		// each resolution's selection is pulled from its own candidate list, so this only
+		// succeeds if laboratory ($5) and gold ($6) genuinely pass their respective computed
+		// price thresholds
 		var expectedGains = new Queue<CardName>([CardName.Laboratory, CardName.Gold]);
-		var wrappers = new List<KingdomWrapper>();
-		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
-			.Returns<KingdomWrapper, PlayerState, Kingdom, Phase>((kw, ps, k, p) =>
+		var seenCandidates = new List<List<CardInstance>>();
+		user.Setup(u => u.SelectCardToGain(remodel, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
+			.Returns<Card, PlayerState, Kingdom, List<CardInstance>>((c, ps, k, cards) =>
 			{
-				wrappers.Add(kw);
-				return kw.GetCard(expectedGains.Dequeue());
+				seenCandidates.Add(cards);
+				var name = expectedGains.Dequeue();
+				return cards.SingleOrDefault(x => x.Card.Name == name);
 			});
 		#endregion
 
@@ -180,14 +181,14 @@ public class PlayerRemodelTests : CardWithPlayerTestsBase
 
 		user.Verify(u => u.ThroneRoomPlay(throneRoom, player.PlayerState,
 			player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
-		user.Verify(u => u.RemodelTrash(remodel, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Exactly(2));
-		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.MaxPrice == 5 && !kw.OnlyTreasures),
-			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Once);
-		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.MaxPrice == 6 && !kw.OnlyTreasures),
-			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Once);
+		user.Verify(u => u.RemodelTrash(remodel, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
+		user.Verify(u => u.SelectCardToGain(remodel, player.PlayerState, player.Game.Kingdom,
+			It.Is<List<CardInstance>>(c => c.Max(x => x.Card.GetPrice(player.PlayerState)) == 5)), Times.Once);
+		user.Verify(u => u.SelectCardToGain(remodel, player.PlayerState, player.Game.Kingdom,
+			It.Is<List<CardInstance>>(c => c.Max(x => x.Card.GetPrice(player.PlayerState)) == 6)), Times.Once);
 
-		Assert.IsTrue(wrappers[0].AvailableCards.Any(c => c.Card.Name == CardName.Laboratory));
-		Assert.IsTrue(wrappers[1].AvailableCards.Any(c => c.Card.Name == CardName.Gold));
+		Assert.IsTrue(seenCandidates[0].Any(c => c.Card.Name == CardName.Laboratory));
+		Assert.IsTrue(seenCandidates[1].Any(c => c.Card.Name == CardName.Gold));
 		#endregion
 	}
 }

@@ -107,7 +107,7 @@ public class PlayerCoutyardTests : CardWithPlayerTestsBase
 		AssertPile([courtyard], player.PlayerState.ActionsPlayed);
 		AssertPile([], player.Game.Trash);
 
-		user.Verify(u => u.CourtyardPutOnTop(courtyard, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
+		user.Verify(u => u.CourtyardPutOnTop(courtyard, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Never);
 		#endregion
 	}
 

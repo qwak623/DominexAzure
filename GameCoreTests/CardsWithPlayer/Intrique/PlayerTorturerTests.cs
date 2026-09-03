@@ -157,9 +157,6 @@ public class PlayerTorturerTests : CardWithPlayerTestsBase
 		AssertPile([], defender.PlayerState.CardsPlayed);
 		AssertPile([], defender.PlayerState.ActionsPlayed);
 		AssertPile([], defender.Game.Trash);
-
-		// asked to discard only 1 - the defender doesn't have two cards to give up
-		defenderUser.Verify(u => u.TorturerDiscard(torturer, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 1), Times.Once);
 		#endregion
 	}
 
@@ -249,7 +246,6 @@ public class PlayerTorturerTests : CardWithPlayerTestsBase
 			attacker.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		defenderUser.Verify(u => u.TorturerChooseCurse(torturer, defender.PlayerState, defender.Game.Kingdom), Times.Exactly(2));
 		defenderUser.Verify(u => u.TorturerDiscard(torturer, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 2), Times.Once);
-		defenderUser.Verify(u => u.TorturerDiscard(torturer, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 1), Times.Once);
 		#endregion
 	}
 }

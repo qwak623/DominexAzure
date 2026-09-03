@@ -155,9 +155,9 @@ public class PlayerThiefTests : CardWithPlayerTestsBase
 
 		AssertPile([copper], defender.Game.Trash);
 
-		// the attacker is asked to choose a treasure to trash
+		// the attacker is not asked to choose a treasure to trash because there is only one treasure
 		attackerUser.Verify(au => au.ThiefChoose(thief, attacker.PlayerState, attacker.Game.Kingdom,
-			It.IsAny<List<CardInstance>>()), Times.Once);
+			It.IsAny<List<CardInstance>>()), Times.Never);
 
 		// the attacker is asked whether to steal the trashed card
 		attackerUser.Verify(au => au.ThiefSteal(thief, attacker.PlayerState, attacker.Game.Kingdom,
@@ -204,9 +204,9 @@ public class PlayerThiefTests : CardWithPlayerTestsBase
 		// the gold was trashed, but the thief stole it
 		AssertPile([], defender.Game.Trash);
 
-		// the attacker is asked to choose a treasure to trash
+		// the attacker is ont asked to choose a treasure to trash because there is only one
 		attackerUser.Verify(au => au.ThiefChoose(thief, attacker.PlayerState, attacker.Game.Kingdom,
-			It.IsAny<List<CardInstance>>()), Times.Once);
+			It.IsAny<List<CardInstance>>()), Times.Never);
 
 		// the attacker is asked whether to steal the trashed card
 		attackerUser.Verify(au => au.ThiefSteal(thief, attacker.PlayerState, attacker.Game.Kingdom,

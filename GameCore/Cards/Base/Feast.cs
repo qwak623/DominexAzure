@@ -17,11 +17,9 @@ public class Feast : Card
 	protected override void ActionEffect(IPlayer player, CardInstance thisCard)
 	{
 		player.Trash(thisCard);
-		player.Game.Logger?.Log(new GameLog { PlayerId = player.Name, Message = $"{player.Name} trashes {Name.ToDisplayName()}" });
-		var card = player.User.SelectCardToGain(player.Game.Kingdom.GetWrapper(player.PlayerState, 5), player.PlayerState, player.Game.Kingdom, Phase.Gain);
-		if (card is not null)
-		{
-			player.Gain(card);
-		}
+		player.Game.Logger?.Log(new GameLog { PlayerId = player.Name, Message = $"{player.Name} trashes {Name.ToDisplayName()}." });
+		var availableCards = player.Game.Kingdom.GetWrapper(player.PlayerState, 5).AvailableCards.ToList();
+		var card = player.User.SelectCardToGain(this, player.PlayerState, player.Game.Kingdom, availableCards);
+		player.Gain(card);
 	}
 }

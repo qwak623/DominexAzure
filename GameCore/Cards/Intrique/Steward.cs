@@ -22,7 +22,7 @@ public class Steward : Card
 		[StewardBenefit.Trash] = (p, s) =>
 		{
 			List<CardInstance> cardsToTrash = p.User.StewardChooseCardsToTrash(
-				s, p.PlayerState, p.Game.Kingdom, Math.Min(2, p.PlayerState.Hand.Count), p.PlayerState.Hand.ToList());
+				s, p.PlayerState, p.Game.Kingdom, 2, p.PlayerState.Hand.ToList());
 			cardsToTrash.ForEach(card => p.Trash(card));
 		},
 	};

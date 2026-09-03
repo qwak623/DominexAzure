@@ -46,9 +46,8 @@ public class PlayerSwindlerTests : CardWithPlayerTestsBase
 		defender.PlayerState.DrawPile = CreatePile([copper, silver]);
 
 		var gainedSilver = game.Object.Kingdom.GetPile(CardName.Silver).CardInstance;
-		attackerUser.Setup(u => u.SelectCardToGain(
-			It.Is<KingdomWrapper>(kw => kw.MinPrice == 3 && kw.MaxPrice == 3 && kw.Kingdom == defender.Game.Kingdom),
-			defender.PlayerState, defender.Game.Kingdom, Phase.Action)).Returns(gainedSilver);
+		attackerUser.Setup(u => u.SelectCardToGain(swindler, defender.PlayerState, defender.Game.Kingdom,
+			It.Is<List<CardInstance>>(c => c.All(x => x.Card.GetPrice(defender.PlayerState) == 3)))).Returns(gainedSilver);
 		#endregion
 
 		#region act
@@ -68,9 +67,9 @@ public class PlayerSwindlerTests : CardWithPlayerTestsBase
 		AssertPile([silver], defender.PlayerState.DiscardPile);
 
 		// the attacker chooses the replacement, not the defender
-		attackerUser.Verify(u => u.SelectCardToGain(
-			It.Is<KingdomWrapper>(kw => kw.MinPrice == 3 && kw.MaxPrice == 3), defender.PlayerState, defender.Game.Kingdom, Phase.Action), Times.Once);
-		defenderUser.Verify(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<Phase>()), Times.Never);
+		attackerUser.Verify(u => u.SelectCardToGain(swindler, defender.PlayerState, defender.Game.Kingdom,
+			It.Is<List<CardInstance>>(c => c.All(x => x.Card.GetPrice(defender.PlayerState) == 3))), Times.Once);
+		defenderUser.Verify(u => u.SelectCardToGain(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()), Times.Never);
 		#endregion
 	}
 
@@ -96,7 +95,7 @@ public class PlayerSwindlerTests : CardWithPlayerTestsBase
 		AssertPile([], defender.PlayerState.DiscardPile);
 		AssertPile([], defender.Game.Trash);
 
-		attackerUser.Verify(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<Phase>()), Times.Never);
+		attackerUser.Verify(u => u.SelectCardToGain(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()), Times.Never);
 		#endregion
 	}
 
@@ -112,9 +111,8 @@ public class PlayerSwindlerTests : CardWithPlayerTestsBase
 		// the attacker isn't just choosing to decline a real option
 		defender.PlayerState.DrawPile = CreatePile([copper, bureaucrat]);
 
-		attackerUser.Setup(u => u.SelectCardToGain(
-			It.Is<KingdomWrapper>(kw => kw.MinPrice == 4 && kw.MaxPrice == 4 && !kw.AvailableCards.Any()),
-			defender.PlayerState, defender.Game.Kingdom, Phase.Action)).Returns((CardInstance)null);
+		attackerUser.Setup(u => u.SelectCardToGain(swindler, defender.PlayerState, defender.Game.Kingdom,
+			It.Is<List<CardInstance>>(c => c.Count == 0))).Returns((CardInstance)null);
 		#endregion
 
 		#region act

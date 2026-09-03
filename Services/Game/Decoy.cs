@@ -7,17 +7,27 @@ public class Decoy : User
 {
 	public override string GetName() => "TODO NAME 2";
 
-	public override CardInstance PlayCard(List<CardInstance> cards, PlayerState ps, Kingdom k, Phase phase, Card attackCard = null)
+	public override CardInstance PlayActionCard(PlayerState ps, Kingdom k, List<CardInstance> cards)
 	{
 		return null;
 	}
 
-	public override CardInstance SelectCardToGain(KingdomWrapper wrapper, PlayerState ps, Kingdom k, Phase phase)
+	public override CardInstance PlayReactionCard(Card attackCard, PlayerState ps, Kingdom k, List<CardInstance> cards)
 	{
-		return wrapper.AvailableCards.First();
+		return null;
 	}
 
-	public override CardInstance SelectOptionalCardToGain(KingdomWrapper wrapper, PlayerState ps, Kingdom k, Phase phase)
+	public override CardInstance SelectCardToBuy(PlayerState ps, Kingdom k, List<CardInstance> cards)
+	{
+		return cards.First();
+	}
+
+	public override CardInstance SelectCardToGain(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> availableCards)
+	{
+		return availableCards.First();
+	}
+
+	public override CardInstance SelectOptionalCardToGain(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> availableCards)
 	{
 		return null;
 	}

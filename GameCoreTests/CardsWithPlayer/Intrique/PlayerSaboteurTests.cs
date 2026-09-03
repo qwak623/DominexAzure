@@ -46,10 +46,10 @@ public class PlayerSaboteurTests : CardWithPlayerTestsBase
 		// silver is on top, so it's the very first card revealed
 		defender.PlayerState.DrawPile = CreatePile([copper, silver]);
 
-		KingdomWrapper wrapper = null;
-		defenderUser.Setup(u => u.SelectOptionalCardToGain(It.IsAny<KingdomWrapper>(), defender.PlayerState, defender.Game.Kingdom, Phase.Attack))
-			.Callback<KingdomWrapper, PlayerState, Kingdom, Phase>((kw, ps, k, p) => wrapper = kw)
-			.Returns(() => wrapper.GetCard(CardName.Copper));
+		List<CardInstance> availableCards = null;
+		defenderUser.Setup(u => u.SelectOptionalCardToGain(saboteur, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>()))
+			.Callback<Card, PlayerState, Kingdom, List<CardInstance>>((c, ps, k, cards) => availableCards = cards)
+			.Returns(() => availableCards.SingleOrDefault(c => c.Card.Name == CardName.Copper));
 		#endregion
 
 		#region act
@@ -70,8 +70,9 @@ public class PlayerSaboteurTests : CardWithPlayerTestsBase
 		AssertPile([copper], defender.PlayerState.DrawPile);
 		AssertPile([copper], defender.PlayerState.DiscardPile);
 
-		// silver costs 3, so the replacement is capped at 3-2=1
-		Assert.AreEqual(1, wrapper.MaxPrice);
+		// silver costs 3, so the replacement is capped at 3-2=1 - estate ($2) must not qualify
+		Assert.IsTrue(availableCards.All(c => c.Card.GetPrice(defender.PlayerState) <= 1));
+		Assert.IsFalse(availableCards.Any(c => c.Card.Name == CardName.Estate));
 		#endregion
 	}
 
@@ -85,7 +86,7 @@ public class PlayerSaboteurTests : CardWithPlayerTestsBase
 		// estate ($2) and copper ($0) get revealed and discarded first, silver ($3) stops the search
 		defender.PlayerState.DrawPile = CreatePile([silver, copper, estate]);
 
-		defenderUser.Setup(u => u.SelectOptionalCardToGain(It.IsAny<KingdomWrapper>(), defender.PlayerState, defender.Game.Kingdom, Phase.Attack))
+		defenderUser.Setup(u => u.SelectOptionalCardToGain(saboteur, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns((CardInstance)null);
 		#endregion
 
@@ -106,7 +107,7 @@ public class PlayerSaboteurTests : CardWithPlayerTestsBase
 		AssertPile([], defender.PlayerState.DrawPile);
 		AssertPile([estate, copper], defender.PlayerState.DiscardPile);
 
-		defenderUser.Verify(u => u.SelectOptionalCardToGain(It.IsAny<KingdomWrapper>(), defender.PlayerState, defender.Game.Kingdom, Phase.Attack), Times.Once);
+		defenderUser.Verify(u => u.SelectOptionalCardToGain(saboteur, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		#endregion
 	}
 
@@ -119,12 +120,12 @@ public class PlayerSaboteurTests : CardWithPlayerTestsBase
 
 		defender.PlayerState.DrawPile = CreatePile([gold]);
 
-		// selection is pulled from the wrapper itself, so this only succeeds if silver
-		// genuinely passes the wrapper's own availability check at the computed cap
-		KingdomWrapper wrapper = null;
-		defenderUser.Setup(u => u.SelectOptionalCardToGain(It.IsAny<KingdomWrapper>(), defender.PlayerState, defender.Game.Kingdom, Phase.Attack))
-			.Callback<KingdomWrapper, PlayerState, Kingdom, Phase>((kw, ps, k, p) => wrapper = kw)
-			.Returns(() => wrapper.GetCard(CardName.Silver));
+		// selection is pulled from the candidate list itself, so this only succeeds if silver
+		// genuinely passes the computed price cap
+		List<CardInstance> availableCards = null;
+		defenderUser.Setup(u => u.SelectOptionalCardToGain(saboteur, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>()))
+			.Callback<Card, PlayerState, Kingdom, List<CardInstance>>((c, ps, k, cards) => availableCards = cards)
+			.Returns(() => availableCards.SingleOrDefault(c => c.Card.Name == CardName.Silver));
 		#endregion
 
 		#region act
@@ -138,9 +139,9 @@ public class PlayerSaboteurTests : CardWithPlayerTestsBase
 		AssertPile([gold], attacker.Game.Trash);
 
 		// gold costs 6, so the replacement is capped at 6-2=4
-		Assert.AreEqual(4, wrapper.MaxPrice);
-		Assert.IsTrue(wrapper.AvailableCards.Any(c => c.Card.Name == CardName.Silver));
-		Assert.IsFalse(wrapper.AvailableCards.Any(c => c.Card.Name == CardName.Gold));
+		Assert.IsTrue(availableCards.All(c => c.Card.GetPrice(defender.PlayerState) <= 4));
+		Assert.IsTrue(availableCards.Any(c => c.Card.Name == CardName.Silver));
+		Assert.IsFalse(availableCards.Any(c => c.Card.Name == CardName.Gold));
 		#endregion
 	}
 
@@ -172,7 +173,7 @@ public class PlayerSaboteurTests : CardWithPlayerTestsBase
 		AssertPile([], defender.PlayerState.DrawPile);
 		AssertPile([estate, copper], defender.PlayerState.DiscardPile);
 
-		defenderUser.Verify(u => u.SelectOptionalCardToGain(It.IsAny<KingdomWrapper>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<Phase>()), Times.Never);
+		defenderUser.Verify(u => u.SelectOptionalCardToGain(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()), Times.Never);
 		#endregion
 	}
 }

@@ -236,7 +236,7 @@ public class PlayerSentryTests : CardWithPlayerTestsBase
 
 		user.Verify(u => u.SentryTrash(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.Is<List<CardInstance>>(c => c.Count == 1)), Times.Once);
 		user.Verify(u => u.SentryDiscard(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.Is<List<CardInstance>>(c => c.Count == 1)), Times.Once);
-		user.Verify(u => u.SentryOrderCards(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.Is<List<CardInstance>>(c => c.Count == 1)), Times.Once);
+		user.Verify(u => u.SentryOrderCards(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.Is<List<CardInstance>>(c => c.Count == 1)), Times.Never);
 		#endregion
 	}
 }

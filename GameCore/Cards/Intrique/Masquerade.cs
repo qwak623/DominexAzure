@@ -32,9 +32,6 @@ public class Masquerade : Card
 			}
 		}
 		var cardToTrash = p.User.MasqueradeTrash(this, p.PlayerState, p.Game.Kingdom, p.PlayerState.Hand.ToList());
-		if (cardToTrash is not null)
-		{
-			p.Trash(cardToTrash);
-		}
+		p.Trash(cardToTrash);
 	}
 }

@@ -24,15 +24,8 @@ public class Bandit : Card
 	{
 		var cards = defender.Show(2);
 		var treasures = cards.Where(c => c.IsTreasure && c.Card.Name != CardName.Copper).ToList();
-		if (treasures.Count == 2)
-		{
-			var card = attacker.User.BanditTrash(this, defender.PlayerState, defender.Game.Kingdom, treasures);
-			defender.Trash(card);
-		}
-		else if (treasures.Count == 1)
-		{
-			defender.Trash(treasures.Single());
-		}
+		var card = attacker.User.BanditTrash(this, defender.PlayerState, defender.Game.Kingdom, treasures);
+		defender.Trash(card);
 		defender.PlayerState.DiscardPile.MoveAll(cards);
 	}
 }

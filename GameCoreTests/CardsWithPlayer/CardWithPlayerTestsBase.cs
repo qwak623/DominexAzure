@@ -1,4 +1,5 @@
 ﻿using GameCore.Cards;
+using GameCore.GameCore;
 using Moq;
 
 namespace GameCore.CardWithPlayer.Tests;
@@ -6,6 +7,7 @@ public class CardWithPlayerTestsBase
 {
 	//private int nextCardId = 1000; // kept away from the real Kingdom's own id range to avoid collisions
 	private Kingdom kingdom;
+	private readonly Pile removedCards = new();
 	public Mock<IGame> MockGame(Card card)
 	{
 		return MockGame([card]);
@@ -23,7 +25,8 @@ public class CardWithPlayerTestsBase
 
 	public Player CreatePlayer(IGame game, IUser user)
 	{
-		var player = new Player(game, user);
+		var userProxy = new UserProxy(user);
+		var player = new Player(game, userProxy);
 		player.PlayerState.Actions = 1;
 		player.PlayerState.Buys = 0;
 		player.PlayerState.Coins = 0;
@@ -51,6 +54,40 @@ public class CardWithPlayerTestsBase
 	public void AssertPile(List<Card> expected, List<Card> actual)
 	{
 		Assert.AreSequenceEqual(expected, actual, SequenceOrder.InAnyOrder);
+	}
+
+	/// <summary>
+	/// Drains a kingdom pile down to <paramref name="count"/> cards (default 0).
+	/// Since <see cref="UserProxy"/> no longer lets a mocked user express "I gain nothing"
+	/// by returning null from a required selection, tests simulate "nothing available to
+	/// gain / buy" by emptying the relevant piles instead.
+	/// </summary>
+	public void SetKingdomPileCount(CardName card, int count = 0)
+	{
+		var pile = kingdom.GetPile(card)
+			?? throw new InvalidOperationException($"Kingdom has no {card} pile.");
+		while (pile.Count > count)
+		{
+			removedCards.Move(pile.CardInstance);
+		}
+	}
+
+	/// <summary>
+	/// Empties every kingdom pile, so nothing can be gained or bought.
+	/// </summary>
+	public void EmptyKingdom(params CardName[] except)
+	{
+		foreach (var pile in kingdom)
+		{
+			if (except.Contains(pile.Type))
+			{
+				continue;
+			}
+			while (pile.Count > 0)
+			{
+				removedCards.Move(pile.CardInstance);
+			}
+		}
 	}
 
 	public Pile CreatePile(List<Card> cards)

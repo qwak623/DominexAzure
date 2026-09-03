@@ -115,10 +115,6 @@ public class PlayerScoutTests : CardWithPlayerTestsBase
 		AssertPile([scout], player.PlayerState.CardsPlayed);
 		AssertPile([scout], player.PlayerState.ActionsPlayed);
 		AssertPile([], player.Game.Trash);
-
-		// nothing left to order once every revealed card was a victory card
-		user.Verify(u => u.ScoutOrderCards(scout, player.PlayerState, player.Game.Kingdom,
-			It.Is<List<CardInstance>>(c => c.Count == 0)), Times.Once);
 		#endregion
 	}
 
@@ -146,9 +142,6 @@ public class PlayerScoutTests : CardWithPlayerTestsBase
 		AssertPile([scout], player.PlayerState.CardsPlayed);
 		AssertPile([scout], player.PlayerState.ActionsPlayed);
 		AssertPile([], player.Game.Trash);
-
-		user.Verify(u => u.ScoutOrderCards(scout, player.PlayerState, player.Game.Kingdom,
-			It.Is<List<CardInstance>>(c => c.Count == 1)), Times.Once);
 		#endregion
 	}
 

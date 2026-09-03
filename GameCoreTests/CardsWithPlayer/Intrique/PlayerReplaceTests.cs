@@ -48,12 +48,12 @@ public class PlayerReplaceTests : CardWithPlayerTestsBase
 		attackerUser.Setup(u => u.ReplaceTrash(replace, attacker.PlayerState, attacker.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns(silverInHand);
 
-		// selection is pulled from the wrapper itself, so this only succeeds if laboratory
-		// ($5) genuinely passes the wrapper's own availability check at the computed threshold
-		KingdomWrapper wrapper = null;
-		attackerUser.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), attacker.PlayerState, attacker.Game.Kingdom, Phase.Gain))
-			.Callback<KingdomWrapper, PlayerState, Kingdom, Phase>((kw, ps, k, p) => wrapper = kw)
-			.Returns(() => wrapper.GetCard(CardName.Laboratory));
+		// selection is pulled from the candidate list itself, so this only succeeds if
+		// laboratory ($5) genuinely passes the computed price threshold
+		List<CardInstance> availableCards = null;
+		attackerUser.Setup(u => u.SelectCardToGain(replace, attacker.PlayerState, attacker.Game.Kingdom, It.IsAny<List<CardInstance>>()))
+			.Callback<Card, PlayerState, Kingdom, List<CardInstance>>((c, ps, k, cards) => availableCards = cards)
+			.Returns(() => availableCards.SingleOrDefault(c => c.Card.Name == CardName.Laboratory));
 		#endregion
 
 		#region act
@@ -74,10 +74,10 @@ public class PlayerReplaceTests : CardWithPlayerTestsBase
 		AssertPile([], defender.PlayerState.DrawPile);
 		AssertPile([], defender.PlayerState.DiscardPile);
 
-		Assert.IsTrue(wrapper.AvailableCards.Any(c => c.Card.Name == CardName.Laboratory));
-		attackerUser.Verify(u => u.ReplaceTrash(replace, attacker.PlayerState, attacker.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
-		attackerUser.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.MaxPrice == 5 && !kw.OnlyTreasures),
-			attacker.PlayerState, attacker.Game.Kingdom, Phase.Gain), Times.Once);
+		Assert.Contains(c => c.Card.Name == CardName.Laboratory, availableCards);
+		attackerUser.Verify(u => u.ReplaceTrash(replace, attacker.PlayerState, attacker.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Never);
+		attackerUser.Verify(u => u.SelectCardToGain(replace, attacker.PlayerState, attacker.Game.Kingdom,
+			It.Is<List<CardInstance>>(c => c.All(x => x.Card.GetPrice(attacker.PlayerState) <= 5))), Times.Once);
 		#endregion
 	}
 
@@ -92,10 +92,10 @@ public class PlayerReplaceTests : CardWithPlayerTestsBase
 		attackerUser.Setup(u => u.ReplaceTrash(replace, attacker.PlayerState, attacker.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns(laboratoryInHand);
 
-		KingdomWrapper wrapper = null;
-		attackerUser.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), attacker.PlayerState, attacker.Game.Kingdom, Phase.Gain))
-			.Callback<KingdomWrapper, PlayerState, Kingdom, Phase>((kw, ps, k, p) => wrapper = kw)
-			.Returns(() => wrapper.GetCard(CardName.Gold));
+		List<CardInstance> availableCards = null;
+		attackerUser.Setup(u => u.SelectCardToGain(replace, attacker.PlayerState, attacker.Game.Kingdom, It.IsAny<List<CardInstance>>()))
+			.Callback<Card, PlayerState, Kingdom, List<CardInstance>>((c, ps, k, cards) => availableCards = cards)
+			.Returns(() => availableCards.SingleOrDefault(c => c.Card.Name == CardName.Gold));
 		#endregion
 
 		#region act
@@ -116,9 +116,9 @@ public class PlayerReplaceTests : CardWithPlayerTestsBase
 		AssertPile([], defender.PlayerState.DrawPile);
 		AssertPile([], defender.PlayerState.DiscardPile);
 
-		Assert.IsTrue(wrapper.AvailableCards.Any(c => c.Card.Name == CardName.Gold));
-		attackerUser.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.MaxPrice == 7 && !kw.OnlyTreasures),
-			attacker.PlayerState, attacker.Game.Kingdom, Phase.Gain), Times.Once);
+		Assert.IsTrue(availableCards.Any(c => c.Card.Name == CardName.Gold));
+		attackerUser.Verify(u => u.SelectCardToGain(replace, attacker.PlayerState, attacker.Game.Kingdom,
+			It.Is<List<CardInstance>>(c => c.All(x => x.Card.GetPrice(attacker.PlayerState) <= 7))), Times.Once);
 		#endregion
 	}
 
@@ -132,8 +132,8 @@ public class PlayerReplaceTests : CardWithPlayerTestsBase
 
 		attackerUser.Setup(u => u.ReplaceTrash(replace, attacker.PlayerState, attacker.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns(silverInHand);
-		attackerUser.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), attacker.PlayerState, attacker.Game.Kingdom, Phase.Gain))
-			.Returns<KingdomWrapper, PlayerState, Kingdom, Phase>((kw, ps, k, p) => kw.GetCard(CardName.Duchy));
+		attackerUser.Setup(u => u.SelectCardToGain(replace, attacker.PlayerState, attacker.Game.Kingdom, It.IsAny<List<CardInstance>>()))
+			.Returns<Card, PlayerState, Kingdom, List<CardInstance>>((c, ps, k, cards) => cards.SingleOrDefault(x => x.Card.Name == CardName.Duchy));
 		#endregion
 
 		#region act
@@ -168,8 +168,8 @@ public class PlayerReplaceTests : CardWithPlayerTestsBase
 
 		attackerUser.Setup(u => u.ReplaceTrash(replace, attacker.PlayerState, attacker.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns(silverInHand);
-		attackerUser.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), attacker.PlayerState, attacker.Game.Kingdom, Phase.Gain))
-			.Returns((CardInstance)null);
+		// nothing in the supply to gain
+		EmptyKingdom();
 		#endregion
 
 		#region act
@@ -189,6 +189,9 @@ public class PlayerReplaceTests : CardWithPlayerTestsBase
 		AssertPile([], defender.PlayerState.Hand);
 		AssertPile([], defender.PlayerState.DrawPile);
 		AssertPile([], defender.PlayerState.DiscardPile);
+
+		attackerUser.Verify(u => u.SelectCardToGain(It.IsAny<Card>(), It.IsAny<PlayerState>(),
+			It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()), Times.Never);
 		#endregion
 	}
 
@@ -214,7 +217,7 @@ public class PlayerReplaceTests : CardWithPlayerTestsBase
 		AssertPile([], attacker.Game.Trash);
 
 		attackerUser.Verify(u => u.ReplaceTrash(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()), Times.Never);
-		attackerUser.Verify(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<Phase>()), Times.Never);
+		attackerUser.Verify(u => u.SelectCardToGain(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()), Times.Never);
 		#endregion
 	}
 }

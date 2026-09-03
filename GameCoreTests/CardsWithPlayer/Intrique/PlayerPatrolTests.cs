@@ -124,7 +124,7 @@ public class PlayerPatrolTests : CardWithPlayerTestsBase
 
 		// nothing left to order once every revealed card was a victory card or a curse
 		user.Verify(u => u.PatrolOrderCards(patrol, player.PlayerState, player.Game.Kingdom,
-			It.Is<List<CardInstance>>(c => c.Count == 0)), Times.Once);
+			It.Is<List<CardInstance>>(c => c.Count == 0)), Times.Never);
 		#endregion
 	}
 
@@ -156,7 +156,7 @@ public class PlayerPatrolTests : CardWithPlayerTestsBase
 		AssertPile([], player.Game.Trash);
 
 		user.Verify(u => u.PatrolOrderCards(patrol, player.PlayerState, player.Game.Kingdom,
-			It.Is<List<CardInstance>>(c => c.Count == 1)), Times.Once);
+			It.Is<List<CardInstance>>(c => c.Count == 1)), Times.Never);
 		#endregion
 	}
 

@@ -98,8 +98,8 @@ public class PlayerDiplomatTests : CardWithPlayerTestsBase
 		defender.PlayerState.DrawPile = CreatePile([silver, silver]);
 		var diplomatInHand = defender.PlayerState.Hand.First(c => c.Card.Name == CardName.Diplomat);
 
-		defenderUser.Setup(u => u.PlayCard(It.Is<List<CardInstance>>(r => r.Single() == diplomatInHand),
-			defender.PlayerState, defender.Game.Kingdom, Phase.Reaction, militia))
+		defenderUser.Setup(u => u.PlayReactionCard(militia, defender.PlayerState,
+			defender.Game.Kingdom, It.Is<List<CardInstance>>(r => r.Single() == diplomatInHand)))
 			.Returns(diplomatInHand);
 
 		// discard three of the four coppers, keeping diplomat, one copper and the two newly-drawn silvers
@@ -126,8 +126,8 @@ public class PlayerDiplomatTests : CardWithPlayerTestsBase
 		AssertPile([], defender.PlayerState.ActionsPlayed);
 		AssertPile([], defender.Game.Trash);
 
-		defenderUser.Verify(u => u.PlayCard(It.IsAny<List<CardInstance>>(),
-			defender.PlayerState, defender.Game.Kingdom, Phase.Reaction, militia), Times.Once);
+		defenderUser.Verify(u => u.PlayReactionCard(militia, defender.PlayerState,
+			defender.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		defenderUser.Verify(u => u.DiplomatDiscard(diplomat, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 3), Times.Once);
 		defenderUser.Verify(u => u.MilitiaDiscard(militia, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 1), Times.Once);
 		#endregion
@@ -142,8 +142,8 @@ public class PlayerDiplomatTests : CardWithPlayerTestsBase
 		var diplomatInHand = defender.PlayerState.Hand.First(c => c.Card.Name == CardName.Diplomat);
 		var copperToDiscard = defender.PlayerState.Hand.Where(c => c.Card.Name == CardName.Copper).Take(1).ToList();
 
-		defenderUser.Setup(u => u.PlayCard(It.Is<List<CardInstance>>(r => r.Single() == diplomatInHand),
-			defender.PlayerState, defender.Game.Kingdom, Phase.Reaction, militia))
+		defenderUser.Setup(u => u.PlayReactionCard(militia, defender.PlayerState,
+			defender.Game.Kingdom, It.Is<List<CardInstance>>(r => r.Single() == diplomatInHand)))
 			.Returns(diplomatInHand);
 		defenderUser.Setup(u => u.MilitiaDiscard(militia, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 1))
 			.Returns(copperToDiscard);
@@ -177,8 +177,8 @@ public class PlayerDiplomatTests : CardWithPlayerTestsBase
 		var diplomatInHand = defender.PlayerState.Hand.First(c => c.Card.Name == CardName.Diplomat);
 		var coppersToDiscard = defender.PlayerState.Hand.Where(c => c.Card.Name == CardName.Copper).Take(2).ToList();
 
-		defenderUser.Setup(u => u.PlayCard(It.Is<List<CardInstance>>(r => r.Single() == diplomatInHand),
-			defender.PlayerState, defender.Game.Kingdom, Phase.Reaction, militia))
+		defenderUser.Setup(u => u.PlayReactionCard(militia, defender.PlayerState,
+			defender.Game.Kingdom, It.Is<List<CardInstance>>(r => r.Single() == diplomatInHand)))
 			.Returns((CardInstance)null);
 		defenderUser.Setup(u => u.MilitiaDiscard(militia, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 2))
 			.Returns(coppersToDiscard);

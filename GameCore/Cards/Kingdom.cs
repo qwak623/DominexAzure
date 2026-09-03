@@ -9,8 +9,8 @@ namespace GameCore.Cards;
 public class Kingdom : IEnumerable<KingdomPile>
 {
 	public int EmptyKingdomPilesCount => kingdomPiles.Count(p => p.Empty);
-	private List<KingdomPile> kingdomPiles;
-	private Dictionary<CardName, int> cardTypeToIndex = new Dictionary<CardName, int>();
+	private readonly List<KingdomPile> kingdomPiles;
+	private readonly Dictionary<CardName, int> cardTypeToIndex = [];
 	private int nextCardInstanceId = 0;
 
 	public Kingdom(List<Card> cards, int playerCount, IKingdomObserver kingdomObserver = null)

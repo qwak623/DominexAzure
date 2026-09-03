@@ -18,15 +18,8 @@ public class Harbinger : Card
 
 	protected override void ActionEffect(IPlayer player, CardInstance thisCard)
 	{
-		if (player.PlayerState.DiscardPile.Count == 0)
-		{
-			return;
-		}
-
-		var card = player.User.HarbingerPutOnTop(this, player.PlayerState, player.Game.Kingdom, player.PlayerState.DiscardPile.ToList());
-		if (card != null)
-		{
-			player.ReturnToDrawPile(card);
-		}
+		var card = player.User.HarbingerPutOnTop(
+			this, player.PlayerState, player.Game.Kingdom, player.PlayerState.DiscardPile.ToList());
+		player.ReturnToDrawPile(card);
 	}
 }

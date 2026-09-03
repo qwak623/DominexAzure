@@ -140,10 +140,6 @@ public class PlayerStewardTests : CardWithPlayerTestsBase
 		#region assert
 		AssertPile([], player.PlayerState.Hand);
 		AssertPile([silver], player.Game.Trash);
-
-		// only one card was available, so the mandatory count drops to 1 instead of 2
-		user.Verify(u => u.StewardChooseCardsToTrash(steward, player.PlayerState, player.Game.Kingdom, 1,
-			It.Is<List<CardInstance>>(c => c.Count == 1)), Times.Once);
 		#endregion
 	}
 
@@ -167,9 +163,6 @@ public class PlayerStewardTests : CardWithPlayerTestsBase
 		#region assert
 		AssertPile([], player.PlayerState.Hand);
 		AssertPile([], player.Game.Trash);
-
-		user.Verify(u => u.StewardChooseCardsToTrash(steward, player.PlayerState, player.Game.Kingdom, 0,
-			It.Is<List<CardInstance>>(c => c.Count == 0)), Times.Once);
 		#endregion
 	}
 }

@@ -15,16 +15,10 @@ public class Artisan : Card
 
 	protected override void ActionEffect(IPlayer p, CardInstance thisCard)
 	{
-		var cardToGain = p.User.SelectCardToGain(p.Game.Kingdom.GetWrapper(p.PlayerState, 5), p.PlayerState, p.Game.Kingdom, Phase.Gain);
-		if (cardToGain is not null)
-		{
-			p.GainToHand(cardToGain);
-		}
+		var availableCards = p.Game.Kingdom.GetWrapper(p.PlayerState, 5).AvailableCards.ToList();
+		var cardToGain = p.User.SelectCardToGain(this, p.PlayerState, p.Game.Kingdom, availableCards);
+		p.GainToHand(cardToGain);
 
-		if (p.PlayerState.Hand.Count == 0)
-		{
-			return;
-		}
 		var card = p.User.ArtisanPutOnTop(this, p.PlayerState, p.Game.Kingdom, p.PlayerState.Hand.ToList());
 		p.ReturnToDrawPile(card);
 	}

@@ -54,14 +54,15 @@ public class PlayerTests
 		player.PlayerState.DrawPile = CreatePile([gold, copper, copper, copper, copper, silver]);
 		var villageToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Village);
 
-		user.Setup(u => u.PlayCard(
-			It.Is<List<CardInstance>>(c => c.Single() == villageToPlay),
-			player.PlayerState, game.Object.Kingdom, Phase.Action, null)).Returns(villageToPlay);
+		user.Setup(u => u.PlayActionCard(
+			player.PlayerState,
+			game.Object.Kingdom, It.Is<List<CardInstance>>(c => c.Single() == villageToPlay))).Returns(villageToPlay);
 
-		// coins after playing copper + the drawn silver: 1 + 2 = 3
+		// coins after playing copper + the drawn silver: 1 + 2 = 3; affordable at $3: copper,
+		// silver, estate, village (not duchy/gold/province)
 		var estateToGain = player.Game.Kingdom.GetPile(CardName.Estate).CardInstance;
-		user.Setup(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.MaxPrice == 3 && !k.OnlyTreasures),
-			player.PlayerState, game.Object.Kingdom, Phase.Buy)).Returns(estateToGain);
+		user.Setup(u => u.SelectCardToBuy(player.PlayerState, game.Object.Kingdom,
+			It.Is<List<CardInstance>>(c => c.Count == 4))).Returns(estateToGain);
 		#endregion
 
 		#region act
@@ -81,10 +82,10 @@ public class PlayerTests
 		// on top of the estate gained during the buy phase
 		AssertPile([estate, copper, silver, village], player.PlayerState.DiscardPile);
 
-		user.Verify(u => u.PlayCard(It.IsAny<List<CardInstance>>(),
-			player.PlayerState, game.Object.Kingdom, Phase.Action, null), Times.Once);
-		user.Verify(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(),
-			player.PlayerState, game.Object.Kingdom, Phase.Buy), Times.Once);
+		user.Verify(u => u.PlayActionCard(player.PlayerState,
+			game.Object.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
+		user.Verify(u => u.SelectCardToBuy(player.PlayerState,
+			game.Object.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		#endregion
 	}
 
@@ -92,14 +93,15 @@ public class PlayerTests
 	public void PlayTurn_NoActionCards()
 	{
 		#region arrange
-		// no action cards in hand at all, so the action phase never even asks PlayCard
+		// no action cards in hand at all, so the action phase never even asks PlayActionCard
 		player.PlayerState.Hand = CreatePile([copper, silver]);
 		player.PlayerState.DrawPile = CreatePile([gold, copper, copper, copper, copper]);
 
-		// coins from playing copper + silver: 1 + 2 = 3
+		// coins from playing copper + silver: 1 + 2 = 3; affordable at $3: copper, silver,
+		// estate, village (not duchy/gold/province)
 		var estateToGain = player.Game.Kingdom.GetPile(CardName.Estate).CardInstance;
-		user.Setup(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.MaxPrice == 3 && !k.OnlyTreasures),
-			player.PlayerState, game.Object.Kingdom, Phase.Buy)).Returns(estateToGain);
+		user.Setup(u => u.SelectCardToBuy(player.PlayerState, game.Object.Kingdom,
+			It.Is<List<CardInstance>>(c => c.Count == 4))).Returns(estateToGain);
 		#endregion
 
 		#region act
@@ -116,10 +118,10 @@ public class PlayerTests
 		AssertPile([], player.PlayerState.ActionsPlayed);
 		AssertPile([estate, copper, silver], player.PlayerState.DiscardPile);
 
-		user.Verify(u => u.PlayCard(It.IsAny<List<CardInstance>>(), It.IsAny<PlayerState>(),
-			It.IsAny<Kingdom>(), It.IsAny<Phase>(), It.IsAny<Card>()), Times.Never);
-		user.Verify(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(),
-			player.PlayerState, game.Object.Kingdom, Phase.Buy), Times.Once);
+		user.Verify(u => u.PlayActionCard(It.IsAny<PlayerState>(), It.IsAny<Kingdom>(),
+			It.IsAny<List<CardInstance>>()), Times.Never);
+		user.Verify(u => u.SelectCardToBuy(player.PlayerState,
+			game.Object.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		#endregion
 	}
 
@@ -134,17 +136,18 @@ public class PlayerTests
 		var villageToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Village);
 		var moatToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Moat);
 
-		user.Setup(u => u.PlayCard(
-			It.Is<List<CardInstance>>(c => c.Count() == 2 && c.Contains(villageToPlay) && c.Contains(moatToPlay)),
-			player.PlayerState, game.Object.Kingdom, Phase.Action, null)).Returns(villageToPlay);
-		user.Setup(u => u.PlayCard(
-			It.Is<List<CardInstance>>(c => c.Count() == 1 && c.Contains(moatToPlay)),
-			player.PlayerState, game.Object.Kingdom, Phase.Action, null)).Returns(moatToPlay);
+		user.Setup(u => u.PlayActionCard(
+			player.PlayerState,
+			game.Object.Kingdom, It.Is<List<CardInstance>>(c => c.Count() == 2 && c.Contains(villageToPlay) && c.Contains(moatToPlay)))).Returns(villageToPlay);
+		user.Setup(u => u.PlayActionCard(
+			player.PlayerState,
+			game.Object.Kingdom, It.Is<List<CardInstance>>(c => c.Count() == 1 && c.Contains(moatToPlay)))).Returns(moatToPlay);
 
-		// coins from playing copper + the two drawn silvers: 1 + 2 + 2 + 1 (drawn copper) = 6
+		// coins from playing copper + the two drawn silvers: 1 + 2 + 2 + 1 (drawn copper) = 6;
+		// affordable at $6: copper, silver, estate, village, duchy, gold (not province)
 		var estateToGain = player.Game.Kingdom.GetPile(CardName.Estate).CardInstance;
-		user.Setup(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.MaxPrice == 6 && !k.OnlyTreasures),
-			player.PlayerState, game.Object.Kingdom, Phase.Buy)).Returns(estateToGain);
+		user.Setup(u => u.SelectCardToBuy(player.PlayerState, game.Object.Kingdom,
+			It.Is<List<CardInstance>>(c => c.Count == 6))).Returns(estateToGain);
 		#endregion
 
 		#region act
@@ -161,10 +164,10 @@ public class PlayerTests
 		AssertPile([village, moat], player.PlayerState.ActionsPlayed);
 		AssertPile([estate, copper, silver, silver, copper, village, moat], player.PlayerState.DiscardPile);
 
-		user.Verify(u => u.PlayCard(It.IsAny<List<CardInstance>>(),
-			player.PlayerState, game.Object.Kingdom, Phase.Action, null), Times.Exactly(2));
-		user.Verify(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(),
-			player.PlayerState, game.Object.Kingdom, Phase.Buy), Times.Once);
+		user.Verify(u => u.PlayActionCard(player.PlayerState,
+			game.Object.Kingdom, It.IsAny<List<CardInstance>>()), Times.Exactly(2));
+		user.Verify(u => u.SelectCardToBuy(player.PlayerState,
+			game.Object.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		#endregion
 	}
 
@@ -177,8 +180,9 @@ public class PlayerTests
 		player.PlayerState.Hand = CreatePile([copper]);
 		player.PlayerState.DrawPile = CreatePile([gold, copper, copper, copper, copper]);
 
-		user.Setup(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => k.MaxPrice == 1 && !k.OnlyTreasures),
-			player.PlayerState, game.Object.Kingdom, Phase.Buy)).Returns((CardInstance)null);
+		// affordable at $1: copper only
+		user.Setup(u => u.SelectCardToBuy(player.PlayerState, game.Object.Kingdom,
+			It.Is<List<CardInstance>>(c => c.Count == 1))).Returns((CardInstance)null);
 		#endregion
 
 		#region act
@@ -194,10 +198,10 @@ public class PlayerTests
 		AssertPile([], player.PlayerState.ActionsPlayed);
 		AssertPile([copper], player.PlayerState.DiscardPile);
 
-		user.Verify(u => u.PlayCard(It.IsAny<List<CardInstance>>(), It.IsAny<PlayerState>(),
-			It.IsAny<Kingdom>(), It.IsAny<Phase>(), It.IsAny<Card>()), Times.Never);
-		user.Verify(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(),
-			player.PlayerState, game.Object.Kingdom, Phase.Buy), Times.Once);
+		user.Verify(u => u.PlayActionCard(It.IsAny<PlayerState>(), It.IsAny<Kingdom>(),
+			It.IsAny<List<CardInstance>>()), Times.Never);
+		user.Verify(u => u.SelectCardToBuy(player.PlayerState,
+			game.Object.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		#endregion
 	}
 
@@ -210,9 +214,9 @@ public class PlayerTests
 		player.PlayerState.Hand = CreatePile([copper, silver, village, village]);
 		var villageToPlay = player.PlayerState.Hand.First(c => c.Card == village);
 
-		user.Setup(u => u.PlayCard(
-			It.Is<List<CardInstance>>(c => c.Count() == 2 && c.All(card => card.Card == village)),
-			player.PlayerState, game.Object.Kingdom, Phase.Action, null)).Returns(villageToPlay);
+		user.Setup(u => u.PlayActionCard(
+			player.PlayerState,
+			game.Object.Kingdom, It.Is<List<CardInstance>>(c => c.Count() == 2 && c.All(card => card.Card == village)))).Returns(villageToPlay);
 		#endregion
 
 		#region act
@@ -220,8 +224,8 @@ public class PlayerTests
 		#endregion
 
 		#region assert
-		user.Verify(u => u.PlayCard(It.IsAny<List<CardInstance>>(),
-			player.PlayerState, game.Object.Kingdom, Phase.Action, null), Times.Once);
+		user.Verify(u => u.PlayActionCard(player.PlayerState,
+			game.Object.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 
 		Assert.AreEqual(village, playedCard.Card);
 
@@ -247,8 +251,8 @@ public class PlayerTests
 		#endregion
 
 		#region assert
-		user.Verify(u => u.PlayCard(It.IsAny<List<CardInstance>>(), It.IsAny<PlayerState>(),
-			It.IsAny<Kingdom>(), It.IsAny<Phase>(), It.IsAny<Card>()), Times.Never);
+		user.Verify(u => u.PlayActionCard(It.IsAny<PlayerState>(), It.IsAny<Kingdom>(),
+			It.IsAny<List<CardInstance>>()), Times.Never);
 
 		Assert.IsNull(playedCard);
 
@@ -274,8 +278,8 @@ public class PlayerTests
 		#endregion
 
 		#region assert
-		user.Verify(u => u.PlayCard(It.IsAny<List<CardInstance>>(), It.IsAny<PlayerState>(),
-			It.IsAny<Kingdom>(), It.IsAny<Phase>(), It.IsAny<Card>()), Times.Never);
+		user.Verify(u => u.PlayActionCard(It.IsAny<PlayerState>(), It.IsAny<Kingdom>(),
+			It.IsAny<List<CardInstance>>()), Times.Never);
 		Assert.IsNull(playedCard);
 
 		AssertPile([copper, silver, silver], player.PlayerState.Hand);
@@ -294,8 +298,8 @@ public class PlayerTests
 		player.PlayerState.DrawPile = CreatePile([silver]);
 		player.PlayerState.Hand = CreatePile([copper, silver, village, village]);
 
-		user.Setup(u => u.PlayCard(It.IsAny<List<CardInstance>>(), player.PlayerState,
-			game.Object.Kingdom, Phase.Action, null)).Returns((CardInstance)null);
+		user.Setup(u => u.PlayActionCard(player.PlayerState, game.Object.Kingdom,
+			It.IsAny<List<CardInstance>>())).Returns((CardInstance)null);
 		#endregion
 
 		#region act
@@ -303,9 +307,9 @@ public class PlayerTests
 		#endregion
 
 		#region assert
-		user.Verify(u => u.PlayCard(
-			It.Is<List<CardInstance>>(c => c.Count() == 2 && c.All(card => card.Card == village)),
-			player.PlayerState, game.Object.Kingdom, Phase.Action, null), Times.Once);
+		user.Verify(u => u.PlayActionCard(
+			player.PlayerState,
+			game.Object.Kingdom, It.Is<List<CardInstance>>(c => c.Count() == 2 && c.All(card => card.Card == village))), Times.Once);
 
 		Assert.IsNull(playedCard);
 
@@ -345,8 +349,9 @@ public class PlayerTests
 		player.PlayerState.Buys = 1;
 		var villageToGain = player.Game.Kingdom.GetPile(CardName.Village).CardInstance;
 
-		user.Setup(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => !k.OnlyTreasures && k.MaxPrice == 5),
-			player.PlayerState, game.Object.Kingdom, Phase.Buy)).Returns(villageToGain);
+		// affordable at $5: copper, silver, estate, village, duchy (not gold/province)
+		user.Setup(u => u.SelectCardToBuy(player.PlayerState, game.Object.Kingdom,
+			It.Is<List<CardInstance>>(c => c.Count == 5))).Returns(villageToGain);
 		#endregion
 
 		#region act
@@ -354,8 +359,8 @@ public class PlayerTests
 		#endregion
 
 		#region assert
-		user.Verify(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(),
-			player.PlayerState, game.Object.Kingdom, Phase.Buy), Times.Once);
+		user.Verify(u => u.SelectCardToBuy(player.PlayerState,
+			game.Object.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 
 		AssertPile([village], player.PlayerState.DiscardPile);
 		AssertNumbers(0, 2, 0, player);
@@ -375,8 +380,8 @@ public class PlayerTests
 		#endregion
 
 		#region assert
-		user.Verify(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(),
-			It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<Phase>()), Times.Never);
+		user.Verify(u => u.SelectCardToBuy(It.IsAny<PlayerState>(), It.IsAny<Kingdom>(),
+			It.IsAny<List<CardInstance>>()), Times.Never);
 
 		AssertPile([], player.PlayerState.DiscardPile);
 		AssertNumbers(0, 5, 0, player);
@@ -390,8 +395,9 @@ public class PlayerTests
 		player.PlayerState.Coins = 4;
 		player.PlayerState.Buys = 1;
 
-		user.Setup(u => u.SelectCardToGain(It.Is<KingdomWrapper>(k => !k.OnlyTreasures && k.MaxPrice == 4),
-			player.PlayerState, game.Object.Kingdom, Phase.Buy)).Returns((CardInstance)null);
+		// affordable at $4: copper, silver, estate, village (not duchy/gold/province)
+		user.Setup(u => u.SelectCardToBuy(player.PlayerState, game.Object.Kingdom,
+			It.Is<List<CardInstance>>(c => c.Count == 4))).Returns((CardInstance)null);
 		#endregion
 
 		#region act
@@ -399,8 +405,8 @@ public class PlayerTests
 		#endregion
 
 		#region assert
-		user.Verify(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(),
-			player.PlayerState, game.Object.Kingdom, Phase.Buy), Times.Once);
+		user.Verify(u => u.SelectCardToBuy(player.PlayerState,
+			game.Object.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 
 		AssertPile([], player.PlayerState.DiscardPile);
 		AssertNumbers(0, 4, 1, player);
@@ -655,8 +661,8 @@ public class PlayerTests
 		player.PlayerState.Hand = CreatePile([copper, copper, moat, copper, moat]);
 		var moats = player.PlayerState.Hand.Where(c => c.Card == moat).ToList();
 
-		user.SetupSequence(u => u.PlayCard(It.IsAny<List<CardInstance>>(),
-			player.PlayerState, player.Game.Kingdom, Phase.Reaction, militia))
+		user.SetupSequence(u => u.PlayReactionCard(militia, player.PlayerState,
+			player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns(moats[0]).Returns((CardInstance)null);
 		#endregion
 
@@ -669,8 +675,8 @@ public class PlayerTests
 		AssertNumbers(0, 0, 0, player);
 
 		// user is asked to choose a reaction to play
-		user.Verify(u => u.PlayCard(It.IsAny<List<CardInstance>>(),
-			player.PlayerState, player.Game.Kingdom, Phase.Reaction, militia), Times.Exactly(2));
+		user.Verify(u => u.PlayReactionCard(militia, player.PlayerState,
+			player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Exactly(2));
 
 		// player blocked the attack and therefore his hand did not change
 		AssertPile([copper, copper, moat, copper, moat], player.PlayerState.Hand);
@@ -698,8 +704,8 @@ public class PlayerTests
 		AssertNumbers(0, 0, 0, player);
 
 		// user is never asked to choose a reaction to play because he does not have any
-		user.Verify(u => u.PlayCard(It.IsAny<List<CardInstance>>(),
-			It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<Phase>(), It.IsAny<Card>()), Times.Never);
+		user.Verify(u => u.PlayReactionCard(It.IsAny<Card>(), It.IsAny<PlayerState>(),
+			It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()), Times.Never);
 
 		// user chose not to block the attack and therefore he needs to choose two cards to discard
 		user.Verify(du => du.MilitiaDiscard(militia, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>(), 2), Times.Once);

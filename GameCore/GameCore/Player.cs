@@ -121,7 +121,7 @@ public class Player : IPlayer
 		}
 
 		// user selects card to play, card is removed from hand and added to played cards
-		var card = User.PlayCard(ps.Hand.Where(c => c.IsAction).ToList(), ps, Game.Kingdom, Phase.Action);
+		var card = User.PlayActionCard(ps, Game.Kingdom, ps.Hand.Where(c => c.IsAction).ToList());
 		if (card is null)
 		{
 			return null;
@@ -171,7 +171,7 @@ public class Player : IPlayer
 		}
 
 		// buy
-		var card = User.SelectCardToGain(Game.Kingdom.GetWrapper(ps, ps.Coins), ps, Game.Kingdom, Phase.Buy);
+		var card = User.SelectCardToBuy( ps, Game.Kingdom, Game.Kingdom.GetWrapper(ps, ps.Coins).AvailableCards.ToList());
 		if (card is null)
 		{
 			return null;
@@ -233,6 +233,10 @@ public class Player : IPlayer
 	/// <param name="card"></param>
 	public void Trash(CardInstance card)
 	{
+		if (card == null)
+		{
+			return;
+		}
 		Game.Logger?.Log(new GameLog { PlayerId = name, Message = $"{name} trashes {card.Name}." });
 		Game.Trash.Move(card);
 	}
@@ -253,6 +257,11 @@ public class Player : IPlayer
 	/// <param name="card"></param>
 	public void Gain(CardInstance card)
 	{
+		if (card == null)
+		{
+			return;
+		}
+
 		Game.Logger?.Log(new GameLog { PlayerId = name, Message = $"{name} gains {card.Name}." });
 		// TODO hook on gain event
 		ps.DiscardPile.Move(card);
@@ -292,6 +301,11 @@ public class Player : IPlayer
 
 	public void GainToHand(CardInstance card)
 	{
+		if (card is null)
+		{
+			return;
+		}
+
 		Game.Logger?.Log(new GameLog { PlayerId = name, Message = $"{name} gains {card.Name} to hand." });
 		// TODO hook on gain event
 		ps.Hand.Move(card);
@@ -319,6 +333,10 @@ public class Player : IPlayer
 	/// <param name="card">Card to return to the draw pile.</param>
 	public void ReturnToDrawPile(CardInstance card)
 	{
+		if (card is null)
+		{
+			return;
+		}
 		Game.Logger?.Log(new GameLog { PlayerId = name, Message = $"{name} returns {card.Name} to the draw pile." });
 		ps.DrawPile.Move(card);
 	}
@@ -369,7 +387,7 @@ public class Player : IPlayer
 		// TODO tenhle while se mi nelíbí
 		while (reactions.Count > 0)
 		{
-			card = User.PlayCard(reactions, ps, Game.Kingdom, Phase.Reaction, attackCard);
+			card = User.PlayReactionCard(attackCard, ps, Game.Kingdom, reactions);
 			if (card is null)
 			{
 				break;

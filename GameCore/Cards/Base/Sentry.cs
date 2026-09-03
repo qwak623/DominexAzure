@@ -18,25 +18,10 @@ public class Sentry : Card
 	protected override void ActionEffect(IPlayer player, CardInstance thisCard)
 	{
 		var revealed = player.Show(2);
-		if (revealed.Count == 0)
-		{
-			return;
-		}
-
 		var toTrash = player.User.SentryTrash(this, player.PlayerState, player.Game.Kingdom, revealed.ToList());
 		toTrash.ForEach(player.Trash);
-		if (revealed.Count == 0)
-		{
-			return;
-		}
-
 		var toDiscard = player.User.SentryDiscard(this, player.PlayerState, player.Game.Kingdom, revealed.ToList());
 		toDiscard.ForEach(player.Discard);
-		if (revealed.Count == 0)
-		{
-			return;
-		}
-
 		var ordered = player.User.SentryOrderCards(this, player.PlayerState, player.Game.Kingdom, revealed.ToList());
 		player.PlayerState.DrawPile.MoveRange(ordered);
 	}

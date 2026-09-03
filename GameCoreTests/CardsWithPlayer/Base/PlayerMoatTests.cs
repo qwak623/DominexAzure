@@ -96,8 +96,8 @@ public class PlayerMoatTests : CardWithPlayerTestsBase
 		defender.PlayerState.Hand = CreatePile([copper, copper, moat, copper, copper]);
 		var moatInHand = defender.PlayerState.Hand.First(c => c.Card.Name == CardName.Moat);
 
-		defenderUser.Setup(u => u.PlayCard(It.Is<List<CardInstance>>(r => r.Single() == moatInHand),
-			defender.PlayerState, defender.Game.Kingdom, Phase.Reaction, militia))
+		defenderUser.Setup(u => u.PlayReactionCard(militia, defender.PlayerState,
+			defender.Game.Kingdom, It.Is<List<CardInstance>>(r => r.Single() == moatInHand)))
 			.Returns(moatInHand);
 		#endregion
 
@@ -117,8 +117,8 @@ public class PlayerMoatTests : CardWithPlayerTestsBase
 		AssertPile([], defender.PlayerState.ActionsPlayed);
 		AssertPile([], defender.Game.Trash);
 
-		defenderUser.Verify(u => u.PlayCard(It.IsAny<List<CardInstance>>(),
-			defender.PlayerState, defender.Game.Kingdom, Phase.Reaction, militia), Times.Once);
+		defenderUser.Verify(u => u.PlayReactionCard(militia, defender.PlayerState,
+			defender.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 
 		// the moat blocked the attack, so militia's own effect never runs
 		defenderUser.Verify(du => du.MilitiaDiscard(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>(), It.IsAny<int>()), Times.Never);
@@ -134,8 +134,8 @@ public class PlayerMoatTests : CardWithPlayerTestsBase
 		var moatInHand = defender.PlayerState.Hand.First(c => c.Card.Name == CardName.Moat);
 		var coppersToDiscard = defender.PlayerState.Hand.Where(c => c.Card.Name == CardName.Copper).Take(2).ToList();
 
-		defenderUser.Setup(u => u.PlayCard(It.Is<List<CardInstance>>(r => r.Single() == moatInHand),
-			defender.PlayerState, defender.Game.Kingdom, Phase.Reaction, militia))
+		defenderUser.Setup(u => u.PlayReactionCard(militia, defender.PlayerState,
+			defender.Game.Kingdom, It.Is<List<CardInstance>>(r => r.Single() == moatInHand)))
 			.Returns((CardInstance)null);
 		defenderUser.Setup(du => du.MilitiaDiscard(militia, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 2))
 			.Returns(coppersToDiscard);
@@ -156,8 +156,8 @@ public class PlayerMoatTests : CardWithPlayerTestsBase
 		AssertPile([], defender.PlayerState.ActionsPlayed);
 		AssertPile([], defender.Game.Trash);
 
-		defenderUser.Verify(u => u.PlayCard(It.IsAny<List<CardInstance>>(),
-			defender.PlayerState, defender.Game.Kingdom, Phase.Reaction, militia), Times.Once);
+		defenderUser.Verify(u => u.PlayReactionCard(militia, defender.PlayerState,
+			defender.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		defenderUser.Verify(du => du.MilitiaDiscard(militia, defender.PlayerState, defender.Game.Kingdom, It.IsAny<List<CardInstance>>(), 2), Times.Once);
 		#endregion
 	}

@@ -17,11 +17,8 @@ public class SecretPassage : Card
 
 	protected override void ActionEffect(IPlayer player, CardInstance thisCard)
 	{
-		if (player.PlayerState.Hand.Count == 0)
-		{
-			return;
-		}
-		CardInstance card = player.User.SecretPassageChooseCard(this, player.PlayerState, player.Game.Kingdom, player.PlayerState.Hand.ToList());
+		CardInstance card = player.User.SecretPassageChooseCard(
+			this, player.PlayerState, player.Game.Kingdom, player.PlayerState.Hand.ToList());
 		// TODO put anywhere in the deck.
 		player.ReturnToDrawPile(card);
 	}

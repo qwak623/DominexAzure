@@ -16,11 +16,6 @@ public class Upgrade : Card
 
 	protected override void ActionEffect(IPlayer p, CardInstance thisCard)
 	{
-		if (p.PlayerState.Hand.Count == 0)
-		{
-			return;
-		}
-
 		var oldCard = p.User.UpgradeTrash(this, p.PlayerState, p.Game.Kingdom, p.PlayerState.Hand.ToList());
 		if (oldCard is null)
 		{
@@ -30,11 +25,10 @@ public class Upgrade : Card
 		p.Trash(oldCard);
 
 		var price = oldCard.Card.GetPrice(p.PlayerState) + 1;
-		var newCard = p.User.SelectCardToGain(
-			new KingdomWrapper() { Kingdom = p.Game.Kingdom, MinPrice = price, MaxPrice = price, PlayerState = p.PlayerState }, p.PlayerState, p.Game.Kingdom, Phase.Gain);
-		if (newCard is not null)
-		{
-			p.Gain(newCard);
-		}
+		var availableCards = new KingdomWrapper()
+		{ Kingdom = p.Game.Kingdom, MinPrice = price, MaxPrice = price, PlayerState = p.PlayerState }
+			.AvailableCards.ToList();
+		var newCard = p.User.SelectCardToGain(this, p.PlayerState, p.Game.Kingdom, availableCards);
+		p.Gain(newCard);
 	}
 }

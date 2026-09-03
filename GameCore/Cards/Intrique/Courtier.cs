@@ -28,20 +28,9 @@ public class Courtier : Card
 
 	protected override void ActionEffect(IPlayer player, CardInstance thisCard)
 	{
-		if (player.PlayerState.Hand.Count == 0)
-		{
-			player.Game.Logger?.Log(new GameLog { PlayerId = player.Name, Message = $"{player.Name} has no cards in hand to reveal." });
-			return;
-		}
-
 		CardInstance revealedCard = player.User.CourtierReveal(this, player.PlayerState, player.Game.Kingdom, player.PlayerState.Hand.ToList());
 
-		int benefitCount = Math.Min(revealedCard.Card.CardTypes.Count, allBenefits.Count);
-		if (benefitCount == 0)
-		{
-			return;
-		}
-
+		int benefitCount = revealedCard is null ? 0 : revealedCard.Card.CardTypes.Count;
 		List<CourtierBenefit> chosenBenefits = player.User.CourtierChooseBenefits(
 			this, player.PlayerState, player.Game.Kingdom, benefitCount, allBenefits);
 		chosenBenefits.ForEach(benefit => benefitEffects[benefit](player));

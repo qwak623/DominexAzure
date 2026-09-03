@@ -33,10 +33,10 @@ public class PlayerArtisanTests : CardWithPlayerTestsBase
 		player.PlayerState.Hand = CreatePile([artisan, silver]);
 		var artisanToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Artisan);
 
-		KingdomWrapper wrapper = null;
-		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
-			.Callback<KingdomWrapper, PlayerState, Kingdom, Phase>((kw, ps, k, p) => wrapper = kw)
-			.Returns(() => wrapper.GetCard(CardName.Laboratory));
+		List<CardInstance> availableCards = null;
+		user.Setup(u => u.SelectCardToGain(artisan, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
+			.Callback<Card, PlayerState, Kingdom, List<CardInstance>>((c, ps, k, cards) => availableCards = cards)
+			.Returns(() => availableCards.SingleOrDefault(c => c.Card.Name == CardName.Laboratory));
 
 		// silver (already in hand) is put back, keeping the newly gained laboratory in hand
 		user.Setup(u => u.ArtisanPutOnTop(artisan, player.PlayerState, player.Game.Kingdom,
@@ -58,7 +58,7 @@ public class PlayerArtisanTests : CardWithPlayerTestsBase
 		AssertPile([], player.Game.Trash);
 
 		// gaining is capped at $5, not "up to $5 or more"
-		Assert.AreEqual(5, wrapper.MaxPrice);
+		Assert.AreEqual(5, availableCards.Max(c => c.Card.GetPrice(player.PlayerState)));
 		user.Verify(u => u.ArtisanPutOnTop(artisan, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
 		#endregion
 	}
@@ -71,8 +71,8 @@ public class PlayerArtisanTests : CardWithPlayerTestsBase
 		player.PlayerState.Hand = CreatePile([artisan]);
 		var artisanToPlay = player.PlayerState.Hand[0];
 
-		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
-			.Returns<KingdomWrapper, PlayerState, Kingdom, Phase>((kw, ps, k, p) => kw.GetCard(CardName.Laboratory));
+		user.Setup(u => u.SelectCardToGain(artisan, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
+			.Returns<Card, PlayerState, Kingdom, List<CardInstance>>((c, ps, k, cards) => cards.Single(x => x.Card.Name == CardName.Laboratory));
 		user.Setup(u => u.ArtisanPutOnTop(artisan, player.PlayerState, player.Game.Kingdom,
 			It.Is<List<CardInstance>>(c => c.Count == 1))).Returns<Card, PlayerState, Kingdom, List<CardInstance>>(
 			(c, ps, k, cards) => cards.Single());
@@ -95,8 +95,8 @@ public class PlayerArtisanTests : CardWithPlayerTestsBase
 		player.PlayerState.Hand = CreatePile([artisan, silver]);
 		var artisanToPlay = player.PlayerState.Hand.First(c => c.Card.Name == CardName.Artisan);
 
-		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
-			.Returns((CardInstance)null);
+		// nothing to gain: the supply is empty
+		EmptyKingdom();
 		user.Setup(u => u.ArtisanPutOnTop(artisan, player.PlayerState, player.Game.Kingdom,
 			It.Is<List<CardInstance>>(c => c.Count == 1))).Returns<Card, PlayerState, Kingdom, List<CardInstance>>(
 			(c, ps, k, cards) => cards.Single());
@@ -120,8 +120,8 @@ public class PlayerArtisanTests : CardWithPlayerTestsBase
 		player.PlayerState.Hand = CreatePile([artisan]);
 		var artisanToPlay = player.PlayerState.Hand[0];
 
-		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
-			.Returns((CardInstance)null);
+		// nothing to gain: the supply is empty
+		EmptyKingdom();
 		#endregion
 
 		#region act

@@ -108,12 +108,12 @@ public class PlayerBridgeTests : CardWithPlayerTestsBase
 		#region arrange
 		player.PlayerState.Hand = CreatePile([bridge]);
 		var bridgeToPlay = player.PlayerState.Hand[0];
-		var silverToGain = player.Game.Kingdom.GetPile(CardName.Silver).CardInstance;
+		var estateToGain = player.Game.Kingdom.GetPile(CardName.Estate).CardInstance;
 
 		player.PlayActionCardInternal(bridgeToPlay);
 
-		user.Setup(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.MaxPrice == 1 && !kw.OnlyTreasures),
-			player.PlayerState, player.Game.Kingdom, Phase.Buy)).Returns(silverToGain);
+		user.Setup(u => u.SelectCardToBuy(player.PlayerState, player.Game.Kingdom,
+			It.Is<List<CardInstance>>(c => c.All(x => x.Card.GetPrice(player.PlayerState) <= 1)))).Returns(estateToGain);
 		#endregion
 
 		#region act
@@ -121,14 +121,14 @@ public class PlayerBridgeTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region assert
-		// silver normally costs 3, discounted by bridge's reduction to 2; player had 1 coin
-		Assert.AreEqual(silverToGain, bought);
+		// estate normally costs 2, discounted by bridge's reduction to 1; player had 1 coin
+		Assert.AreEqual(estateToGain, bought);
 		Assert.AreEqual(0, player.PlayerState.Buys);
-		Assert.AreEqual(-1, player.PlayerState.Coins);
-		AssertPile([silver], player.PlayerState.DiscardPile);
+		Assert.AreEqual(0, player.PlayerState.Coins);
+		AssertPile([estate], player.PlayerState.DiscardPile);
 
-		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.MaxPrice == 1 && !kw.OnlyTreasures),
-			player.PlayerState, player.Game.Kingdom, Phase.Buy), Times.Once);
+		user.Verify(u => u.SelectCardToBuy(player.PlayerState, player.Game.Kingdom,
+			It.Is<List<CardInstance>>(c => c.All(x => x.Card.GetPrice(player.PlayerState) <= 1))), Times.Once);
 		#endregion
 	}
 
@@ -142,13 +142,13 @@ public class PlayerBridgeTests : CardWithPlayerTestsBase
 
 		player.PlayActionCardInternal(bridgeToPlay);
 
-		// selection is pulled from the wrapper itself, so this only succeeds if duchy
-		// (normally $5) genuinely passes the wrapper's own availability check once
-		// bridge's reduction brings its effective price down to workshop's $4 cap
-		KingdomWrapper wrapper = null;
-		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
-			.Callback<KingdomWrapper, PlayerState, Kingdom, Phase>((kw, ps, k, p) => wrapper = kw)
-			.Returns(() => wrapper.GetCard(CardName.Duchy));
+		// selection is pulled from the candidate list itself, so this only succeeds if duchy
+		// (normally $5) genuinely passes the computed availability check once bridge's
+		// reduction brings its effective price down to workshop's $4 cap
+		List<CardInstance> availableCards = null;
+		user.Setup(u => u.SelectCardToGain(workshop, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
+			.Callback<Card, PlayerState, Kingdom, List<CardInstance>>((c, ps, k, cards) => availableCards = cards)
+			.Returns(() => availableCards.SingleOrDefault(c => c.Card.Name == CardName.Duchy));
 		#endregion
 
 		#region act
@@ -156,7 +156,7 @@ public class PlayerBridgeTests : CardWithPlayerTestsBase
 		#endregion
 
 		#region assert
-		Assert.IsTrue(wrapper.AvailableCards.Any(c => c.Card.Name == CardName.Duchy));
+		Assert.IsTrue(availableCards.Any(c => c.Card.Name == CardName.Duchy));
 		AssertPile([duchy], player.PlayerState.DiscardPile);
 		#endregion
 	}

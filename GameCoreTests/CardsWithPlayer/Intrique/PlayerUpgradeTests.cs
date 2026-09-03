@@ -14,6 +14,7 @@ public class PlayerUpgradeTests : CardWithPlayerTestsBase
 	private readonly Card silver = Silver.Get();
 	private readonly Card gold = Gold.Get();
 	private readonly Card smithy = Smithy.Get();
+	private readonly Card throneRoom = ThroneRoom.Get();
 
 	private Player player;
 
@@ -23,7 +24,7 @@ public class PlayerUpgradeTests : CardWithPlayerTestsBase
 	[TestInitialize]
 	public void Init()
 	{
-		game = MockGame([upgrade, smithy]);
+		game = MockGame([upgrade, smithy, throneRoom]);
 		user = new Mock<IUser>();
 		player = CreatePlayer(game.Object, user.Object);
 	}
@@ -39,10 +40,10 @@ public class PlayerUpgradeTests : CardWithPlayerTestsBase
 		user.Setup(u => u.UpgradeTrash(upgrade, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns<Card, PlayerState, Kingdom, List<CardInstance>>((c, ps, k, cards) => cards.Single());
 
-		KingdomWrapper wrapper = null;
-		user.Setup(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), player.PlayerState, player.Game.Kingdom, Phase.Gain))
-			.Callback<KingdomWrapper, PlayerState, Kingdom, Phase>((kw, ps, k, p) => wrapper = kw)
-			.Returns(() => wrapper.GetCard(CardName.Smithy));
+		List<CardInstance> availableCards = null;
+		user.Setup(u => u.SelectCardToGain(upgrade, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
+			.Callback<Card, PlayerState, Kingdom, List<CardInstance>>((c, ps, k, cards) => availableCards = cards)
+			.Returns(() => availableCards.SingleOrDefault(c => c.Card.Name == CardName.Smithy));
 		#endregion
 
 		#region act
@@ -60,11 +61,9 @@ public class PlayerUpgradeTests : CardWithPlayerTestsBase
 		AssertPile([silver], player.Game.Trash);
 
 		// gaining is restricted to exactly $1 more than the trashed card, not "up to"
-		Assert.AreEqual(4, wrapper.MinPrice);
-		Assert.AreEqual(4, wrapper.MaxPrice);
-		user.Verify(u => u.UpgradeTrash(upgrade, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()), Times.Once);
-		user.Verify(u => u.SelectCardToGain(It.Is<KingdomWrapper>(kw => kw.MinPrice == 4 && kw.MaxPrice == 4),
-			player.PlayerState, player.Game.Kingdom, Phase.Gain), Times.Once);
+		Assert.IsTrue(availableCards.All(c => c.Card.GetPrice(player.PlayerState) == 4));
+		user.Verify(u => u.SelectCardToGain(upgrade, player.PlayerState, player.Game.Kingdom,
+			It.Is<List<CardInstance>>(c => c.All(x => x.Card.GetPrice(player.PlayerState) == 4))), Times.Once);
 		#endregion
 	}
 
@@ -73,11 +72,8 @@ public class PlayerUpgradeTests : CardWithPlayerTestsBase
 	{
 		#region arrange
 		player.PlayerState.Hand = CreatePile([upgrade]);
-		player.PlayerState.DrawPile = CreatePile([silver]);
+		player.PlayerState.DrawPile = CreatePile([]);
 		var upgradeToPlay = player.PlayerState.Hand[0];
-
-		user.Setup(u => u.UpgradeTrash(upgrade, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
-			.Returns((CardInstance)null);
 		#endregion
 
 		#region act
@@ -86,13 +82,15 @@ public class PlayerUpgradeTests : CardWithPlayerTestsBase
 
 		#region assert
 		AssertNumbers(1, 0, 0, player);
-		AssertPile([silver], player.PlayerState.Hand);
+		AssertPile([], player.PlayerState.Hand);
 		AssertPile([], player.PlayerState.DrawPile);
 		AssertPile([], player.PlayerState.DiscardPile);
 		AssertPile([], player.Game.Trash);
 
-		user.Verify(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(),
-			It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<Phase>()), Times.Never);
+		user.Verify(u => u.SelectCardToGain(It.IsAny<Card>(),
+			It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()), Times.Never);
+		user.Verify(u => u.UpgradeTrash(It.IsAny<Card>(),
+			It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()), Times.Never);
 		#endregion
 	}
 
@@ -109,9 +107,9 @@ public class PlayerUpgradeTests : CardWithPlayerTestsBase
 
 		user.Setup(u => u.UpgradeTrash(upgrade, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>()))
 			.Returns<Card, PlayerState, Kingdom, List<CardInstance>>((c, ps, k, cards) => cards.Single());
-		user.Setup(u => u.SelectCardToGain(
-			It.Is<KingdomWrapper>(kw => kw.MinPrice == 7 && kw.MaxPrice == 7 && !kw.AvailableCards.Any()),
-			player.PlayerState, player.Game.Kingdom, Phase.Gain)).Returns((CardInstance)null);
+		// nothing in the kingdom costs exactly $7, so the candidate list is genuinely empty
+		user.Setup(u => u.SelectCardToGain(upgrade, player.PlayerState, player.Game.Kingdom,
+			It.Is<List<CardInstance>>(c => c.Count == 0))).Returns((CardInstance)null);
 		#endregion
 
 		#region act
@@ -150,7 +148,7 @@ public class PlayerUpgradeTests : CardWithPlayerTestsBase
 		AssertPile([], player.Game.Trash);
 
 		user.Verify(u => u.UpgradeTrash(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()), Times.Never);
-		user.Verify(u => u.SelectCardToGain(It.IsAny<KingdomWrapper>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<Phase>()), Times.Never);
+		user.Verify(u => u.SelectCardToGain(It.IsAny<Card>(), It.IsAny<PlayerState>(), It.IsAny<Kingdom>(), It.IsAny<List<CardInstance>>()), Times.Never);
 		#endregion
 	}
 }

@@ -29,12 +29,9 @@ public class SecretChamber : Card
 	{
 		player.Draw(2);
 		// TODO in any order
-		var count = Math.Min(2, player.PlayerState.Hand.Count);
-		var cards = player.User.SecretChamberPutOnDeck(this, player.PlayerState, player.Game.Kingdom, player.PlayerState.Hand.ToList(), count);
-		foreach (var card in cards)
-		{
-			player.ReturnToDrawPile(card);
-		}
+		var cards = player.User.SecretChamberPutOnDeck(
+			this, player.PlayerState, player.Game.Kingdom, player.PlayerState.Hand.ToList(), 2);
+		cards.ForEach(player.ReturnToDrawPile);
 		return base.Reaction(player);
 	}
 }

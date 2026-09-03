@@ -20,29 +20,21 @@ public class Human(IPlayerStateObserver playerStateObserver, ICardMapper cardMap
 		return playerStateObserver;
 	}
 
-	public override CardInstance PlayCard(List<CardInstance> cards, PlayerState ps, Kingdom k, Phase phase, Card attackingCard = null)
+	public override CardInstance PlayActionCard(PlayerState ps, Kingdom k, List<CardInstance> cards)
+		=> AskForCards(null, ps, cards, ChoiceType.Play, OperationType.Play, 0, 1).SingleOrDefault();
+
+	public override CardInstance PlayReactionCard(Card attackingCard, PlayerState ps, Kingdom k, List<CardInstance> cards)
 		// todo je třeba vyřešit attacking card, asi ideálně přidat do choice
 		=> AskForCards(null, ps, cards, ChoiceType.Play, OperationType.Play, 0, 1).SingleOrDefault();
 
-	public override CardInstance SelectCardToGain(KingdomWrapper wrapper, PlayerState ps, Kingdom k, Phase phase)
-	{
-		var cardSelection = wrapper.AvailableCards.ToList();
 
-		// buying is always optional (a buy can go unspent); every other caller of this method
-		// is a mandatory "gain a card" effect (Workshop, Mine, Remodel, Feast, ...), so it can
-		// only be declined when there's genuinely nothing available to gain
-		var min = phase == Phase.Buy || cardSelection.Count == 0 ? 0 : 1;
-		var type = phase == Phase.Buy ? ChoiceType.Buy : ChoiceType.Gain;
-		var op = phase == Phase.Buy ? OperationType.Buy : OperationType.Gain;
+	public override CardInstance SelectCardToBuy(PlayerState ps, Kingdom k, List<CardInstance> cards)
+		=> AskForCards(null, ps, cards, ChoiceType.Buy, OperationType.Buy, 0, 1).SingleOrDefault();
+	public override CardInstance SelectCardToGain(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
+		=> AskForCards(cardPlayed, ps, cards, ChoiceType.Gain, OperationType.Gain, 1, 1).Single();
 
-		// todo ps.Buys - více buyu najednou
-		return AskForCards(null, ps, cardSelection, type, op, min, 1).SingleOrDefault();
-	}
-
-	// unlike SelectCardToGain, min is always 0 here - "may gain" cards (e.g. Saboteur) can be
-	// declined even when a valid target exists
-	public override CardInstance SelectOptionalCardToGain(KingdomWrapper wrapper, PlayerState ps, Kingdom k, Phase phase)
-		=> AskForCards(null, ps, wrapper.AvailableCards.ToList(), ChoiceType.Gain, OperationType.Gain, 0, 1).SingleOrDefault();
+	public override CardInstance SelectOptionalCardToGain(Card cardPlayed, PlayerState ps, Kingdom k, List<CardInstance> cards)
+		=> AskForCards(cardPlayed, ps, cards, ChoiceType.Gain, OperationType.Gain, 0, 1).SingleOrDefault();
 
 	// todo ps - možná by mělo být jen card selection
 	// todo kingdom - možná by to nemuselo být tady

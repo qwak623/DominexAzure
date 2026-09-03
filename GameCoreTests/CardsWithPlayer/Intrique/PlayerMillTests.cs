@@ -142,7 +142,7 @@ public class PlayerMillTests : CardWithPlayerTestsBase
 		AssertPile([mill], player.PlayerState.ActionsPlayed);
 		AssertPile([], player.Game.Trash);
 
-		user.Verify(u => u.MillChooseCardsToDiscard(mill, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>(), 1), Times.Once);
+		user.Verify(u => u.MillChooseCardsToDiscard(mill, player.PlayerState, player.Game.Kingdom, It.IsAny<List<CardInstance>>(), 1), Times.Never);
 		#endregion
 	}
 
