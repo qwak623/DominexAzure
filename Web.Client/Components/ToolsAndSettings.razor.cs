@@ -64,6 +64,7 @@ public partial class ToolsAndSettings
 	private void ClickPresetKingdom(PresetKingdomDto kingdom)
 	{
 		State.SetSelectedCards(kingdom.Cards);
+		State.AddColonyAndPlatinum = kingdom.AddColonyAndPlatinum;
 	}
 
 	private async void ClickPresetDropdownButton()

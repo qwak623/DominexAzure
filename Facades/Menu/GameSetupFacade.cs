@@ -29,13 +29,14 @@ public class GameSetupFacade : IGameSetupFacade
 	public async Task<List<PresetKingdomDto>> RequestPresetKingdoms()
 	{
 		// TODO validovat, jestli je to v available cards? 
-		var presetKingdoms = new List<Model.Game.PresetKingdom>(); // TODO await presetKingdomRepository.GetAllAsync();
+		var presetKingdoms = await presetKingdomRepository.GetAllAsync();
 
 		// todo move mapper somewhere
 		return presetKingdoms.Select(k => new PresetKingdomDto
 		{
 			Name = k.Name,
-			Cards = cardMapper.ToCardDto(k.Cards.Select(c => Card.Get(Enum.Parse<CardName>(c)))).ToList(),
+			Cards = cardMapper.ToCardDto(k.Cards.Select(c => Card.Get(Enum.Parse<CardName>(c.Replace(" ", ""))))).ToList(),
+			AddColonyAndPlatinum = k.AddColonyAndPlatinum
 		}).ToList();
 	}
 

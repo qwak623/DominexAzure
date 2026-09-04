@@ -5,4 +5,5 @@ public class PresetKingdomDto
 {
 	public string Name { get; set; }
 	public List<CardDto> Cards { get; set; }
+	public bool AddColonyAndPlatinum { get; set; }
 }

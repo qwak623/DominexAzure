@@ -12,4 +12,5 @@ public class PresetKingdom
 
 	[Required]
 	public List<string> Cards { get; set; }
+	public bool AddColonyAndPlatinum { get; set; } = false;
 }

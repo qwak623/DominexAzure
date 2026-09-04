@@ -209,7 +209,7 @@ public abstract class Card
 			CardName.Replace => Intrique.Replace.Get(),
 			CardName.Colony => Prosperity.Colony.Get(),
 			CardName.Platinum => Prosperity.Platinum.Get(),
-			_ => throw new NotImplementedException(),
+			_ => throw new NotImplementedException($"Card not implemented: {cardType}"),
 		};
 	}
 

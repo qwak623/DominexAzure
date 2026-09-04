@@ -1,4 +1,8 @@
-﻿using Dominex.Model.Game;
+﻿using System;
+using System.Diagnostics;
+using System.Net.NetworkInformation;
+using System.Reflection;
+using Dominex.Model.Game;
 using Havit.Data.Patterns.DataSeeds;
 
 namespace Dominex.DataLayer.Seeds.Core.Game;
@@ -9,10 +13,10 @@ public class PresetKingdomSeed : DataSeed<CoreProfile>
 	{
 		var kingdoms = new[]
 		{
-			// Dominion Base Game (First Edition) Preset Kingdoms
+			// Dominion Base Game (1E) Preset Kingdoms
 			new PresetKingdom
 			{
-				Name = "First Game (First Edition)",
+				Name = "First Game (1E)",
 				Cards =
 				[
 					"Cellar",
@@ -63,7 +67,7 @@ public class PresetKingdomSeed : DataSeed<CoreProfile>
 			},
 			new PresetKingdom
 			{
-				Name = "Size Distortion (First Edition)",
+				Name = "Size Distortion (1E)",
 				Cards =
 				[
 					"Cellar",
@@ -324,7 +328,384 @@ public class PresetKingdomSeed : DataSeed<CoreProfile>
 					"ThroneRoom",
 				]
 			},
+
+			// Prosperity Expansion Preset Kingdoms
+			new PresetKingdom
+			{
+				Name = "Beginners",
+				Cards =
+				[
+					"Bank",
+					"Clerk",
+					"CrystalBall",
+					"Expand",
+					"Magnate",
+					"Monument",
+					"Rabble",
+					"Tiara",
+					"Watchtower",
+					"WorkesVillage",
+				],
+				AddColonyAndPlatinum = true,
+			},
+			new PresetKingdom
+			{
+				Name = "Friendly Interactive",
+				Cards =
+				[
+					"Bishop",
+					"City",
+					"Collection",
+					"Forge",
+					"Hoard",
+					"Peddler",
+					"Tiara",
+					"Vault",
+					"WarChest",
+					"WorkersVillage",
+				],
+				AddColonyAndPlatinum = true,
+			},
+
+			// Prosperity Expansion (1E) Preset Kingdoms
+			new PresetKingdom
+			{
+				Name = "Beginners (1E)",
+				Cards =
+				[
+					"Bank",
+					"CountingHouse",
+					"Expand",
+					"Goons",
+					"Monument",
+					"Rabble",
+					"RoyalSeal",
+					"Venture",
+					"Watchtower",
+					"WorkesVillage",
+				],
+				AddColonyAndPlatinum = true,
+			},
+			new PresetKingdom
+			{
+				Name = "Friendly Interactive (1E)",
+				Cards =
+				[
+					"Bishop",
+					"City",
+					"Contraband",
+					"Forge",
+					"Hoard",
+					"Peddler",
+					"RoyalSeal",
+					"TradeRoute",
+					"Vault",
+					"WorkersVillage",
+				],
+				AddColonyAndPlatinum = true,
+			},
+			new PresetKingdom
+			{
+				Name = "Big Actions",
+				Cards =
+				[
+					"City",
+					"Expand",
+					"GrandMarket",
+					"KingsCourt",
+					"Loan",
+					"Mint",
+					"Quarry",
+					"Rabble",
+					"Talisman",
+					"Vault",
+				],
+				AddColonyAndPlatinum = true,
+			},
+
+			// Prosperity & Dominion Expansion Preset Kingdoms
+			new PresetKingdom
+			{
+				Name = "Biggest Money",
+				Cards =
+				[
+					"Bank",
+					"CrystalBall",
+					"GrandMarket",
+					"Mint",
+					"Tiara",
+					"Artisan",
+					"Harbinger",
+					"Laboratory",
+					"Mine",
+					"Moneylender",
+				],
+				AddColonyAndPlatinum = true,
+			},
+			new PresetKingdom
+			{
+				Name = "The King's Army",
+				Cards =
+				[
+					"Collection",
+					"Expand",
+					"KingsCourt",
+					"Rabble",
+					"Vault",
+					"Bureaucrat",
+					"CouncilRoom",
+					"Merchant",
+					"Moat",
+					"Village",
+				],
+				AddColonyAndPlatinum = true,
+			},
+
+			// Dominion (1E) & Prosperity (1E) Expansion Preset Kingdoms
+			new PresetKingdom
+			{
+				Name = "Biggest Money (1E)",
+				Cards =
+				[
+					"Bank",
+					"GrandMarket",
+					"Mint",
+					"RoyalSeal",
+					"Venture",
+					"Adventurer",
+					"Laboratory",
+					"Mine",
+					"Moneylender",
+					"Spy"
+				],
+				AddColonyAndPlatinum = true,
+			},
+			new PresetKingdom
+			{
+				Name = "The King's Army (1E)",
+				Cards =
+				[
+					"Expand",
+					"Goons",
+					"KingsCourt",
+					"Rabble",
+					"Vault",
+					"Bureaucrat",
+					"CouncilRoom",
+					"Moat",
+					"Spy",
+					"Village"
+				],
+				AddColonyAndPlatinum = true,
+			},
+			new PresetKingdom
+			{
+				Name = "The Good Life (1E)",
+				Cards =
+				[
+					"Contraband",
+					"CountingHouse",
+					"Hoard",
+					"Monument",
+					"Mountebank",
+					"Bureaucrat",
+					"Cellar",
+					"Chancellor",
+					"Gardens",
+					"Village"
+				],
+				AddColonyAndPlatinum = true,
+			},
+
+			// Dominion (2E) & Prosperity (1E) Expansion Preset Kingdoms
+			new PresetKingdom
+			{
+				Name = "Biggest Money (1E & 2E)",
+				Cards =
+				[
+					"Bank",
+					"GrandMarket",
+					"Mint",
+					"RoyalSeal",
+					"Venture",
+					"Artisan",
+					"Harbinger",
+					"Laboratory",
+					"Mine",
+					"Moneylender"
+				],
+				AddColonyAndPlatinum = true,
+			},
+			new PresetKingdom
+			{
+				Name = "The King's Army (1E & 2E)",
+				Cards =
+				[
+					"Expand",
+					"Goons",
+					"KingsCourt",
+					"Rabble",
+					"Vault",
+					"Bureaucrat",
+					"CouncilRoom",
+					"Merchant",
+					"Moat",
+					"Village"
+				],
+				AddColonyAndPlatinum = true,
+			},
+			new PresetKingdom
+			{
+				Name = "The Good Life (1E & 2E)",
+				Cards =
+				[
+					"Contraband",
+					"CountingHouse",
+					"Hoard",
+					"Monument",
+					"Mountebank",
+					"Artisan",
+					"Bureaucrat",
+					"Cellar",
+					"Gardens",
+					"Village"
+				],
+				AddColonyAndPlatinum = true,
+			},
+
+			// Prosperity & Intrique Expansion Preset Kingdoms
+			new PresetKingdom
+			{
+				Name = "Paths to Victory",
+				Cards =
+				[
+					"Bishop",
+					"Collection",
+					"Magnate",
+					"Monument",
+					"Peddler",
+					"Baron",
+					"Harem",
+					"Pawn",
+					"ShantyTown",
+					"Upgrade"
+				],
+				AddColonyAndPlatinum = true,
+			},
+			new PresetKingdom
+			{
+				Name = "Lucky Seven",
+				Cards =
+				[
+					"Bank",
+					"Expand",
+					"Forge",
+					"KingsCourt",
+					"Tiara",
+					"Baron",
+					"MiningVillage",
+					"Patrol",
+					"Upgrade",
+					"WishingWell"
+				],
+				AddColonyAndPlatinum = true,
+			},
+
+			// Prosperity (1E) & Intrigue (1E) Expansion Preset Kingdoms
+			new PresetKingdom
+			{
+				Name = "Paths to Victory (1E)",
+				Cards =
+				[
+					"Bishop",
+					"CountingHouse",
+					"Goons",
+					"Monument",
+					"Peddler",
+					"Baron",
+					"Harem",
+					"Pawn",
+					"ShantyTown",
+					"Upgrade"
+				],
+				AddColonyAndPlatinum = true,
+			},
+			new PresetKingdom
+			{
+				Name = "All Along the Watchtower (1E)",
+				Cards =
+				[
+					"Hoard",
+					"Talisman",
+					"TradeRoute",
+					"Vault",
+					"Watchtower",
+					"Bridge",
+					"GreatHall",
+					"MiningVillage",
+					"Pawn",
+					"Torturer"
+				],
+				AddColonyAndPlatinum = true,
+			},
+			new PresetKingdom
+			{
+				Name = "Lucky Seven (1E)",
+				Cards =
+				[
+					"Bank",
+					"Expand",
+					"Forge",
+					"KingsCourt",
+					"Vault",
+					"Bridge",
+					"Coppersmith",
+					"Swindler",
+					"Tribute",
+					"WishingWell"
+				],
+				AddColonyAndPlatinum = true,
+			},
+
+			// Prosperity (1E) & Intrigue (2E) Expansion Preset Kingdoms
+			new PresetKingdom
+			{
+				Name = "All Along the Watchtower (1E & 2E)",
+				Cards =
+				[
+					"Hoard",
+					"Talisman",
+					"TradeRoute",
+					"Vault",
+					"Watchtower",
+					"Bridge",
+					"Mill",
+					"MiningVillage",
+					"Pawn",
+					"Torturer"
+				],
+				AddColonyAndPlatinum = true,
+			},
+			new PresetKingdom
+			{
+				Name = "Lucky Seven (1E & 2E)",
+				Cards =
+				[
+					"Bank",
+					"Expand",
+					"Forge",
+					"KingsCourt",
+					"Vault",
+					"Bridge",
+					"Lurker",
+					"Patrol",
+					"Swindler",
+					"WishingWell"
+				],
+				AddColonyAndPlatinum = true,
+			},
 		};
+
 
 		Seed(For(kingdoms).PairBy(k => k.Name));
 	}
